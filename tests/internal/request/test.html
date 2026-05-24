@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>总结（使用GDB调试）</title>
+
+<meta name="description" content="总结（使用GDB调试）">
+<meta name="keywords" content="总结（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Sample-Session.html" rel="next" title="示例会话">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumbered-level-extent" id="总结">
+<div class="nav-panel">
+<p>
+下一页：<a href="Sample-Session.html" accesskey="n" rel="next">一个示例GDB会话</a>，上一级：<a href="index.html" accesskey="u" rel="up">使用GDB调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="unnumbered" id="GDB总结"><span>GDB总结<a class="copiable-link" href="#GDB总结"> &para;</a></span></h2>
+
+<p>像GDB这样的调试器的目的是让你在另一个程序执行时查看其“内部”发生了什么，或者在程序崩溃时查看它当时在做什么。
+</p>
+<p>GDB可以做四种主要的事情（以及其他支持这些的事情）来帮助你当场捕捉错误：
+</p>
+<ul class="itemize mark-bullet">
+<li>启动你的程序，指定任何可能影响其行为的因素。
+
+</li><li>使你的程序在指定条件下停止。
+
+</li><li>在你的程序停止时检查发生了什么。
+
+</li><li>更改你的程序中的内容，以便你可以试验纠正一个错误的影响并继续了解另一个错误。
+</li></ul>
+
+<p>你可以使用GDB调试用C和C++编写的程序。
+有关更多信息，请参阅 <a class="ref" href="Supported-Languages.html">支持的语言</a>。
+有关更多信息，请参阅 <a class="ref" href="C.html">C和C++</a>。
+</p>
+<p>对D语言的支持是部分的。有关D语言的信息，请参阅
+<a class="ref" href="D.html">D</a>。
+</p>
+<a class="index-entry-id" id="index-Modula_002d2"></a>
+<p>对Modula-2的支持是部分的。有关Modula-2的信息，请参阅
+<a class="ref" href="Modula_002d2.html">Modula-2</a>。
+</p>
+<p>对OpenCL C的支持是部分的。有关OpenCL C的信息，请参阅
+<a class="ref" href="OpenCL-C.html">OpenCL C</a>。
+</p>
+<a class="index-entry-id" id="index-Pascal"></a>
+<p>调试使用集合、子范围、文件变量或嵌套函数的Pascal程序目前不起作用。GDB不支持使用Pascal语法输入表达式、打印值或类似功能。
+</p>
+<a class="index-entry-id" id="index-Fortran"></a>
+<p>可以使用GDB调试用Fortran编写的程序，尽管可能需要用下划线后缀来引用一些变量。
+</p>
+<p>可以使用GDB调试用Objective-C编写的程序，使用Apple/NeXT或GNU Objective-C运行时。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Free-Software.html" accesskey="1">自由软件</a></li>
+<li><a href="Free-Documentation.html" accesskey="2">自由软件需要自由文档</a></li>
+<li><a href="Contributors.html" accesskey="3">GDB的贡献者</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Sample-Session.html">一个示例GDB会话</a>，上一级：<a href="index.html">使用GDB调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>
