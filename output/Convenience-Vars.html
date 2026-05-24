@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>便利变量（使用GDB调试）</title>
+
+<meta name="description" content="便利变量（使用GDB调试）">
+<meta name="keywords" content="便利变量（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Convenience-Funs.html" rel="next" title="便利函数">
+<link href="Value-History.html" rel="prev" title="值历史">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="便利变量">
+<div class="nav-panel">
+<p>
+下一个：<a href="Convenience-Funs.html" accesskey="n" rel="next">便利函数</a>，上一个：<a href="Value-History.html" accesskey="p" rel="prev">值历史</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="便利变量"><span>10.12 便利变量<a class="copiable-link" href="#便利变量"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-便利变量"></a>
+<a class="index-entry-id" id="索引-用户定义变量"></a>
+<p><small class="sc">GDB</small> 提供了 <em class="dfn">便利变量</em>，你可以在 <small class="sc">GDB</small> 中使用它们来保存一个值，并在以后引用它。这些变量完全存在于 <small class="sc">GDB</small> 内部；它们不是你程序的一部分，设置一个便利变量对程序的进一步执行没有直接影响。这就是为什么你可以自由使用它们。
+</p>
+<p>便利变量以 &lsquo;<samp class="samp">$</samp>&rsquo; 为前缀。任何以 &lsquo;<samp class="samp">$</samp>&rsquo; 开头的名称都可以用作便利变量，除非它是预定义的特定机器寄存器名称之一（见 <a class="pxref" href="Registers.html">寄存器</a>）。（相比之下，值历史引用是由 &lsquo;<samp class="samp">$</samp>&rsquo; 开头的 <em class="emph">数字</em>。见 <a class="xref" href="Value-History.html">值历史</a>。）
+</p>
+<p>你可以使用赋值表达式将一个值保存在便利变量中，就像你在程序中设置变量一样。
+例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $foo = *object_ptr
+</pre></div>
+
+<p>会将 <code class="code">object_ptr</code> 指向的对象中包含的值保存在 <code class="code">$foo</code> 中。
+</p>
+<p>首次使用便利变量时会创建它，但在你赋新值之前它的值是 <code class="code">void</code>。你可以随时用另一个赋值来改变它的值。
+</p>
+<p>便利变量没有固定的类型。你可以给一个便利变量赋任何类型的值，包括结构体和数组，即使该变量已经有了不同类型的值。便利变量在用作表达式时，具有其当前值的类型。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-显示所有用户变量和函数"></a>
+<a id="索引-显示便利变量"></a><span><code class="code">show convenience</code><a class="copiable-link" href="#索引-显示便利变量"> &para;</a></span></dt>
+<dd><p>打印到目前为止使用的便利变量列表及其值，以及便利函数列表。
+缩写为 <code class="code">show conv</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-便利变量，初始化"></a>
+<a id="索引-init-if-undefined"></a><span><code class="code">init-if-undefined $<var class="var">变量</var> = <var class="var">表达式</var></code><a class="copiable-link" href="#索引-init-if-undefined"> &para;</a></span></dt>
+<dd><p>如果便利变量尚未设置，则设置它。这对于保持某些状态的用户定义命令很有用。在概念上，它类似于在C中使用带初始化器的局部静态变量（除了便利变量是全局的）。它还可以用于允许用户覆盖命令脚本中使用的默认值。
+</p>
+<p>如果变量已经定义，则不会计算表达式，因此不会发生任何副作用。
+</p></dd>
+</dl>
+
+<p>使用便利变量的一种方法是作为计数器进行递增或作为指针进行推进。例如，要打印结构体数组中连续元素的一个字段：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $i = 0
+print bar[$i++]-&gt;contents
+</pre></div>
+
+<p>按 <kbd class="key">RET</kbd> 键重复该命令。
+</p>
+<p>一些便利变量是由 <small class="sc">GDB</small> 自动创建并赋予可能有用的值。
+</p>
+<dl class="table">
+<dt><a id="索引-_0024_005f，便利变量"></a><span><code class="code">$_</code><a class="copiable-link" href="#索引-_0024_005f，便利变量"> &para;</a></span></dt>
+<dd><p>变量 <code class="code">$_</code> 由 <code class="code">x</code> 命令自动设置为最后检查的地址（见 <a class="pxref" href="Memory.html">检查内存</a>）。其他为 <code class="code">x</code> 命令提供默认检查地址的命令也会将 <code class="code">$_</code> 设置为该地址；这些命令包括 <code class="code">info line</code> 和 <code class="code">info breakpoint</code>。<code class="code">$_</code> 的类型是 <code class="code">void *</code>，除非由 <code class="code">x</code> 命令设置，在这种情况下它是指向 <code class="code">$__</code> 类型的指针。
+</p>
+</dd>
+<dt><a id="索引-_0024_005f_005f，便利变量"></a><span><code class="code">$__</code><a class="copiable-link" href="#索引-_0024_005f_005f，便利变量"> &para;</a></span></dt>
+<dd><p>变量 <code class="code">$__</code> 由 <code class="code">x</code> 命令自动设置为在最后检查的地址中找到的值。它的类型被选择为与打印数据的格式匹配。
+</p>
+</dd>
+<dt><a id="索引-_0024_005fexitcode，便利变量"></a><span><code class="code">$_exitcode</code><a class="copiable-link" href="#索引-_0024_005fexitcode，便利变量"> &para;</a></span></dt>
+<dd><p>当被调试的程序正常终止时，<small class="sc">GDB</small> 会自动将此变量设置为程序의退出代码，并将 <code class="code">$_exitsignal</code> 重置为 <code class="code">void</code>。
+</p>
+</dd>
+<dt><a id="索引-_0024_005fexitsignal，便利变量"></a><span><code class="code">$_exitsignal</code><a class="copiable-link" href="#索引-_0024_005fexitsignal，便利变量"> &para;</a></span></dt>
+<dd><p>当被调试的程序因未捕获的信号而终止时，<small class="sc">GDB</small> 会自动将此变量设置为该信号의编号，并将 <code class="code">$_exitcode</code> 重置为 <code class="code">void</code>。
+</p>
+<p>为了区分被调试的程序是正常退出（即 <code class="code">$_exitcode</code> 不是 <code class="code">void</code>）还是因信号终止（即 <code class="code">$_exitsignal</code> 不是 <code class="code">void</code>），可以使用便利函数 <code class="code">$_isvoid</code>（见 <a class="pxref" href="Convenience-Funs.html">便利函数</a>）。例如，可以考虑以下源代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#include &lt;signal.h&gt;
+
+int
+main (int argc, char *argv[])
+{
+  raise (SIGALRM);  
+  return 0;
+}
+</pre></div>
+
+<p>判断被调试的程序是正常退出还是因信号终止的有效方法如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) define has_exited_or_signalled
+Type commands for definition of ``has_exited_or_signalled''.
+End with a line saying just ``end''.
+&gt;if $_isvoid ($_exitsignal)
+ &gt;echo The program has exited\n
+ &gt;else
+ &gt;echo The program has signalled\n
+ &gt;end
+&gt;end
+(gdb) run
+Starting program:
+
+Program terminated with signal SIGALRM, Alarm clock.
+The program no longer exists.
+(gdb) has_exited_or_signalled
+The program has signalled
+</pre></div>
+
+<p>可以看出，<small class="sc">GDB</small> 正确地告知被调试的程序因信号终止，因为它调用了 <code class="code">raise</code> 并引发了 <code class="code">SIGALRM</code> 信号。如果被调试的程序没有调用 <code class="code">raise</code>，那么 <small class="sc">GDB</small> 将报告正常退出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) has_exited_or_signalled
+The program has exited
+</pre></div>
+
+</dd>
+<dt><code class="code">$_exception</code></dt>
+<dd><p>变量 <code class="code">$_exception</code> 被设置为在与异常相关的捕获点抛出的异常对象。见 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</dd>
+<dt><code class="code">$_ada_exception</code></dt>
+<dd><p>变量 <code class="code">$_ada_exception</code> 被设置为在与Ada异常相关的捕获点捕获或抛出的异常의地址。见 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</dd>
+<dt><code class="code">$_probe_argc</code></dt>
+<dt><code class="code">$_probe_arg

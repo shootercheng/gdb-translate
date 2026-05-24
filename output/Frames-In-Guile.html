@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的栈帧（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的栈帧（使用GDB调试）">
+<meta name="keywords" content="Guile中的栈帧（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Blocks-In-Guile.html" rel="next" title="Guile中的代码块">
+<link href="Objfiles-In-Guile.html" rel="prev" title="Guile中的目标文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的栈帧">
+<div class="nav-panel">
+<p>
+下一页：<a href="Blocks-In-Guile.html" accesskey="n" rel="next">从Guile访问代码块。</a>，上一页：<a href="Objfiles-In-Guile.html" accesskey="p" rel="prev">Guile中的目标文件</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="从Guile访问底层栈帧。"><span>23.4.3.15从Guile访问底层栈帧。<a class="copiable-link" href="#从Guile访问底层栈帧。"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的栈帧"></a>
+<p>当被调试程序停止时，<small class="sc">GDB</small>能够分析其调用栈（见 <a class="pxref" href="Frames.html">栈帧</a>）。<code class="code">&lt;gdb:frame&gt;</code>类表示栈中的一个帧。<code class="code">&lt;gdb:frame&gt;</code>对象仅在其对应的帧存在于底层进程的栈中时才有效。如果尝试使用无效的帧对象，<small class="sc">GDB</small>将抛出一个<code class="code">gdb:invalid-object</code>异常（见 <a class="pxref" href="Guile-Exception-Handling.html">Guile异常处理</a>）。
+</p>
+<p>可以使用<code class="code">equal?</code>函数比较两个<code class="code">&lt;gdb:frame&gt;</code>对象是否相等，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (equal? (newest-frame) (selected-frame))
+#t
+</pre></div>
+
+<p><code class="code">(gdb)</code>模块提供了以下与帧相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">frame?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-frame_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是一个<code class="code">&lt;gdb:frame&gt;</code>对象，则返回<code class="code">#t</code>。否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_002dvalid_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">frame-valid?</strong> <var class="def-var-arguments">帧</var><a class="copiable-link" href="#index-frame_002dvalid_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">帧</var>有效，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。如果帧所引用的帧在底层进程中不再存在，则帧对象可能会变为无效。如果在调用过程时帧无效，所有<code class="code">&lt;gdb:frame&gt;</code>过程都将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_002dname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">frame-name</strong> <var class="def-var-arguments">帧</var><a class="copiable-link" href="#index-frame_002dname"> &para;</a></span></dt>
+<dd><p>返回<var class="var">帧</var>的函数名，如果无法获取则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_002darch"><span class="category-def">Scheme过程： </span><span><strong class="def-name">frame-arch</strong> <var class="def-var-arguments">帧</var><a class="copiable-link" href="#index-frame_002darch"> &para;</a></span></dt>
+<dd><p>返回与<var class="var">帧</var>的架构相对应的<code class="code">&lt;gdb:architecture&gt;</code>对象。见 <a class="xref" href="Architectures-In-Guile.html">Guile中架构的表示</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">frame-type</strong> <var class="def-var-arguments">帧</var><a class="copiable-link" href="#index-frame_able"> &para;</a></span></dt>
+<dd><p>返回<var class="var">帧</var>的类型。值可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">NORMAL_FRAME</code></dt>
+<dd><p>普通栈帧。
+</p>
+</dd>
+<dt><code class="code">DUMMY_FRAME</code></dt>
+<dd><p><small class="sc">GDB</small>在执行底层函数调用时创建的伪栈帧。
+</p>
+</dd>
+<dt><code class="code">INLINE_FRAME</code></dt>
+<dd><p>表示内联函数的帧。该函数被内联到一个比此帧更早的<code class="code">NORMAL_FRAME</code>中。
+</p>
+</dd>
+<dt><code class="code">TAILCALL_FRAME</code></dt>
+<dd><p>表示尾调用的帧。见 <a class="xref" href="Tail-Call-Frames.html">尾调用帧</a>。
+</p>
+</dd>
+<dt><code class="code">SIGTRAMP_FRAME</code></dt>
+<dd><p>信号 trampoline 帧。这是操作系统在调用信号处理程序时创建的帧。
+</p>
+</dd>
+<dt><code class="code">ARCH_FRAME</code></dt>
+<dd><p>表示跨架构调用的伪栈帧。
+</p>
+</dd>
+<dt><code class="code">SENTINEL_FRAME</code></dt>
+<dd><p>这类似于<code class="code">NORMAL_FRAME</code>，但仅用于最新帧。
+</p></dd>
+</dl>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-frame_002dunwind_002dstop_00

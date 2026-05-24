@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>objfile-gdbdotext文件（使用GDB调试）</title>
+
+<meta name="description" content="objfile-gdbdotext文件（使用GDB调试）">
+<meta name="keywords" content="objfile-gdbdotext文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading-extensions.html" rel="up" title="自动加载扩展">
+<link href="dotdebug_005fgdb_005fscripts-section.html" rel="next" title="dotdebug_gdb_scripts部分">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="objfile_002dgdbdotext-file">
+<div class="nav-panel">
+<p>
+下一页：<a href="dotdebug_005fgdb_005fscripts-section.html" accesskey="n" rel="next">“<code class="code">.debug_gdb_scripts</code>”部分</a>，上一级：<a href="Auto_002dloading-extensions.html" accesskey="u" rel="up">自动加载扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-objfile_002dgdb_002eext-file"><span>23.5.1 “<samp class="file"><var class="var">objfile</var>-gdb.<var class="var">ext</var></samp>”文件<a class="copiable-link" href="#The-objfile_002dgdb_002eext-file"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-objfile_002dgdb_002egdb"></a>
+<a class="index-entry-id" id="index-objfile_002dgdb_002epy"></a>
+<a class="index-entry-id" id="index-objfile_002dgdb_002escm"></a>
+
+<p>当读取一个新的目标文件时，GDB会查找名为<samp class="file"><var class="var">objfile</var>-gdb.<var class="var">ext</var></samp>的文件（我们在下面将其称为<var class="var">script-name</var>），其中<var class="var">objfile</var>是目标文件的名称，<var class="var">ext</var>是扩展语言的文件扩展名：</p>
+<dl class="table">
+<dt><code class="code"><samp class="file"><var class="var">objfile</var>-gdb.gdb</samp></code></dt>
+<dd><p>GDB自己的命令语言</p></dd>
+<dt><code class="code"><samp class="file"><var class="var">objfile</var>-gdb.py</samp></code></dt>
+<dd><p>Python</p></dd>
+<dt><code class="code"><samp class="file"><var class="var">objfile</var>-gdb.scm</samp></code></dt>
+<dd><p>Guile</p></dd>
+</dl>
+
+<p><var class="var">script-name</var>是通过确保<var class="var">objfile</var>的文件名是绝对路径，遵循所有符号链接，并解析“.”和“..”组件，然后附加<samp class="file">-gdb.<var class="var">ext</var></samp>后缀来形成的。
+如果这个文件存在并且可读，GDB将把它作为指定扩展语言的脚本进行求值。
+</p>
+<p>如果这个文件不存在，那么GDB将在以下指定的所有目录中查找<var class="var">script-name</var>文件。
+（在MS-Windows/MS-DOS上，可执行文件主目录的驱动器字母会被转换为一个单字母子目录，例如<samp class="file">d:/usr/bin/</samp>会被转换为<samp class="file">/d/usr/bin/</samp>，因为Windows文件系统不允许文件名中包含冒号。）
+</p>
+<p>请注意，加载这些文件需要相应配置的“auto-load safe-path”（见<a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）。
+</p>
+<p>对于使用.<samp class="file">exe</samp>后缀的目标文件，GDB首先会尝试根据其.<samp class="file">exe</samp>文件名正常加载脚本。 但如果没有找到脚本，GDB也会尝试使用与目标文件匹配但不包含.<samp class="file">exe</samp>后缀的脚本文件名。 这种.<samp class="file">exe</samp>后缀的去除不区分大小写，并且在任何平台上都会尝试。 这使得脚本文件名在Unix和MS-Windows主机之间兼容。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-scripts_002ddirectory"></a></dd>
+<dt><a id="index-set-auto_002dload-scripts_002ddirectory"></a><span><code class="code">set auto-load scripts-directory <span class="r">[</span><var class="var">directories</var><span class="r">]</span></code><a class="copiable-link" href="#index-set-auto_002dload-scripts_002ddirectory"> &para;</a></span></dt>
+<dd><p>控制GDB自动加载脚本的位置。多个目录项可以用主机平台使用的路径分隔符分隔（Unix上是“<samp class="samp">:</samp>”，MS-Windows和MS-DOS上是“<samp class="samp">;</samp>”）。
+</p>
+<p>这里的每个条目也需要被安全设置“set auto-load safe-path”覆盖（见<a class="pxref" href="Auto_002dloading-safe-path.html#set-auto_002dload-safe_002dpath">设置自动加载安全路径</a>）。
+</p>
+<a class="anchor" id="with_002dauto_00

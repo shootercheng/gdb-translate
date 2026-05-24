@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>TUI鼠标支持（使用GDB调试）</title>
+
+<meta name="description" content="TUI鼠标支持（使用GDB调试）">
+<meta name="keywords" content="TUI鼠标支持（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Commands.html" rel="next" title="TUI命令">
+<link href="TUI-Single-Key-Mode.html" rel="prev" title="TUI单键模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI鼠标支持">
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Commands.html" accesskey="n" rel="next">TUI特定命令</a>，上一页：<a href="TUI-Single-Key-Mode.html" accesskey="p" rel="prev">TUI单键模式</a>，向上：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI鼠标支持-1"><span>25.4 TUI鼠标支持<a class="copiable-link" href="#TUI鼠标支持-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-TUI-鼠标支持"></a>
+
+<p>如果curses库支持鼠标，TUI就支持鼠标操作。
+</p>
+<p>鼠标滚轮会滚动鼠标光标下方的相应窗口。
+</p> 
+<p>TUI本身并不直接支持使用鼠标进行复制/粘贴。然而，在Unix终端上，你通常可以按住键盘上的<kbd class="key">SHIFT</kbd>键，临时绕过<small class="sc">GDB</small> 的TUI，访问终端的原生鼠标复制/粘贴功能（通常是点击-拖动-释放或双击选择文本，中键点击粘贴）。这种复制/粘贴操作使用的是终端的选择缓冲区，而不是TUI的缓冲区。或者，要完全禁用TUI中的鼠标支持并让终端控制鼠标点击，可以关闭 <code class="code">tui mouse-events</code> 设置（见 <a class="pxref" href="TUI-Configuration.html#tui_002dmouse_002devents">设置tui mouse-events</a>）。
+</p>
+<p>Python扩展可以对鼠标点击做出反应（见 <a class="pxref" href="TUI-Windows-In-Python.html#python_002dwindow_002dclick">窗口.click</a>）。
+</p>
+</div>
+
+
+
+</body>
+</html>

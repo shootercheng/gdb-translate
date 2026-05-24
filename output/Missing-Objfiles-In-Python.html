@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中缺少的目标文件（使用GDB调试）</title>
+
+<meta name="description" content="Python中缺少的目标文件（使用GDB调试）">
+<meta name="keywords" content="Python中缺少的目标文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Missing-Debug-Info-In-Python.html" rel="prev" title="Python中缺少的调试信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中缺少的目标文件">
+<div class="nav-panel">
+<p>
+上一个：<a href="Missing-Debug-Info-In-Python.html" accesskey="p" rel="prev">Python中缺少的调试信息</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中缺少的目标文件-1"><span>23.3.2.43 Python中缺少的目标文件<a class="copiable-link" href="#Python中缺少的目标文件-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python_002c处理缺少的目标文件"></a>
+
+<p>当GDB打开一个核心文件时，例如使用<kbd class="kbd">core-file</kbd>命令（见<a class="pxref" href="Files.html#core_002dfile-command">核心文件命令</a>），GDB会尝试加载相应的可执行文件和共享库。
+这些文件通常可以在本地机器上找到，但有时找不到，在这种情况下，调试体验会受到限制。
+</p>
+<p>如果GDB未能找到特定文件，那么Python扩展就有机会介入。Python扩展可以使用一些特定于平台或项目的步骤潜在地找到缺少的文件，并将其位置告知GDB。或者Python扩展可能会向用户提供一些特定于平台或项目的关于如何获取缺少文件的建议。
+</p>
+<p>一个缺少目标文件的Python扩展由一个处理程序对象组成，该对象具有<code class="code">name</code>和<code class="code">enabled</code>属性，并实现<code class="code">__call__</code>方法。当GDB遇到找不到文件但缺少文件的构建ID（见<a class="pxref" href="Separate-Debug-Files.html#build-ID">构建ID</a>）已知的情况时，将调用<code class="code">__call__</code>方法来尝试找到该文件。关于如何编写处理程序的完整详细信息可以在下面找到。
+</p>
+<h4 class="subheading" id="gdb_002emissing_005fobjfile模块"><span>gdb.missing_objfile模块<a class="copiable-link" href="#gdb_002emissing_005fobjfile模块"> &para;</a></span></h4>
+
+<p>GDB附带一个<code class="code">gdb.missing_objfile</code>模块，其中包含以下类和全局函数：
+</p>
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002emissing_005fobjfile_002eMissingObjfileHandler"><span class="category-def">类： </span><span><strong class="def-name">gdb.missing_objfile.MissingObjfileHandler</strong><a class="copiable-link" href="#index-gdb_002emissing_005fobjfile_002eMissingObjfileHandler"> &para;</a></span></dt>
+<dd>
+<p><code class="code">MissingObjfileHandler</code>是一个基类，用户创建的处理程序可以从中派生，不过处理程序不一定要从这个类派生，只要任何用户创建的处理程序具有<code class="code">name</code>和<code class="code">enabled</code>属性，并实现<code class="code">__call__</code>方法即可。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingObjfileHandler_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">MissingObjfileHandler.__init__</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-MissingObjfileHandler_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p><var class="var">name</var>是一个字符串，用于在某些GDB命令中引用此缺少目标文件的处理程序。有效的名称由字符‘<samp class="samp">[-_a-zA-Z0-9]</samp>’组成，创建一个名称无效的处理程序会引发<code class="code">ValueError</code>异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingObjfileHandler_002e_005f_005fcall_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">MissingObjfileHandler.__call__</strong> <var class="def-var-arguments">(pspace, build_id, filename)</var><a class="copiable-link" href="#index-MissingObjfileHandler_002e_005f_005fcall_005f_005f"> &para;</a></span></dt>
+<dd>
+<p>子类必须重写<code class="code">__call__</code>方法。<var class="var">pspace</var>参数将是一个<code class="code">gdb.Progspace</code>（见<a class="pxref" href="Progspaces-In-Python.html">Python中的程序空间</a>），这是GDB正在寻找缺少文件的程序空间。
+</p>
+<p><var class="var">build_id</var>参数是一个包含缺少文件的构建ID的字符串，其格式与<code class="code">Objfile.build_id</code>返回的格式相同（见<a class="pxref" href="Objfiles-In-Python.html#Objfile_002ebuild_005fid">Objfile.build_id</a>）。
+</p>
+<p><var class="var">filename</var>参数包含GDB正在寻找的文件的名称。提供此信息是为了让处理程序为用户生成信息性消息。处理程序不一定要将缺少文件放在此位置。此位置可能已经有一个文件，但它可能与所需的构建ID不匹配，在这种情况下，GDB将忽略它。在某些有限的情况下，GDB可能无法确定它正在搜索的文件的<var class="var">filename</var>，在这种情况下，GDB将使用字符串‘<samp class="samp">with build-id <var class="var">build_id</var></samp>’作为替代。
+</p>
+<p><code class="code">__call__</code>方法的返回值指示GDB接下来应该做什么。可能的返回值如下：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">None</code>
+
+<p>这表示此处理程序无法找到缺少的文件，GDB应该调用任何其他注册的处理程序。
+</p>
+</li><li><code class="code">True</code>
+
+<p>这表示此处理程序已将缺少的文件安装到GDB通常期望找到它的位置。GDB唯一会查找的位置是<var class="var">debug-file-directory</var>中的<code class="code">.build-id</code>子目录（见<a class="pxref" href="Separate-Debug-Files.html#debug_002dfile_002ddirectory">调试文件目录</a>）。
+</p>
+<p>GDB将重复正常的查找过程，现在应该能找到之前缺少的文件。
+</p>
+<p>如果GDB在第二次尝试后仍然找不到文件，那么Python缺少目标文件的处理程序不会被再次调用，这可以防止行为不良的处理程序导致GDB陷入循环。GDB将在没有缺少文件的情况下继续，不过这会降低调试体验。
+</p>
+</li><li><code class="code">False</code>
+
+<p>这表示此处理程序已经完成了它打算做的一切，但找不到缺少的文件。GDB不会调用任何其他注册的处理程序来查找缺少的文件。GDB将在没有缺少文件的情况下继续，不过这会降低调试体验。
+</p>
+</li><li>一个字符串
+
+<p>返回的字符串应该包含一个文件名。GDB不会再调用任何进一步注册的处理程序，而是会使用返回的文件名作为缺少的文件。
+</p></li></ul>
+
+<p>从这个基类调用<code class="code">__call__</code>方法将引发<code class="code">NotImplementedError</code>异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingObjfileHandler_002ename"><span class="category-def">变量： </span><span><strong class="def-name">MissingObjfileHandler.name</strong><a class="copiable-link" href="#index-MissingObjfileHandler_002ename"> &para;</a></span></dt>
+<dd><p>一个只读属性字符串，是传递给<code class="code">__init__</code>方法的此处理程序的名称。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingObjfileHandler_002eenabled"><span class="category-def">变量： </span><span><strong class="def-name">MissingObjfileHandler.enabled</strong><a class="copiable-link" href="#index-MissingObjfileHandler_002eenabled"> &para;</a></span></dt>
+<dd><p>一个可修改的属性，包含一个布尔值；当为<code class="code">True</code>时，处理程序启用，将被GDB使用。当为<code class="code">False</code>时，处理程序已禁用，不会被使用。
+</p></dd></dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002emissing_005fobjfile_002eregister_005fhandler"><span class="category-def">函数： </span><span><strong class="def-name">gdb.missing_objfile.register_handler</strong> <var class="def-var-arguments">(locus, handler, replace=<code class="code">False</code>)</var><a class="copiable-link" href="#index-gdb_002emissing_005fobjfile_002eregister_

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025 自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>偏差（使用GDB调试）</title>
+
+<meta name="description" content="偏差（使用GDB调试）">
+<meta name="keywords" content="偏差（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">
+<link href="M2-Checks.html" rel="next" title="M2检查">
+<link href="M2-Defaults.html" rel="prev" title="M2默认值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="偏差">
+<div class="nav-panel">
+<p>
+下一页：<a href="M2-Checks.html" accesskey="n" rel="next">Modula-2类型和范围检查</a>，上一页：<a href="M2-Defaults.html" accesskey="p" rel="prev">Modula-2默认值</a>，向上：<a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="与标准Modula-2的偏差"><span>15.4.9.6与标准Modula-2的偏差<a class="copiable-link" href="#与标准Modula-2的偏差"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Modula-2_002C与标准的偏差"></a>
+
+<p>为了使Modula-2程序更易于调试，做了一些更改。
+这主要是通过放宽其类型严格性来实现的：
+</p>
+<ul class="itemize mark-bullet">
+<li>与标准Modula-2不同，指针常量可以由整数构成。这使你能够在调试期间修改指针变量。（在标准Modula-2中，指针变量中包含的实际地址对你是隐藏的；它只能通过直接赋值给另一个指针变量或返回指针的表达式来修改。）
+
+</li><li>C转义序列可用于字符串和字符中以表示不可打印字符。<small class="sc">GDB</small>会打印出嵌入这些转义序列的字符串。单个不可打印字符使用‘<samp class="samp">CHR(<var class="var">nnn</var>)</samp>’格式打印。
+
+</li><li>赋值运算符（<code class="code">:=</code>）返回其右操作数的值。
+
+</li><li>所有内置过程都会修改并返回其参数。
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>检查（使用GDB调试）</title>
+
+<meta name="description" content="检查（使用GDB调试）">
+<meta name="keywords" content="检查（使用GDB调试）">  
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Languages.html" rel="up" title="语言">
+<link href="Supported-Languages.html" rel="next" title="支持的语言">
+<link href="Show.html" rel="prev" title="显示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="检查">
+<div class="nav-panel">
+<p>
+下一页：<a href="Supported-Languages.html" accesskey="n" rel="next">支持的语言</a>，上一页：<a href="Show.html" accesskey="p" rel="prev">显示语言</a>，向上：<a href="Languages.html" accesskey="u" rel="up">使用GDB处理不同语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="类型和范围检查"><span>第15.3节 类型和范围检查<a class="copiable-link" href="#类型和范围检查"> &para;</a></span></h3>
+
+<p>有些语言旨在通过一系列编译时和运行时检查来防止你犯一些看似常见的错误。这些检查包括检查函数和运算符的参数类型，并确保在运行时捕获数学溢出。一旦程序编译完成，像这样的检查有助于通过消除类型不匹配并在程序运行时对范围错误进行主动检查来确保程序的正确性。
+</p>
+<p>默认情况下，GDB根据当前源语言的规则检查这些错误。虽然GDB不会检查程序中的语句，但例如它可以通过 <code class="code">print</code> 命令检查直接输入到GDB中进行求值的表达式。
+</p>
+
+<a class="index-entry-id" id="索引类型检查"></a>
+<a class="index-entry-id" id="索引检查_002c类型"></a>
+<ul class="mini-toc">
+<li><a href="Type-Checking.html" accesskey="1">类型检查概述</a></li>
+<li><a href="Range-Checking.html" accesskey="2">范围检查概述</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

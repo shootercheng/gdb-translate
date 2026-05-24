@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>进程列表（使用GDB调试）</title>
+
+<meta name="description" content="进程列表（使用GDB调试）">
+<meta name="keywords" content="进程列表（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Operating-System-Information.html" rel="up" title="操作系统信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsection-level-extent" id="进程列表">
+<div class="nav-panel">
+<p>
+上一级：<a href="Operating-System-Information.html" accesskey="u" rel="up">操作系统信息</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="appendixsection" id="进程列表-1"><span>H.1进程列表<a class="copiable-link" href="#进程列表-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-操作系统信息_002c进程列表"></a>
+
+<p>请求进程列表时，&lsquo;<samp class="samp">qXfer</samp>&rsquo;请求中的<var class="var">附件</var>字段应为&lsquo;<samp class="samp">进程</samp>&rsquo;。返回的数据是一个XML文档。该文档的正式语法在<samp class="file">gdb/features/osdata.dtd</samp>中定义。
+</p>
+<p>一个示例文档如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE target SYSTEM &quot;osdata.dtd&quot;&gt;
+&lt;osdata type=&quot;进程&quot;&gt;
+  &lt;item&gt;
+    &lt;column name=&quot;pid&quot;&gt;1&lt;/column&gt;
+    &lt;column name=&quot;用户&quot;&gt;root&lt;/column&gt;
+    &lt;column name=&quot;命令&quot;&gt;/sbin/init&lt;/column&gt; 
+    &lt;column name=&quot;核心&quot;&gt;1,2,3&lt;/column&gt; 
+  &lt;/item&gt;
+&lt;/osdata&gt;
+</pre></div>
+
+<p>每个项目应包含一个名为&lsquo;<samp class="samp">pid</samp>&rsquo;的列。该列的值应标识目标上的进程。&lsquo;<samp class="samp">用户</samp>&rsquo;和&lsquo;<samp class="samp">命令</samp>&rsquo;列是可选的，将由<small class="sc">GDB</small>显示。&lsquo;<samp class="samp">核心</samp>&rsquo;列（如果存在）应包含此进程正在其上运行的核心的逗号分隔列表。目标可能会提供其他列，<small class="sc">GDB</small>目前会忽略这些列。
+</p>
+</div>
+
+
+
+</body>
+</html>

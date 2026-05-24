@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>漂亮打印机示例（使用GDB调试）</title>
+
+<meta name="description" content="漂亮打印机示例（使用GDB调试）">
+<meta name="keywords" content="漂亮打印机示例（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Pretty-Printing.html" rel="up" title="漂亮打印">
+<link href="Pretty_002dPrinter-Commands.html" rel="next" title="漂亮打印机命令">
+<link href="Pretty_002dPrinter-Introduction.html" rel="prev" title="漂亮打印机介绍">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Pretty_002dPrinter-Example">
+<div class="nav-panel">
+<p>
+下一页：<a href="Pretty_002dPrinter-Commands.html" accesskey="n" rel="next">漂亮打印机命令</a>，上一页：<a href="Pretty_002dPrinter-Introduction.html" accesskey="p" rel="prev">漂亮打印机介绍</a>،上一级：<a href="Pretty-Printing.html" accesskey="u" rel="up">漂亮打印</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Pretty_002dPrinter-Example-1"><span>10.10.2漂亮打印机示例<a class="copiable-link" href="#Pretty_002dPrinter-Example-1"> &para;</a></span></h4>
+
+<p>以下是在没有漂亮打印机的情况下C++ <code class="code">std::string</code>的样子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$1 = {
+  static npos = 4294967295, 
+  _M_dataplus = {
+    &lt;std::allocator&lt;char&gt;&gt; = {
+      &lt;__gnu_cxx::new_allocator&lt;char&gt;&gt; = {
+        &lt;无数据字段&gt;}, &lt;无数据字段&gt;
+      },
+    std::basic_string&lt;char, std::char_traits&lt;char&gt;,
+      std::allocator&lt;char&gt; &gt;::_Alloc_hider的成员：
+    _M_p = 0x804a01 <span style="text-decoration: line-through;">4</span> &quot;abcd&quot;
+  }
+}
+</pre></div>
+
+<p>使用针对 <code class="code">std::string</code> 的漂亮打印机时，只打印内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$2 = &quot;abcd&quot;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>
+
+说明：原文档中 “0x804a014” 疑似多了个 “4”，我按正确的格式翻译了，但不确定是否是原文有误，你可根据实际情况检查。 

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI程序执行（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI程序执行（使用GDB调试）">
+<meta name="keywords" content="GDB/MI程序执行（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global"> 
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Stack-Manipulation.html" rel="next" title="GDB/MI堆栈操作">
+<link href="GDB_002fMI-Ada-Tasking-Commands.html" rel="prev" title="GDB/MI Ada任务命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Program-Execution">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Stack-Manipulation.html"><small class="sc">GDB/MI</small>堆栈操作命令</a>，上一页：<a href="GDB_002fMI-Ada-Tasking-Commands.html"><small class="sc">GDB/MI</small> Ada任务命令</a>，向上：<a href="GDB_002fMI.html"><small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Program-Execution"><span>27.13 <small class="sc">GDB/MI</small>程序执行<a class="copiable-link" href="#gdb_002fmi-Program-Execution"> &para;</a></span></h3>
+
+<p>这些是生成带外记录“<samp class="samp">*stopped</samp>”的异步命令。目前，<small class="sc">GDB</small>仅在与远程目标异步执行时才真正如此，并且在其他情况下会模仿这种交互。
+</p>
+<a class="index-entry-id" id="index-_002dexec_002dcontinue"></a>
+<h4 class="subheading" id="The-_002dexec_002dcontinue-Command"><span><code class="code">-exec-continue</code>命令<a class="copiable-link" href="#The-_002dexec_002dcontinue-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-30"><span>概要<a class="copiable-link" href="#Synopsis-30"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -exec-continue [--reverse] [--all|--thread-group N]
+</pre></div>
+
+<p>恢复下级程序的执行，该程序将继续执行，直到到达调试器停止事件。如果指定了“<samp class="samp">--reverse</samp>”选项，则反向恢复执行，直到到达停止事件。停止事件可能包括
+</p><ul class="itemize mark-bullet">
+<li>断点、观察点、跟踪点或捕获点
+</li><li>信号或异常
+</li><li>进程结束（或在“<samp class="samp">--reverse</samp>”下的开始）
+</li><li>如果正在使用重放日志，则为重放日志的结束或开始。 
+</li></ul>
+<p>在全停止模式（见 <a class="pxref" href="All_002dStop-Mode.html">全停止模式</a>）下，根据“<samp class="samp">scheduler-locking</samp>”变量的值，可能仅恢复一个线程或所有线程。如果指定了“<samp class="samp">--all</samp>”，则将恢复所有线程（在所有下级中）。在全停止模式下，“<samp class="samp">--all</samp>”选项将被忽略。如果指定了“<Samp class="samp">--thread-group</samp>”选项，则该线程组中的所有线程将被恢复。
+</p>
+<h4 class="subsubheading" id="gdb-Command-29"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-29"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是“<samp class="samp">continue</samp>”。
+</p>
+<h4 class="subsubheading" id="Example-29"><span>示例<a class="copiable-link" href="#Example-29"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-exec-continue
+^running
+(gdb)
+@Hello world
+*stopped,reason=&quot;breakpoint-hit&quot;,disp=&quot;keep&quot;,bkptno=&quot;2&quot;,frame={
+func=&quot;foo&quot;,args=[],file=&quot;hello.c&quot;,fullname=&quot;/home/foo/bar/hello.c&quot;,
+line=&quot;13&quot;,arch=&quot;i386:x86_64&quot;}
+(gdb)
+</pre></div>
+
+<p>对于“<samp class="samp">breakpoint-hit</samp>”停止原因，当遇到的断点有多个位置时，“<samp class="samp">bkptno</samp>”字段后面会跟着“<samp class="samp">locno</samp>”字段。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-exec-continue
+^running
+(gdb)
+@Hello world
+*stopped,reason=&quot;breakpoint-hit&quot;,disp=&quot;keep&quot;,bkptno=&quot;2&quot;,locno=&quot;3&quot;,frame={
+func=&quot;foo&quot;,args=[],file=&quot;hello.c&quot;,fullname=&quot;/home/foo/bar/hello.c&quot;,
+line=&quot;13&quot;,arch=&quot;i386:x86_64&quot;}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dexec_002dfinish"></a>
+<h4 class="subheading" id="The-_002dexec_002dfinish-Command"><span><code class="code">-exec-finish</code>命令<a class="copiable-link" href="#The-_002dexec_002dfinish-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-31"><span>概要<a class="copiable-link" href="#Synopsis-31"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -exec-finish [--reverse]
+</pre></div>
+
+<p>恢复下级程序的执行，直到当前函数退出。显示函数返回的结果。如果指定了“<samp class="samp">--reverse</samp>”选项，则反向恢复下级程序的执行，直到调用当前函数的点。
+</p>
+<h4 class="subsubheading" id="gdb-Command-30"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-30"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是“<samp class="samp">finish</samp>”。
+</p> 
+<h4 class="subsubheading" id="Example-30"><span>示例<a class="copiable-link" href="#Example-30"> &para;</a></span></h4>
+
+<p>返回值为<code class="code">void</code>的函数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-exec-finish
+^running
+(gdb)
+@hello from foo
+*stopped,reason=&quot;function-finished&quot;,frame={func=&quot;main&quot;,args=[],
+file=&quot;hello.c&quot;,fullname=&quot;/home/foo/bar/hello.c&quot;,line=&quot;7&quot;,arch=&quot;i386:x86_64&quot;}
+(gdb)
+</pre></div>
+
+<p>返回值不为<code class="code">void</code>的函数。存储结果的<small class="sc">GDB</small>内部变量的名称以及值本身都会被打印出来。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-exec-finish
+^running
+(gdb)
+*stopped,reason=&quot;function-finished&quot;,frame={addr=&quot;0x⁠000107b0&quot;,func=&quot;foo&quot;,
+args=[{name=&quot;a&quot;,value=&quot;1&quot;},{name=&quot;b&quot;,value=&quot;9&quot;}],
+file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,
+arch=&quot;i386:x86_64&quot;},
+gdb-result-var=&quot;$1&quot;,return-value=&quot;0&quot;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dexec_002dinterrupt"></a>
+<h4 class="subheading" id="The-_002dexec_002dinterrupt-Command"><span><code class="code">-exec-interrupt</code>命令<a class="copiable-link" href="#The-_002dexec_002dinterrupt-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-32"><span>概要<a class="copiable-link" href="#Synopsis-32"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -exec-interrupt [--all|--thread-group N]
+</pre></div>
+
+<p>中断目标的后台执行。请注意，与停止消息关联的令牌是已被中断的执行命令的令牌。中断本身的令牌仅出现在“<samp class="samp">^done</samp>”输出中

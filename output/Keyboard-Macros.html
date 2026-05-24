@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>键盘宏（使用GDB调试）</title>
+
+<meta name="description" content="键盘宏（使用GDB调试）">
+<meta name="keywords" content="键盘宏（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Miscellaneous-Commands.html" rel="next" title="杂项命令">
+<link href="Commands-For-Completion.html" rel="prev" title="用于补全的命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="键盘宏">
+<div class="nav-panel">
+<p>
+下一个：<a href="Miscellaneous-Commands.html" accesskey="n" rel="next">一些杂项命令</a>，上一个：<a href="Commands-For-Completion.html" accesskey="p" rel="prev">让Readline为你输入</a>，向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="键盘宏-1"><span>33.4.7键盘宏<a class="copiable-link" href="#键盘宏-1"> &para;</a></span></h4>
+<dl class="ftable">
+<dt><a id="index-start_002dkbd_002dmacro-_0028C_002dx-_0028_0029"></a><span><code class="code">start-kbd-macro (C-x ()</code><a class="copiable-link" href="#index-start_002dkbd_002dmacro-_0028C_002dx-_0028_0029"> &para;</a></span></dt>
+<dd><p>开始保存输入到当前键盘宏中的字符。
+</p>
+</dd>
+<dt><a id="index-end_002dkbd_002dmacro-_0028C_002dx-_0029_0029"></a><span><code class="code">end-kbd-macro (C-x ))</code><a class="copiable-link" href="#index-end_002dkbd_002dmacro-_0028C_002dx-_0029_0029"> &para;</a></span></dt>  
+<dd><p>停止保存输入到当前键盘宏中的字符并保存定义。
+</p>
+</dd>
+<dt><a id="index-call_002dlast_002dkbd_002dmacro-_0028C_002dx-e_0029"></a><span><code class="code">call-last-kbd-macro (C-x e)</code><a class="copiable-link" href="#index-call_002dlast_002dkbd_002dmacro-_0028C_002dx-e_0029"> &para;</a></span></dt>
+<dd><p>重新执行最后定义的键盘宏，使宏中的字符看起来像是在键盘上输入的。
+</p>
+</dd>
+<dt><a id="index-print_庸_002dlast_002dkbd_002dmacro-_0028_0029"></a><span><code class="code">print-last-kbd-macro ()</code><a class="copiable-link" href="#index-print_庸_002dlast_002dkbd_002dmacro-_0028_0029"> &para;</a></span></dt>
+<dd><p>以适合<var class="var">inputrc</var>文件的格式打印最后定义的键盘宏。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>
+
+请注意，你提供的内容中“<a id="index-print_庸_002dlast_庸_庸_002dkbd_庸_庸_002dmacro-_0028_庸_庸_0029"></a><span><code class="code">print-last-kbd-macro ()</code><a class="copiable-link" href="#index-print_庸_00!dlast_庸_庸_002dkbd_庸_庸_002dmacro-_0028_庸_庸_oo29"> &para;</a></span></dt>”中的“庸”看起来是乱码，我按照原样保留并翻译了。如果这是错误输入，请你检查并修正后再让我翻译。 

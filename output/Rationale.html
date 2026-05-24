@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>原理（使用GDB调试）</title>
+
+<meta name="description" content="原理（使用GDB调试）">
+<meta name="keywords" content="原理（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Agent-Expressions.html" rel="up" title="代理表达式">
+<link href="Varying-Target-Capabilities.html" rel="prev" title="不同目标能力">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="原理">
+<div class="nav-panel">
+<p>
+上一个：<a href="Varying-Target-Capabilities.html" accesskey="p" rel="prev">不同目标能力</a>，向上：<a href="Agent-Expressions.html" accesskey="u" rel="up">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="原理-1"><span>F.5 原理<a class="copiable-link" href="#原理-1"> &para;</a></span></h3>
+
+<p>上述一些设计决策可能存在争议。
+</p>
+<dl class="table">
+<dt><b class="b">栈溢出/下溢怎么办？</b></dt>
+<dd><p>GDB应该能够查询目标以发现其栈大小。有了这些信息，GDB可以在翻译时确定给定表达式是否会导致栈溢出。但本规范并非关于GDB应该进行何种错误检查。
+</p>
+</dd>
+<dt><b class="b">为什么要用LONGEST来做所有事情？</b></dt>
+<dd>
+<p>速度并不重要，但代理代码大小很重要；使用LONGEST会引入一堆支持代码来进行除法等操作。所以这是一个严重的问题。
+</p>
+<p>首先，请注意，对于不同的操作数大小，你不需要不同的字节码。你可以在不知道目标上栈元素实际大小的情况下生成代码。如果目标只支持32位整数，而你不发送任何64位字节码，一切仍然可以正常工作。这里的观察结果是，MIPS和Alpha只有固定大小的寄存器，即使大多数指令只对全尺寸字进行操作，你仍然可以获得C的语义。你只需要确保在正确的时间对所有内容进行正确的符号扩展。所以不需要字节码的32位和64位变体。只需使用你支持的最大大小来实现所有内容即可。
+</p>
+<p>GDB当然应该检查目标支持哪些大小，以便用户能更早而不是更晚得到错误。但这些信息对于正确性来说并非必要。
+</p>
+
+</dd>
+<dt><b class="b">为什么没有<code class="code">&gt;</code>或<code class="code">&lt;=</code>运算符？</b></dt>
+<dd><p>我希望保持解释器小巧，而且我们不需要它们。我们可以将<code class="code">less_</code>操作码与<code class="code">log_not</code>组合，并交换操作数的顺序，从而得到所有四个不对称比较运算符。例如，<code class="code">(x &lt;= y)</code> 等同于 <code class="code">! (x &gt; y)</code>，也就是 <code class="code">! (y &lt; x)</code>。
+</p>
+</dd>
+<dt><b class="b">为什么有<code class="code">log_not</code>？</b></dt>
+<dt><b class="b">为什么有<code class="code">ext</code>？</b></dt>
+<dt><b class="b">为什么有<code class="code">zero_ext</code>？</b></dt>
+<dd><p>这些都可以很容易地从其他指令合成，但我预计它们会经常被使用，而且它们很简单，所以我把它们包含进来以保持字节码字符串简短。
+</p>
+<p><code class="code">log_not</code> 等同于 <code class="code">const8 0 equal</code>；它在一半的关系运算符中使用。
+</p>
+<p><code class="code">ext <var class="var">n</var></code> 等同于 <code class="code">const8 <var class="var">s - n</var> lsh const8 <var class="var">s - n</var> rsh_signed</code> -- 其中 <var class="var">s</var> 是栈元素的大小；当值应该是有符号时，它紧跟在 <code class="code">ref<var class="var">m</var></code> 和 <var class="var">reg</var> 字节码之后。见下一个项目符号列表。
+</p>
+<p><code class="code">zero_ext <var class="var">n</var></code> 等同于 <code class="code">const<var class="var">m</var> <var class="var">mask</var> log_and</code>；每当我们推送寄存器的值时都会使用它，因为我们不能假设寄存器的高位不是垃圾值。
+</p>
+</dd>
+<dt><b class="b">为什么没有带符号扩展的<code class="code">ref</code>运算符变体？</b></dt>
+<dd><p>因为那样会使<code class="code">ref</code>运算符的数量翻倍，而且无论如何我们访问位域时都需要<code class="code">ext</code>字节码。
+</p>
+</dd>
+<dt><b class="b">为什么没有带常量地址的<code class="code">ref</code>运算符变体？</b></dt>
+<dd><p>因为那样又会使<code class="code">ref</code>运算符的数量翻倍，而<code class="code">const32 <var class="var">address</var> ref32</code>只长一个字节。
+</p>
+</dd>
+<dt><b class="b">为什么<code class="code">ref<var class="var">n</var></code>运算符必须支持未对齐读取？</b></dt>
+<dd><p>只要可执行文件的调试信息告诉GDB，GDB就会生成在未对齐地址读取多字节值的字节码。此外，GDB在生成字节码时并不知道指针的值，所以它无法确定特定的读取是否会对齐。
+</p>
+<p>特别是，结构体位域可能有几个字节长，但不遵循对齐规则；紧凑结构体的成员也不一定对齐。
+</p>
+<p>一般来说，在正确的C代码中有许多未对齐引用的情况，要么是程序员明确要求，要么是编译器自行决定。因此，让GDB代理字节码在所有情况下都能正确工作，比让GDB在每种情况下都猜测编译器是否做了常规处理要简单。
+</p>
+</dd>
+<dt><b class="b">为什么没有副作用运算符？</b></dt>
+<dd><p>因为我们当前的客户端不需要它们？这是个偷懒的答案。我认为真正的答案是我害怕实现函数调用

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>gstack手册（使用GDB进行调试）</title>
+
+<meta name="description" content="gstack手册（使用GDB进行调试）">
+<meta name="keywords" content="gstack手册（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+pre.format-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gstack-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gstack"><span>gstack<a class="copiable-link" href="#gstack"> ¶</a></span></h3>
+
+
+<div class="format">
+<pre class="format-preformatted">gstack [-h | --help] [-v | --version] <var class="var">pid</var>
+</pre></div>
+
+<p>打印具有进程ID <var class="var">pid</var> 的正在运行程序的堆栈跟踪。如果进程是多线程的，<code class="command">gstack</code> 会输出该进程中每个存在的线程的回溯。
+</p>
+<p>该脚本调用 <small class="sc">GDB</small>，附加到给定的进程ID，打印堆栈跟踪，然后从该进程分离。
+</p>
+<p>如果 <code class="code">gdb</code> 由于任何原因无法附加到给定的进程ID，例如进程ID不存在或没有足够的权限附加到该进程，<code class="command">gstack</code> 将以非零状态退出。
+</p>
+<dl class="table">
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项，并给出简要解释。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dt><code class="env">-v</code></dt>
+<dd><p>打印版本信息然后退出。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><code class="env">AWK</code></dt>
+<dd><p>要使用的Awk解释器的完整文件名。如果未设置，将在 <code class="env">PATH</code> 中搜索 <code class="code">awk</code> 程序。
+</p>
+</dd>
+<dt><code class="env">GDB</code></dt>
+<dd><p>用于生成堆栈回溯的 <small class="sc">GDB</small> 可执行文件的完整文件名。如果未设置，将在 <code class="env">PATH</code> 中搜索 <code class="code">gdb</code> 程序。
+</p>
+</dd>
+<dt><code class="env">GDBARGS</code></dt>
+<dd><p>要传递给 <code class="code">gdb</code> 程序的可选参数。
+</p></dd>
+</dl>
+
+
+
+
+
+</body>
+</html>

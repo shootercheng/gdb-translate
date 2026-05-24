@@ -56,7 +56,7 @@ func RequestLlm(chatRequest *ChatRequest) (*ChatResponse, error) {
 	fmt.Printf("request json %s \n", jsonData)
 
 	client := &http.Client{
-		Timeout: 120 * time.Second,
+		Timeout: 600 * time.Second,
 	}
 
 	url := os.Getenv("LLM_REQUEST_URL")

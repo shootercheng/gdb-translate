@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile配置（使用GDB调试）</title>
+
+<meta name="description" content="Guile配置（使用GDB调试）">
+<meta name="keywords" content="Guile配置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="GDB-Scheme-Data-Types.html" rel="next" title="GDB Scheme数据类型">
+<link href="Basic-Guile.html" rel="prev" title="基础Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible} 
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-配置">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB-Scheme-Data-Types.html" accesskey="n" rel="next">GDB Scheme数据类型</a>，上一页：<a href="Basic-Guile.html" accesskey="p" rel="prev">基础Guile</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-配置-1"><span>23.4.3.2 Guile配置<a class="copiable-link" href="#Guile-配置-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-guile-配置"></a>
+
+<p><small class="sc">GDB</small>提供了这些Scheme函数来访问各种配置参数。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="索引-data_002d目录"><span class="category-def">Scheme过程： </span><span><strong class="def-name">data-directory</strong><a class="copiable-link" href="#索引-data_002d目录"> &para;</a></span></dt>
+<dd><p>返回一个包含<small class="sc">GDB</small>数据目录的字符串。
+这个目录包含<small class="sc">GDB</small>的辅助文件。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="索引-guile_002d数据_002d目录"><span class="category-def">Scheme过程： </span><span><strong class="def-name">guile-data-directory</strong><a class="copiable-link" href="#索引-guile_002d数据_002d目录"> &para;</a></span></dt>
+<dd><p>返回一个包含<small class="sc">GDB</small>的Guile数据目录的字符串。
+这个目录包含<small class="sc">GDB</small>提供的Guile模块。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="索引-gdb_002d版本"><span class="category-def">Scheme过程： </span><span><strong class="def-name">gdb-version</strong><a class="copiable-link" href="#索引-gdb_002d版本"> &para;</a></span></dt>
+<dd><p>返回一个包含<small class="sc">GDB</small>版本的字符串。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="索引-host_002d配置"><span class="category-def">Scheme过程： </span><span><strong class="def-name">host-config</strong><a class="copiable-link" href="#索引-host_002d配置"> &para;</a></span></dt>
+<dd><p>返回一个包含主机配置的字符串。
+这是在配置<small class="sc">GDB</small>时传递给<code class="code">--host</code>的字符串。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="索引-target_002d配置"><span class="category-def">Scheme过程： </span><span><strong class="def-name">target-config</strong><a class="copiable-link" href="#索引-target_002d配置"> &para;</a></span></dt>
+<dd><p>返回一个包含目标配置的字符串。
+这是在配置<small class="sc">GDB</small>时传递给<code class="code">--target</code>的字符串。
+</p></dd></dl>
+
+</div>
+
+
+
+</body>
+</html>

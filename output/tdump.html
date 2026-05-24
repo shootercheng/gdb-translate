@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>tdump（使用GDB进行调试）</title>
+
+<meta name="description" content="tdump（使用GDB进行调试）">
+<meta name="keywords" content="tdump（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引"> 
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Analyze-Collected-Data.html" rel="up" title="分析收集的数据">
+<link href="save-tracepoints.html" rel="next" title="保存跟踪点">
+<link href="tfind.html" rel="prev" title="tfind">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: ;}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="tdump">
+<div class="nav-panel">
+<p>
+下一个：<a href="save-tracepoints.html" accesskey="n" rel="next"><code class="code">save tracepoints <var class="var">filename</var></code></a>，上一个： <a href="tfind.html" accesskey="p" rel="prev"><code class="code">tfind <var class="var">n</var></code></a>，向上： <a href="Analyze-Collected-Data.html" accesskey="u" rel="up">使用收集的数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="tdump-1"><span>13.2.2 <code class="code">tdump</code><a class="copiable-link" href="#tdump-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-tdump"></a>
+<a class="index-entry-id" id="index-dump-all-data-collected-at-tracepoint"></a>
+<a class="index-entry-id" id="index-tracepoint-data_002c-display"></a>
+
+<p>此命令不带参数。它会打印在当前跟踪快照中收集的所有数据</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">trace 444</b>
+(gdb) <b class="b">actions</b>
+为跟踪点#2输入操作，每行一个：
+&gt; collect $regs, $locals, $args, gdb_long_test
+&gt; end
+
+(gdb) <b class="b">tstart</b>
+
+(gdb) <b class="b">tfind line 444</b>
+#0  gdb_test (p1=0x11, p2=0x22, p3=0x33, p4=ox44, p5=0x55, p6=0x66)
+在gdb_test.c:444
+444        printp( &quot;%s: arguments = 0x%X 0x%X 0x%X 0x%X 0x%X 0x%X\n&quot;, )
+
+(gdb) <b class="b">tdump</b>
+在跟踪点2，跟踪帧1收集的数据：
+d0             0xc4aa0085       -995491707
+d1             0x18     24
+d2             0x80     128 
+d3             0x33     51
+d4             0x71aea3d        119204413
+d5             0x22     34
+d6             0xe0     224 
+d7             0x380035 3670069
+a0             0x19e24a 1696330
+a1             0x3000668        50333288
+a2             0x100    256
+a3             0x322000 3284992
+a4             0x3000698        50333336
+a5             0x1ad3cc 1758156
+fp             0x30bf3c 0x30bf3c
+sp            0x30bf34 0x30bf34
+ps             0x0      0
+pc             0x20b2c8 0x20b2c8
+fpcontrol      0x0      0
+fpstatus       0x0      0
+fpiaddr        0x0      0
+p = 0x20e5b4 &quot;gdb-test&quot;
+p1 = (void *) 0x11
+p2 = (void *) 0x22
+p3 = (void *) 0x33
+p4 = (void *) 0x44
+p5 = (void *) 0x55
+p6 = (void *) 0x66
+gdb_long_test = 17 '\021'
+
+(gdb)</pre></div>
+
+<p><code class="code">tdump</code> 通过扫描跟踪点当前的收集操作并打印列出的每个表达式的值来工作。因此，如果在运行后更改了跟踪点的操作，使其提及运行期间未收集的变量，<code class="code">tdump</code> 可能会失败。</p>
+<p>此外，对于带有 <code class="code">while-stepping</code> 循环的跟踪点，<code class="code">tdump</code> 使用收集的 <code class="code">$pc</code> 值来区分在跟踪点命中时收集的跟踪帧和在单步执行时收集的帧。这使它能够正确选择是显示基本收集列表，还是显示 <code class="code">while-stepping</code> 循环主体中的收集。但是，如果未收集 <code class="code">$pc</code>，则 <code class="code">tdump</code> 将始终尝试使用基本收集列表进行转储，如果 <code class="code">while-stepping</code> 帧不包含在跟踪点命中时收集的所有相同数据，可能会失败。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="save-tracepoints.html"><code class="code">save tracepoints <var class="var">filename</var></code></a>，上一个： <a href="tfind.html"><code class="code">tfind <var class="var">n</var></code></a>，向上： <a href="Analyze-Collected-Data.html">使用收集的数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

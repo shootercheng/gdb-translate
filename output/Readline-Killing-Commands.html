@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Readline删除命令（使用GDB调试）</title>
+
+<meta name="description" content="Readline删除命令（使用GDB调试）">
+<meta name="keywords" content="Readline删除命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Interaction.html" rel="up" title="Readline交互">
+<link href="Readline-Arguments.html" rel="next" title="Readline参数">
+<link href="Readline-Movement-Commands.html" rel="prev" title="Readline移动命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Readline-Killing-Commands">
+<div class="nav-panel">
+<p>
+下一页：<a href="Readline-Arguments.html" accesskey="n" rel="next">Readline参数</a>，上一页：<a href="Readline-Movement-Commands.html" accesskey="p" rel="prev">Readline移动命令</a>，向上：<a href="Readline-Interaction.html" accesskey="u" rel="up">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Readline-Killing-Commands-1"><span>33.2.3 Readline删除命令<a class="copiable-link" href="#Readline-Killing-Commands-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-killing-text"></a>
+<a class="index-entry-id" id="index-yanking-text"></a>
+
+<p><em class="dfn">删除</em>文本意味着从行中删除文本，但将其保存起来以供稍后使用，通常是通过<em class="dfn">粘贴</em>（重新插入）回该行。
+（“剪切”和“粘贴”是“删除”和“粘贴”的更新术语。）
+</p>
+<p>如果某个命令的描述说它“删除”文本，那么你可以确定稍后可以在不同（或相同）的位置找回该文本。
+</p>
+<p>当你使用删除命令时，文本会保存在一个<em class="dfn">删除环</em>中。
+任意数量的连续删除会将所有被删除的文本保存在一起，这样当你粘贴它时，你会得到所有文本。删除环不是特定于行的；你在之前输入的行上删除的文本，在你输入另一行时，稍后可以粘贴回来。
+<a class="index-entry-id" id="index-kill-ring"></a>
+</p>
+<p>以下是删除文本的命令列表。
+</p>
+<dl class="table">
+<dt><kbd class="kbd">C-k</kbd></dt>
+<dd><p>删除从当前光标位置到行尾的文本。
+</p>
+</dd>
+<dt><kbd class="kbd">M-d</kbd></dt>
+<dd><p>从光标处删除到当前单词的末尾，如果在单词之间，则删除到下一个单词的末尾。
+单词边界与<kbd class="kbd">M-f</kbd>使用的边界相同。
+</p>
+</dd>
+<dt><kbd class="kbd">M-<kbd class="key">DEL</kbd></kbd></dt>
+<dd><p>从光标处删除到当前单词的开头，如果在单词之间，则删除到前一个单词的开头。
+单词边界与<kbd class="kbd">M-b</kbd>使用的边界相同。
+</p>
+</dd>
+<dt><kbd class="kbd">C-w</kbd></dt>
+<dd><p>从光标处删除到前一个空白字符。这与<kbd class="kbd">M-<kbd class="key">DEL</kbd></kbd>不同，因为单词边界不同。
+</p>
+</dd>
+</dl>
+
+<p>以下是如何将文本<em class="dfn">粘贴</em>回该行。粘贴意味着从删除缓冲区复制最近删除的文本。
+</p>
+<dl class="table">
+<dt><kbd class="kbd">C-y</kbd></dt>
+<dd><p>将最近删除的文本粘贴回光标处的缓冲区。
+</p>
+</dd>
+<dt><kbd class="kbd">M-y</kbd></dt>
+<dd><p>旋转删除环，并粘贴新的顶部文本。只有在前一个命令是<kbd class="kbd">C-y</kbd>或<kbd class="kbd">M-y</kbd>时才能这样做。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Readline-Arguments.html">Readline参数</a>，上一页：<a href="Readline-Movement-Commands.html">Readline移动命令</a>，向上：<a href="Readline-Interaction.html">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

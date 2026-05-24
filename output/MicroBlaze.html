@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。” -->
+<title>MicroBlaze（使用GDB调试）</title>
+
+<meta name="description" content="MicroBlaze（使用GDB调试）">
+<meta name="keywords" content="MicroBlaze（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶级">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="MIPS-Embedded.html" rel="next" title="MIPS嵌入式">
+<link href="M68K.html" rel="prev" title="M68K">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MicroBlaze">
+<div class="nav-panel">
+<p>
+下一页：<a href="MIPS-Embedded.html" accesskey="n" rel="next"><abbr class="acronym">MIPS</abbr>嵌入式</a>，上一页：<a href="M68K.html" accesskey="p" rel="prev">M68k</a>，向上：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MicroBlaze-1"><span>21.3.5 MicroBlaze<a class="copiable-link" href="#MicroBlaze-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Xilinx-MicroBlaze"></a>
+<a class="index-entry-id" id="index-XMD_002c-Xilinx-Microprocessor-Debugger"></a>
+
+<p>MicroBlaze是一种软核处理器，在各种赛灵思FPGA上得到支持，如Spartan或Virtex系列。带有这些处理器的开发板通常具有JTAG端口，可连接到运行赛灵思嵌入式开发套件（EDK）或软件开发套件（SDK）的主机系统。
+这个主机系统用于将配置比特流下载到目标FPGA。赛灵思微处理器调试器（XMD）程序通过JTAG接口与目标开发板通信，并为开发板提供一个<code class="code">gdbserver</code>接口。默认情况下，<code class="code">xmd</code>使用端口<code class="code">1234</code>。（虽然可以更改此默认端口，但需要使用未记录的<code class="code">xmd</code>命令。如果需要这样做，请联系赛灵思技术支持。）
+</p>
+<p>使用以下GDB命令连接到MicroBlaze目标处理器。
+</p>
+<dl class="table">
+<dt><code class="code">target remote :1234</code></dt>
+<dd><p>如果您在与<code class="code">xmd</code>相同的系统上运行<small class="sc">GDB</small>，请使用此命令连接到目标。
+</p>
+</dd>
+<dt><code class="code">target remote <var class="var">xmd-host</var>:1234</code></dt>
+<dd><p>如果目标连接到在名为<var class="var">xmd-host</var>的不同系统上运行的<code class="code">xmd</code>，请使用此命令连接到目标。
+</p>
+</dd>
+<dt><code class="code">load</code></dt>
+<dd><p>使用此命令将程序下载到MicroBlaze目标。
+</p>
+</dd>
+<dt><code class="code">set debug microblaze <var class="var">n</var></code></dt>
+<dd><p>如果非零，则启用特定于MicroBlaze的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug microblaze <var class="var">n</var></code></dt>
+<dd><p>显示特定于MicroBlaze的调试级别。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

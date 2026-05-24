@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的I/O端口（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的I/O端口（使用GDB调试）">
+<meta name="keywords" content="Guile中的I/O端口（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Memory-Ports-in-Guile.html" rel="next" title="Guile中的内存端口">
+<link href="Disassembly-In-Guile.html" rel="prev" title="Guile中的反汇编">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="I_002fO-Ports-in-Guile">
+<div class="nav-panel">
+<p>
+下一页：<a href="Memory-Ports-in-Guile.html" accesskey="n" rel="next">Guile中的内存端口</a>，上一页：<a href="Disassembly-In-Guile.html" accesskey="p" rel="prev">Guile中的反汇编</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="I_002fO-Ports-in-Guile-1"><span>23.4.3.23 Guile中的I/O端口<a class="copiable-link" href="#I_002fO-Ports-in-Guile-1"> &para;</a></span></h4>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-input_002dport"><span class="category-def">Scheme过程： </span><span><strong class="def-name">input-port</strong><a class="copiable-link" href="#index-input_002dport"> &para;</a></span></dt>
+<dd><p>将GDB的输入端口作为一个Guile端口对象返回。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-output_002dport"><span class="category-def">Scheme过程： </span><span><strong class="def-name">output-port</strong><a class="copiable-link" href="#index-output_002dport"> &para;</a></span></dt>
+<dd><p>将GDB的输出端口作为一个Guile端口对象返回。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-error_002dport"><span class="category-def">Scheme过程： </span><span><strong class="def-name">error-port</strong><a class="copiable-link" href="#index-error_002dport"> &para;</a></span></dt>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>lseek（使用GDB调试）</title>
+
+<meta name="description" content="lseek（使用GDB调试）">
+<meta name="keywords" content="lseek（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="List-of-Supported-Calls.html" rel="up" title="支持的调用列表">
+<link href="rename.html" rel="next" title="rename">
+<link href="write.html" rel="prev" title="write">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="lseek">
+<div class="nav-panel">
+<p>
+下一个：<a href="rename.html" accesskey="n" rel="next">rename</a>，上一个：<a href="write.html" accesskey="p" rel="prev">write</a>，向上：<a href="List-of-Supported-Calls.html" accesskey="u" rel="up">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="lseek-1"><span>lseek<a class="copiable-link" href="#lseek-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-lseek_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+
+
+<dt>概要：</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">long lseek (int fd, long offset, int flag);
+</pre></div>
+
+</dd>
+<dt>请求：</dt>
+<dd><p>&lsquo;<samp class="samp">Flseek,<var class="var">fd</var>,<var class="var">offset</var>,<var class="var">flag</var></samp>&rsquo;
+</p>
+<p><var class="var">flag</var> 是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">SEEK_SET</code></dt>
+<dd><p>偏移量设置为 <var class="var">offset</var> 字节。
+</p>
+</dd>
+<dt><code class="code">SEEK_CUR</code></dt>
+<dd><p>偏移量设置为其当前位置加上 <var class="var">offset</var> 字节。
+</p>
+</dd>
+<dt><code class="code">SEEK_END</code></dt>
+<dd><p>偏移量设置为文件大小加上 <var class="var">offset</var> 字节。
+</p></dd>
+</dl>
+
+</dd>
+<dt>返回值：</dt>
+<dd><p>成功时，返回从文件开头起以字节为单位的无符号偏移量。否则，返回值为 -1。
+</p>
+</dd>
+<dt>错误：</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EBADF</code></dt>
+<dd><p><var class="var">fd</var> 不是有效的打开文件描述符。
+</p>
+</dd>
+<dt><code class="code">ESPIPE</code></dt>
+<dd><p><var class="var">fd</var> 与GDB控制台相关联。
+</p>
+</dd>
+<dt><code class="code">EINVAL</code></dt>
+<dd><p><var class="var">flag</var> 不是一个合适的值。
+</p>
+</dd>
+<dt><code class="code">EINTR</code></dt>
+<dd><p>调用被用户中断。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

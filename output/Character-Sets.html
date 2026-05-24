@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>字符集（使用GDB调试）</title>
+
+<meta name="description" content="字符集（使用GDB调试）">
+<meta name="keywords" content="字符集（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Caching-Target-Data.html" rel="next" title="缓存目标数据">
+<link href="Core-File-Generation.html" rel="prev" title="核心文件生成">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="字符集">
+<div class="nav-panel">
+<p>
+下一页：<a href="Caching-Target-Data.html" accesskey="n" rel="next">缓存目标数据</a>，上一页：<a href="Core-File-Generation.html" accesskey="p" rel="prev">如何从你的程序生成核心文件</a>	，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="字符集-1"><span>10.21字符集<a class="copiable-link" href="#字符集-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-字符集"></a>
+<a class="index-entry-id" id="index-charset"></a>
+<a class="index-entry-id" id="index-在字符集之间转换"></a>
+<a class="index-entry-id" id="index-主机字符集"></a>
+<a class="index-entry-id" id="index-目标字符集"></a>
+
+<p>如果你正在调试的程序使用的字符集与GDB自身使用的字符集不同来表示字符和字符串，GDB可以为你自动在所使用的字符集之间进行转换。我们将GDB使用的字符集称为<em class="dfn">主机字符集</em>；将被调试程序使用的字符集称为<em class="dfn">目标字符集</em>。
+</p>
+<p>例如，如果你在使用ISO拉丁1字符集的GNU/Linux系统上运行GDB，但你使用GDB的远程协议（见<a class="pxref" href="Remote-Debugging.html">调试远程程序</a>）来调试在使用EBCDIC字符集的IBM大型机上运行的程序，那么主机字符集是拉丁1，目标字符集是EBCDIC。如果你给GDB命令<code class="code">set target-charset EBCDIC-US</code>，那么当你打印字符或字符串值，或者在表达式中使用字符和字符串字面量时，GDB会在EBCDIC和拉丁1之间进行转换。
+</p>
+<p>GDB无法自动识别被调试程序使用的字符集；你必须使用下面描述的<code class="code">set target-charset</code>命令来告诉它。
+</p>
+<p>以下是用于控制GDB字符集支持的命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-target_002dcharset"></a><span><code class="code">set target-charset <var class="var">charset</var></code><a class="copiable-link" href="#index-set-target_002dcharset"> &para;</a></span></dt>
+<dd><p>将当前目标字符集设置为<var class="var">charset</var>。要显示支持的目标字符集列表，请键入
+<kbd class="kbd">set&nbsp;target-charset&nbsp;<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><!-- /@w --></kbd>。
+</p>
+</dd>
+<dt><a id="index-set-host_002dcharset"></a><span><code class="code">set host-charset <var class="var">charset</var></code><a class="copiable-link" href="#index-set-host_002dcharset"> &para;</a></span></dt>
+<dd><p>将当前主机字符集设置为<var class="var">charset</var>。
+</p>
+<p>默认情况下，GDB使用适合其运行系统所使用的主机字符集；你可以使用<code class="code">set host-charset</code>命令覆盖该默认设置。在某些系统上，GDB无法自动确定合适的主机字符集。在这种情况下，GDB使用“<samp class="samp">UTF-8</samp>”。
+</p>
+<p>GDB只能使用某些字符集作为其主机字符集。如果你键入<kbd class="kbd">set&nbsp;host-charset&nbsp;<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><!-- /@w --></kbd>，GDB将列出它支持的主机字符集。
+</p>
+</dd>
+<dt><a id="index-set-charset"></a><span><code class="code">set charset <var class="var">charset</var></code><a class="copiable-link" href="#index-set-charset"> &para;</a></span></dt>
+<dd><p>将当前主机和目标字符集都设置为<var class="var">charset</var>。如上所述，如果键入<kbd class="kbd">set&nbsp;charset&nbsp;<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><!-- /@w --></kbd>，GDB将列出可同时用于主机和目标的字符集名称。
+</p>
+</dd>
+<dt><a id="index-show-charset"></a><span><code class="code">show charset</code><a class="copiable-link" href="#index-show-charset"> &para;</a></span></dt>
+<dd><p>显示当前主机和目标字符集的名称。
+</p>
+</dd>
+<dt><a id="index-show-host_002dcharset"></a><span><code class="code">show host-charset</code><a class="copiable-link" href="#index-show-host_002dcharset"> &para;</a></span></dt>
+<dd><p>显示当前主机字符集的名称。
+</p>
+</dd>
+<dt><a id="index-show-target_002dcharset"></a><span><code class="code">show target-charset</code><a class="copiable-link" href="#index-show-target_002dcharset"> &para;</a></span></dt>
+<dd><p>显示当前目标字符集的名称。
+</p>
+</dd>
+<dt><a id="index-set-target_002dwide_002dcharset"></a><span><code class="code">set target-wide-charset <var class="var">charset</var></code><a class="copiable-link" href="#index-set-target_002dwide_002dcharset"> &para;</a></span></dt>
+<dd><p>将当前目标的宽字符集设置为<var class="var">charset</var>。这是目标的<code class="code">wchar_t</code>类型使用的字符集。要显示支持的宽字符集列表，请键入
+<kbd class="kbd">set&nbsp;target-wide-charset&nbsp;<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><!-- /@w --></kbd>。
+</p>
+</dd>
+<dt><a id="index-show-target_002dwide_002dcharset"></a><span><code class="code">show target-wide-charset</code><a class="copiable-link" href="#index-show-target_002dwide_002dcharset"> &para;</a></span></dt>
+<dd><p>显示当前目标宽字符集的名称。
+</p></dd>
+</dl>
+
+<p>以下是GDB字符集支持的一个实际示例。
+假设已将以下源代码放入文件<samp class="file">charset-test.c</samp>中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#include &lt;stdio.h&gt;
+
+char ascii_hello[]
+  = {72, 101, 108, 108, 111, 44, 32, 119,
+     111, 114, 108, 100, 33, 10, 0};
+char ibm	1047_hello[]
+  = {200, 133, 147, 147, 150, 107, 64, 166,
+     150, 153, 147, 132, 90, 37, 0};
+
+main ()
+{
+  printf (&quot;Hello, world!\n&quot;);
+}
+</pre></div>
+
+<p>在这个程序中，<code class="code">ascii_hello</code>和<code class="code">ibm1047_hello</code>是数组，包含字符串“<samp class="samp">Hello, world!</samp>”后跟一个换行符，分别以ASCII和IBM1047字符集编码。
+</p>
+<p>我们编译该程序，并在其上调用调试器： 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gcc -g charset-test.c -o charset-test
+$ gdb -nw charset-test
+GNU gdb 2001-12-19-cvs
+Copyright 2001 Free Software Foundation, Inc.
+...
+(gdb)
+</pre></div>
+
+<p>我们可以使用<code class="code">show charset</code>命令查看GDB当前用于解释和显示字符及字符串的字符集：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) show charset
+当前主机和目标字符集是 `ISO-8859-1'。
+(gdb)
+</pre></div>
+
+<p>为了打印本手册，让我们将ASCII用作初始字符集：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) set charset ASCII
+(gdb) show charset
+当前主机和目标字符集是 `ASCII'。
+(gdb)
+</pre></div>
+
+<p>假设ASCII确实是我们主机系统的正确字符集 —— 换句话说，假设如果GDB使用ASCII字符集打印字符，我们的终端将正确显示它们。由于我们当前的目标字符集也是ASCII，<code class="code">ascii_hello</code>的内容可以清晰打印：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print ascii_hello
+$1 = 0x401698 &quot;Hello, world!\n&quot;
+(gdb) print ascii_hello[0]
+$2 = 72 'H'
+(gdb)
+</pre></div>
+
+<p>GDB在表达式中使用你使用的字符和字符串字面量的目标字符集：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print '+'
+$3 = 43 '+'
+(gdb)
+</pre></div>
+
+<p>ASCII字符集使用数字43来编码“<samp class="samp">+</samp>”字符。
+</p>
+<p>GDB依赖用户告诉它目标程序使用的字符集是什么。如果我们在目标字符集仍为ASCII时打印<code class="code">ibm1047_hello</code>，我们会得到乱码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print ibm1047_hello
+$4 = 0x4016a8 &quot;\310\205\223\223\226k@\246\226\231\223\204Z%&quot;
+(gdb) print ibm1047_hello[0]
+$5 = 200 '\310'
+(gdb)
+</pre></div>
+
+<p>如果我们调用<code class="code">set target-charset</code>并后跟<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd>, GDB会告诉我们它支持的字符集：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set target-charset
+ASCII       EBCDIC-US   IBM1047     ISO-8859-1
+(gdb) set target-charset
+</pre></div>
+
+<p>我们可以选择IBM1047作为我们的目标字符集，然后再次检查程序的字符串。现在ASCII字符串显示错误，但GDB将<code class="code">ibm1047_hello</code>的内容从目标字符集IBM1047转换为主机字符集ASCII，并且它们显示正确：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set target-charset IBM1047
+(gdb) show charset
+当前主机字符集是 `ASCII'。
+当前目标字符集是 `IBM1047'。
+(gdb) print ascii_hello
+$6 = 0x401698 &quot;\110\145%%?\054\040\167?\162%\144\041\012&quot;
+(gdb) print ascii_hello[0]
+$7 = (gdb) print ibm1047_hello
+$8 = 0x4016a8 &quot;Hello, world!\n&quot;
+(gdb) print ibm1047_hello[0]
+$9 = 200 'H'
+(gdb)
+</pre></div>
+
+<p>如上所述，GDB在表达式中使用你使用的字符和字符串字面量的目标字符集以及目标字符集：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print '+'
+$10 = 78 '+'
+(gdb)
+</pre></div>
+
+<p>IBM1047字符集使用数字78来编码“<samp class="samp">+</samp>”字符。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Caching-Target-Data.html">缓存目标数据</a>，上一页：<a href="Core-File-Generation.html">如何从你的程序生成核心文件</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

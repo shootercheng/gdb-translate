@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的符号表（使用GDB调试）</title>
+
+<meta name="description" content="Python中的符号表（使用GDB调试）">
+<meta name="keywords" content="Python中的符号表（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Line-Tables-In-Python.html" rel="next" title="Python中的行表">
+<link href="Symbols-In-Python.html" rel="prev" title="Python中的符号">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的符号表">
+<div class="nav-panel">
+<p>
+下一页：<a href="Line-Tables-In-Python.html" accesskey="n" rel="next">使用Python操作行表</a>，上一页：<a href="Symbols-In-Python.html" accesskey="p" rel="prev">符号的Python表示</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的符号表表示"><span>23.3.2.31 Python中的符号表表示<a class="copiable-link" href="#Python中的符号表表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-python中的符号表"></a>
+<a class="index-entry-id" id="索引-gdb_002eSymtab"></a>
+<a class="index-entry-id" id="索引-gdb_002eSymtab_005fand_005fline"></a>
+
+<p>通过两个对象将由GDB在被调试程序上维护的符号表数据暴露给Python：<code class="code">gdb.Symtab_and_line</code>和<code class="code">gdb.Symtab</code>。帧的符号表和行数据从<code class="code">gdb.Frame</code>对象的<code class="code">find_sal</code>方法返回。
+请参阅 <a class="xref" href="Frames-In-Python.html">从Python访问被调试程序的堆栈帧</a>。
+</p>
+<p>有关GDB符号表管理的更多信息，请参阅 <a class="ref" href="Symbols.html">检查符号表</a> 以获取更多信息。
+</p>
+<p>一个<code class="code">gdb.Symtab_and_line</code>对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="索引-Symtab_005fand_005fline_002esymtab"><span class="category-def">变量： </span><span><strong class="def-name">Symtab_and_line.symtab</strong><a class="copiable-link" href="#索引-Symtab_005fand_

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>搜索内存（使用GDB调试）</title>
+
+<meta name="description" content="搜索内存（使用GDB调试）">
+<meta name="keywords" content="搜索内存（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Value-Sizes.html" rel="next" title="值的大小">
+<link href="Caching-Target-Data.html" rel="prev" title="缓存目标数据">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 那么多em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="搜索内存">
+<div class="nav-panel">
+<p>
+下一个：<a href="Value-Sizes.html" accesskey="n" rel="next">值的大小</a>，上一个：<a href="Caching-Target-Data.html" accesskey="p" rel="prev">缓存目标数据</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="搜索内存"><span>10.23搜索内存<a class="copiable-link" href="#搜索内存"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-搜索内存"></a>
+
+<p>可以使用<code class="code">find</code>命令在内存中搜索特定的字节序列。 
+</p>
+<dl class="table">
+<dt><a id="索引-find"></a><span><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, +<var class="var">len</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, &hellip;<span class="r">]</span></code><a class="copiable-link" href="#索引-find"> &para;</a></span></dt>
+<dt><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, <var class="var">end_addr</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, &hellip;<span class="r">]</span></code></dt>
+<dd><p>在内存中搜索由<var class="var">val1</var>、<var class="var">val2</var>等指定的字节序列。搜索从地址<var class="var">start_addr</var>开始，持续<var class="var">len</var>个字节或一直到包括<var class="var">end_addr</var>的位置。
+</p></dd>
+</dl>
+
+<p><var class="var">s</var>和<var class="var">n</var>是可选参数。
+它们可以按任意顺序指定，可以分开指定，也可以一起指定。
+</p>
+<dl class="table">
+<dt><span class="r"><var class="var">s</var>，搜索查询大小</span></dt> 
+<dd><p>每个搜索查询值的大小。
+</p>
+<dl class="table">
+<dt><code class="code">b</code></dt>
+<dd><p>字节
+</p></dd>
+<dt><code class="code">h</code></dt>
+<dd><p>半字（两个字节）
+</p></dd>
+<dt><code class="code">w</code></dt>
+<dd><p>字（四个字节）
+</p></dd>
+<dt><code class="code">g</code></dt>
+<dd><p>巨字（八个字节）
+</p></dd>
+</dl>
+
+<p>所有值都按照当前语言进行解释。
+这意味着，例如，如果当前源语言是C/C++，那么搜索字符串“hello”时会包含尾随的'\0'。
+可以通过使用强制类型转换从搜索中移除空终止符，例如：‘<samp class="samp">{char[5]}&quot;hello&quot;</samp>’。
+</p>
+<p>如果未指定值的大小，则从当前语言中值的类型获取。
+当想将搜索模式指定为多种类型的混合时，这很有用。
+请注意，这意味着，例如，在类似C的语言中，搜索无类型的0x42时将搜索‘ <samp class="samp">(int) 0x42</samp>’，通常是四个字节。
+</p>
+</dd>
+<dt><span class="r"><var class="var">n</var>，最大查找次数</span></dt>
+<dd><p>要打印的最大匹配次数。默认是打印所有找到的匹配项。
+</p></dd>
+</dl>
+
+<p>可以使用字符串作为搜索值。用双引号（<code class="code">&quot;</code>）引起来。
+字符串值会逐个字节地复制到搜索模式中，而不管目标的字节序和大小规范。
+</p>
+<p>找到的每个匹配项的地址以及找到匹配项的数量都会被打印出来。
+</p>
+<p>最后找到的值的地址存储在便利变量‘<samp class="samp">$_</samp>’中。
+匹配项的数量存储在‘<samp class="samp">$numfound</samp>’中。
+</p>
+<p>例如，如果在这个函数中的<code class="code">printf</code>处停止：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+hello ()
+{
+  static char hello[] = &quot;hello-hello&quot;;
+  static struct { char c; short s; int i; }
+    __attribute__ ((packed)) mixed
+    = { 'c', 0x1234, 0x87654321 };
+  printf (&quot;%s\n&quot;, hello);
+}
+</pre></div>
+
+<p>在调试期间会得到：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) find &amp;hello[0], +sizeof(hello), &quot;hello&quot;
+0x804956d &lt;hello.1620+6&gt;
+1个模式找到
+(gdb) find &amp;hello[0], +sizeof(hello), 'h', 'e', 'l', 'l', 'o'
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+2个模式找到。
+(gdb) find &amp;hello[0], +sizeof(hello), {char[5]}&quot;hello&quot;
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+2个模式找到。
+(gdb) find /b1 &amp;hello[0], +sizeof(hello), 'h', 0x65, 'l'
+0x8049567 &lt;hello.1620&gt;
+1个模式找到
+(gdb) find &amp;mixed, +sizeof(mixed), (char) 'c', (short) 0x1234, (int) 0x87654321
+0x8049560 &lt;mixed.1625&gt;
+1个模式找到
+(gdb) print $numfound
+$1 = 1
+(gdb) print $_
+$2 = (void *) 0x8049560
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Value-Sizes.html">值的大小</a>，上一个：<a href="Caching-Target-Data.html">缓存目标数据</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

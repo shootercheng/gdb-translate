@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+
+<title>保存断点（使用GDB调试）</title>
+
+<meta name="description" content="保存断点（使用GDB调试）">
+<meta name="keywords" content="保存断点（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Static-Probe-Points.html" rel="next" title="静态探测点">
+<link href="Dynamic-Printf.html" rel="prev" title="动态打印">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Save-Breakpoints">
+<div class="nav-panel">
+<p>
+下一个：<a href="Static-Probe-Points.html" accesskey="n" rel="next">静态探测点</a>，上一个：<a href="Dynamic-Printf.html" accesskey="p" rel="prev">动态打印</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="How-to-save-breakpoints-to-a-file"><span>5.1.9如何将断点保存到文件中<a class="copiable-link" href="#How-to-save-breakpoints-to-a-file"> &para;</a></span></h4>
+
+<p>要将断点定义保存到文件中，请使用 <code class="code">save&nbsp;breakpoints</code><!-- /@w --> 命令。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-save-breakpoints-to-a-file-for-future-sessions"></a>
+<a id="index-save-breakpoints"></a><span><code class="code">save breakpoints [<var class="var">filename</var>]</code><a class="copiable-link" href="#index-save-breakpoints"> &para;</a></span></dt>
+<dd><p>此命令将所有当前断点定义及其命令和忽略计数保存到一个文件 <samp class="file"><var class="var">filename</var></samp> 中，该文件适用于以后的调试会话。这包括所有类型的断点（断点、观察点、捕获点、跟踪点）。要读取保存的断点定义，请使用 <code class="code">source</code> 命令（见 <a class="pxref" href="Command-Files.html">命令文件</a>）。请注意，涉及局部变量的表达式的观察点可能无法重新创建，因为可能无法再访问观察点有效的上下文。由于保存的断点定义只是一系列重新创建断点的 <small class="sc">GDB</small> 命令，你可以在你喜欢的编辑程序中编辑该文件，并删除你不感兴趣或无法再重新创建的断点定义。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

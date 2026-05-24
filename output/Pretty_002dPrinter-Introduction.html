@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>漂亮打印机介绍（使用GDB调试）</title>
+
+<meta name="description" content="漂亮打印机介绍（使用GDB调试）">
+<meta name="keywords" content="漂亮打印机介绍（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Pretty-Printing.html" rel="up" title="漂亮打印">
+<link href="Pretty_002dPrinter-Example.html" rel="next" title="漂亮打印机示例">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Pretty_002dPrinter-Introduction">
+<div class="nav-panel">
+<p>
+下一页：<a href="Pretty_002dPrinter-Example.html" accesskey="n" rel="next">漂亮打印机示例</a>，上一级：<a href="Pretty-Printing.html" accesskey="u" rel="up">漂亮打印</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Pretty_002dPrinter-Introduction-1"><span>10.10.1漂亮打印机介绍<a class="copiable-link" href="#Pretty_002dPrinter-Introduction-1"> &para;</a></span></h4>
+
+<p>当GDB打印一个值时，它首先检查是否有为该值注册的漂亮打印机。如果有，那么GDB会调用漂亮打印机来打印该值。否则，该值将被正常打印。
+</p>
+<p>漂亮打印机通常是有名称的。这使得它们易于管理。“<samp class="samp">info pretty-printer</samp>”命令将列出所有已安装的漂亮打印机及其名称。
+如果一个漂亮打印机可以处理多种数据类型，那么它的<em class="dfn">子打印机</em>就是针对各个数据类型的打印机。
+每个这样的子打印机都有自己的名称。
+名称的格式是<var class="var">打印机名称</var>;<var class="var">子打印机名称</var>。
+</p>
+<p>通过向GDB<em class="dfn">注册</em>来安装漂亮打印机。
+通常，当加载相应的调试信息时，它们会自动加载并注册，因此无需进行任何特殊操作即可使用它们。
+</p>
+<p>有三个地方可以注册漂亮打印机。
+</p>
+<ul class="itemize mark-bullet">
+<li>全局注册的漂亮打印机在调试所有进程时可用。
+
+</li><li>在程序空间中注册的漂亮打印机仅在调试该程序时可用。
+有关Python中程序空间的更多详细信息，请参阅 <a class="xref" href="Progspaces-In-Python.html">Python中的程序空间</a>。
+
+</li><li>在目标文件中注册的漂亮打印机随相应的目标文件（例如共享库）一起加载和卸载。
+有关Python中目标文件的更多详细信息，请参阅 <a class="xref" href="Objfiles-In-Python.html">Python中的目标文件</a>。
+</li></ul>
+
+<p>有关如何选择漂亮打印机的更多信息，请参阅 <a class="xref" href="Selecting-Pretty_002dPrinters.html">选择漂亮打印机</a>。
+</p>
+<p>有关为新类型实现漂亮打印机的信息，请参阅 <a class="xref" href="Writing-a-Pretty_002dPrinter.html">编写漂亮打印机</a>。
+</p>
+</div>
+
+
+
+</body>
+</html>

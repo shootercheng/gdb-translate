@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Rust（使用GDB调试）</title>
+
+<meta name="description" content="Rust（使用GDB调试）">
+<meta name="keywords" content="Rust（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Supported-Languages.html" rel="up" title="支持的语言">
+<link href="Modula_002d2.html" rel="next" title="Modula-2">
+<link href="Pascal.html" rel="prev" title="Pascal">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc} -->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Rust">
+<div class="nav-panel">
+<p>
+下一页：<a href="Modula_002d2.html" accesskey="n" rel="next">Modula-2</a>，上一页：<a href="Pascal.html" accesskey="p" rel="prev">Pascal</a>，向上：<a href="Supported-Languages.html" accesskey="u" rel="up">支持的语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Rust-1"><span>15.4.8 Rust<a class="copiable-link" href="#Rust-1"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small>支持 <a class="url" href="https://www.rust-lang.org/">Rust编程语言</a>。类型和值的打印以及表达式解析相当完整。然而，有一些需要注意的特殊情况和漏洞。
+</p>
+<ul class="itemize mark-bullet">
+<li>行规范（见 <a class="pxref" href="Location-Specifications.html">位置规范</a>）从不相对于当前的包。相反，它们的行为就好像存在一个全局的包命名空间，有点类似于 <code class="code">extern crate</code> 的行为方式。
+
+<p>也就是说，如果 <small class="sc">GDB</small> 在包 &lsquo;<samp class="samp">A</samp>&rsquo; 的模块 &lsquo;<samp class="samp">B</samp>&rsquo; 中的一个函数的断点处停止，那么 <code class="code">break B::f</code> 将尝试在名为 &lsquo;<samp class="samp">B</samp>&rsquo; 的包中名为 &lsquo;<samp class="samp">f</samp>&rsquo; 的函数处设置一个断点。
+</p>
+<p>由于这种方法，行规范也不能使用 &lsquo;<samp class="samp">self::</samp>&rsquo; 或 &lsquo;<samp class="samp">super::</samp>&rsquo; 来引用项。
+</p>
+</li><li>因为 <small class="sc">GDB</small> 在表达式中实现了Rust的名称查找语义，它有时会在名称前加上当前的包。例如，如果 <small class="sc">GDB</small> 在包 &lsquo;<samp class="samp">K</samp>&rsquo; 的一个断点处停止，那么 <code class="code">print ::x::y</code> 将尝试查找符号 &lsquo;<samp class="samp">K::x::y</samp>&rsquo;。
+
+<p>然而，由于在调试时能够引用其他包很有用，<small class="sc">GDB</small> 提供了 <code class="code">extern</code> 扩展来规避此问题。要使用该扩展，只需在路径表达式前加上 <code class="code">extern</code> 来引用否则不可用的 “全局” 作用域。
+</p>
+<p>在上述示例中，如果您想引用包 &lsquo;<samp class="samp">x</samp>&rsquo; 中的符号 &lsquo;<samp class="samp">y</samp>&rsquo;，您将使用 <code class="code">print extern x::y</code>。
+</p>
+</li><li>Rust表达式求值器不支持 “类似语句” 的表达式，如 <code class="code">if</code> 或 <code class="code">match</code>，也不支持lambda表达式。
+
+</li><li>元组表达式未实现。
+
+</li><li>Rust表达式求值器目前未实现 <code class="code">Drop</code> 特性。求值器可能创建的对象永远不会被销毁。
+
+</li><li><small class="sc">GDB</small> 未实现泛型的类型推断。为了调用泛型函数或以其他方式引用泛型项，则必须手动指定类型参数！
+
+</li><li><small class="sc">GDB</small> 目前对Rust使用C<code class="c">++</code> 去混淆器。在大多数情况下，这不会导致任何问题。然而，在表达式上下文中，完成泛型函数名会给出语法上无效的结果。这是因为Rust要求在函数名及其泛型参数之间使用 &lsquo;<samp class="samp">::</samp>&rsquo; 运算符。例如，<small class="sc">GDB</small> 可能提供一个补全，如 <code class="code">crate::f&lt;u32&gt;</code>，而解析器需要 <code class="code">crate::f::&lt;u32&gt;</code>！
+
+</li><li>截至撰写本文时，Rust编译器（版本1.8）在其生成的调试信息中有一些漏洞。这些漏洞阻止了 <small class="sc">GDB</small> 实现某些功能：
+<ul class="itemize mark-bullet">
+<li>不能通过特性进行方法调用。
+
+</li><li>未实现运算符重载。
+
+</li><li>在单态化函数中调试时，不能使用泛型类型名称。
+
+</li><li>类型 <code class="code">Self</code> 不可用。
+
+</li><li><code class="code">use</code> 语句不可用，因此某些名称在包中可能不可用。
+</li></ul>
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Modula_002d2.html">Modula-2</a>，上一页：<a href="Pascal.html">Pascal</a>，向上：<a href="Supported-Languages.html">支持的语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

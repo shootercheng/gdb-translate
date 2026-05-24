@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>文件I/O概述（使用GDB调试）</title>
+
+<meta name="description" content="文件I/O概述（使用GDB调试）">
+<meta name="keywords" content="文件I/O概述（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="Protocol-Basics.html" rel="next" title="协议基础">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="File_002dI_002fO-Overview">
+<div class="nav-panel">
+<p>
+下一页：<a href="Protocol-Basics.html" accesskey="n" rel="next">协议基础</a>，上一级：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="File_002dI_002fO-Overview-1"><span>E.14.1文件I/O概述<a class="copiable-link" href="#File_002dI_002fO-Overview-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-file_002di_002fo-overview"></a>
+
+<p><em class="dfn">文件I/O远程协议扩展</em>（简称：文件I/O）允许目标使用主机的文件系统和控制台I/O来执行各种系统调用。目标系统上的系统调用会被转换为发往主机系统的远程协议数据包，然后主机系统执行所需的操作并向目标系统返回响应数据包。这甚至能在缺乏文件系统的目标上模拟文件系统操作。
+</p>
+<p>该协议被定义为独立于主机和目标系统。它使用自己内部的数据类型和值表示。在传输数据时，GDB和目标的GDB存根都负责将与系统相关的值表示转换为内部协议表示。
+</p>
+<p>通信是同步的。只有当GDB正在等待来自‘<samp class="samp">C</samp>’、‘<samp class="samp">c</samp>’、‘<samp class="samp">S</samp>’或‘<samp class="samp">s</samp>’数据包的响应时，才可能进行系统调用。当GDB处理系统调用请求时，目标会停止，以允许对目标内存进行确定性访问。因此，文件I/O不会被目标信号中断。另一方面，可以在GDB内部通过用户中断（‘<samp class="samp">Ctrl-C</samp>’）中断文件I/O。
+</p>
+<p>目标执行主机系统调用的请求不会结束最新的‘<samp class="samp">C</samp>’、‘<samp class="samp">c</samp>’、‘ <samp class="samp">S</samp>’或‘<samp class="samp">s</samp>’操作。这意味着，在完成系统调用后，目标会返回继续之前的活动（继续、单步执行）。不需要GDB发出额外的继续或单步执行请求。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) continue
+  &lt;- 目标请求‘系统调用X’
+  目标停止，GDB执行系统调用
+  -&gt; GDB返回结果
+  ... 目标继续，GDB返回等待目标
+  &lt;- 目标命中断点并发送一个Txx数据包
+</pre></div>
+
+<p>该协议仅支持控制台I/O以及主机文件系统上的常规文件。不支持主机系统上的字符或块特殊设备、管道、命名管道、套接字或任何其他通信方法。
+</p>
+<p>非停止模式下不支持文件I/O。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Protocol-Basics.html">协议基础</a>，上一级：<a href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

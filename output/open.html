@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>open（使用GDB调试）</title>
+
+<meta name="description" content="open（使用GDB调试）">
+<meta name="keywords" content="open（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="List-of-Supported-Calls.html" rel="up" title="支持的调用列表">
+<link href="close.html" rel="next" title="close">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="open">
+<div class="nav-panel">
+<p>
+下一个：<a href="close.html" accesskey="n" rel="next">close</a>，上一个：<a href="List-of-Supported-Calls.html" accesskey="u" rel="up">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="open-1"><span>open<a class="copiable-link" href="#open-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-open_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>概要：</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+</pre></div>
+
+</dd>
+<dt>请求：</dt>
+<dd><p>&lsquo;<samp class="samp">Fopen,<var class="var">pathptr</var>/<var class="var">len</var>,<var class="var">flags</var>,<var class="var">mode</var></samp>&rsquo;
+</p>
+<p><var class="var">flags</var>是以下值的按位 <code class="code">OR</code>：
+</p>
+<dl class="table">
+<dt><code class="code">O_CREAT</code></dt>
+<dd><p>如果文件不存在，将创建该文件。就文件所有权和时间戳而言，适用主机规则。
+</p>
+</dd>
+<dt><code class="code">O_EXCL</code></dt>
+<dd><p>与 <code class="code">O_CREAT</code> 一起使用时，如果文件已存在，则为错误，open() 将失败。
+</p>
+</dd>
+<dt><code class="code">O_TRUNC</code></dt>
+<dd><p>如果文件已存在且打开模式允许写入（给定 <code class="code">O_RDWR</code> 或 <code class="code">O_WRONLY</code>）它将被截断为零长度。
+</p>
+</dd>
+<dt><code class="code">O_APPEND</code></dt>
+<dd><p>文件以追加模式打开。
+</p>
+</dd>
+<dt><code class="code">O_RDONLY</code></dt>
+<dd><p>文件仅以只读方式打开。
+</p>
+</dd>
+<dt><code class="code">O_WRONLY</code></dt>
+<dd><p>文件仅以写入方式打开。
+</p>
+</dd>
+<dt><code class="code">O_RDWR</code></dt>
+<dd><p>文件以读写方式打开
+</p></dd>
+</dl>
+
+<p>其他位将被静默忽略。
+</p
+
+<p><var class="var">mode</var>是以下值的按位 <code class="code">OR</code>：
+</p>
+<dl class="table">
+<dt><code class="code">S_IRUSR</code></dt>
+<dd><p>用户具有读权限。
+</p>
+</dd>
+<dt><code class="code">S_IWUSR</code></dt>
+<dd><p>用户具有写权限。
+</p>
+</dd>
+<dt><code class="code">S_IRGRP</code></dt>
+<dd><p>组具有读权限。
+</p>
+</dd>
+<dt><code class="code">S_IWGRP</code></dt>
+<dd><p>组具有写权限。
+</p>
+</dd>
+<dt><code class="code">S_IROTH</code></dt>
+<dd><p>其他人具有读权限。
+</p>
+</dd>
+<dt><code class="code">S_IWOTH</code></dt>
+<dd><p>其他人具有写权限。
+</p></dd>
+</dl>
+
+<p>其他位将被静默忽略。
+</p>
+
+</dd>
+<dt>返回值：</dt>
+<dd><p><code class="code">open</code> 返回新的文件描述符；如果发生错误，则返回 -1。
+</p>
+</dd>
+<dt>错误：</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EEXIST</code></dt>
+<dd><p><var class="var">pathname</var> 已存在，并且使用了 <code class="code">O_CREAT</code> 和 <code class="code">O_EXCL</code>。
+</p>
+</dd>
+<dt><code class="code">EISDIR</code></dt>
+<dd><p><var class="var">pathname</var> 指向一个目录。
+</p>
+</dd>
+<dt><code class="code">EACCES</code></dt>
+<dd><p>请求的访问不被允许。
+</p>
+</dd>
+<dt><code class="code">ENAMETOOLONG</code></dt>
+<dd><p><var class="var">pathname</var> 太长。
+</p>
+</dd>
+<dt><code class="code">ENOENT</code></dt>
+<dd><p><var class="var">pathname</var>中的一个目录组件不存在。
+</p>
+</dd>
+<dt><code class="code">ENODEV</code></dt>
+<dd><p><var class="var">pathname</var> 指向一个设备、管道、命名管道或套接字
+</p>
+</dd>
+<dt><code class="code">EROFS</code></dt>
+<dd><p><var class="var">pathname</var> 指向只读文件系统上的一个文件，并且请求了写入访问权。
+</p>
+</dd>
+<dt><code class="code">EFAULT</code></dt>
+<dd><p><var class="var">pathname</var> 是一个无效的指针值。
+</p>
+</dd>
+<dt><code class="code">ENOSPC</code></dt>
+<dd><p>设备上没有空间来创建文件。
+</p>
+</dd>
+<dt><code class="code">EMFILE</code></dt>
+<dd><p>进程已经打开了最大数量的文件。
+</p>
+</dd>
+<dt><code class="code">ENFILE</code></dt>
+<dd><p>系统上打开的文件总数已达到限制。
+</p>
+</dd>
+<dt><code class="code">EINTR</code></dt>
+<dd><p>调用被用户中断。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="close.html">close</a>，上一个：<a href="List-of-Supported-Calls.html">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept_Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

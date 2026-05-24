@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>CRIS（使用GDB调试）</title>
+
+<meta name="description" content="CRIS（使用GDB调试）">
+<meta name="keywords" content="CRIS（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="Super_002dH.html" rel="next" title="瑞萨超级H">
+<link href="AVR.html" rel="prev" title="爱特梅尔AVR">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="CRIS">
+<div class="nav-panel">
+<p>
+下一页：<a href="Super_002dH.html" accesskey="n" rel="next">瑞萨超级H</a>，上一页：<a href="AVR.html" accesskey="p" rel="prev">爱特梅尔AVR</a>，向上：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="CRIS-1"><span>21.3.10 CRIS<a class="copiable-link" href="#CRIS-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-CRIS"></a>
+
+<p>当配置为调试CRIS时，GDB提供以下特定于CRIS的命令：
+</p>
+<dl class="table">
+<dt><a id="index-CRIS-version"></a><span><code class="code">set cris-version <var class="var">ver</var></code><a class="copiable-link" href="#index-CRIS-version"> &para;</a></span></dt>
+<dd><p>将当前CRIS版本设置为<var class="var">ver</var>，可以是‘<samp class="samp">10</samp>’或‘<samp class="samp">32</samp>’。
+CRIS版本会影响寄存器名称和大小。当CRIS版本自动检测失败时，此命令很有用。
+</p>
+</dd>
+<dt><code class="code">show cris-version</code></dt>
+<dd><p>显示当前CRIS版本。
+</p>
+</dd>
+<dt><a id="index-DWARF_002d2-CFI-and-CRIS"></a><span><code class="code">set cris-dwarf2-cfi</code><a class="copiable-link" href="#index-DWARF_002d2-CFI-and-CRIS"> &para;</a></span></dt>
+<dd><p>设置用于CRIS调试的DWARF - 2 CFI的使用情况。默认值是‘<samp class="samp">on</samp>’。 
+当使用版本低于<code class="code">R59</code>的<code class="code">gcc - cris</code>时，更改为‘<samp class="samp">off</samp>’。
+</p>
+</dd>
+<dt><code class="code">show cris-dwarf2-cfi</code></dt>
+<dd><p>显示使用DWARF - 2 CFI的当前状态。
+</p>
+</dd>
+<dt><a id="index-CRIS-mode"></a><span><code class="code">set cris-mode <var class="var">mode</var></code><a class="copiable-link" href="#index-CRIS-mode"> &para;</a></span></dt>
+<dd><p>将当前CRIS模式设置为<var class="var">mode</var>。仅在以guru模式调试时才应更改，在这种情况下应将其设置为‘<samp class="samp">guru</samp>’（默认值是‘<samp class="samp">normal</samp>’）。
+</p>
+</dd>
+<dt><code class="code">show cris-mode</code></dt>
+<dd><p>显示当前CRIS模式。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

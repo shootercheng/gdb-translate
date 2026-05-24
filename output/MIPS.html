@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>MIPS（使用GDB调试）</title>
+
+<meta name="description" content="MIPS（使用GDB调试）">
+<meta name="keywords" content="MIPS（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Architectures.html" rel="up" title="体系结构">
+<link href="HPPA.html" rel="next" title="HPPA">
+<link href="Alpha.html" rel="prev" title="Alpha">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MIPS">
+<div class="nav-panel">
+<p>
+下一页：<a href="HPPA.html" accesskey="n" rel="next">HPPA</a>，上一页：<a href="Alpha.html" accesskey="p" rel="prev">Alpha</a>，向上：<a href="Architectures.html" accesskey="u" rel="up">体系结构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MIPS-1"><span>21.4.4 MIPS<a class="copiable-link" href="#MIPS-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-stack-on-Alpha"></a>
+<a class="index-entry-id" id="index-stack-on-MIPS"></a>
+<a class="index-entry-id" id="index-Alpha-stack"></a>
+<a class="index-entry-id" id="index-MIPS-stack"></a>
+<p>基于Alpha和MIPS的计算机使用一种不同寻常的栈帧，这有时需要GDB在目标代码中向后搜索以找到函数的开头。</p>
+<a class="index-entry-id" id="index-response-time_002c-MIPS-debugging"></a>
+<p>为了提高响应速度（特别是对于嵌入式应用程序，在这种情况下，GDB可能限于通过慢速串行线进行此搜索）你可能希望使用以下命令之一限制此搜索的大小：</p>
+<dl class="table">
+<dt><a id="index-heuristic_002dfence_002dpost-_0028Alpha_002c-MIPS_0029"></a><span><code class="code">set heuristic-fence-post <var class="var">limit</var></code><a class="copiable-link" href="#index-heuristic_002dfence_002dpost-_00

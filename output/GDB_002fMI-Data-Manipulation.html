@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!--由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI数据操作（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI数据操作（使用GDB调试）">
+<meta name="keywords" content="GDB/MI数据操作（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Tracepoint-Commands.html" rel="next" title="GDB/MI跟踪点命令">
+<link href="GDB_002fMI-Variable-Objects.html" rel="prev" title="GDB/MI变量对象">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Data-Manipulation">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Tracepoint-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>跟踪点命令</a>，上一个：<a href="GDB_002fMI-Variable-Objects.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>变量对象</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Data-Manipulation"><span>27.16 <small class="sc">GDB/MI</small>数据操作<a class="copiable-link" href="#gdb_002fmi-Data-Manipulation"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-data-manipulation_002c-in-gdb_002fmi"></a>[<a class="index-entry-id" id="index-gdb_002fmi_002c-data-manipulation"></a>]
+<p>本节描述用于操作数据的<small class="sc">GDB/MI</small>命令：
+检查内存和寄存器、评估表达式等。
+</p>
+<p>有关可寻址存储单元的详细信息，请参阅 <a class="pxref" href="Memory.html#addressable-memory-unit">可寻址存储单元</a>。
+</p>
+
+<a class="index-entry-id" id="index-_002ddata_002ddisassemble"></a>
+<h4 class="subheading" id="The-_002ddata_0_002ddisassemble-Command"><span>The <code class="code">-data-disassemble</code>命令<a class="copiable-link" href="#The-_002ddata_002ddisassemble-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-64"><span>概要<a class="copiable-link" href="#Synopsis-64"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-disassemble
+  ( -s <var class="var">start-addr</var> -e <var class="var">end-addr</var>
+  | -a <var class="var">addr</var>
+  | -f <var class="var">filename</var> -l <var class="var">linenum</var> [ -n <var class="var">lines</var> ] )
+  [ --opcodes <var class="var">opcodes-mode</var> ]
+  [ --source ]
+  [ -- <var class="var">mode</var> ]
+</pre></div>
+
+<p>其中：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp"><var class="var">start-addr</var></samp>&rsquo;</dt>
+<dd><p>是起始地址（或<code class="code">$pc</code>）
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">end-addr</var></samp>&rsquo;</dt>
+<dd><p>是结束地址
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">addr</var></samp>&rsquo;</dt>
+<dd><p>是要反汇编的函数内任意位置的地址（或函数名）。如果指定了地址，将反汇编该地址周围的整个函数。如果指定了名称，将反汇编具有该名称的整个函数。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">filename</var></samp>&rsquo;</dt>
+<dd><p>是要反汇编的文件名
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">linenum</var></samp>&rsquo;</dt>
+<dd><p>是要围绕其进行反汇编的行号
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">lines</var></samp>&rsquo;</dt>
+<dd><p>是要生成的反汇编行数。如果是-1，在未指定<var class="var">end-addr</var>的情况下，将反汇编整个函数。如果<var class="var">end - addr</var>被指定为非零值，并且<var class="var">lines</var>低于<var class="var">start - addr</var>和<var class="var">end - addr</var>之间的反汇编行数，则仅显示<var class="var">lines</var>行；如果<var class="var">lines</var>高于<var class="var">start - addr</var>和<var class="var">end - addr</var>之间的行数，则仅显示到<var class="var">end - addr</var>的行。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">opcodes-mode</var></samp>&rsquo;</dt>
+<dd><p>只能与<var class="var">mode</var> 0一起使用，应为以下之一：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp">none</samp>&rsquo;</dt>
+<dd><p>结果中不包含操作码信息。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">bytes</samp>&rsquo;</dt>
+<dd><p>结果中将包含操作码，操作码将按照 <kbd class="kbd">disassemble `/b`</kbd> 的格式进行格式化。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">display</samp>&rsquo;</dt>
+<dd><p>结果中将包含操作码，操作码将按照 <kbd class="kbd">disassemble `/r`</kbd> 的格式进行格式化。
+</p></dd>
+</dl>
+</dd>
+<dt>&lsquo;<samp class="samp"><var class="var">mode</var></samp>&rsquo;</dt>
+<dd><p>现在不建议使用<var class="var">mode</var>，建议使用 <code class="code">--opcodes</code> 和 <code class="code">--source</code> 选项。如果未给出<var class="var">mode</var>，将假定为<var class="var">mode</var> 0。但是为了向后兼容，<var class="var">mode</var> 仍然可用。<var class="var">mode</var> 应为以下之一：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp">0</samp>&rsquo;</dt>
+<dd><p><em class="emph">仅反汇编</em>，如果未指定模式，这是默认模式。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>system（使用GDB调试）</title>
+
+<meta name="description" content="system（使用GDB调试）">
+<meta name="keywords" content="system（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="List-of-Supported-Calls.html" rel="up" title="支持的调用列表">
+<link href="isatty.html" rel="prev" title="isatty">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}　
+-->
+</style>
+
+
+</head >
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="system">
+<div class="nav-panel">
+<p>
+上一个：<a href="isatty.html" accesskey="p" rel="prev">isatty</a>，向上：<a href="List-of-Supported-Calls.html" accesskey="u" rel="up">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="system-1"><span>system<a class="copiable-link" href="#system-ef"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-system_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>概要：</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int system(const char *command);
+</pre></div>
+
+</dd>
+<dt>请求：</dt>
+<dd><p>&lsquo;<samp class="samp">Fsystem,<var class="var">commandptr</var>/<var class="var">len</var></samp>&rsquo;
+</p>
+</dd>
+<dt>返回值：</dt>
+<dd><p>如果<var class="var">len</var>为零，返回值表示是否有可用的 shell。返回值为零表示没有可用的 shell。
+对于非零的<var class="var">len</var>，出错时返回值为 -1，否则返回命令的返回状态。只返回命令的退出状态，它是通过调用 <code class="code">WEXITSTATUS(retval)</code> 从主机的 <code class="code">system</code> 返回值中提取的。如果无法执行<samp class="file">/bin/sh</samp>，则返回127。
+</p>
+</dd>
+<dt>错误：</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EINTR</code></dt>
+<dd><p>调用被用户中断。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> 承担了调用必要的主机调用以执行 <code class="code">system</code> 调用的全部任务。在返回给目标之前，主机上 <code class="code">system</code> 的返回值被简化。来自子进程的任何终止信号信息都被丢弃，返回值完全由被调用命令的退出状态组成。
+</p>
+<p>出于安全考虑，<small class="sc">GDB</small> 默认拒绝 <code class="code">system</code> 调用。用户必须使用 <code class="code">set remote system-call-allowed 1</code> 命令明确允许此调用。
+</p>
+<dl class="table">
+<dt><a id="index-set-remote-system_002dcall_002dallowed"></a><span><code class="code">set remote system-call-allowed</code><a class="copiable-link" href="#index-set-remote-system_002dcall_002dallowed"> &para;</a></span></dt>
+<dd><p>控制是否允许在远程目标的文件I/O协议中进行 <code class="code">system</code> 调用。默认值为零（禁用）。
+</p>
+</dd>
+<dt><a id="index-show-remote-system_002dcall_002dallowed"></a><span><code class="code">show remote system-call-allowed</code><a class="copiable-link" href="#index-show-remote-system_002dcall_002dallowed"> &para;</a></span></dt>
+<dd><p>显示在文件I/O协议中是否允许 <code class="code">system</code> 调用。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="isatty.html">isatty</a>，向上：<a href="List-of-Supported-Calls.html">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p>
+</div>
+
+
+
+</body>
+</html>

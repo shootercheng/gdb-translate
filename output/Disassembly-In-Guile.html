@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的反汇编（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的反汇编（使用GDB调试）">
+<meta name="keywords" content="Guile中的反汇编（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="I_002fO-Ports-in-Guile.html" rel="next" title="Guile中的I/O端口">
+<link href="Architectures-In-Guile.html" rel="prev" title="Guile中的架构表示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Disassembly-In-Guile">
+<div class="nav-panel">
+<p>
+下一页：<a href="I_002fO-Ports-in-Guile.html" accesskey="n" rel="next">Guile中的I/O端口</a>，上一页：<a href="Architectures-In-Guile.html" accesskey="p" rel="prev">Guile中的架构表示</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Disassembly-In-Guile-1"><span>23.4.3.22 Guile中的反汇编<a class="copiable-link" href="#Disassembly-In-Guile-1"> &para;</a></span></h4>
+
+<p>可以从Scheme代码中调用反汇编器。
+此外，反汇编器可以将一个Guile端口作为输入，
+允许从任何源进行反汇编，而不仅仅是目标内存。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002ddisassemble"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch-disassemble</strong> <var class="def-var-arguments">arch start-pc     <span class="r">[</span>#:port&nbsp;port<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:offset&nbsp;offset<span class="r">]</span><!-- />@w -->     <span class="r">[</span>#:size&nbsp;size<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:count&nbsp;count<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-arch_002ddisassemble"> &para;</a></span></dt>
+<dd><p>返回从内存地址<var class="var">start-pc</var>开始的反汇编指令列表。
+</p>
+<p>可选参数<var class="var">port</var>指定从中读取字节的输入端口。
+如果<var class="var">port</var>为<code class="code">#f</code>，则从目标内存读取字节。
+</p>
+<p>可选参数<var class="var">offset</var>指定<var class="var">port</var>中第一个字节的地址偏移量。例如，当<var class="var">port</var>指定一个“<samp class="samp">字节向量</samp>”并且你希望将该字节向量反汇编为好像它来自该地址时，这很有用。传递给<var class="var">port</var>读取器的<var class="var">start-pc</var>会偏移相同的量。
+</p>
+<p>示例：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (use-modules (rnrs io ports))
+(gdb) guile (define pc (value-&gt;integer (parse-and-eval &quot;$pc&quot;)))
+(gdb) guile (define mem (open-memory #:start pc))
+(gdb) guile (define bv (get-bytevector-n mem 10))
+(gdb) guile (define bv-port (open-bytevector-input-port bv))
+(gdb) guile (define arch (current-arch))
+(gdb) guile (arch-disassemble arch pc #:port bv-port #:offset pc)
+(((address . 4195516) (asm . &quot;mov    $0x4005c8,%edi&quot;) (length . 5)))
+</pre></div>
+
+<p>可选参数<var class="var">size</var>和
+<var class="var">count</var>确定返回列表中的指令数量。
+如果<var class="var">size</var>或<var class="var">count</var>被指定为零，则不反汇编任何指令并返回空列表。
+如果同时指定了可选参数<var class="var">size</var>和<var class="var">count</var>，则返回最多<var class="var">count</var>条反汇编指令的列表，其起始地址落在从<var class="var">start-pc</var>到(<var class="var">start-pc</var> + <var class="var">size</var> - 1)的封闭内存地址区间内。
+如果未指定<var class="var">size</var>但指定了<var class="var">count</var>，则返回从地址<var class="var">start-pc</var>开始的<var class="var">count</var>条指令。如果未指定<var class="var">count</var>但指定了<var class="var">size</var>，则返回所有起始地址落在从<var class="var">start-pc</var>到(<var class="var">start-pc</var> + <var class="var">size</var> - 1)的封闭内存地址区间内的指令。
+如果既未指定<var class="var">size</var>也未指定<var class="var">count</var>，则返回<var class="var">start-pc</var>处的一条指令。
+</p>
+<p>返回列表的每个元素都是一个关联列表（alist），
+具有以下键：
+</p>
+<dl class="table">
+<dt><code class="code">address</code></dt>
+<dd><p>对应于此键的值是指令内存地址的Guile整数。
+</p>
+</dd>
+<dt><code class="code">asm</code></dt>
+<dd><p>对应于此键的值是一个字符串值，它用汇编语言助记符表示指令。使用的汇编语言风格与当前CLI变量<code class="code">disassembly-flavor</code>指定的风格相同。请参阅 <a class="xref" href="Machine-Code.html">源和机器代码</a>。
+</p>
+</dd>
+<dt><code class="code">length</code></dt>
+<dd><p>对应于此键的值是指令的字节长度。
+</p>
+</dd></dl>
+</dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="I_002fO-Ports-in-Guile.html">Guile中的I/O端口</a>，上一页：<a href="Architectures-In-Guile.html">Guile中的架构表示</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

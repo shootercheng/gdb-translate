@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>列出静态跟踪点标记（使用GDB调试）</title>
+
+<meta name="description" content="列出静态跟踪点标记（使用GDB调试）">
+<meta name="keywords" content="列出静态跟踪点标记（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Starting-and-Stopping-Trace-Experiments.html" rel="next" title="启动和停止跟踪实验">
+<link href="Listing-Tracepoints.html" rel="prev" title="列出跟踪点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="列出静态跟踪点标记">
+<div class="nav-panel">
+<p>
+下一页：<a href="Starting-and-Stopping-Trace-Experiments.html" accesskey="n" rel="next">启动和停止跟踪实验</a>，上一页：<a href="Listing-Tracepoints.html" accesskey="p" rel="prev">列出跟踪点</a>，向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="列出静态跟踪点标记-1"><span>13.1.8 列出静态跟踪点标记<a class="copiable-link" href="#列出静态跟踪点标记-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-关于静态跟踪点标记的信息"></a>
+<a id="index-info-static_002dtracepoint_000002dmarkers"></a><span><code class="code">info static-tracepoint-markers</code><a class="copiable-link" href="#index-info-static_002dtracepoint_002dmarkers"> &para;</a></span></dt>
+<dd><p>显示程序中定义的所有静态跟踪点标记的信息。
+</p>
+<p>对于每个标记，将打印以下列：
+</p>
+<dl class="table">
+<dt><em class="emph">计数</em></dt>
+<dd><p>一个递增的计数器，输出用于提高可读性。这不是一个稳定的标识符。
+</p></dd>
+<dt><em class="emph">ID</em></dt>
+<dd><p>目标报告的标记ID。
+</p></dd>
+<dt><em class="emph">启用或禁用</em></dt>
+<dd><p>已探测的标记用“<samp class="samp">y</samp>”标记。“<samp class="samp">n</samp>”表示未启用的标记。
+</p></dd>
+<dt><em class="emph">地址</em></dt>
+<dd><p>标记在程序中的位置，作为内存地址。
+</p></dd>
+<dt><em class="emph">位置</em></dt>
+<dd><p>标记在程序源文件中的位置，作为文件和行号。如果程序中包含的调试信息不允许GDB定位标记的源文件，则此列将留空。
+</p></dd>
+</dl>
+
+<p>此外，可能会为每个标记打印以下信息：
+</p>
+<dl class="table">
+<dt><em class="emph">数据</em></dt>
+<dd><p>标记调用传递给跟踪库的用户数据。在UST后端，这是作为标记调用的参数传递的格式字符串。
+</p></dd>
+<dt><em class="emph">探测该标记的静态跟踪点</em></dt>
+<dd><p>附加到该标记的静态跟踪点列表。
+</p></dd>
+</dl>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info static-tracepoint-markers
+Cnt ID         Enb Address            What
+1   ust/bar2   y   0x0000000000400e1a in main at stexample.c:25
+     Data: number1 %d number2 %d
+     Probed by static tracepoints: #2
+2   ust/bar33  n   0x0000000000400c87 in main at stexample.c:24
+     Data: str %s
+(gdb)
+</pre></div>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

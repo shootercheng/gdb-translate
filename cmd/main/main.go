@@ -68,7 +68,7 @@ func main() {
 	fmt.Println("to do file names len ", len(todoFileNames))
 
 	var wg sync.WaitGroup
-	maxConcurrency := 10
+	maxConcurrency := 5
 	sem := make(chan int, maxConcurrency)
 	for index, fileName := range todoFileNames {
 		wg.Go(func() {

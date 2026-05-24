@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>单词指示符（使用GDB调试）</title>
+
+<meta name="description" content="单词指示符（使用GDB调试）">
+<meta name="keywords" content="单词指示符（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="History-Interaction.html" rel="up" title="历史交互">
+<link href="Modifiers.html" rel="next" title="修饰符">
+<link href="Event-Designators.html" rel="prev" title="事件指示符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="单词指示符">
+<div class="nav-panel">
+<p>
+下一个：<a href="Modifiers.html" accesskey="n" rel="next">修饰符</a>，上一个：<a href="Event-Designators.html" accesskey="p" rel="prev">事件指示符</a>，向上：<a href="History-Interaction.html" accesskey="u" rel="up">历史扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="单词指示符-1"><span>34.1.2单词指示符<a class="copiable-link" href="#单词指示符-1"> &para;</a></span></h4>
+
+<p>单词指示符用于从事件中选择所需的单词。
+一个&lsquo;<samp class="samp">:</samp>&rsquo;将事件规范与单词指示符分隔开。如果单词指示符以&lsquo;<samp class="samp">^</samp>&rsquo;、&lsquo;<samp class="samp">$</samp>&rsquo;、&lsquo;<samp class="samp">*</samp>&rsquo;、&lsquo;<samp class="samp">-</samp>&rsquo;或&lsquo;<samp class="samp">%</samp>&rsquo;开头，则可以省略该分隔符。单词从行首开始编号，第一个单词用数字０表示。单词在当前行中插入时用单个空格分隔。
+</p>
+<p>例如，
+</p>
+<dl class="table">
+<dt><code class="code">!!</code></dt>
+<dd><p>表示上一个命令。当你输入这个时，上一个命令会原封不动地重复。
+</p>
+</dd>
+<dt><code class="code">!!:$</code></dt>
+<dd><p>表示上一个命令的最后一个参数。这可以缩写为<code class="code">!$</code>。
+</p>
+</dd>
+<dt><code class="code">!fi:2</code></dt>
+<dd><p>表示最近一个以字母<code class="code">fi</code>开头的命令的第二个参数。
+</p></dd>
+</dl>
+
+<p>以下是单词指示符：
+</p> 
+<dl class="table">
+<dt><code class="code">0（零）</code></dt>
+<dd><p>第０个单词。对于许多应用程序来说，这是命令单词。
+</p>
+</dd>
+<dt><code class="code"><var class="var">n</var></code></dt>
+<dd><p>第<var class="var">n</var>个单词。
+</p>
+</dd>
+<dt><code class="code">^</code></dt>
+<dd><p>第一个参数；即单词1。
+</p>
+</dd>
+<dt><code class="code">$</code></dt>
+<dd><p>最后一个参数。
+</p>
+</dd>
+<dt><code class="code">%</code></dt>
+<dd><p>最近一次&lsquo;<samp class="samp">?<var class="var">字符串</var>?</samp>&rsquo;搜索匹配的第一个单词，如果搜索字符串以作为单词一部分的字符开头。
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var>-<var class="var">y</var></code></dt>
+<dd><p>单词范围；&lsquo;<samp class="samp">-<var class="var">y</var></samp>&rsquo; 缩写为 &lsquo;<samp class="samp">0-<var class="var">y</var></samp>&rsquo;。
+</p>
+</dd>
+<dt><code class="code">*</code></dt>
+<dd><p>除第０个单词外的所有单词。这是&lsquo;<samp class="samp">1-$</samp>&rsquo;的同义词。如果事件中只有一个单词，使用&lsquo;<samp class="samp">*</samp>&rsquo;不会出错；在这种情况下返回空字符串。
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var>*</code></dt>
+<dd><p>缩写为 &lsquo;<samp class="samp"><var class="var">x</var>-$</samp>&rsquo;
+</p>
+</dd>
+<dt><code class="code"><var class="var">x</var>-</code></dt>
+<dd><p>与 &lsquo;<samp class="samp"><var class="var">x</var>*</samp>&rsquo; 一样缩写为 &lsquo;<samp class="samp"><var class="var">x</var>-$</samp>&rsquo;，但省略最后一个单词。如果省略 &lsquo;<samp class="samp">x</samp>&rsquo;，则默认为0。
+</p>
+</dd>
+</dl>
+
+<p>如果提供的单词指示符没有事件规范，则使用上一个命令作为事件。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Modifiers.html">修饰符</a>，上一个：<a href="Event-Designators.html">事件指示符</a>，向上：<a href="History-In">历史扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

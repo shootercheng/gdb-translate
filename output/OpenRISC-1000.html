@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025 自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>OpenRISC 1000（使用GDB调试）</title>
+
+<meta name="description" content="OpenRISC 1000 (Debugging with GDB)">
+<meta name="keywords" content="OpenRISC 1000 (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="PowerPC-Embedded.html" rel="next" title="PowerPC嵌入式">
+<link href="MIPS-Embedded.html" rel="prev" title="MIPS嵌入式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible} %>
+-->
+
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="OpenRISC-1000">
+<div class="nav-panel">
+<p>
+下一页：<a href="PowerPC-Embedded.html" accesskey="n" rel="next">PowerPC嵌入式</a>，上一页：<a href="MIPS-Embedded.html" accesskey="p" rel="prev"><abbr class="acronym">MIPS</abbr>嵌入式</a>，向上：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="OpenRISC-1000-1"><span>21.3.7 OpenRISC 1000<a class="copiable-link" href="#OpenRISC-1000-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-OpenRISC-1000"></a>
+
+<p>OpenRISC 1000提供了一种免费的精简指令集架构。它主要以软核的形式提供，可以在赛灵思、阿尔特拉等FPGA上运行。
+</p>
+<p>用于OpenRISC的<small class="sc">GDB</small>在连接到目标时支持以下命令：
+</p>
+<dl class="table">
+<dt><a id="index-target-sim"></a><span><code class="code">target sim</code><a class="copiable-link" href="#index-target-sim"> &para;</a></span></dt>
+<dd>
+<p>运行内置的CPU模拟器，该模拟器可以运行非常基本的程序，但不支持像MMU这样的大多数硬件功能。
+对于更复杂的用例，建议用户运行外部目标，并使用‘<samp class="samp">target remote</samp>’进行连接。
+</p>
+<p>示例：<code class="code">target sim</code>
+</p>
+</dd>
+<dt><code class="code">set debug or1k</code></dt>
+<dd><p>切换是否显示来自OpenRISC目标支持子系统的特定于OpenRISC的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug or1k</code></dt>
+<dd><p>显示是否启用了特定于OpenRISC的调试消息。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

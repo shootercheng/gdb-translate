@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>文件名参数（使用GDB调试）</title>
+
+<meta name="description" content="文件名参数（使用GDB调试）">
+<meta name="keywords" content="文件名参数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Commands.html" rel="up" title="命令">
+<link href="Command-Options.html" rel="next" title="命令选项">
+<link href="Completion.html" rel="prev" title="命令补全">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="文件名参数">
+<div class="nav-panel">
+<p>
+下一页：<a href="Command-Options.html" accesskey="n" rel="next">命令选项</a>，上一页：<a href="Completion.html" accesskey="p" rel="prev">命令补全</a>，向上：<a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="作为命令参数的文件名"><span>3.4作为命令参数的文件名<a class="copiable-link" href="#作为命令参数的文件名"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-文件名_002c-引用和转义"></a>
+
+<p>当将文件名（或目录名）作为参数传递给命令时，
+如果文件名参数不包含任何空格、双引号或单引号，那么对于所有命令，文件名可以写成一个简单字符串，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) file /path/to/some/file
+</pre></div>
+
+<p>如果文件名确实包含空格、双引号或单引号，那么<small class="sc">GDB</small>对于这些文件名的格式化有两种方法；使用哪种格式取决于正在使用的命令。
+</p>
+<p>大多数<small class="sc">GDB</small>命令不需要或不支持引用和转义。这些命令将命令名后面的任何文本（不是命令选项，见<a class="pxref" href="Command-Options.html">命令选项</a>）视为文件名，即使文件名包含空格或引号字符。在下面的示例中，用户正在将<samp class="file">/path/that contains/two spaces/</samp><!-- /@w -->添加到自动加载安全路径（见<a class="pxref" href="Auto_002dloading-safe-path.html#add_002dauto_002dload_002dsafe_002dpath">add-auto-load-safe-path</a>）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) add-auto-load-safe-path /path/that contains/two spaces/
+</pre></div>
+
+<p>少数命令要求包含空格或引号字符的文件名要么被引用，要么用反斜杠转义特殊字符。支持这种方式的命令在手册中有标记，任何未标记为接受其文件名参数的引用和转义的命令，都不接受这种文件名参数方式。
+</p>
+<p>例如，要使用<code class="code">file</code>命令（见<a class="pxref" href="Files.html">指定文件的命令</a>）加载文件<samp class="file">/path/with spaces/to/a file</samp><!-- /@w -->，可以用反斜杠转义空格字符：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) file /path/with\ spaces/to/a\ file
+</pre></div>
+
+<p>或者整个文件名可以用单引号或双引号括起来，在这种情况下不需要反斜杠，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) symbol-file &quot;/path/with spaces/to/a file&quot;
+(gdb) exec-file '/path/with spaces/to/a file'
+</pre></div>
+
+<p>可以通过用反斜杠转义来在引用的文件名中包含引号字符，例如，在双引号包围的文件名中，双引号字符要用反斜杠转义，但单引号字符不用转义。在单引号字符串中，单引号字符需要转义，但双引号字符不用。
+</p>
+<p>也可以通过用反斜杠转义来包含一个字面的反斜杠字符。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Command-Options.html">命令选项</a>，上一页：<a href="Completion.html">命令补全</a>，向上：<a href="Commands.html"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>编写帧过滤器（使用GDB进行调试）</title>
+
+<meta name="description" content="编写帧过滤器（使用GDB进行调试）">
+<meta name="keywords" content="编写帧过滤器（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Unwinding-Frames-in-Python.html" rel="next" title="在Python中展开帧">
+<link href="Frame-Decorator-API.html" rel="prev" title="帧装饰器API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="编写帧过滤器">
+<div class="nav-panel">
+<p>
+下一个：<a href="Unwinding-Frames-in-Python.html" accesskey="n" rel="next">在Python中展开帧</a>，上一个：<a href="Frame-Decorator-API.html" accesskey="p" rel="prev">装饰帧</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="编写帧过滤器-1"><span>23.3.2.12编写帧过滤器<a class="copiable-link" href="#编写帧过滤器-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-编写帧过滤器"></a>
+
+<p>帧过滤器必须实现三个基本元素：它必须正确实现记录的接口（见 <a class="pxref" href="Frame-Filter-API.html">过滤帧</a>），它必须向GDB注册自己，最后，它必须决定是否处理GDB提供的数据。在所有情况下，无论它是否处理迭代器，每个帧过滤器都必须返回一个迭代器。一个基本的帧过滤器遵循以下示例中的模式。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">import gdb
+
+class FrameFilter():
+
+    def __init__(self):
+        # 创建并赋值帧过滤器属性。
+        #
+        # 'name' 是GDB将显示的过滤器名称。 
+        #
+        # 'priority' 是相对于其他过滤器的过滤器优先级。
+        #
+        # 'enabled' 是一个布尔值，表示此过滤器是否启用并应执行。
+
+        self.name = &quot;Foo&quot;
+        self.priority = 100
+        self.enabled = True
+
+        # 将此帧过滤器注册到全局frame_filters字典中。
+        gdb.frame_filters[self.name] = self
+
+    def filter(self, frame_iter):
+        # 直接返回迭代器。
+        return frame_iter
+</pre></div>
+
+<p>上述示例中的帧过滤器实现了所有帧过滤器的三个要求。它实现了API，进行了自我注册，并对迭代器做出了决策（在这种情况下，它只是原封不动地返回迭代器）。
+</p>
+<p>第一步是创建并赋值属性，如注释所示，过滤器分配以下属性：<code class="code">name</code>、<code class="code">priority</code> 以及使用 <code class="code">enabled</code> 属性表示过滤器是否应启用。
+</p>
+<p>第二步是将帧过滤器注册到帧过滤器感兴趣的一个或多个字典中。如注释所示，此过滤器只是将自己注册到全局字典 <code class="code">gdb.frame_filters</code> 中。如前所述，<code class="code">gdb.frame_filters</code> 是一个在GDB启动时在 <code class="code">gdb</code> 模块中初始化的字典。过滤器注册到哪个字典是一个重要的考虑因素。一般来说，如果一个过滤器特定于一组代码，它应该注册到 <code class="code">objfile</code> 或 <code class="code">progspace</code> 字典中，因为它们特定于当前加载到GDB中的程序。全局字典在GDB中始终存在且不会卸载。任何注册到全局字典的过滤器将一直存在，直到GDB退出。为了避免可能的冲突，通常最好将帧过滤器注册到与当前正在讨论的过滤器用法更紧密匹配的字典中。有关自动加载Python脚本的更多信息，请参阅 <a class="xref" href="Python-Auto_002dloading.html">Python自动加载</a>。
+</p>
+<p>GDB对帧过滤器注册采取不干涉的方法，因此确保注册已发生并适当处理任何异常是帧过滤器的责任。特别是，您可能希望处理与Python字典键唯一性相关的异常。字典键必须与帧过滤器的 <code class="code">name</code> 属性相同。当用户管理帧过滤器时（见 <a class="pxref" href="Frame-Filter-Management.html">帧过滤器的管理</a>），GDB将显示的名称是 <code class="code">name</code> 属性中包含的名称。
+</p>
+<p>此示例的最后一步是 <code class="code">filter</code> 方法的实现。如示例注释所示，我们定义了 <code class="code">filter</code> 方法，并注意到该方法必须接受一个迭代器，并且也必须返回一个迭代器。在这个基本示例中，帧过滤器不是很有用，因为它只是原封不动地返回迭代器。然而，对于设置了 <code class="code">enabled</code> 属性但决定不处理任何帧的帧过滤器来说，这是一个有效的操作。
+</p>
+<p>在下一个示例中，帧过滤器处理所有帧，并利用帧装饰器对帧执行一些操作。有关帧装饰器接口的更多信息，请参阅 <a class="xref" href="Frame-Decorator-API.html">装饰帧</a>。
+</p>
+<p>此示例处理内联帧。它通过用“[内联]”标签标记内联帧来突出显示它们。通过使用Python <code class="code">itertools imap</code> 方法将帧装饰器应用于所有帧，该示例将操作推迟到帧装饰器。帧装饰器仅在GDB打印回溯时才会被处理。
+</p>
+<p>这引入了一个新的决策主题：是在过滤步骤还是在打印步骤执行决策操作。在这个示例的方法中，它在过滤步骤中除了将帧装饰器映射到每个帧之外，不执行任何过滤决策。这允许在打印每个帧时执行实际的决策。这是一个重要的考虑因素，在设计帧过滤器时非常值得思考。帧过滤器应避免的一个问题是尽可能避免展开堆栈。有些堆栈可能非常深，在某些情况下会达到数万层。在过滤步骤提前搜索每个帧以确定它是否是内联的可能成本过高。帧过滤器不知道它必须迭代多少帧，并且它必须遍历所有帧。这最终会导致重复工作，因为GDB在打印帧时会执行此迭代。
+</p>
+<p>在这个示例中，可以将决策推迟到打印步骤。当GDB迭代时，随着每个帧被打印，帧装饰器可以依次检查每个帧。从性能角度来看，这是最合适的决策，因为它避免了重复打印步骤无论如何都会进行的工作。此外，如果在过滤期间有许多帧过滤器展开堆栈，可能会大大延迟回溯的打印，这将导致大量内存使用和糟糕的用户体验。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class InlineFilter():
+
+    def __init__(self):
+        self.name = &quot;InlinedFrameFilter&quot;
+        self.priority = 100
+        self.enabled = True
+        gdb.frame_filters[self.name] = self
+
+    def filter(self, frame_iter):
+        frame_iter = itertools.imap(InlinedFrameDecorator,
+                                    frame_iter)
+        return frame_iter
+</pre></div>
+
+<p>这个帧过滤器与前面的示例有些相似，不同之处在于 <code class="code">filter</code> 方法将一个名为 <code class="code">InlinedFrameDecorator</code> 的帧装饰器对象应用于迭代器中的每个元素。Python的 <code class="code">imap</code> 方法很轻量级。它不会主动遍历迭代器，而是创建一个包装现有迭代器 的新迭代器。
+</p>
+<p>下面是这个示例的帧装饰器。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class InlinedFrameDecorator(FrameDecorator):
+
+    def __init__(self, fobj):
+        super(InlinedFrameDecorator, self).__init__(fobj)
+
+    def function(self):
+        frame = self.inferior_frame()
+        name = str(frame.name())
+
+        if frame.type() == gdb.INLINE_FRAME:
+            name = name + &quot; [inlined]&quot;
+
+        return name
+</pre></div>
+
+<p>这个帧装饰器只定义并覆盖了 <code class="code">function</code> 方法。它让随GDB提供 的 <code class="code">FrameDecorator</code> 执行与打印此帧相关的其他工作。
+</p>

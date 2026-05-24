@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>MIPS特性（使用GDB调试）</title>
+
+<meta name="description" content="MIPS特性（使用GDB调试）">
+<meta name="keywords" content="MIPS特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="M68K-Features.html" rel="next" title="M68K特性">
+<link href="MicroBlaze-Features.html" rel="prev" title="MicroBlaze特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MIPS-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="M68K-Features.html" accesskey="n" rel="next">M68K特性</a>，上一页：<a href="MicroBlaze-Features.html" accesskey="p" rel="prev">MicroBlaze特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MIPS-Features-1"><span>G.5.8 MIPS特性<a class="copiable-link" href="#MIPS-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-MIPS-features"></a>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.mips.cpu</samp>&rsquo;特性是MIPS目标所必需的。
+它应该包含从&lsquo;<samp class="samp">r0</samp>&rsquo;到&lsquo;<samp class="samp">r31</samp>&rsquo;、&lsquo;<samp class="samp">lo</samp>&rsquo;、
+&lsquo;<samp class="samp">hi</samp>&rsquo;和&lsquo;<samp class="samp">pc</samp>&rsquo;这些寄存器。 根据目标的不同，它们可以是32位或64位。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.mips.cp0</samp>&rsquo;特性也是必需的。 它应该
+至少包含&lsquo;<samp class="samp">status</samp>&rsquo;、&lsquo;<samp class="samp">badvaddr</samp>&rsquo;和&lsquo;<samp class="samp">cause</samp>&rsquo;
+寄存器。 根据目标的不同，它们可以是32位或64位。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.mips.fpu</samp>&rsquo;特性目前是必需的，不过
+在未来版本的GDB中可能是可选的。 它应该
+包含从&lsquo;<samp class="samp">f0</samp>&rsquo;到&lsquo;<samp class="samp">f31</samp>&rsquo;、&lsquo;<samp class="samp">fcsr</samp>&rsquo;和
+&lsquo;<samp class="samp">fir</samp>&rsquo;这些寄存器。 根据目标的不同，它们可以是32位或64位。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.mips.dsp</samp>&rsquo;特性是可选的。 它应该
+包含从&lsquo;<samp class="samp">hi1</samp>&rsquo;到&lsquo;<samp class="samp">hi3</samp>&rsquo;、&lsquo;<samp class="samp">lo1</samp>&rsquo;到
+&lsquo;<samp class="samp">lo3</samp>&rsquo;以及&lsquo;<samp class="samp">dspctl</samp>&rsquo;这些寄存器。 &lsquo;<samp class="samp">dspctl</samp>&rsquo;寄存器应该
+是32位，其余的根据目标的不同可以是32位或64位。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.mips.linux</samp>&rsquo;特性是可选的。 它应该
+包含一个单一寄存器&lsquo;<samp class="samp">restart</samp>&rsquo;，Linux内核用它来
+控制可重启的系统调用。
+</p>
+</div>
+
+
+
+</body>
+</html>

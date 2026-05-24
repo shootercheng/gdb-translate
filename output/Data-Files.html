@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>数据文件（使用GDB调试）</title>
+
+<meta name="description" content="数据文件（使用GDB调试）">
+<meta name="keywords" content="数据文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="Symbol-Errors.html" rel="prev" title="符号错误">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="数据文件">
+<div class="nav-panel">
+<p>
+上一个：<a href="Symbol-Errors.html" accesskey="p" rel="prev">读取符号文件时的错误</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="GDB数据文件"><span>18.8 GDB数据文件<a class="copiable-link" href="#GDB-数据文件"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-数据文件的前缀"></a>
+<p><small class="sc">GDB</small>有时会读取辅助数据文件。这些文件保存在一个称为<em class="dfn">数据目录</em>的目录中。
+</p>
+<p>你可以设置数据目录的名称，并查看<small class="sc">GDB</small>当前正在使用的名称。
+</p>
+<dl class="table">
+<dt><a id="索引-设置数据目录"></a><span><code class="code">set data-directory <var class="var">directory</var></code><a class="copiable-link" href="#索引-set-data_002ddirectory"> &para;</a></span></dt>
+<dd><p>将<small class="sc">GDB</small>搜索辅助数据文件的目录设置为<var class="var">directory</var>。
+</p>
+</dd>
+<dt><a id="索引-显示数据目录"></a><span><code class="code">show data-directory</code><a class="copiable-link" href="#索引-show-data_002ddirectory"> &para;</a></span></dt>
+<dd><p>显示<small class="sc">GDB</small>搜索辅助数据文件的目录。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-默认数据目录"></a>
+<a class="index-entry-id" id="索引---with-gdb-datadir"></a>
+<p>你可以通过使用配置时的&lsquo;<samp class="samp">--with-gdb-datadir</samp>&rsquo;选项来设置默认数据目录。如果数据目录在<small class="sc">GDB</small>配置的二进制前缀（用&lsquo;<samp class="samp">--prefix</samp>&rsquo;或&lsquo;<samp class="samp">--exec-prefix</samp>&rsquo;设置）内，那么如果已安装的<small class="sc">GDB</small>被移动到新位置，默认数据目录将自动更新。
+</p>
+<p>也可以使用<code class="code">--data-directory</code>命令行选项指定数据目录。
+请参阅 <a class="xref" href="Mode-Options.html">选择模式</a>。
+</p>
+</div>
+
+
+
+</body>
+</html>

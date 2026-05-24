@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>帮助（使用GDB调试）</title>
+
+<meta name="description" content="帮助（使用GDB调试）">
+<meta name="keywords" content="帮助（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Commands.html" rel="up" title="命令">
+<link href="Command-Options.html" rel="prev" title="命令选项">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="帮助">
+<div class="nav-panel">
+<p>
+上一个：<a href="Command-Options.html" accesskey="p" rel="prev">命令选项</a>，向上：<a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="获取帮助"><span>3.6 获取帮助<a class="copiable-link" href="#获取帮助"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-在线文档"></a>
+<a class="index-entry-id" id="索引-帮助"></a>
+
+<p>你可以随时使用命令<code class="code">help</code>向<small class="sc">GDB</small>本身询问有关其命令的信息。
+</p>
+<dl class="table">
+<dt><a id="索引-h-(_0028help_0029)"></a><span><code class="code">help</code><a class="copiable-link" href="#索引-h-(_0028help_0029)"> &para;</a></span></dt>
+<dt><code class="code">h</code></dt>
+<dd><p>你可以在不带参数的情况下使用<code class="code">help</code>（缩写为<code class="code">h</code>）来显示命令的命名类别的简短列表：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) help
+命令类列表：
+
+别名 -- 其他命令的用户定义别名
+断点 -- 使程序在特定点停止
+数据 -- 检查数据
+文件 -- 指定和检查文件
+内部 -- 维护命令
+晦涩 -- 晦涩的功能
+运行 -- 运行程序
+栈 -- 检查栈
+状态 -- 状态查询
+支持 -- 支持工具
+跟踪点 -- 在不停止程序的情况下跟踪程序执行
+用户定义 -- 用户定义的命令
+
+在“help”后面跟一个类名以获取该类中的命令列表。
+在“help”后面跟命令名以获取完整文档。
+如果明确无误，允许使用命令名缩写。
+(gdb)
+</pre></div>
+
+</dd>
+<dt><code class="code">help <var class="var">类</var></code></dt>
+<dd><p>将通用帮助类之一作为参数使用，你可以获取该类中各个命令的列表。如果一个命令有别名，别名会在命令名之后给出，用逗号分隔。如果一个别名有默认参数，别名的完整定义会在第一行之后给出。
+例如，这是类<code class="code">status</code>的帮助显示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) help status  
+状态查询。
+
+命令列表：
+
+info, inf, i -- 用于显示有关正在调试的程序的信息的通用命令
+        info address, iamain  -- 描述符号SYM存储的位置。
+  别名iamain = info address main
+info all-registers -- 所选栈帧的所有寄存器及其内容的列表，
+        ...
+show, info set -- 用于显示有关调试器的信息的通用命令
+
+在“help”后面跟命令名以获取完整文档。
+如果明确无误，允许使用命令名缩写。
+(gdb)
+</pre></div>
+
+</dd>
+<dt><code class="code">help <var class="var">命令</var></code></dt>
+<dd><p>将命令名作为<code class="code">help</code>的参数，<small class="sc">GDB</small>会显示一段关于如何使用该命令的简短段落。如果该命令有一个或多个别名，<small class="sc">GDB</small>会显示第一行，其中命令名和所有别名用逗号分隔。
+这第一行之后将是所有具有默认参数的别名的完整定义。
+当询问别名的帮助时，会显示被别名化的命令的文档。
+</p>
+<p>用户定义的别名可以使用<code class="code">document</code>命令进行可选的记录（见 <a class="pxref" href="Define.html">document</a>）。然后<small class="sc">GDB</small>会认为这个别名与被别名化的命令不同：这个别名不会列在被别名化的命令帮助输出中，并且询问这个别名的帮助会显示为该别名提供的文档，而不是被别名化的命令的文档。
+</p>
+</dd>
+<dt><a id="索引-apropos"></a><span><code class="code">apropos [-v] <var class="var">正则表达式</var></code><a class="copiable-link" href="#索引-apropos"> &para;</a></span></dt>
+<dd><p><code class="code">apropos</code>命令在所有<small class="sc">GDB</small>命令、别名及其文档中搜索<var class="var">args</var>中指定的正则表达式。它会打印出找到的所有匹配项。可选标志“&lsquo;<samp class="samp">-v</samp>&rsquo;”，代表“&lsquo;<samp class="samp">详细</samp>&rsquo;”，表示输出匹配命令的完整文档，并突出显示文档中与<var class="var">regexp</var>匹配的部分。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">apropos alias
+</pre></div>
+
+<p>结果如下：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">alias -- 定义一个新命令，它是现有命令的别名
+aliases -- 其他命令的用户定义别名
+</pre></div></div>
+
+<p>而
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">apropos -v cut.*thread apply
+</pre></div>
+
+<p>结果如下，其中如果启用了样式，“&lsquo;<samp class="samp">cut for 'thread apply</samp>&rsquo;”会被突出显示。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">taas -- 将一个命令应用于所有线程（忽略错误
+和空输出）。
+用法：taas COMMAND
+'thread apply all -s COMMAND'的快捷方式
+
+tfaas -- 将一个命令应用于所有线程的所有帧
+（忽略错误和空输出）。
+用法： tfaas COMMAND
+'thread apply all -s frame apply all -s COMMAND'的快捷方式
+</pre></div></div>
+
+</dd>
+<dt><a id="索引-complete"></a><span><code class="code">complete <var class="var">参数</var></code><a class="copiable-link" href="#索引-complete"> &para;</a></span></dt>
+<dd><p><code class="code">complete <var class="var">args</var></code>命令列出命令开头的所有可能的补全。使用<var class="var">args</var>指定要补全的命令的开头。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">complete i
+</pre></div>
+
+<p>结果如下：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">if
+ignore 
+info 
+inspect
+</pre></div></div>
+
+<p>这旨在供<small class="sc">GNU</small> Emacs使用。
+</p></dd>
+</dl>
+
+<p>除了<code class="code">help</code>之外，你还可以使用<small class="sc">GDB</small>命令<code class="code">info</code>和<code class="code">show</code>来询问你的程序的状态，或者<small class="sc">GDB</small>本身的状态。每个命令都支持许多查询主题；本手册在适当的上下文中介绍了它们中的每一个。命令、变量和函数索引中<code class="code">info</code>和<code class="code">show</code>下的列表指向所有子命令。见 <a class="xref" href="Command-and-Variable-Index.html">命令 - 变量和函数索引</a>。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-i-(_0028info_0029)"></a>
+<a id="索引-info"></a><span><code class="code">info</code><a class="copiable-link" href="#索引-info"> &para;</a></span></dt>
+<dd><p>这个命令（缩写为<code class="code">i</code>）用于描述你的程序的状态。例如，你可以使用<code class="code">info args</code>显示传递给函数的参数，使用<code class="code">info registers</code>列出当前正在使用的寄存器，或者使用<code class="code">info breakpoints</code>列出你设置地断点。
+你可以使用<code class="code">help &nbsp;info</code><!-- /@w -->获取<code class="code">info</code>子命令的完整列表。
+</p>
+</dd>
+<dt><a id="索引-set"></a><span><code class="code">set</code><a class="copiable-link" href="#索引-set"> &para;</a></span></dt>
+<dd><p>你可以使用<code class="code">set</code>将表达式的值赋给一个环境变量。例如，你可以使用<code class="code">set prompt $</code>将<small class="sc">GDB</small>提示符设置为美元符号。
+</p>
+</dd>
+<dt><a id="索引-show"></a><span><code class="code">show</code><a class="copiable-link" href="#索引-show"> &para;</a></span></dt>
+<dd><p>与<code class="code">info</code>相反，<code class="code">show</code>用于描述<small class="sc">GDB</small>本身地状态。
+你可以通过使用相关命令<code class="code">set</code>来更改你可以<code class="code">show</code>的大多数内容；例如，你可以使用<code class="code">set radix</code>控制用于显示的数字系统，或者使用<code class="code">show radix</code>简单地询问当前正在使用的数字系统。
+</p>
+<a class="index-entry-id" id="索引-info-set"></a>
+<p>要显示所有可设置的参数及其当前值，可以不带参数使用<code class="code">show</code>；你也可以使用<code class="code">info set</code>。这两个命令产生相同的显示。
+</p></dd>
+</dl>
+
+<p>这里有几个其他地<code class="code">show</code>子命令，它们都很特殊，因为缺少相应的<code class="code">set</code>命令：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-gdb-版本号"></a>
+<a id="索引-show-version"></a><span><code class="code">show version</code><a class="copiable-link" href="#索引-show-version"> &para;</a></span></dt>
+<dd><p>显示正在运行的<small class="sc">GDB</small>的版本。你应该在<small class="sc">GDB</small>错误报告中包含此信息。如果你的站点使用多个版本的<small class="sc">GDB</small>，你可能需要确定你正在运行的<small class="sc">GDB</small>版本；随着<small class="sc">GDB</small>的发展，会引入新命令，旧命令可能会消失。此外，许多系统供应商提供<small class="sc">GDB</small>的变体版本，<small class="sc">GNU</small>/Linux发行版中也有<small class="sc">GDB</small>的变体版本。
+版本号与你启动<small class="sc">GDB</small>时显示的版本号相同。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-info-copying"></a>
+<a class="index-entry-id" id="索引-display-gdb-copyright"></a>
+<a id="索引-show-copying"></a><span><code class="code">show copying</code><a class="copiable-link" href="#索引-show-copying"> &para;</a></span></dt>
+<dt><code class="code">info copying</code></dt>
+<dd><p>显示有关复制<small class="sc">GDB</small>的权限的信息。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-info-warranty"></a>
+<a id="索引-show-warranty"></a><span><code class="code">show warranty</code><a class="copiable-link" href="#索引-show-warranty"> &para;</a></span></dt>
+<dt><code class="code">info warranty</code></dt>
+<dd><p>显示GNU的“无保修”声明，或者如果你的<small class="sc">GDB</small>版本附带保修，则显示保修声明。
+</p>
+<a class="anchor" id="show-configuration"></a></dd>
+<dt><a id="索引-show-configuration"></a><span><code class="code">show configuration</code><a class="copiable-link" href="#索引-show-configuration"> &para;</a></span></dt>
+<dd><p>显示有关<small class="sc">GDB</small>构建时的配置方式的详细信息。这会显示传递给<samp class="file">configure</samp>脚本的可选参数，以及<code class="command">configure</code>自动检测到的配置参数。在报告<small class="sc">GDB</small>错误时（见 <a class="pxref" href="GDB-Bugs.html">报告GDB中的错误</a>），在你的报告中包含此信息很重要。
+</p>
+<p>此命令还会显示<small class="sc">GDB</small>正在使用的Readline库的版本号。版本号后面会出现“&lsquo;<samp class="samp">(系统)</samp>&rsquo;”，表示<small class="sc">GDB</small>正在使用共享系统Readline库，或者“&lsquo;<samp class="samp">(内部)</samp>&rsquo;”，表示<small class="sc">GDB</small>正在使用静态链接的Readline库版本。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Command-Options.html">命令选项</a>，向上：<a href="Commands.html"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

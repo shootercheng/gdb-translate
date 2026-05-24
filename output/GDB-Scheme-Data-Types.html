@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB Scheme数据类型（使用GDB调试）</title>
+
+<meta name="description" content="GDB Scheme数据类型（使用GDB调试）">
+<meta name="keywords" content="GDB Scheme数据类型（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引"> 
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Guile-Exception-Handling.html" rel="next" title="Guile异常处理">
+<link href="Guile-Configuration.html" rel="prev" title="Guile配置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="GDB-Scheme-Data-Types">
+<div class="nav-panel">
+<p>
+下一页：<a href="Guile-Exception-Handling.html" accesskey="n" rel="next">Guile异常处理</a>，上一页：<a href="Guile-Configuration.html" accesskey="p" rel="prev">Guile配置</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="GDB-Scheme-Data-Types-1"><span>23 .4.3.3 GDB Scheme数据类型<a class="copiable-link" href="#GDB-Scheme-Data-Types-1"> &para;</a></span></h></h4>
+<a class="index-entry-id" id="index-gdb-对象"></a>
+
+<p><small class="sc">GDB</small> 向Guile公开的值被称为 <em class="dfn"><small class="sc">GDB</small> 对象</em> <small class="sc">GDB</small> 有几种对象类型，并且每种类型都与Guile已知的所有其他类型不相交。
+</p>
+<dl class="first-deffn">  
+<dt class="deffn" id="index-gdb_002dobject_002dkind"><span class="category-def">Scheme过程： </span><span><strong class="def-name">gdb-object-kind</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-gdb_002dobject_002dkind"> &para;</a></span></dt>
+<dd><p>返回 <small class="sc">GDB</small> 对象的类型，例如 <code class="code">&lt;gdb:断点&gt;</code>，作为一个符号。
+</p></dd></dl>
+
+<p><small class="sc">GDB</small> 定义了以下对象类型 <small class="sc">GDB</small>：
+</p>
+<dl class="table">
+<dt><code class="code">&lt;gdb:架构&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Architectures-In-Guile.html">Guile中架构的表示</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:块&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Blocks-In-Guile.html">从Guile访问块</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:块符号迭代器&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Blocks-In-Guile.html">从Guile访问块</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:断点&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Breakpoints-In-Guile.html">使用Guile操作断点</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:命令&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Commands-In-Guile.html">Guile中的命令</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:异常&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Guile-Exception-Handling.html">Guile异常处理</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:帧&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Frames-In-Guile.html">从Guile访问下级堆栈帧</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:迭代器&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Iterators-In-Guile.html">Guile中的迭代器</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:惰性字符串&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Lazy-Strings-In-Guile.html">Guile中惰性字符串的表示</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:目标文件&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Objfiles-In-Guile.html">Guile中的目标文件</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:参数&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Parameters-In-Guile.html">Guile中的参数</a> 
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:漂亮打印机&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:漂亮打印机工作器&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:程序空间&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Progspaces-In-Guile.html">Guile中的程序空间</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:符号&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Symbols-In-Guile.html">Guile中符号的表示</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:符号表&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Symbol-Tables-In-Guile.html">Guile中符号表的表示</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:源位置&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Symbol-Tables-In-Guile.html">Guile中符号表的表示</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:类型&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Types-In-Guile.html">Guile中的类型</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:字段&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Types-In-Guile.html">Guile中的类型</a>。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:值&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Values-From-Inferior-In-Guile.html">Guile中来自下级的值</a>。
+</p>
+</dd>  
+<dt><code class="code">&lt;gdb:颜色&gt;</code></dt>
+<dd><p>见 <a class="xref" href="Colors-In-Guile.html">Guile中的颜色</a>。
+</p></dd>
+</dl>
+
+<p>以下 <small class="sc">GDB</small> 对象在内部进行管理，以便Scheme函数 <code class="code">eq?</code> 可以应用于它们。
+</p>
+<dl class="table">
+<dt><code class="code">&lt;gdb:架构&gt;</code></dt>
+<dt><code class="code">&lt;gdb:块&gt;</code></dt>
+<dt><code class="code">&lt;gdb:断点&gt;</code></dt>
+<dt><code class="code">&lt;gdb:帧&gt;</code></dt>
+<dt><code class="code">&lt;gdb:目标文件&gt;</code></dt>
+<dt><code class="code">&lt;gdb:程序空间&gt;</code></dt>
+<dt><code class="code">&lt;gdb:符号&gt;</code></dt>
+<dt><code class="code">&lt;gdb:符号表&gt;</code></dt>
+<dt><code class="code">&lt;gdb:类型&gt;</code></dt>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Guile-Exception-Handling.html">Guile异常处理</a>，上一页 
+<a href="Guile-Configuration.html">Guile配置</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>通用字节码设计（使用GDB调试）</title>
+
+<meta name="description" content="通用字节码设计（使用GDB调试）">
+<meta name="keywords" content="通用字节码设计（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Agent-Expressions.html" rel="up" title="代理表达式">
+<link href="Bytecode-Descriptions.html" rel="next" title="字节码描述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="通用字节码设计">
+<div class="nav-panel">
+<p>
+下一页：<a href="Bytecode-Descriptions.html" accesskey="n" rel="next">字节码描述</a>，上一级：<a href="Agent-Expressions.html" accesskey="u" rel="up">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="通用字节码设计-1"><span>F.1通用字节码设计<a class="copiable-link" href="#通用字节码设计-1"> &para;</a></span></h3>
+
+<p>代理将字节码表达式表示为一个字节数组。每条指令长一个字节（因此称为<em class="dfn">字节码</em>）。有些指令后面跟着操作数字节；例如，<code class="code">goto</code>指令后面跟着跳转的目标地址。
+</p>
+<p>字节码解释器是一个基于栈的机器；大多数指令从栈中弹出操作数，执行一些操作，然后将结果放回栈中供下一条指令使用。栈的每个元素可以包含一个整数或一个浮点数；这些值的宽度与源语言中可以直接操作的最大整数的宽度相同。栈元素不携带其类型的记录；字节码可以将一个值作为整数压入栈，然后作为浮点数弹出。然而，GDB不会生成这样做的代码。在C语言中，可以如下定义栈元素的类型：
+</p><div class="example">
+<pre class="example-preformatted">union agent_val {
+  LONGEST l;
+  DOUBLEST d;
+};
+</pre></div>
+<p>其中，<code class="code">LONGEST</code>和<code class="code">DOUBLEST</code>是机器上最大整数和浮点数类型的<code class="code">typedef</code>名称。
+</p>
+<p>当字节码解释器到达表达式末尾时，表达式的值应该是栈上剩下的唯一值。对于跟踪应用程序，表达式中的<code class="code">trace</code>字节码将记录必要的数据，栈上的值可以丢弃。对于其他应用程序，如条件断点，该值可能会有用。
+</p>
+<p>除了栈之外，解释器还有两个寄存器：
+</p><dl class="table">
+<dt><code class="code">pc</code></dt>
+<dd><p>要执行的下一个字节码的地址。
+</p>
+</dd>
+<dt><code class="code">start</code></dt>
+<dd><p>字节码表达式开始的地址，这对于解释<code class="code">goto</code>和<code class="code">if_goto</code>指令是必要的。
+</p> 
+</dd>
+</dl>
+<p>这两个寄存器字节码语言本身都不能直接看到，但它们对于定义字节码操作的含义很有用。
+</p>
+<p>没有指令对正在运行的程序执行副作用，或调用程序的函数；我们假设这些表达式仅用于不干扰的调试，而不是用于修补正在运行的代码。
+</p>
+<p>大多数字节码指令不区分不同大小的值，并且对全宽值进行操作；值的高位被简单地忽略，因为它们通常对计算的值没有影响。此规则的例外情况是：
+</p><dl class="table">
+<dt>内存引用指令（<code class="code">ref</code><var class="var">n</var>）</dt>
+<dd><p>有不同的指令从内存中获取不同字大小的数据。然而，一旦数据在栈上，它们将被视为全尺寸整数。它们可能需要进行符号扩展；为此存在<code class="code">ext</code>指令。
+</p>
+</dd>
+<dt>符号扩展指令(<code class="code">ext</code> <var class="var">n</var>)</dt>
+<dd><p>这些指令显然需要知道其操作数的哪一部分要被扩展以占据整个字长。
+</p>
+</dd>
+</dl>
+
+<p>如果解释器由于某种原因无法完全计算一个表达式（例如，内存位置不可访问，或除数为零），我们说解释“以错误结束”。这意味着问题会以某种有用的方式报告给解释器的调用者。一般来说，使用代理表达式的代码应该假设它们可能会尝试除以零、获取任意内存位置以及以其他方式行为异常。
+</p>
+<p>即使是复杂的C表达式也会编译成几条字节码指令；例如，假设<code class="code">x</code>和<code class="code">y</code>存放在寄存器中，<code class="code">z</code>是一个持有32位<code class="code">int</code>的全局变量，表达式<code class="code">x + y * z</code>通常会生成如下代码：
+</p><div class="example">
+<pre class="example-preformatted">reg 1
+reg 2
+const32 <i class="i">z的地址</i>
+ref32
+ext 32
+mul
+add
+end
+</pre></div>
+
+<p>详细来说，这些指令的含义如下：
+</p><dl class="table">
+<dt><code class="code">reg 1</code></dt>
+<dd><p>将寄存器1的值（假设持有<code class="code">x</code>）压入栈。
+</p><dd>
+<dt><code class="code">reg 2</code></dt>
+<dd><p>将寄存器2的值（持有<code class="code">y</code>）压入栈。
+</p>
+</dd>
+<dt><code class="code">const32 <i class="i">z的地址</i></code></dt>
+<dd><p>将<code class="code">z</code>的地址压入栈。
+</p>
+</dd>
+<dt><code class="code">ref32</code></dt>
+<dd><p>从栈顶地址处获取一个32位字；用该值替换栈上的地址。因此，我们用<code class="code">z</code>的值替换<code class="code">z</code>的地址。
+</p>
+</dd>
+<dt><code class="code">ext 32</code></dt>
+<dd><p>将栈顶的值从32位符号扩展到全字长。这是必要的，因为<code class="code">z</code>是一个有符号整数。
+</p>
+</dd>
+<dt><code class="code">mul</code></dt>
+<dd><p>弹出栈顶的两个数，将它们相乘，并将乘积压入栈。现在栈顶包含表达式<code class="code">y * z</code>的值。
+</p>
+</dd>
+<dt><code class="code">add</code></dt>
+<dd><p>弹出栈顶的两个数，将它们相加，并将和压入栈。现在栈顶包含<code class="code">x + y * z</code>的值。
+</p>
+</dd>
+<dt><code class="code">end</code></dt>
+<dd><p>停止执行；栈顶剩下的值就是要记录的值。
+</p>
+</dd>
+</dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Bytecode-Descriptions.html">字节码描述</a>，上一级：<a href="Agent-Expressions.html">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

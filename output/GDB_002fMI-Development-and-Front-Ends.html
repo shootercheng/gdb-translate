@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI开发与前端（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI开发与前端（使用GDB调试）">
+<meta name="keywords" content="GDB/MI开发与前端（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Output-Records.html" rel="next" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Compatibility-with-CLI.html" rel="prev" title="GDB/MI与CLI的兼容性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-开发与前端">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Output-Records.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>输出记录</a>，上一页：<a href="GDB_002fMI-Compatibility-with-CLI.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>与CLI的兼容性</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-开发与前端"><span>27.4 <small class="sc">GDB/MI</small>开发与前端<a class="copiable-link" href="#gdb_002fmi-开发与前端"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-gdb_002fmi-开发"></a>
+
+<p>接收MI输出并向用户呈现正在调试的程序状态的应用程序称为<em class="dfn">前端</em>。
+</p>
+<p>由于各种GDB前端都使用<small class="sc">GDB/MI</small>，因此MI接口的更改可能会破坏现有用法。本节描述协议如何更改以及在协议更改时如何请求以前版本的协议。
+</p>
+<p>MI中的某些更改不一定会破坏精心设计的前端，对于这些更改，MI版本将保持不变。以下是可能在同一级别内发生的更改列表，因此前端应以能够处理它们的方式解析MI输出：
+</p>
+<ul class="itemize mark-bullet">
+<li>可能会添加新的MI命令。
+
+</li><li>可能会向任何MI命令的输出中添加新字段。
+
+</li><li>具有指定值（例如<code class="code">in_scope</code>，见 <a class="pxref" href="GDB_002fMI-Variable-Objects.html#g_t_002dvar_002dupdate">-var-update</a>）的字段的值范围可能会扩展。
+
+
+</li></ul>
+
+<p>如果更改可能会破坏前端，则MI版本级别将增加1。MI协议的新版本与旧版本不兼容。旧版本的MI仍然可用，允许前端继续使用它们，直到它们被修改为使用最新的MI版本。
+</p>
+<p>由于<code class="code">--interpreter=mi</code>始终指向最新的MI版本，建议前端在启动<small class="sc">GDB</small>时请求特定版本的MI（例如<code class="code">--interpreter=mi2</code>），以确保他们获得具有预期MI版本的解释器。
+</p>
+<p>下表总结了MI接口的已发布版本：版本号、首次出现该版本的GDB版本以及与上一版本相比的重大更改。
+</p>
+<table class="multitable">
+<thead><tr><th width="10%">MI版本</th><th width="10%">GDB版本</th><th width="80%">重大更改</th></tr></thead>
+<tbody><tr><td width=""><div class="center">1
+</div></td><td width=""><div class="center">5.1
+</div></td><td width="80%">无</td></tr>
+<tr><td width=""><div class="center">2
+</div></td><td width=""><div class="center">6.0
+</div></td><td width="80%"><ul class="itemize mark-bullet">
+<li><code class="code">-environment-pwd</code>、<code class="code">-environment-directory</code>和
+<code class="code">-environment-path</code>命令现在使用MI输出语法返回值，而不是CLI输出语法。
+
+</li><li><code class="code">-var-list-children</code>的<code class="code">children</code>结果字段现在是一个列表，而不是一个元组。
+
+</li><li><code class="code">-var-update</code>的<code class="code">changelist</code>结果字段现在是一个列表，而不是一个元组。
+</li></ul></td></tr>
+<tr><td width=""><div class="center">3
+</div></td><td width=""><div class="center">9.1
+</div></td><td width="80%"><ul class="itemize mark-bullet">
+<li>关于多位置断点的信息输出在对<code class="code">-break-insert</code>和<code class="code">-break-info</code>命令的响应中发生了变化，以及在
+<code class="code">=breakpoint-created</code>和<code class="code">=breakpoint-modified</code>事件中。多个位置现在放在一个
+<code class="code">locations</code>字段中，其值是一个列表。
+</li></ul></td></tr>
+<tr><td width=""><div class="center">4
+</div></td><td width=""><div class="center">13.1
+</div></td><td width="80%"><ul class="itemize mark-bullet">
+<li>断点输出中“script”字段的语法在对<code class="code">-break-insert</code>和<code class="code">-break-info</code>命令的响应中发生了变化，以及在
+<code class="code">=breakpoint-created</code>和<code class="code">=breakpoint-modified</code>事件中发生了变化。以前的输出在语法上是无效的。新的输出是一个列表。
+</li></ul></td></tr>
+</tbody>
+</table>
+
+<p>如果你的前端尚未迁移到更新的MI协议版本，你仍然可以使用以下命令有选择地启用那些最新MI版本中可用的特定功能：
+</p>
+<dl class="table">
+<dt><code class="code">-fix-multi-location-breakpoint-output</code></dt>
+<dd><p>即使使用低于3的MI版本，也使用MI 3引入的多位置断点输出。当使用MI版本3或更高版本时，此命令无效。
+</p>
+</dd>
+<dt><code class="code">-fix-breakpoint-script-output</code></dt>
+<dd><p>即使使用低于MI 4的版本，也使用MI 4引入的断点“script”字段输出。当使用MI版本4或更高版本时，此命令无效。
+</p>
+</dd>
+</dl>
+
+<p>避免可能破坏前端的MI意外更改的最佳方法是让<small class="sc">GDB</small>开发人员了解你的项目，并关注 <a class="email" href="mailto:gdb@sourceware.org">gdb@sourceware.org</a> 和
+<a class="email" href="mailto:gdb-patches@sourceware.org">gdb-patches@sourceware.org</a> 上的开发。
+<a class="index-entry-id" id="索引-邮件列表"></a>
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Output-Records.html"><small class="sc">GDB/MI</small>输出记录</a>，上一页：<a href="GDB_00

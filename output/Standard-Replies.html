@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>标准回复（使用GDB调试）</title>
+
+<meta name="description" content="标准回复（使用GDB调试）">
+<meta name="keywords" content="标准回复（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Packets.html" rel="next" title="数据包">
+<link href="Overview.html" rel="prev" title="概述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="标准回复">
+<div class="nav-panel">
+<p>
+下一页：<a href="Packets.html" accesskey="n" rel="next">数据包</a>，上一页：<a href="Overview.html" accesskey="p" rel="prev">概述</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="标准回复-1"><span>E.2标准回复<a class="copiable-link" href="#标准回复-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-远程数据包的标准响应"></a>
+<a class="index-entry-id" id="索引-远程数据包_002c标准回复"></a>
+
+<p>远程协议指定了一些标准回复。除了在各个命令描述中另有说明外，所有命令都支持这些回复。
+</p>
+<dl class="table">  
+<dt>空响应</dt>
+<dd>
+<a class="index-entry-id" id="索引-空响应_002c用于不支持的数据包"></a>
+<a class="index-entry-id" id="索引-不支持的数据包_002c空响应"></a>
+<p>空响应（原始字符序列‘<samp class="samp">$#0</samp>&rsquo;）表示存根程序不支持<var class="var">命令</var>。通过这种方式可以扩展协议。较新的<small class="sc">GDB</small>可以根据该响应判断命令是否受支持（但也请参阅 <a class="ref" href="General-Query-Packets.html#qSupported">qSupported</a>）。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">E <var class="var">xx</var></samp>&rsquo;</dt>
+<dd><p>发生了错误；<var class="var">xx</var>是一个两位十六进制错误编号。在几乎所有情况下，协议都未指定错误编号的含义；<small class="sc">GDB</small>通常会忽略这些编号，或者直接向用户显示而不做进一步解释。
+</p>
+<a class="anchor" id="文本错误回复"></a></dd>
+<dt>&lsquo;<samp class="samp">E.<var class="var">errtext</var></samp>&rsquo;</dt>
+<dd><p>发生了错误；<var class="var">errtext</var>是文本错误消息，采用<small class="sc">ASCII</small>编码。
+</p>  
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

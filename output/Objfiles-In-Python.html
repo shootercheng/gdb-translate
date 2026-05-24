@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的目标文件（使用GDB调试）</title>
+
+<meta name="description" content="Python中的目标文件（使用GDB调试）">
+<meta name="keywords" content="Python中的目标文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Frames-In-Python.html" rel="next" title="Python中的栈帧">
+<link href="Progspaces-In-Python.html" rel="prev" title="Python中的程序空间">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的目标文件">
+<div class="nav-panel">
+<p>
+下一个：<a href="Frames-In-Python.html" accesskey="n" rel="next">从Python访问下级栈帧</a>，上一个：<a href="Progspaces-In-Python.html" accesskey="p" rel="prev">Python中的程序空间</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的目标文件-1"><span>23.3.2.27 Python中的目标文件<a class="copiable-link" href="#Python中的目标文件-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python中的目标文件"></a>
+<a class="index-entry-id" id="index-gdb_002eObjfile"></a>
+<a class="index-entry-id" id="index-Objfile"></a>
+<p><small class="sc">GDB</small> 从各种包含符号的文件中为下级加载符号（见 <a class="pxref" href="Files.html">指定文件的命令</a>）。这些文件包括主可执行文件、下级使用的任何共享库以及任何单独的调试信息文件（见 <a class="pxref" href="Separate-Debug-Files.html">单独文件中的调试信息</a>）。<small class="sc">GDB</small> 将这些包含符号的文件称为 <em class="dfn">目标文件</em>。
+</p>
+<p><code class="code">gdb</code> 模块中提供了以下与目标文件相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005fobjfile"><span class="category-def">函数： </span><span><strong class="def-name">gdb.current_objfile</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005fobjfile"> &para;</a></span></dt>
+<dd><p>在自动加载Python脚本时（见 <a class="pxref" href="Python-Auto_002dloading.html">Python自动加载</a>），<small class="sc">GDB</small> 将 “当前目标文件” 设置为相应的目标文件。此函数返回当前目标文件。如果没有当前目标文件，此函数返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eobjfiles"><span class="category-def">函数： </span><span><strong class="def-name">gdb.objfiles</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eobjfiles"> &para;</a></span></dt>
+<dd><p>返回当前程序空间引用的目标文件序列。见 <a class="xref" href="#Python中的目标文件">Python中的目标文件</a>，以及 <a class="ref" href="Progspaces-In-Python.html">Python中的程序空间</a>。这与 <code class="code">gdb.selected_inferior().progspace.objfiles()</code> 相同，为保持历史兼容性而包含。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fobjfile"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_objfile</strong> <var class="def-var-arguments">(name <span class="r">[</span>, by_build_id<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fobjfile"> &para;</a></span></dt>
+<dd><p>在当前程序空间的目标文件列表中查找 <var class="var">name</var>，它可以是文件名或构建ID（见 <a class="pxref" href="Progspaces-In-Python.html">Python中的程序空间</a>）。如果未找到目标文件，则抛出Python <code class="code">ValueError</code> 异常。
+</p>
+<p>如果 <var class="var">name</var> 是相对文件名，那么它将匹配任何具有相同尾部组件的源文件名。例如，如果 <var class="var">name</var> 是 &lsquo;<samp class="samp">gcc/expr.c</samp>&rsquo;，那么它将匹配 <samp class="file">/build/trunk/gcc/expr.c</samp> 的源文件名，但不匹配 <samp class="file">/build/trunk/libcpp/expr.c</samp> 或 <samp class="file">/build/trunk/gcc/x-expr.c</samp>。
+</p>
+<p>如果提供了 <var class="var">by_build_id</var> 且其值为 <code class="code">True</code>，那么 <var class="var">name</var> 是目标文件的构建ID。否则，<var class="var">name</var> 是文件名。此功能仅在某些操作系统上受支持，特别是那些使用ELF格式的二进制文件和 <small class="sc">GNU</small> Binutils 的操作系统。有关此功能的更多详细信息，请参阅 <cite class="cite">The GNU Linker</cite> 中 <a data-manual="ld" href="https://sourceware.org/binutils/docs/ld/Options.html#Options">命令行选项</a> 中 <samp class="option">--build-id</samp> 命令行选项的描述。
+</p></dd></dl>
+
+<p>每个目标文件由 <code class="code">gdb.Objfile</code> 类的一个实例表示。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Objfile_00

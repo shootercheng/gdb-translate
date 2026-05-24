@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>环境（使用GDB调试）</title>
+
+<meta name="description" content="环境（使用GDB调试）">
+<meta name="keywords" content="环境（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Working-Directory.html" rel="next" title="工作目录">
+<link href="Arguments.html" rel="prev" title="参数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="环境">
+<div class="nav-panel">
+<p>下一页：<a href="Working-Directory.html" accesskey="n" rel="next">你的程序的工作目录</a>，上一页：<a href="Arguments.html" accesskey="p" rel="prev">你的程序的参数</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="你的程序的环境"><span>4.4你的程序的环境<a class="copiable-link" href="#你的程序的环境"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-环境_0028你的程序的_0029"></a>
+<p><em class="dfn">环境</em>由一组环境变量及其值组成。环境变量通常记录诸如你的用户名（user name）、主目录（home directory）、终端类型（terminal type）以及运行程序的搜索路径（search path）等信息。通常你通过shell设置环境变量，并且它们会被你运行的所有其他程序继承。在调试时，尝试使用修改后的环境运行你的程序而无需再次启动GDB可能会很有用。
+</p>
+<dl class="table">
+<dt><a id="索引-路径"></a><span><code class="code">path <var class="var">directory</var></code><a class="copiable-link" href="#索引-路径"> &para;</a></span></dt>
+<dd><p>将<var class="var">directory</var>添加到将传递给你的程序的<code class="env">PATH</code>环境变量（可执行文件的搜索路径）的开头。GDB使用的<code class="env">PATH</code>的值不会改变。你可以指定几个目录名，用空格或系统特定的分隔符字符分隔（在Unix上是‘<samp class="samp">:</samp>’，在MS-DOS和MS-Windows上是‘<samp class="samp">;</samp>’）。如果<var class="var">directory</var>已经在路径中，它会被移到前面，这样就会更快地被搜索到。
+</p>
+<p>你可以使用字符串‘<samp class="samp">$cwd</samp>’来指代GDB搜索路径时的当前工作目录。如果你使用‘<samp class="samp">.</samp>’代替，它指代你执行<code class="code">path</code>命令的目录。在将<var class="var">directory</var>添加到搜索路径之前，GDB会用当前路径替换<var class="var">directory</var>参数中的‘<samp class="samp">.</samp>’。
+</p>
+</dd>
+<dt><a id="索引-显示路径"></a><span><code class="code">show paths</code><a class="copiable-link" href="#索引-显示路径"> &para;</a></span></dt>
+<dd><p>显示可执行文件的搜索路径列表（<code class="env">PATH</code>环境变量）。
+</p>
+</dd>
+<dt><a id="索引-显示环境"></a><span><code class="code">show environment <span class="r">[</span><var class="var">varname</var><span class="r">]</span></code><a class="copiable-link" href="#索引-显示环境"> &para;</a></span></dt>
+<dd><p>打印程序启动时要传递给它的环境变量<var class="var">varname</var>的值。如果你不提供<var class="var">varname</var>，则打印要传递给你的程序的所有环境变量的名称和值。你可以将<code class="code">environment</code>缩写为<code class="code">env</code>。
+</p>
+<a class="index-entry-id" id="索引-设置环境"></a>
+<a class="anchor" id="设置环境"></a></dd>
+<dt><code class="code">set environment <var class="var">varname</var> <span class="r">[</span>=<var class="var">value</var><span class="r">]</span></code></dt>
+<dd><p>将环境变量<var class="var">varname</var>设置为<var class="var">value</var>。该值会为你的程序（以及GDB用来启动它的shell）改变，而不是为GDB本身改变。<var class="var">value</var>可以是任何字符串；环境变量的值只是字符串，任何解释都由你的程序本身提供。<var class="var">value</var>参数是可选的；如果省略，变量将被设置为空值。
+</p>
+<p>例如，这个命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set env USER = foo
+</pre></div>
+
+<p>告诉被调试的程序，在随后运行时，它的用户名为‘<samp class="samp">foo</samp>’。（这里‘<samp class="samp">=</samp>’周围的空格是为了清晰起见；实际上它们不是必需的。）
+</p>
+<p>请注意，在Unix系统上，GDB通过一个shell运行你的程序，该shell也会继承用<code class="code">set environment</code>设置的环境。如有必要，你可以通过使用‘<samp class="samp">env</samp>’程序作为包装器来避免这种情况，而不是使用<code class="code">set environment</code>。有关这样做的示例，请参阅 <a class="xref" href="Starting.html#set-exec_002dwrapper">设置执行包装器</a>。
+</p>
+<p>用户设置的环境变量也会被传输到<code class="command">gdbserver</code>，以便在启动远程子进程时使用。请参阅 <a class="pxref" href="General-Query-Packets.html#QEnvironmentHexEncoded">QEnvironmentHexEncoded</a>。
+</p>
+<a class="index-entry-id" id="索引-取消设置环境"></a>
+<a class="anchor" id="取消设置环境"></a></dd>
+<dt><code class="code">unset environment <var class="var">varname</var></code></dt>
+<dd><p>从要传递给你的程序的环境中删除变量<var class="var">varname</var>。这与‘<samp class="samp">set env <var class="var">varname</var> =</samp>’不同；<code class="code">unset environment</code>会从环境中删除变量，而不是为其赋空值。
+</p>
+<p>用户取消设置的环境变量在启动远程子进程时也会在<code class="command">gdbserver</code>上被取消设置。请参阅 <a class="pxref" href="General-Query-Packets.html#QEnvironmentUnset">QEnvironmentUnset</a>。
+</p></dd>
+</dl>
+
+<p><em class="emph">警告：</em>在Unix系统上，如果存在，GDB会使用你的<code class="env">SHELL</code>环境变量指定的shell运行你的程序（如果不存在则使用<code class="code">/bin/sh</code>）。如果你的<code class="env">SHELL</code>变量指定了一个在非交互式启动时运行初始化文件的shell&mdash;例如C-shell的<samp class="file">.cshrc</samp>文件、Z shell的$<samp class="file">.zshenv</samp>文件，或者bash的<code class="env">BASH_ENV</code>环境变量中指定的文件&mdash;你在该文件中设置的任何变量都会影响你的程序。你可能希望将环境变量的设置移动到仅在你登录时运行的文件中，例如<samp class="file">.login</samp>或<samp class="file">.profile</samp>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>下一页：<a href="Working-Directory.html">你的程序的工作目录</a>，上一页：<a href="Arguments.html">你的程序的参数</a>，向上：<a href="Running.html">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

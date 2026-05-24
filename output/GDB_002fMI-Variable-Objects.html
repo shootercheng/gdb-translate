@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI变量对象（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI变量对象（使用GDB调试）">
+<meta name="keywords" content="GDB/MI变量对象（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Data-Manipulation.html" rel="next" title="GDB/MI数据操作">
+<link href="GDB_002fMI-Stack-Manipulation.html" rel="prev" title="GDB/MI堆栈操作">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Variable-Objects">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Data-Manipulation.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>数据操作</a>，上一页：<a href="GDB_002fMI-Stack-Manipulation.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>堆栈操作命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Variable-Objects"><span>27.15 <small class="sc">GDB/MI</small>变量对象<a class="copiable-link" href="#gdb_002fmi-Variable-Objects"> &para;</a></span></h3>
+
+
+<h4 class="subheading" id="Introduction-to-Variable-Objects"><span>变量对象简介<a class="copiable-link" href="#Introduction-to-Variable-Objects"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-variable-objects-in-gdb_002fmi"></a>
+
+<p>变量对象是用于检查和修改变量表达式值的“面向对象”MI接口。与其他一些处理表达式的MI接口不同，变量对象专为在前端进行简单高效的呈现而设计。变量对象由字符串名称标识。创建变量对象时，前端会为该变量对象指定表达式。表达式可以是简单变量，也可以是任意复杂的表达式，甚至可以涉及CPU寄存器。创建变量对象后，前端可以调用其他变量对象操作，例如获取或修改变量对象的值，或更改显示格式。
+</p>
+<p>变量对象具有层次树结构。任何对应于复合类型（如C语言中的结构体）的变量对象都有许多子变量对象，例如对应于结构体的每个元素。子变量对象本身也可以有子对象，依此类推。当到达叶变量对象时递归结束，叶变量对象始终具有内置类型。子变量对象仅在明确请求时才会创建，因此，如果前端对特定变量对象的子对象不感兴趣，则不会创建子对象。
+</p>
+<p>对于叶变量对象，可以将其值作为字符串获取，也可以从字符串设置其值。非叶变量对象也可以获取字符串值，但通常该字符串仅指示对象的类型，而不列出其内容。不允许对非叶变量对象进行赋值。
+</p> 
+<p>每次程序停止时，前端不需要读取所有变量对象的值。相反，MI提供了一个更新命令，该命令列出了自上次更新操作以来其值发生变化的所有变量对象。这大大减少了必须传输到前端的数据量。如上所述，子变量对象按需创建，只有叶变量对象具有实际值。因此，gdb只会读取前端创建的叶变量的目标内存。
+</p>
+<p>自动更新并不总是理想的。例如，前端可能希望保留某个表达式的值以供将来参考，并且从不更新它。再比如，对于嵌入式目标，获取内存相对较慢，因此前端可能希望禁用对屏幕上不可见或“已关闭”的变量的自动更新。这可以使用所谓的“冻结变量对象”来实现。此类变量对象永远不会被隐式更新。  
+</p>
+<p>变量对象可以是<em class="dfn">固定</em>的或<em class="dfn">浮动</em>的。对于固定变量对象，表达式在创建变量对象时进行解析，包括将标识符与特定变量相关联。表达式的含义永远不会改变。对于浮动变量对象，表达式中出现的变量的值每次都会在当前帧的上下文中重新求值。考虑以下示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void do_work(...)
+{
+        struct work_state state;
+
+        if (...)
+           do_work(...);
+}
+</pre></div>
+
+<p>如果在该函数中为<code class="code">state</code>变量创建一个固定变量对象，并且我们进入递归调用，变量对象将报告顶级<code class="code">do_work</code>调用中<code class="code">state</code>的值。另一方面，浮动变量对象将报告当前帧中<code class="code">state</code>的值。
+</p>
+<p>如果创建固定变量对象时指定的表达式引用局部变量，则变量对象将绑定到创建该变量对象的线程和帧。更新此类变量对象时，<small class="sc">GDB</small>会确保变量对象绑定的线程/帧组合仍然存在，并在该线程/帧的上下文中重新评估变量对象。
+</p>
+<p>以下是为访问此功能而定义的完整<small class="sc">GDB/MI</small>操作集：
+</p>
+<table class="multitable">
+<tbody><tr><td width="40%"><strong class="strong">操作</strong></td><td width="60%"><strong class="strong">描述</strong></td></tr>
+<tr><td width="40%"><code class="code">-enable-pretty-printing</code></td><td width="60%">启用基于Python的漂亮打印</td></tr>
+<tr><td width="40%"><code class="code">-var-create</code></td><td width="60%">创建一个变量对象</td></tr>
+<tr><td width="40%"><code class="code">-var-delete</code></td><td width="60%">删除变量对象及其子对象</td></tr>
+<tr><td width="40%"><code class="code">-var-set-format</code></td><td width="60%">设置此变量的显示格式</td></tr>
+<tr><td width="40%"><code class="code">-var-show-format</code></td><td width="60%">显示此变量的显示格式</td></tr>
+<tr><td width="40%"><code class="code">-var-info-num-children</code></td><td width="60%">告知此对象有多少个子对象</td></tr>
+<tr><td width="40%"><code class="code">-var-list-children</code></td><td width="60%">返回对象子对象的列表</td></tr>
+<tr><td width="40%"><code class="code">-var-info-type</code></td><td width="60%">显示此变量对象的类型</td></tr>
+<tr><td width="40%"><code class="code">-var-info-expression</code></td><td width="60%">打印此变量对象表示的相对于父对象的表达式</td></tr>
+<tr><td width="40%"><code class="code">-var-info-path-expression</code></td><td width="60%">打印此变量对象表示的完整表达式</td></tr>
+<tr><td width="40%"><code class="code">-var-show-attributes</code></td><td width="60%">此变量是否可编辑？它在这里存在吗？</td></tr>
+<tr><td width="40%"><code class="code">-var-evaluate-expression</code></td><td width="60%">获取此变量的值</td></tr>
+<tr><td width="40%"><code class="code">-var-assign</code></td><td width="60%">设置此变量的值</td></tr>
+<tr><td width="40%"><code class="code">-var-update</code></td><td width="60%">更新变量及其子对象</td></tr>
+<tr><td width="40%"><code class="code">-var-set-frozen</code></td><td width="60%">设置冻结属性</td></tr>
+<tr><td width="40%"><code class="code">-var-set-update-range</code></td><td width="60%">设置更新时要显示的子对象范围</td></tr>
+</tbody>
+</table>
+
+<p>在下一小节中，我们将详细描述每个操作，并说明如何使用它们。
+</p>
+<h4 class="subheading" id="Description-And-Use-of-Operations-on-Variable-Objects"><span>变量对象操作的描述和使用<a class="copiable-link" href="#Description-And-Use-of-Operations-on-Variable-Objects"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-_002denable_002dpretty_002dprinting"></a>
+<h4 class="subheading" id="The-_002denable_002dpretty_002dprinting-Command"><span><code class="code">-enable-pretty-printing</code>命令<a class="copiable-link" href="#The-_002denable_002dpretty_002dprinting-Command"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-enable-pretty-printing
+</pre></div>
+
+<p><small class="sc">GDB</small>允许基于Python的可视化工具影响MI变量对象命令的输出。但是，由于无法以完全向后兼容的方式实现此功能，前端必须请求启用此功能。
+</p>
+<p>一旦启用，此功能将无法禁用。
+</p>
+<p>请注意，如果Python支持未编译到<small class="sc">GDB</small>中，此命令仍将成功（但不执行任何操作）。
+</p>
+<a class="index-entry-id" id="index-_002dvar_002dcreate"></a>
+<h4 class="subheading" id="The-_002dvar_002dcreate-Command"><span><code class="code">-var-create</code>命令<a class="copiable-link" href="#The-_002dvar_002dcreate-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-48"><span>概要<a class="copiable-link" href="#Synopsis-48"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -var-create {<var class="var">name</var> | &quot;-&quot;}
+    {<var class="var">frame-addr</var> | &quot;*&quot; | &quot;@&quot;} <var class="var">expression</var>
+</pre></div>
+
+<p>此操作创建一个变量对象，用于监视变量、表达式结果、内存单元或CPU寄存器。
+</p>
+<p><var class="var">name</var>参数是可用于引用对象字符串。它必须是唯一的。如果指定了‘<samp class="samp">-</samp>’，varobj系统将自动生成一个字符串“varNNNNNN”。只要不指定该格式的<var class="var">name</var>，它就将是唯一的。如果找到重复的名称，命令将失败

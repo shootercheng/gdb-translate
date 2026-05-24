@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>位置规范（使用GDB调试）</title>
+
+<meta name="description" content="位置规范（使用GDB调试）">
+<meta name="keywords" content="位置规范（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Edit.html" rel="next" title="编辑">
+<link href="List.html" rel="prev" title="列出源行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="位置规范">
+<div class="nav-panel">
+<p>
+下一页：<a href="Edit.html" accesskey="n" rel="next">编辑源文件</a>，上一页：<a href="List.html" accesskey="p" rel="prev">打印源行</a>，向上：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="位置规范-1"><span>9.2位置规范<a class="copiable-link" href="#位置规范-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-指定位置"></a>
+<a class="index-entry-id" id="索引-locspec"></a>
+<a class="index-entry-id" id="索引-源位置"></a> 
+<a class="index-entry-id" id="索引-代码位置"></a>
+
+<a class="index-entry-id" id="索引-位置规范"></a>
+<p>几个GDB命令接受指定程序代码位置的参数。很多时候，位置是用源行号指定的，但也可以用函数名、地址、标签等来指定。GDB识别的指定位置的不同形式统称为“位置规范”形式，或“位置spec”。本节记录了GDB识别的指定位置的形式。
+</p>
+<a class="index-entry-id" id="索引-位置解析"></a>
+<a class="index-entry-id" id="索引-位置规范的解析"></a>
+<p>当你指定一个位置时，GDB需要在你的程序中找到与给定位置规范对应的地方，即“代码位置”。我们把找到与位置规范对应的实际代码位置的过程称为“位置解析”。
+</p>
+<p>程序中的一个具体代码位置可以通过一组几个属性唯一标识：它的源行号、源文件名、定义它的完全限定和带原型的函数以及指令地址。因为每个进程都有自己的地址空间，所以进程号也是这些属性的必要组成部分。
+</p>
+<p>相比之下，你输入的位置规范很多时候会省略其中一些属性。例如，通常只指定源行号表示当前源文件中的一行，或者只指定文件名的basename，省略其目录。换句话说，位置规范通常是不完整的，是一种蓝图，GDB需要通过使用隐含的默认值，并考虑可用的源代码和调试信息来完成缺失的属性。这就是位置解析的内容。
+</p>
+<p>如果位置规范不允许区分，那么对不完整位置规范的解析可能会产生多个代码位置。以下是一些导致位置规范与程序中的多个代码位置匹配的情况示例：
+</p>
+<ul class="itemize mark-bullet">
+<li>位置规范指定了一个函数名，并且程序中有几个函数具有该名称。（为了区分它们，你可以指定一个完全限定和带原型的函数名，例如 <code class="code">A::func(int)</code> 而不仅仅是 <code class="code">func</code>。）
+
+</li><li>位置规范指定了一个源文件名，并且程序中有几个源文件共享相同的名称，例如不同子目录中几个具有相同basename的文件。（为了区分它们，在文件名前指定足够的目录。）
+
+</li><li>对于C++构造函数，GCC编译器会生成函数体的几个实例，用于不同的情况，但它们的源级名称是相同的。
+
+</li><li>对于C++模板函数，函数中的给定行可以对应任意数量的实例化。
+
+</li><li>对于内联函数，给定的源行可以对应该函数内联代码的几个实际代码位置。
+</li></ul>
+
+<p>位置规范的解析也可能无法产生完整的代码位置，甚至无法产生任何代码位置。以下是一些这种情况的示例：
+</p>
+<ul class="itemize mark-bullet">
+<li>程序的某些部分缺乏足够详细的调试信息，因此解析出得代码位置缺少一些属性，如源文件名和行号，只剩下指令地址，也许还有一个函数名。这样一个不完整的代码位置仅在与地址和/或函数名相关的上下文中可用。有些命令只能处理完整的代码位置。
+
+</li><li>位置规范指定了一个函数名，并且程序中没有该名称的函数，或者它们只存在于尚未加载的共享库中。
+
+</li><li>位置规范指定了一个源文件名，并且程序中没有该名称的源文件，或者它们只存在于尚未加载的共享库中。
+
+</li><li>位置规范同时指定了源文件名和源行号，即使程序中有与该文件名匹配的源文件，但这些文件中没有一个具有指定的行号。
+</li></ul>
+
+<p>位置可以使用三种不同的格式指定：行规范位置、显式位置或地址位置。以下小节将描述这些格式。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Linespec-Locations.html" accesskey="1">行规范位置</a></li>
+<li><a href="Explicit-Locations.html" accesskey="2">显式位置</a></li>
+<li><a href="Address-Locations.html" accesskey="3">地址位置</a></li>    
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Edit.html">编辑源文件</a>，上一页：<a href="List.html">打印源行</a>，向上：<a href="Source.html">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>库列表格式（使用GDB调试）</title>
+
+<meta name="description" content="库列表格式（使用GDB调试）">
+<meta name="keywords" content="库列表格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Library-List-Format-for-SVR4-Targets.html" rel="next" title="SVR4目标的库列表格式">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="prev" title="文件I/O远程协议扩展">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+
+
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="库列表格式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Library-List-Format-for-SVR4-Targets.html" accesskey="n" rel="next">SVR4目标的库列表格式</a>，上一页：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="p" rel="prev">文件I/O远程协议扩展</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="库列表格式-1"><span>E.15库列表格式<a class="copiable-link" href="#库列表格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-库列表格式_002c-远程协议"></a>
+
+<p>在某些平台上，动态加载器（例如<samp class="file">ld.so</samp>）与您的应用程序在同一进程中运行以管理库。在这种情况下，<small class="sc">GDB</small>可以使用加载器的符号表和常规内存操作来维护共享库列表。在其他平台上，操作系统管理加载的库。<small class="sc">GDB</small>无法通过内存操作获取当前加载的库列表，因此它使用“<samp class="samp">qXfer:libraries:read</samp>”数据包（请参阅 <a class="pxref" href="General-Query-Packets.html#qXfer-library-list-read">qXfer库列表读取</a>）。远程存根查询目标的操作系统并报告加载了哪些库。
+</p>
+<p>“<samp class="samp">qXfer:libraries:read</samp>”数据包返回一个XML文档，其中列出了加载的库及其偏移量。每个库都有一个关联的名称和一个或多个段或节基地址，这些地址报告库在内存中的加载位置。
+</p>
+<p>对于完全链接的二进制文件的库的常见情况，库应该有一个段列表。如果目标支持可重定位对象文件的动态链接，其库XML元素应改为包含一个已分配节的列表。段或节基是起始地址而不是重定位偏移量；它们不依赖于库的链接时基地址。
+</p> 
+<p><small class="sc">GDB</small>必须与Expat库链接以支持XML库列表。请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>。
+</p>
+<p>一个简单的内存映射，其中一个加载的库通过单个偏移量重新定位，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;library-list&gt;
+  &lt;library name=&quot;/lib/libc.so.6&quot;&gt;
+    &lt;segment address=&quot;0x10000000&quot;/&gt;
+  &lt;/library&gt;
+&lt;/library-list&gt;
+</pre></div>
+
+<p>另一个简单的内存映射示例，其中一个加载的库有三个已分配的节（.text、.data、.bss），如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;library-list&gt;
+  &lt;library name=&quot;sharedlib.o&quot;&gt;
+    &lt;section address=&quot;0x1

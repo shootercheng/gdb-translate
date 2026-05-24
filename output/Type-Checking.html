@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>类型检查（使用GDB调试）</title>
+
+<meta name="description" content="类型检查（使用GDB调试）">
+<meta name="keywords" content="类型检查（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Checks.html" rel="up" title="检查">
+<link href="Range-Checking.html" rel="next" title="范围检查">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="类型检查">
+<div class="nav-panel">
+<p>
+下一页：<a href="Range-Checking.html" accesskey="n" rel="next">范围检查概述</a>，上一级：<a href="Checks.html" accesskey="u" rel="up">类型和范围检查</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="类型检查概述"><span>15.3.1类型检查概述<a class="copiable-link" href="#类型检查概述"> &para;</a></span></h4>
+
+<p>有些语言，如C和C++，是强类型的，这意味着运算符和函数的参数必须是正确的类型，否则会发生错误。这些检查可防止类型不匹配错误导致任何运行时问题。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int klass::my_method(char *b) { return  b? 1 : 2; }
+
+(gdb) print obj.my_method (0)
+$1 = 2
+</pre><pre class="exdent">但是
+</pre><pre class="example-preformatted">(gdb) print obj.my_method (0x1234)
+无法将方法klass::my_method解析为任何重载实例
+</pre></div>
+
+<p>第二个例子失败是因为在C++中，整数常量&lsquo;<samp class="samp">0x1234</samp>&rsquo;与指针参数类型不兼容。
+</p>
+<p>对于你在GDB命令中使用的表达式，你可以告诉GDB不要强制执行严格的类型检查，或者将任何不匹配视为错误并放弃该表达式；当禁用类型检查时，GDB可以成功地计算像上面第二个例子那样的表达式。
+</p>
+<p>即使关闭了类型检查，可能还有其他与类型相关的原因阻止GDB计算表达式。例如，GDB不知道如何将一个<code class="code">int</code>和一个<code class="code">struct foo</code>相加。这些特定的类型错误与所使用的语言无关，通常是由无论如何都没有意义的表达式引起的。
+</p>
+<p>GDB提供了一些用于控制类型检查的附加命令：
+</p>
+<a class="index-entry-id" id="index-set-check-type"></a>
+<a class="index-entry-id" id="index-show-check-type"></a>
+<dl class="table">
+<dt><code class="code">set check type on</code></dt>
+<dt><code class="code">set check type off</code></dt>
+<dd><p>打开或关闭严格类型检查。如果在类型检查打开时计算表达式时发生任何类型不匹配，GDB会打印一条消息并中止表达式的计算。
+</p>
+</dd>
+<dt><code class="code">show check type</code></dt>
+<dd><p>显示类型检查的当前设置以及GDB是否正在强制执行严格的类型检查规则。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-range-checking"></a>
+<a class="index-entry-id" id="index-checks_002c-range"></a>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Range-Checking.html">范围检查概述</a>，上一级：<a href="Checks.html">类型和范围检查</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

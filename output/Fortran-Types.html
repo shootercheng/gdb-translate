@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Fortran类型（使用GDB调试）</title>
+
+<meta name="description" content="Fortran类型（使用GDB调试）">
+<meta name="keywords" content="Fortran类型（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Fortran.html" rel="up" title="Fortran">
+<link href="Fortran-Operators.html" rel="next" title="Fortran运算符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Fortran-Types">
+<div class="nav-panel">
+<p>
+下一页：<a href="Fortran-Operators.html" accesskey="n" rel="next">Fortran运算符和表达式</a>，上一级：<a href="Fortran.html" accesskey="u" rel="up">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Fortran-Types-1"><span>15.4.6.1 Fortran类型<a class="copiable-link" href="#Fortran-Types-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Fortran-Types"></a>
+
+<p>在Fortran中，基本数据类型有一个关联的 <code class="code">KIND</code> 类型参数，写作 &lsquo;<samp class="samp"><var class="var">type</var>*<var class="var">kindparam</var></samp>&rsquo;、&lsquo;<samp class="samp"><var class="var">type</var>(kind = <var class="var">kindparam</var>)</samp>&rsquo;，或者仅在GDB中的方言里写作 &lsquo;<samp class="samp"><var class="var">type</var>_<var class="var">kindparam</var></samp>&rsquo;。一个具体的例子是 &lsquo;<samp class="samp"><code class="code">Real*4</code></samp>&rsquo;、&lsquo;<samp class="samp"><code class="code">Real(kind = 4)</code></samp>&rsquo; 和 &lsquo;<samp class="samp"><code class="code">Real_4</code></samp>&rsquo;。可以使用内置函数 <code class="code">KIND</code> 来获取类型的种类，见 <a class="ref" href="Fortran-Intrinsics.html">Fortran内置函数</a>。
+</p>
+<p>一般来说，<code class="code">KIND</code> 类型参数的实际实现是特定于编译器的。在GDB中，种类参数是按照它在GNU <code class="command">gfortran</code> 编译器中的用法来实现的。在这里，给定 <var class="var">type</var> 的种类参数指定了它在内存中的大小 —— 一个Fortran <code class="code">Integer*4</code> 或 <code class="code">Integer(kind = 4)</code> 将是一个占用4个字节内存的整数类型。这条规则的一个例外是 <code class="code">Complex</code> 类型，对于它，类型的种类并不指定其整个大小，但指定了它由两个 <code class="code">Real</code> 组成时每个 <code class="code">Real</code> 的大小。因此，一个 <code class="code">Complex*4</code> 将由两个 <code class="code">Real*4</code> 组成，占用8个字节的内存。
+</p>
+<p>对于每种类型，还有一个与之关联的默认种类，例如在GDB中，<code class="code">Integer</code> 在内部将是一个 <code class="code">Integer*4</code>（默认类型见下表）。默认类型与GNU编译器中的相同，但请注意，GNU默认类型实际上可以通过编译器标志（如 <samp class="option">-fdefault-integer-8</samp> 和 <samp class="option">-fdefault-real-8</samp>）来更改。
+</p>
+<p>并非每个种类参数对每种类型都是有效的，在GDB中，可用的类型种类如下。
+</p>
+<dl class="table">
+<dt><code class="code">Integer</code></dt>
+<dd><p><code class="code">Integer*1</code>、<code class="code">Integer*2</code>、<code class="code">Integer*4</code>、<code class="code">Integer*8</code>，并且 <code class="code">Integer</code> = <code class="code">Integer*4</code>。
+</p>
+</dd>
+<dt><code class="code">Logical</code></dt>
+<dd><p><code class="code">Logical*1</code>、<code class="code">Logical*2</code>、<code class="code">Logical*4</code>、<code class="code">Logical*8</code>，并且 <code class="code">Logical</code> = <code class="code">Logical*4</code>。
+</p>
+</dd>
+<dt><code class="code">Real</code></dt>
+<dd><p><code class="code">Real*4</code>、<code class="code">Real*8</code>、<code class="code">Real*16</code>，并且 <code class="code">Real</code> = <code class="code">Real*4</code>。
+</p>
+</dd>
+<dt><code class="code">Complex</code></dt> 
+<dd><p><code class="code">Complex*4</code>、<code class="code">Complex*8</code>、<code class="code">Complex*16</code>，并且 <code class="code">Complex</code> = <code class="code">Complex*4</code>。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Fortran-Operators.html">Fortran运算符和表达式</a>，上一级：<a href="Fortran.html">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

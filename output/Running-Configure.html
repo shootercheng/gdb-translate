@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>运行配置脚本（使用GDB进行调试）</title>
+
+<meta name="description" content="运行配置脚本（使用GDB进行调试）">
+<meta name="keywords" content="运行配置脚本（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Installing-GDB.html" rel="up" title="安装GDB">
+<link href="Separate-Objdir.html" rel="next" title="单独目录编译">
+<link href="Requirements.html" rel="prev" title="构建GDB的要求">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="运行配置脚本">
+<div class="nav-panel">
+<p>
+下一页：<a href="Separate-Objdir.html" accesskey="n" rel="next">在另一个目录中编译<small class="sc">GDB</small></a>，上一页：<a href="Requirements.html" accesskey="p" rel="prev">构建<small class="sc">GDB</small>的要求</a>，向上：<a href="Installing-GDB.html" accesskey="u" rel="up">安装<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="调用gdb配置脚本"><span>C .2调用<small class="sc">GDB</small>的<samp class="file">configure</samp>脚本<a class="copiable-link" href="#调用gdb配置脚本"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引配置gdb"></a>
+<p><small class="sc">GDB</small>附带了一个<samp class="file">configure</samp>脚本，该脚本可自动执行准备<small class="sc">GDB</small>进行安装的过程；然后你可以使用<code class="code">make</code>来构建<code class="code">gdb</code>程序。
+</p>
+<p><small class="sc">GDB</small>发行版在单个目录中包含了<small class="sc">GDB</small>所需的所有源代码，该目录的名称通常是通过将版本号附加到“<samp class="samp">gdb</samp>”后面组成的。
+</p>
+<p>例如，<small class="sc">GDB</small> 17.2版本的发行版位于<samp class="file">gdb - 17.2</samp>目录中。该目录包含：
+</p>
+<dl class="table">
+<dt><code class="code">gdb - 17.2/configure <span class="r">(以及支持文件)</span></code></dt>
+<dd><p>用于配置GDB及其所有支持库的脚本
+</p>
+</dd>
+<dt><code class="code">gdb - 17.2/gdb</code></dt>
+<dd><p>GDB本身特定的源代码
+</p>
+</dd>
+<dt><code class="code">gdb - 17.2/bfd</code></dt>
+<dd><p>二进制文件描述符库的源代码
+</p>
+</dd>
+<dt><code class="code">gdb - 17.2/include</code></dt>
+<dd><p>GNU包含文件
+</p>
+</dd>
+<dt><code class="code">gdb - 17/2/libiberty</code></dt>
+<dd><p>“<samp class="samp">-liberty</samp>”自由软件库的源代码
+</p>
+</dd>
+<dt><code class="code">gdb - 17/src/opcodes</code></dt>
+<dd><p>操作码表和反汇编器库的源代码</p></dd>
+<dt><code class="code">gdb - 17/src/readline</code></dt>
+<dd><p>GNU命令行界面的源代码</p></dd>
+</dl>
+
+<p>可能还有其他子目录。
+</p>
+<p>配置和构建<small class="sc">GDB</small>的最简单方法是从<samp class="file">gdb - <var class="var">版本号</var></samp>源目录运行<samp class="file">configure</samp>，在这个例子中就是<samp class="file">gdb - 17.2</samp>目录。
+</p>
+<p>首先，如果您还没有进入<samp class="file">gdb - <var class="var">版本号</var></samp>源目录，请切换到该目录；然后运行<samp class="file">configure</samp>。将GDB运行的平台标识符作为参数传递。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">cd gdb - 17.2
+./configure
+make
+</pre></div>
+
+<p>运行“<samp class="samp">configure</samp>”然后运行<code class="code">make</code>会构建包含的支持库，然后构建<code class="code">gdb</code>本身。配置好的源文件和二进制文件会留在相应的源目录中。
+</p>
+<p><samp class="file">configure</samp>脚本是一个Bourne shell（<code class="code">/bin/sh</code>）脚本；如果您的系统在运行不同的shell时不能自动识别它，您可能需要显式地在其上运行<code class="code">sh</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">sh configure
+</pre></div>
+
+<p>您应该从源树的顶级目录，即<samp class="file">gdb - <var class="var">版本号</var></samp>目录运行<samp class="file">configure</samp>脚本。如果您从其中一个子目录运行<samp class="file">configure</samp>，您将只配置该子目录。这通常不是您想要的。特别是，如果您从<samp class="file">gdb - <var class="var">版本号</var></samp>目录的<samp class="file">gdb</samp>子目录运行第一个<samp class="file">configure</samp>，您将忽略<samp class="file">bfd</samp>、<samp class="file">readline</samp>以及<samp class="file">gdb</samp>子目录的其他同级目录的配置。这会导致关于缺少包含文件（如<samp class="file">bfd/bfd.h</samp>）的构建错误。
+</p>
+<p>您可以将<code class="code"><small class="sc">GDB</small></code>安装到任何位置。最好的方法是将“<code class="code">--prefix</code>”选项传递给<code class="code">configure</code>，然后使用<code class="code">make install</code>进行安装。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Separate-Objdir.html">在另一个目录中编译<small class="sc">GDB</small></a>，上一页：<a href="Requirements.html">构建<small class="sc">GDB</small>的要求</a>，向上：<a href="Installing-GDB.html">安装<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

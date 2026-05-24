@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 (C) 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跳过函数和文件（使用GDB调试）</title>
+
+<meta name="description" content="跳过函数和文件（使用GDB调试）">
+<meta name="keywords" content="跳过函数和文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stopping.html" rel="up" title="停止">
+<link href="Signals.html" rel="next" title="信号">
+<link href="Continuing-and-Stepping.html" rel="prev" title="继续和单步执行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em} 
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跳过函数和文件">
+<div class="nav-panel">
+<p>
+下一页：<a href="Signals.html" accesskey="n" rel="next">信号</a>，上一页：<a href="Continuing-and-Stepping.html" accesskey="p" rel="prev">继续和单步执行</a>，向上：<a href="Stopping.html" accesskey="u" rel="up">停止和继续</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="跳过函数和文件-1"><span>5.3 跳过函数和文件<a class="copiable-link" href="#跳过函数和文件-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-跳过函数和文件"></a>
+
+<p>你正在调试的程序可能包含一些调试起来没有意义的函数。<code class="code">skip</code>命令可以让你告诉GDB在单步执行时跳过一个函数、一个文件中的所有函数或者一个特定文件中的某个特定函数。
+</p>
+<p>例如，考虑以下C函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">101     int func()
+102     {
+103         foo(boring());
+104         bar(boring());
+105     }
+</pre></div>
+
+<p>假设你希望单步进入函数<code class="code">foo</code>和<code class="code">bar</code>，但你对单步执行<code class="code">boring</code>不感兴趣。如果你在第103行运行<code class="code">step</code>，你将进入<code class="code">boring()</code>，但如果你运行<code class="code">next</code>，你将跳过<code class="code">foo</code>和<code class="code">boring</code>！
+</p>
+<p>一种解决方法是单步进入<code class="code">boring</code>并使用<code class="code">finish</code>命令立即退出它。但如果从很多地方调用<code class="code">boring</code>，这可能会变得很繁琐。
+</p>
+<p>一个更灵活的解决方法是执行<kbd class="kbd">skip boring</kbd>。这会指示GDB永远不要单步进入<code class="code">boring</code>。现在当你在第103行执行<code class="code">step</code>时，你将跳过<code class="code">boring</code>并直接进入<code class="code">foo</code>。</p>
+<p>可以通过提供函数名、行规范（见 <a class="pxref" href="Location-Specifications.html">位置规范</a>）、与函数名匹配的正则表达式、文件名或与文件名匹配的<code class="code">glob</code>风格模式来跳过函数。
+</p>
+<p>在Posix系统上，正则表达式的形式是“扩展正则表达式”。例如，在GNU/Linux系统上查看 &lsquo;<samp class="samp">man 7 regex</samp>&rsquo;。在非Posix系统上，正则表达式的形式是底层系统的<code class="code">regcomp</code>函数提供的任何形式。
+例如，在GNU/Linux系统上查看 &lsquo;<samp class="samp">man 7 glob</samp>&rsquo; 以了解<code class="code">glob</code>风格模式的描述。
+</p>
+<dl class="table">
+<dt><a id="index-skip"></a><span><code class="code">skip <span class="r">[</span><var class="var">选项</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip"> &para;</a></span></dt>
+<dd><p><code class="code">skip</code>命令的基本形式接受零个或多个指定要跳过内容的选项。
+<var class="var">选项</var>参数是以下任何有用的组合：
+</p>
+<dl class="table">
+<dt><code class="code">-file <var class="var">文件</var></code></dt>
+<dt><code class="code">-fi <var class="var">文件</var></code></dt>
+<dd><p>在单步执行时将跳过<var class="var">文件</var>中的函数。
+</p>
+</dd>
+<dt><a id="index-通过-glob-风格模式跳过文件"></a><span><code class="code">-gfile <var class="var">文件-glob-模式</var></code><a class="copiable-link" href="#index-通过-glob-风格模式跳过文件"> &para;</a></span></dt>
+<dt><code class="code">-gfi <var class="var">文件-glob-模式</var></code></dt>
+<dd><p>在单步执行时将跳过与<var class="var">文件-glob-模式</var>匹配的文件中的函数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) skip -gfi utils/*.c
+</pre></div>
+
+</dd>
+<dt><code class="code">-function <var class="var">行规范</var></code></dt>
+<dt><code class="code">-fu <var class="var">行规范</var></code></dt>
+<dd><p>由<var class="var">行规范</var>命名的函数或包含由<var class="var">行规范</var>命名行的函数在单步执行时将被跳过。
+见 <a class="xref" href="Location-Specifications.html">位置规范</a>。
+</p> 
+</dd>
+<dt><a id="index-通过正则表达式跳过函数"></a><span><code class="code">-rfunction <var class="var">正则表达式</var></code><a class="copiable-link" href="#index-通过正则表达式跳过函数"> &para;</a></span></dt>
+<dt><code class="code">-rfu <var class="var">正则表达式</var></code></dt>
+<dd><p>名称与<var class="var">正则表达式</var>匹配的函数在单步执行时将被跳过。
+</p>
+<p>这种形式对于复杂的函数名很有用。
+例如，通常没有必要单步进入C++ <code class="code">std::string</code>的构造函数或析构函数加上对于C++模板，很难写出函数的全名，而且通常模板参数是什么并不重要。将要跳过的函数指定为正则表达式会使这更容易。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) skip -rfu ^std::(allocator|basic_string)&lt;.*&gt;::~?\1 *\(
+</pre></div>
+
+<p>如果你想跳过<code class="code">std</code>命名空间中每个模板化的C++构造函数和析构函数，你可以这样做：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) skip -rfu ^std::([a-zA-z0-9_]+)&lt;.*&gt;::~?\(.*\)
+</pre></div>
+</dd>
+</dl>
+
+<p>如果未指定选项，将跳过你当前正在调试的函数。
+</p>
+</dd>
+<dt><a id="index-skip-function"></a><span><code class="code">skip function <span class="r">[</span><var class="var">行规范</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip-function"> &para;</a></span></dt>
+<dd><p>运行此命令后，由<var class="var">行规范</var>命名的函数或包含由<var class="var">行规范</var>命名行的函数在单步执行时将被跳过。见 <a class="xref" href="Location-Specifications.html">位置规范</a>。
+</p>
+<p>如果你未指定<var class="var">行规范</var>, 将跳过你当前正在调试的函数。
+</p>
+<p>（如果你有一个名为<code class="code">file</code>的函数想要跳过，使用<kbd class="kbd">skip function file</kbd>。）</p>
+</dd>
+<dt><a id="index-skip-file"></a><span><code class="code">skip file <span class="r">[</span><var class="var">文件名</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip-file"> &para;</a></span></dt>
+<dd><p>运行此命令后，任何源文件位于<var class="var">文件名</var>中的函数在单步执行时将被跳过。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) skip file boring.c
+文件boring.c在单步执行时将被跳过。
+</pre></div>
+
+<p>如果你未指定<var class="var">文件名</var>, 将跳过源文件位于你当前正在调试的文件中的函数。
+</p></dd>
+</dl>
+
+<p>跳过项可以像断点一样被列出、删除、禁用和启用用于管理你的跳过列表的命令如下：
+</p>
+<dl class="table"> 
+<dt><a id="index-info-skip"></a><span><code class="code">info skip <span class="r">[</span><var class="var">范围</var><span class="r">]</span></code><a class="copiable-link" href="#index-info-skip"> &para;</a></span></dt>
+<dd><p>打印指定跳过项的详细信息。如果未指定<var class="var">范围</var>，打印一个包含所有标记为要跳过的函数和文件详细信息的表格。<code class="code">info skip</code>会打印每个跳过项的以下信息：
+</p>
+<dl class="table">
+<dt><em class="emph">标识符</em></dt> 
+<dd><p>标识此跳过项的数字。
+</p></dd>
+<dt><em class="emph">启用或禁用</em></dt> 
+<dd><p>启用的跳过项标记为&lsquo;<samp class="samp">y</samp>&rsquo;。
+禁用的跳过项标记为&lsquo;<samp class="samp">n</samp>&rsquo;。
+</p></dd>
+<dt><em class="emph">Glob</em></dt> 
+<dd><p>如果文件名是一个&lsquo;<samp class="samp">glob</samp>&rsquo;模式，这是&lsquo;<samp class="samp">y</samp>&rsquo;。
+否则是&lsquo;<samp class="samp">n</samp>&rsquo;。
+</p></dd>
+<dt><em class="emph">文件</em></dt> 
+<dd><p>要跳过的文件的名称或&lsquo;<samp class="samp">glob</samp>&rsquo;模式。
+如果未指定文件，这是&lsquo;<samp class="samp">&lt;无&gt;</samp>&rsquo;。
+</p></dd>
+<dt><em class="emph">RE</em></dt> 
+<dd><p>如果函数名是一个&lsquo;<samp class="samp">正则表达式</samp>&rsquo;，这是&lsquo;<samp class="samp">y</samp>&rsquo;。
+否则是&lsquo;<samp class="samp">n</samp>&rsquo;。
+</p></dd>
+<dt><em class="emph">函数</em></dt> 
+<dd><p>要跳过的函数的名称或正则表达式。
+如果未指定函数，这是&lsquo;<samp class="samp">&lt;无&gt;</samp>&rsquo;。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-skip-delete"></a><span><code class="code">skip delete <span class="r">[</span><var class="var">范围</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip-delete"> &para;</a></span></dt>
+<dd><p>删除指定的跳过项。如果未指定<var class="var">范围</var>，删除所有跳过项。
+</p>
+</dd>
+<dt><a id="index-skip-enable"></a><span><code class="code">skip enable <span class="r">[</span><var class="var">范围</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip-enable"> &para;</a></span></dt>
+<dd><p>启用指定的跳过项。如果未指定<var class="var">范围</var>，启用所有跳过项。
+</p>
+</dd>
+<dt><a id="index-skip-disable"></a><span><code class="code">skip disable <span class="r">[</span><var class="var">范围</var><span class="r">]</span></code><a class="copiable-link" href="#index-skip-disable"> &para;</a></span></dt>
+<dd><p>禁用指定地跳过项。如果未指定<var class="var">范围</var>，禁用所有跳过项。
+</p>
+</dd>
+<dt><a id="index-set-debug-skip"></a><span><code class="code">set debug skip <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#index-set-debug-skip"> &para;</a></span></dt>
+<dd><p>设置是否打印关于跳过文件和函数的调试输出。
+</p>
+</dd>
+<dt><a id="index-show-debug-skip"></a><span><code class="code">show debug skip</code><a class="copiable-link" href="#index-show-debug-skip"> &para;</a></span></dt>
+<dd><p>显示是否打印关于跳过文件和函数的调试输出？
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Signals.html">信号</a>，上一页：<a href="Continuing-and-Stepping.html">继续和单步执行</a>，向上：<a href="Stopping.html">停止和继续</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

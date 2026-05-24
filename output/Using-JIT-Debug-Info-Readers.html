@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>使用即时调试信息读取器（使用GDB调试）</title>
+
+<meta name="description" content="使用即时调试信息读取器（使用GDB调试）">
+<meta name="keywords" content="使用即时调试信息读取器（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Custom-Debug-Info.html" rel="up" title="自定义调试信息">
+<link href="Writing-JIT-Debug-Info-Readers.html" rel="next" title="编写即时调试信息读取器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="使用即时调试信息读取器">
+<div class="nav-panel">
+<p>
+下一个：<a href="Writing-JIT-Debug-Info-Readers.html" accesskey="n" rel="next">编写即时调试信息读取器</a>，上一个：<a href="Custom-Debug-Info.html" accesskey="u" rel="up">自定义调试信息</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="使用即时调试信息读取器-1"><span>30.4.1 使用即时调试信息读取器<a class="copiable-link" href="#使用即时调试信息读取器-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-jit_002dreader_002dload"></a>
+<a class="index-entry-id" id="索引-jit_002dreader_002dunload"></a>
+
+<p>可以使用<code class="code">jit-reader-load</code>和<code class="code">jit-reader-unload</code>命令加载和卸载读取器。
+</p>
+<dl class="table">
+<dt><code class="code">jit-reader-load <var class="var">读取器</var></code></dt>
+<dd><p>加载名为<var class="var">读取器</var>的即时读取器，它是一个共享对象，指定为绝对文件名或相对文件名。在后一种情况下，<small class="sc">GDB</small>将尝试从预配置的目录加载读取器，在UNIX系统上通常是<samp class="file"><var class="var">libdir</var>/gdb/</samp>（这里<var class="var">libdir</var>是系统库目录，通常是<samp class="file">/usr/local/lib</samp>）。
+</p>
+<p>一次只能有一个读取器处于活动状态；当已经加载一个读取器时尝试加载第二个读取器将导致<small class="sc">GDB</small>报告错误。可以通过首先使用<code class="code">jit-reader-unload</code>卸载当前读取器，然后调用<code class="code">jit-reader-load</code>来加载新的即时读取器。
+</p>
+</dd>
+<dt><code class="code">show jit-reader-directory</code></dt>
+<dd><p>此命令将显示在指定相对文件名时<code class="code">jit-reader-load</code>使用的目录。
+</p>
+</dd>
+<dt><code class="code">jit-reader-unload</code></dt>
+<dd><p>卸载当前加载的即时读取器。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

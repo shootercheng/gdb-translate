@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>继续和单步执行（使用GDB调试）</title>
+
+<meta name="description" content="继续和单步执行（使用GDB调试）">
+<meta name="keywords" content="继续和单步执行（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stopping.html" rel="up" title="停止"> 
+<link href="Skipping-Over-Functions-and-Files.html" rel="next" title="跳过函数和文件">
+<link href="Breakpoints.html" rel="prev" title="断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="继续和单步执行">
+<div class="nav-panel">
+<p>
+下一页：<a href="Skipping-Over-Functions-and-Files.html" accesskey="n" rel="next">跳过函数和文件</a>，上一页：<a href="Breakpoints.html" accesskey="p" rel="prev">断点、观察点和捕获点</a>，向上：<a href="Stopping.html" accesskey="u" rel="up">停止和继续</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="继续和单步执行-1"><span>5.2继续和单步执行<a class="copiable-link" href="#继续和单步执行-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-单步执行"></a>
+<a class="index-entry-id" id="索引-继续"></a>
+<a class="index-entry-id" id="索引-恢复执行"></a>
+<p><em class="dfn">继续</em>意味着恢复程序执行，直到程序正常完成。相比之下，<em class="dfn">单步执行</em>意味着只再执行程序的一个“步骤”，其中“步骤”可能意味着一行源代码，或者一条机器指令（取决于你使用的具体命令）。无论是继续执行还是单步执行，由于断点或信号，你的程序可能会更早停止。（如果它因信号而停止，你可能想使用<code class="code">handle</code>，或者使用‘<samp class="samp">signal 0</samp>’来恢复执行（见 <a class="pxref" href="Signals.html">信号</a>），或者你可以单步进入信号的处理程序（见 <a class="pxref" href="Signals.html#stepping-and-signal-handlers">单步执行和信号处理程序</a>）。）
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-c-_0028继续_0029"></a>
+<a class="index-entry-id" id="索引-fg-_0028恢复前台执行_0029"></a>
+<a id="索引-继续"></a><span><code class="code">continue <span class="r">[</span><var class="var">忽略计数</var><span class="r">]</span></code><a class="copiable-link" href="#索引-继续"> &para;</a></span></dt>
+<dt><code class="code">c <span class="r">[</span><var class="var">忽略计数</var><span class="r">]</span></code></dt>
+<dt><code class="code">fg <span class="r">[</span><var class="var">忽略计数</var><span class="r">]</span></code></dt>
+<dd><p>在程序上次停止的地址恢复程序执行；在该地址设置的任何断点都将被绕过。可选参数<var class="var">忽略计数</var>允许你指定在此位置进一步忽略断点的次数；其效果类似于<code class="code">ignore</code>（见 <a class="pxref" href="Conditions.html">断点条件</a>）。
+</p>
+<p>参数<var class="var">忽略计数</var>仅在程序因断点而停止时才有意义。在其他时候，<code class="code">continue</code>的参数将被忽略。
+</p>
+<p>同义词<code class="code">c</code>和<code class="code">fg</code>（表示<em class="dfn">前台</em>，因为被调试的程序被视为前台程序）纯粹是为了方便而提供的，并且与<code class="code">continue</code>具有完全相同的行为。
+</p></dd>
+</dl>
+
+<p>要在不同的位置恢复执行，你可以使用<code class="code">return</code>（见 <a class="pxref" href="Returning.html">从函数返回</a>）回到调用函数；或者使用<code class="code">jump</code>（见 <a class="pxref" href="Jumping.html">在不同地址继续</a>）跳转到程序中的任意位置。
+</p>
+<p>使用单步执行的一种典型技术是在你认为存在问题的函数或程序部分的开头设置一个断点（见 <a class="pxref" href="Breakpoints.html">断点、观察点和捕获点</a>），运行你的程序直到它在该断点处停止，然后单步执行可疑区域，检查感兴趣的变量，直到你看到问题出现。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-s-_0028单步_0029"></a>
+<a id="索引-单步"></a><span><code class="code">step</code><a class="copiable-link" href="#索引-单步"> &para;</a></span></dt>
+<dd><p>继续运行你的程序，直到控制权到达不同的源代码行，然后停止并将控制权返回给<small class="sc">GDB</small>。此命令缩写为<code class="code">s</code>。
+</p>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em>如果你在控制位于没有调试信息的函数内时使用<code class="code">step</code>命令，执行将继续，直到控制权到达有调试信息的函数。同样，它不会单步进入没有调试信息的函数。要单步执行没有调试信息的函数，请使用下面描述的<code class="code">stepi</code>命令。
+</p></blockquote>
+
+<p><code class="code">step</code>命令仅在源代码行的第一条指令处停止。这可以防止在<code class="code">switch</code>语句、<code class="code">for</code>循环等中可能发生的多次停止。如果在该行内调用了有调试信息的函数，<code class="code">step</code>将继续停止。换句话说，<code class="code">step</code>会<em class="emph">单步进入</em>该行内调用的任何函数。
+</p>
+<p>此外，<code class="code">step</code>命令仅在函数有行号信息时才进入该函数。否则，它的行为类似于<code class="code">next</code>命令。这避免了在<abbr class="acronym">MIPS</abbr>机器上使用<code class="code">cc -gl</code>时出现的问题。以前，如果关于例程有任何调试信息，<code class='code'>step</code>会进入子例程。
+</p>
+</dd>
+<dt><code class="code">step <var class="var">计数</var></code></dt>
+<dd><p>像在<code class="code">step</code>中一样继续运行，但执行<var class="var">计数</var>次。如果在<var class="var">计数</var>步之前到达断点，或者发生了与单步执行无关的信号，单步执行将立即停止。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-n-_0028下一步_0029"></a>
+<a id="索引-下一步"></a><span><code class="code">next <span class="r">[</span><var class="var">计数</var><span class="r">]</span></code><a class="copiable-link" href="#索引-下一步"> &para;</a></span></dt>
+<dd><p>继续到当前（最内层）堆栈帧中的下一行源代码。这与<code class="code">step</code>类似，但代码行内出现的函数调用将不停顿地执行。当控制权到达你发出<code class="code">next</code>命令时正在执行的原始堆栈级别的不同代码行时，执行停止。此命令缩写为<code class="code">n</code>。
+</p>
+<p>参数<var class="var">计数</var>是一个重复计数，与<code class="code">step</code>中的相同。
+</p>
+
+
+<p><code class="code">next</code>命令仅在源代码行的第一条指令处停止。这可以防止在<code class="code">switch</code>语句、 <code class="code">for</code>循环等中可能发生的多次停止。
+</p></dd>
+<dt><a id="索引-设置单步模式"></a><span><code class="code">set step-mode</code><a class="copiable-link" href="#索引-设置单步模式"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="索引-无行信息的函数和单步执行"></a>
+<a class="index-entry-id" id="索引-单步进入无行信息的函数"></a> 
+</dd>
+<dt><code class="code">set step-mode on</code></dt>
+<dd><p><code class="code">set step-mode on</code>命令使<code class="code">step</code>命令在函数的第一条指令处停止，该函数不包含调试行信息，而不是跳过它。
+</p>
+<p>在你可能有兴趣检查没有符号信息的函数的机器指令，并且不想让<small class="sc">GDB</small>自动跳过该函数的情况下，这很有用。
+</p>
+</dd>
+<dt><code class="code">set step-mode off</code></dt>
+<dd><p>使<code class="code">step</code>命令跳过任何不包含调试信息的函数。这是默认设置。
+</p>
+</dd>
+<dt><code class="code">show step-mode</code></dt>
+<dd><p>显示<small class="sc">GDB</small>是否会在没有源代码行调试信息的函数中停止或跳过。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-fin-_0028完成_0029"></a>
+<a id="索引-完成"></a><span><code class="code">finish</code><a class="copiable-link" href="#索引-完成"> &para;</a></span></dt>
+<dd><p>继续运行，直到选定堆栈帧中的函数返回后立即停止。打印返回值（如果有）。此命令可以缩写为<code class="code">fin</code>。
+</p>
+<p>将此与<code class="code">return</code>命令（见 <a class="pxref" href="Returning.html">从函数返回</a>）进行对比。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-显示打印完成"></a>
+<a id="索引-设置打印完成"></a><span><code class="code">set print finish <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#索引-设置打印完成"> &para;</a></span></dt>
+<dt><code class="code">show print finish</code></dt>
+<dd><p>默认情况下，<code class="code">finish</code>命令会显示函数返回的值。可以使用<code class="code">set print finish off</code>禁用此功能。禁用后，该值仍会输入到值历史记录中（见 <a class="pxref" href="Value-History.html">值历史记录</a>），但不会显示。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-u-_0028直到_0029"></a>
+<a class="index-entry-id" id="索引-运行直到指定位置"></a>
+<a id="索引-直到"></a><span><code class="code">until</code><a class="copiable-link" href="#索引-直到"> &para;</a></span></dt>
+<dt><code class="code">u</code></dt>
+<dd><p>继续运行，直到到达当前堆栈帧中当前行之后的一行源代码。此命令用于避免在循环中多次单步执行。它类似于<code class="code">next</code>命令，不同之处在于当<code class="code">until</code>遇到跳转时，它会自动继续执行直到程序计数器大于跳转的地址。
+</p>
+<p>这意味着当你单步执行完一个循环到达末尾时，<code class="code">until</code>会使你的程序继续执行直到它退出循环。相比之下，在循环末尾使用<code class="code">next</code>命令只会单步回到循环的开头，这迫使你单步执行下一次迭代。
+</p>
+<p>如果程序试图退出当前堆栈帧，<code class="code">until</code>总是会停止你的程序。
+</p>
+<p>如果机器代码的顺序与源代码行的顺序不匹配，<code class="code">until</code>可能会产生一些违反直觉的结果。例如，在以下调试会话的摘录中，<code class="code">f</code>（<code class="code">frame</code>）命令显示执行在第<code class="code">206</code>行停止；然而当我们使用<code class="code">until</code>时，我们到达了第<code class="code">195</code>行：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) f
+#0  main (argc=4, argv=0xf7fffae8) at m4.c:206
+206                 expand_input();
+(gdb) until  
+195             for ( ; argc &gt; 0; NEXTARG) {
+</pre></div>
+
+<p>发生这种情况是因为，为了提高执行效率，编译器在循环末尾而不是开头生成了循环结束测试的代码——尽管在C <code class="code">for</code>循环中测试是写在循环体之前的。当<code class="code">until</code>命令推进到这个表达式时，它似乎单步回到了循环的开头；然而，它实际上并没有回到更早的语句——就实际的机器代码而言并非如此。
+</p>
+<p>不带参数的<code class="code">until</code>通过单条指令单步执行，因此比带参数的<code class="code">until</code>慢。
+</p>
+</dd>
+<dt><code class="code">until <var class="var">位置规范</var></code></dt>
+<dt><code class="code">u <var class="var">位置规范</var></code></dt>
+<dd><p>继续运行你的程序，直到它到达由解析<var class="var">位置规范</var>得到的代码位置，或者当前堆栈帧返回。<var class="var">位置规范</var>是 <a class="ref" href="Location-Specifications.html">位置规范</a> 中描述的任何一种形式。此命令形式使用临时断点，因此比不带参数的<code class="code">until</code>更快。仅当指定的位置在当前帧中时，才会实际到达该位置。这意味着<code class="code">until</code>可用于跳过递归函数调用。例如，在下面的代码中，如果当前位置是第<code class="code">96</code>行，发出<code class="code">until 99</code>将在同一个阶乘调用中执行程序直到第<code class="code">99</code>行，即在内部调用返回之后。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">94	int factorial (int value)
+95	{
+96	    if (value &gt; 1) {
+97            value *= factorial (value - 1);
+98	    }
+99	    return (value);
+100     }
+</pre></div>
+
+
+</dd>
+<dt><a id="索引-前进位置规范"></a><span><code class="code">advance <var class="var">位置规范</var></code><a class="copiable-link" href="#索引-前进位置规范"> &para;</a></span></dt>
+<dd><p>继续运行你的程序直到它到达由解析<var class="var">位置规范</var>得到的代码位置，或者当前堆栈帧返回。<var class="var">位置规范</var>是 <a class="ref" href="Location-Specifications.html">位置规范</a> 中描述的任何一种形式。此命令类似于<code class="code">until</code>，但<code class="code">advance</code>不会跳过递归函数调用，并且目标代码位置不必与当前位置在同一帧中。
+</p>
+
+</dd>
+<dt><a class="index-entry-id" id="索引-si-_0028单步i_0029"></a>
+<a id="索引-单步i"></a><span><code class="code">stepi</code><a class="copiable-link" href="#索引-单步i"> &para;</a></span></dt>
+<dt><code class="code">stepi <var class="var">参数</var></code></dt>
+<dt><code class="code">si</code></dt>
+<dd><p>执行一条机器指令，然后停止并返回调试器。
+</p>
+<p>在按机器指令单步执行时，通常做‘<samp class="samp">display/i $pc</samp>’很有用。这会使<small class="sc">GDB</small>在你的程序每次停止时自动显示下一条要执行的指令。见 <a class="xref" href="Auto-Display.html">自动显示</a>。
+</p>
+<p>参数是一个重复计数，与<code class="code">step</code>中的相同。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-ni-_0028下一步i_0029"></a>
+<a id="索引-下一步i"></a><span><code class="code">nexti</code><a class="copiable-link" href="#索引-下一步i"> &para;</a></span></dt>  
+<dt><code class="code">nexti <var class="var">参数</var></code></dt>
+<dt><code class="code">ni</code></dt>
+<dd><p>执行一条机器指令，但如果它是一个函数调用，则继续执行直到函数返回。
+</p>
+<p>参数是一个重复计数，与<code class="code">next</code>中的相同。
+</p>
+</dd>
+</dl>
+
+<a class="anchor" id="范围单步执行"></a><a class="index-entry-id" id="索引-范围单步执行"></a>
+<a class="index-entry-id" id="索引-目标辅助范围单步执行"></a>
+<p>默认情况下，如果可用，<small class="sc">GDB</small>会使用目标辅助的<em class="dfn">范围单步执行</em>。换句话说，每当你使用单步执行命令（例如，<code class="code">step</code>，<code class="code">next</code>）时，<small class="sc">GDB</small>会告诉目标单步执行相应的指令地址范围，而不是发出多个单步。这加快了行单步执行的速度，特别是对于远程目标而言。理想情况下，你应该没有理由想要关闭范围单步执行。然而，调试信息中的错误、远程存根（对于远程目标）中的错误，甚至<small class="sc">GDB</small>中的错误，都可能导致在启用目标辅助范围单步执行时行单步执行行为不正确。如有必要，你可以使用以下命令关闭范围单步执行：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-显示范围单步执行"></a>
+<a id="索引-设置范围单步执行"></a><span><code class="code">set range-stepping</code><a class="copiable-link" href="#索引-设置范围单步执行"> &para;</a></span></dt>
+<dt><code class="code">show range-stepping</code></dt>
+<dd><p>控制是否启用范围单步执行。
+</p></dd>
+<dd><p>如果为<code class="code">on</code>，并且目标支持它，<small class="sc">GDB</small>会告诉目标自己单步执行一个地址范围，而不是发出多个单步。如果为<code class="code">off</code>，<small class="sc">GDB</small>总是发出单步，即使目标支持范围单步执行。默认值为<code class="code">on</code>。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Skipping-Over-Functions-and-Files.html">跳过函数和文件</a>，上一页：<a href="Breakpoints.html">断点、观察点和捕获点</a>，向上：<a href="Stopping.html">停止和继续</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

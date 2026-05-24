@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>索引部分格式（使用GDB调试）</title>
+
+<meta name="description" content="索引部分格式（使用GDB调试）">
+<meta name="keywords" content="索引部分格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Debuginfod.html" rel="next" title="Debuginfod">
+<link href="Trace-File-Format.html" rel="prev" title="跟踪文件格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Index-Section-Format">
+<div class="nav-panel">
+<p>
+下一页：<a href="Debuginfod.html" accesskey="n" rel="next">使用Debuginfod下载调试资源</a>，上一页：<a href="Trace-File-Format.html" accesskey="p" rel="prev">跟踪文件格式</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="g_t_002egdb_005findex-section-format"><span>附录J <code class="code">.gdb_index</code> 部分格式<a class="copiable-link" href="#g_t_002egdb_005findex-section-format"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-_002egdb_005findex-section-format"></a>
+<a class="index-entry-id" id="index-index-section-format"></a>
+
+<p>本节记录由 <code class="code">save gdb-index</code> 创建的索引部分（见 <a class="pxref" href="Index-Files.html">索引文件加速<small class="sc">GDB</small></a>）。索引部分是特定于DWARF的；本描述中假定读者对DWARF有所了解。
+</p>
+<p>映射索引文件格式设计为在任何架构上都可直接 <code class="code">mmap</code>。在大多数情况下，一个数据项使用一个小端序32位整数值表示，称为 <code class="code">offset_type</code>。大端序机器在使用这些值之前必须进行字节交换。本规则的例外情况会另行说明。数据的布局方式始终遵循对齐原则。
+</p>
+<p>一个映射索引由几个区域按顺序排列组成。
+</p>
+<ol class="enumerate">
+<li> 文件头。这是一系列值，除非另有说明，否则为 <code class="code">offset_type</code> 类型：
+
+<ol class="enumerate">
+<li> 版本号，当前为9。版本1、2和3已过时。版本4使用的哈希函数与版本5和6不同。版本6包括内联函数的符号，而版本4和5不包括。版本7在符号表的CU索引中添加了属性。版本8指定来自DWARF类型单元（&lsquo;<samp class="samp">DW_TAG_type_unit</samp>&rsquo;）的符号引用类型单元的符号表，而不是使用该类型的编译单元（&lsquo;<samp class="samp">DW_TAG_comp_unit</samp>&rsquo;）。版本9在索引中添加了主函数 的名称和语言信息。
+
+<p><small class="sc">GDB</small> 只有在指定 <code class="code">set use-deprecated-index-sections on</code> 时才会读取版本4、5或6的索引。GDB对可能损坏的版本7索引有一个变通方法，因此目前它没有被标记为过时。
+</p>
+</li><li> CU列表在文件开头的偏移量。
+
+</li><li> 类型CU列表在文件开头的偏移量。请注意，这个区域可能为空，在这种情况下，这个偏移量将等于下一个偏移量。
+
+</li><li> 地址区域在文件开头的偏移量。
+
+</li><li> 符号表在文件开头的偏移量。
+
+</li><li> 快捷表在文件开头的偏移量。
+
+</li><li> 常量池在文件开头的偏移量。
+</li></ol>
+
+</li><li> CU列表。这是一系列64位小端序值对，按CU偏移量排序。每对中的第一个元素是 <code class="code">.debug_info</code> 节中一个CU的偏移量。每对中的第二个元素是该CU的长度。在映射中的其他地方对CU的引用使用CU索引，它只是此表中的基于0的索引。请注意，如果有类型CU，那么从概念上讲，CU和类型CU为了CU索引的目的形成一个单一列表。
+
+</li><li> 类型CU列表。这是一系列64位小端序三元组。在一个三元组中，第一个值是CU偏移量，第二个值是CU中的类型偏移量，第三个值是类型签名。类型CU列表不排序。
+
+</li><li> 地址区域。地址区域由一系列地址条目组成。每个地址条目有三个元素：
+
+<ol class="enumerate">
+<li> 低地址。这是一个64位小端序值。
+
+</li><li> 高地址。这是一个64位小端序值。与 <code class="code">DW_AT_high_pc</code> 一样，该值比末尾多一个字节。
+
+</li><li> CU索引。这是一个 <code class="code">offset_type</code> 值。
+</li></ol>
+
+</li><li> 符号表。这是一个开放地址哈希表。哈希表的大小始终是2的幂。
+
+<p>哈希表中的每个槽由一对 <code class="code">offset_type</code> 值组成。第一个值是符号名称在常量池中的偏移量。第二个值是CU向量在常量池中的偏移量。
+</p>
+<p>如果两个值都是0，那么哈希表中的这个槽为空。这是可以的，因为虽然0是一个有效的常量池索引，但它不能同时是字符串和CU向量的有效索引。
+</p>
+<p>表条目的哈希值通过对符号名称应用迭代哈希函数来计算。从初始值 <code class="code">r = 0</code> 开始，字符串中的每个（无符号）字符 &lsquo;<samp class="samp">c</samp>&rsquo; 根据索引版本使用公式合并到哈希中：
+</p>
+<dl class="table">
+<dt>版本4</dt>
+<dd><p>公式为 <code class="code">r = r * 67 + c - 113</code>。
+</p>
+</dd>
+<dt>版本5到7</dt>
+<dd><p>公式为 <code class="code">r = r * 67 + tolower (c) - 113</code>。
+</p></dd>
+</dl>
+
+<p>终止符 &lsquo;<samp class="samp">\0</samp>&rsquo; 不包含在哈希中。
+</p>
+<p>哈希表中使用的步长通过 <code class="code">((hash * 17) &amp; (size - 1)) | 1</code> 计算，其中 &lsquo;<samp class="samp">hash</samp>&rsquo; 是哈希值，&lsquo;<samp class="samp">size</samp>&rsquo; 是哈希表的大小。步长用于在处理哈希冲突时找到下一个候选槽。
+</p>
+<p>哈希表中C<code class="t">++</code> 符号的名称进行了规范化。我们目前没有对规范化算法的简单描述；如果您打算创建新的索引部分，您必须阅读代码。
+</p>
+</li><li> 快捷表
+这是一个具有以下字段的数据结构：
+
+<dl class="table"> 
+<dt>主函数的语言</dt>
+<dd><p>一个 <code class="code">offset_type</code> 值，指示主函数的语言作为 <code class="code">DW_LANG_</code> 常量。如果没有主函数信息，此值将为零。
+</p>
+</dd>
+<dt>主函数的名称</dt>
+<dd><p>一个 <code class="code">offset_type</code> 值，指示主函数名称在常量池中的偏移量。如果主函数语言的值为零，则必须忽略此值。
+</p></dd>
+</dl>
+
+</li><li> 常量池。这只是一堆字节。它的组织方式使得对齐正确：CU向量首先存储，然后是字符串。
+
+<p>常量池中的CU向量是一系列 <code class="code">offset_type</code> 值。第一个值是向量中CU索引的数量。每个后续值是CU列表中一个CU的索引和符号属性。哈希表中的这个元素用于指示哪些CU定义了符号以及符号是如何使用的。
+有关每个CU索引+属性条目的格式，请参见下文。
+</p>
+<p>常量池中的字符串以零结尾。
+</p></li></ol>
+
+<p>在 <code class="code">.gdb_index</code> 版本7中，属性被添加到CU索引值中。如果一个符号在一个CU中有多个用途，那么每个用途都有一个CU索引+属性值。
+</p>
+<p>每个CU索引+属性条目的格式如下（位0 = 最低有效位）：
+</p>
+<dl class="table">
+<dt>位0 - 23</dt>
+<dd><p>这是CU在CU列表中的索引。
+</p></dd>
+<dt>位24 - 27</dt>
+<dd><p>这些位保留供将来使用，必须为零。
+</p></dd>
+<dt>位28 - 30</dt>
+<dd><p>CU中符号的类型。
+</p>
+<dl class="table">
+<dt>0</dt>
+<dd><p>此值保留，不应使用。
+通过保留零，完整的 <code class="code">offset_type</code> 值与索引的先前版本向后兼容。
+</p></dd>
+<dt>1</dt>
+<dd><p>符号是一个类型。
+</p></dd>
+<dt>2</dt> 
+<dd><p>符号是一个变量或枚举值。
+</p></dd>
+<dt>3</dt>
+<dd><p>符号是一个函数。
+</p></dd>
+<dt>4</dt>
+<dd><p>任何其他类型的符号。
+</p></dd>
+<dt>5、6、7</dt>
+<dd><p>这些值保留。
+</p></dd>
+</dl>
+
+</dd>
+<dt>位31</dt>
+<dd><p>如果值是全局的，则此位为零，如果是静态的，则为一。
+</p>
+<p>确定一个符号是全局还是静态是复杂的。权威参考是 <small class="sc">GDB</small> 源代码中的 <samp class="file">dwarf2read.c</samp> 文件。
+</p>
+</dd>
+</dl>
+
+<p>这段伪代码描述了索引中符号类型和全局/静态属性的计算。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">is_external = get_attribute (die, DW_AT_external);
+language = get_attribute (cu_die, DW_AT_language);
+switch (die-&gt;tag)
+  {
+  case DW_TAG_typedef:
+  case DW_TAG_base_type:
+  case DW_TAG_subrange_type:
+    kind = TYPE;
+    is_static = 1;
+    break;
+  case DW_TAG_enumerator:
+    kind = VARIABLE;
+    is_static = language != CPLUS;
+    break;
+  case DW_TAG_subprogram:
+    kind = FUNCTION;
+    is_static = ! (is_external || language == ADA);
+    break;
+  case DW_TAG_constant:
+    kind = VARIABLE;
+    is_static = ! is_external;
+    break;
+  case DW_TAG_variable:
+    kind = VARIABLE;
+    is_static = ! is_external;
+    break;
+    case DW_TAG_namespace:
+    kind = TYPE;
+    is_static = 0;
+    break;
+  case DW_TAG_class_type:
+  case DW_TAG_interface_type:
+  case DW_TAG_structure_type:
+  case DW_TAG_union_type:
+  case DW_TAG_enumeration_type:
+    kind = TYPE;
+    is_static = language != CPLUS;
+    break;
+  default:
+    assert (0);
+  }
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Debuginfod.html">使用Debuginfod下载调试资源</a>，上一页：<a href="Trace-File-Format.html">跟踪文件格式</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

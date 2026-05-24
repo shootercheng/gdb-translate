@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>漂亮打印机命令（使用GDB调试）</title>
+
+<meta name="description" content="漂亮打印机命令（使用GDB调试）">
+<meta name="keywords" content="漂亮打印机命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Pretty-Printing.html" rel="up" title="漂亮打印">
+<link href="Pretty_002dPrinter-Example.html" rel="prev" title="漂亮打印机示例">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="漂亮打印机命令">
+<div class="nav-panel">
+<p>上一个：<a href="Pretty_002dPrinter-Example.html" accesskey="p" rel="prev">漂亮打印机示例</a>，向上：<a href="Pretty-Printing.html" accesskey="u" rel="up">漂亮打印</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="漂亮打印机命令-1"><span>10.10.3漂亮打印机命令<a class="copiable-link" href="#漂亮打印机命令-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-漂亮打印机命令"></a>
+
+<dl class="table">
+<dt><a id="索引-info-漂亮打印机"></a><span><code class="code">info pretty-printer [<var class="var">对象正则表达式</var> [<var class="var">名称正则表达式</var>]]</code><a class="copiable-link" href="#索引-info-漂亮打印机"> &para;</a></span></dt>
+<dd><p>打印已安装的漂亮打印机列表。
+这包括已禁用的漂亮打印机，它们会被标记出来。
+</p>
+<p><var class="var">对象正则表达式</var>是一个正则表达式，用于匹配要列出其漂亮打印机的对象。
+对象可以是<code class="code">全局</code>的、程序空间的文件（见<a class="pxref" href="Progspaces-In-Python.html">Python中的程序空间</a>）以及该程序空间内的对象文件（见<a class="pxref" href="Objfiles-In-Python.html">Python中的目标文件</a>）。
+有关GDB如何从这三个对象中查找打印机的详细信息，请参阅<a class="xref" href="Selecting-Pretty_002dPrinters.html">选择漂亮打印机</a>。
+</p>
+<p><var class="var">名称正则表达式</var>是一个正则表达式，用于匹配要列出的打印机名称。
+</p>
+</dd>
+<dt><a id="索引-disable-漂亮打印机"></a><span><code class="code">disable pretty-printer [<var class="var">对象正则表达式</var> [<var class="var">名称正则表达式</var>]]</code><a class="copiable-link" href="#索引-disable-漂亮打印机"> &para;</a></span></dt>
+<dd><p>禁用与<var class="var">对象正则表达式</var>和<var class="var">名称正则表达式</var>匹配的漂亮打印机。
+已禁用的漂亮打印机不会被遗忘，以后可以再次启用。
+</p>
+</dd>
+<dt><a id="索引-enable-漂亮打印机"></a><span><code class="code">enable pretty-printer [<var class="var">对象正则表达式</var> [<var class="var">名称正则表达式</var>]]</code><a class="copiable-link" href="#索引-enable-漂亮打印机"> &para;</a></span></dt>
+<dd><p>启用与<var class="var">对象正则表达式</var>和<var class="var">名称正则表达式</var>匹配的漂亮打印机。
+</p></dd>
+</dl>
+
+<p>示例：
+</p>
+<p>假设我们安装了三个漂亮打印机：一个来自library1.so，名为<code class="code">foo</code>，用于打印类型为<code class="code">foo</code>的对象；另一个来自library2.so，名为<code class="code">bar</code>，用于打印两种类型的对象，即<code class="code">bar1</code>和<code class="code">bar2</code>。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) info pretty-printer
+library1.so:
+  foo
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) info pretty-printer library2
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library1
+1个打印机已禁用
+3个打印机中的2个已启用
+(gdb) info pretty-printer
+library1.so:
+  foo [已禁用]
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library2 bar;bar1
+1个打印机已禁用
+3个打印机中的1个已启用
+(gdb) info pretty-printer library2
+library2.so:
+  bar
+    bar1 [已禁用]
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty-printer library2 bar
+1个打印机已禁用
+3个打印机中的0个已启用
+(gdb) info pretty-printer
+library1.so:
+  foo [已禁用]
+library2.so:
+  bar [已禁用]
+    bar1 [已禁用]
+    bar2
+</pre></div></div>
+
+<p>请注意，对于<code class="code">bar</code>，整个打印机可以被禁用，每个单独的子打印机也可以被禁用。
+</p>
+<p>默认情况下，使用启用的漂亮打印机来打印值和帧参数。
+</p>
+<p>打印选项<code class="code">-raw-values</code>和GDB设置<code class="code">set print raw-values</code>（见<a class="pxref" href="Print-Settings.html#set-print-raw_002dvalues">设置打印原始值</a>）可用于在不应用启用的漂亮打印机的情况下打印值。
+</p>
+<p>类似地，回溯选项<code class="code">-raw-frame-arguments</code>和GDB设置<code class="code">set print raw-frame-arguments</code>（见<a class="pxref" href="Print-Settings.html#set-print-raw_002dframe_002darguments">设置打印原始帧参数</a>）可用于在打印帧参数值时忽略启用的漂亮打印机。
+</p> 
+</div>
+<hr>
+<div class="nav-panel">
+<p>上一个：<a href="Pretty_002dPrinter-Example.html">漂亮打印机示例</a>，向上：<a href="Pretty-Printing.html">漂亮打印</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

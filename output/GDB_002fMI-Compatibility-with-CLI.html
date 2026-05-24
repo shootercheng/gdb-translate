@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI与CLI的兼容性（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI与CLI的兼容性（使用GDB进行调试）">
+<meta name="keywords" content="GDB/MI与CLI的兼容性（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Development-and-Front-Ends.html" rel="next" title="GDB/MI开发与前端">
+<link href="GDB_002fMI-Command-Syntax.html" rel="prev" title="GDB/MI命令语法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Compatibility-with-CLI">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Development-and-Front-Ends.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>开发与前端</a>，上一页：<a href="GDB_002fMI-Command-Syntax.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>命令语法</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up">The <small class="sc">GDB/MI</small> Interface</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Compatibility-with-CLI"><span>27.3 <small class="sc">GDB/MI</small>与CLI的兼容性<a class="copiable-link" href="#gdb_002fmi-Compatibility-with-CLI"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-compatibility_002c-gdb_002fmi-and-CLI"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-compatibility-with-CLI"></a>
+
+<p>为方便开发者，CLI命令可以直接输入，但可能会有一些意外行为。例如，询问用户的命令会表现得好像用户回答了是，断点命令列表不会执行，并且一些CLI命令，如<code class="code">if</code>、<code class="code">when</code>和<code class="code">define</code>，会用“<samp class="samp">&gt;</samp>”提示进一步输入，这不是有效的MI输出。
+</p>  
+<p>此功能可能会在未来某个阶段被移除，建议前端使用<code class="code">-interpreter-exec</code>命令（见 <a class="pxref" href="GDB_002fMI-Miscellaneous-Commands.html#g_t_002dinterpreter_002dexec">-interpreter-exec</a>）。
+</p>
+</div>
+
+
+
+</body>
+</html>

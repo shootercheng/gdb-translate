@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下。
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>选择（使用GDB调试）</title>
+
+<meta name="description" content="选择（使用GDB调试）">
+<meta name="keywords" content="选择（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stack.html" rel="up" title="栈">
+<link href="Frame-Info.html" rel="next" title="帧信息">
+<link href="Backtrace.html" rel="prev" title="回溯">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="选择">
+<div class="nav-panel">
+<p>下一页：<a href="Frame-Info.html" accesskey="n" rel="next">关于一个帧的信息</a>，上一页：<a href="Backtrace.html" accesskey="p" rel="prev">回溯</a>，向上：<a href="Stack.html" accesskey="u" rel="up">检查栈</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="选择一个帧"><span>8.3 选择一个帧<a class="copiable-link" href="#选择一个帧"> &para;</a></span></h3>
+
+<p>大多数用于检查程序中的栈和其他数据的命令，作用于当前选定的任何栈帧。以下是用于选择栈帧的命令；它们都会在最后打印出刚选定的栈帧的简要描述。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-f-_0028帧_002c选择_0029"></a>
+<a id="index-帧_002c选择"></a><span><code class="code">frame <span class="r">[</span> <var class="var">帧选择规范</var> <span class="r">]</span></code><a class="copiable-link" href="#index-帧_002c选择"> &para;</a></span></dt>
+<dt><code class="code">f <span class="r">[</span> <var class="var">帧选择规范</var> <span class="r">]</span></code></dt>
+<dd><p><code class="command">frame</code>命令允许选择不同的栈帧。<var class="var">帧选择规范</var>可以是以下任何一种：
+</p>
+<dl class="table">
+<dt><a id="index-帧级别-1"></a><span><code class="code"><var class="var">编号</var></code><a class="copiable-link" href="#index-帧级别-1"> &para;</a></span></dt>
+<dt><code class="code">level <var class="var">编号</var></code></dt>
+<dd><p>选择帧级别<var class="var">编号</var>。请记住，帧0是最内层（当前正在执行）的帧，帧1是调用最内层帧的帧，依此类推。最高级别的帧通常是<code class="code">main</code>函数的帧。
+</p>
+<p>由于这是在帧栈中导航的最常用方法，所以字符串<code class="command">level</code>可以省略。例如，以下两个命令是等效的：</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) frame 3
+(gdb) frame level 3
+</pre></div>
+
+</dd>
+<dt><a id="index-帧地址"></a><span><code class="code">address <var class="var">栈地址</var></code><a class="copiable-link" href="#index-帧地址"> &para;</a></span></dt>
+<dd><p>选择具有栈地址<var class="var">栈地址</var>的帧。一个帧的<var class="var">栈地址</var>可以在<code class="command">info frame</code>的输出中看到，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info frame
+栈级别1，帧位于0x7fffffffda30：
+ rip = 0x40066d在b (amd64-entry-value.cc:59)；保存的rip 0x4004c5
+ 尾调用帧，调用者为位于0x7fffffffda30的帧
+ 源语言c++。
+ 参数列表位于未知地址。
+ 局部变量位于未知地址，前一帧的sp为0x7fffffffda30
+</pre></div>
+
+<p>如该行所示，此帧的<var class="var">栈地址</var>为<code class="code">0x7fffffffda30</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">栈级别1，帧位于0x7fffffffda30：
+</pre></div>
+
+</dd>
+<dt><a id="index-帧函数"></a><span><code class="code">function <var class="var">函数名</var></code><a class="copiable-link" href="#index-帧函数"> &para;</a></span></dt>
+<dd><p>选择函数<var class="var">函数名</var>对应的栈帧。如果函数<var class="var">函数名</var>有多个栈帧，则选择最内层的栈帧。
+</p>
+</dd>
+<dt><a id="index-帧查看"></a><span><code class="code">view <var class="var">栈地址</var> <span class="r">[</span> <var class="var">程序计数器地址</var> <span class="r">]</span></code><a class="copiable-link" href="#index-帧查看"> &para;</a></span></dt>
+<dd><p>查看一个不属于GDB回溯的帧。要查看的帧具有栈地址<var class="var">栈地址</var>，并且可选地，有一个程序计数器地址<var class="var">程序计数器地址</var>。
+</p>
+<p>这主要在栈帧链接因错误而损坏，导致GDB无法正确为所有帧分配编号时有用。此外，当你的程序有多个栈并在它们之间切换时，这也可能有用。
+</p>
+<p>当使用<code class="command">frame view</code>查看当前回溯之外的帧时，你始终可以使用前面的栈帧选择指令之一返回原始栈，例如<code class="command">frame level 0</code>。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-向上"></a><span><code class="code">up <var class="var">n</var></code><a class="copiable-link" href="#index-向上"> &para;</a></span></dt>
+<dd><p>在栈中向上移动<var class="var">n</var>个帧；<var class="var">n</var>默认为1。对于正数<var class="var">n</var>，这会朝着最外层的帧前进，到更高的帧编号，到存在时间更长的帧。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-do-_0028向下_0029"></a>
+<a id="index-向下"></a><span><code class="code">down <var class="var">n</var></code><a class="copiable-link" href="#index-向下"> &para;</a></span></dt>
+<dd><p>在栈中向下移动<var class="var">n</var>个帧；<var class="var">n</var>默认为1。对于正数<var class="var">n</var>，这会朝着最内层的帧前进，到更低的帧编号，到最近创建的帧。你可以将<code class="code">down</code>缩写为<code class="code">do</code>。
+</p></dd>
+</dl>
+
+<p>所有这些命令都会在最后打印两行描述该帧的输出。第一行显示帧编号、函数名、参数以及该帧中执行的源文件和行号。第二行显示该源行的文本。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) up
+#1  0x22f0 in main (argc = 1, argv = 0xf7fffbf4, env = 0xf7fffbfc)
+    at env.c:10
+10              read_input_file (argv[i]);
+</pre></div></div>
+
+<p>在这样的打印输出之后，不带参数的<code class="code">list</code>命令会打印以该帧中的执行点为中心的十行。你也可以通过输入<code class="code">edit</code>，使用你喜欢的编辑程序在执行点编辑程序。
+有关详细信息，请参阅 <a class="xref" href="List.html">打印源行</a>。
+</p>
+<dl class="table">
+<dt><a id="index-选择_002d帧"></a><span><code class="code">select-frame <span class="r">[</span> <var class="var">帧选择规范</var> <span class="r">]</span></code><a class="copiable-link" href="#index-选择_002d帧"> &para;</a></span></dt>
+<dd><p><code class="code">select-frame</code>命令是<code class="code">frame</code>的变体，它在选择帧后不会显示新帧。此命令主要用于GDB命令脚本中，在那里输出可能是不必要的且会分散注意力。<var class="var">帧选择规范</var>与在 <a class="ref" href="#选择">选择一个帧</a> 中描述的<code class="command">frame</code>命令相同。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-向上_002d静默"></a>
+<a id="index-向下_002d静默"></a><span><code class="code">up-silently <var class="var">n</var></code><a class="copiable-link" href="#index-向下_002d静默"> &para;</a></span></dt>
+<dt><code class="code">down-silently <var class="var">n</var></code></dt>
+<dd><p>这两个命令分别是<code class="code">up</code>和<code class="code">down</code>的变体；它们的不同之处在于它们默默地执行操作，不会导致新帧的显示。它们主要用于GDB命令脚本中，在那里输出可能是不必要的且会分散注意力。
+</p></dd>
+</dl>
+
+</div>

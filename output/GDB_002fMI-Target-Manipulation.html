@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI目标操作（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI目标操作（使用GDB调试）">
+<meta name="keywords" content="GDB/MI目标操作（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-File-Transfer-Commands.html" rel="next" title="GDB/MI文件传输命令">
+<link href=" GDB_002fMI-File-Commands.html" rel="prev" title="GDB/MI文件命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-目标操作">
+<div class="nav-panel"> 
+<p>
+下一页：<a href="GDB_002fMI-File-Transfer-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>文件传输命令</a>，上一页：<a href="GDB_002fMI-File-Commands.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>文件命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-目标操作命令"><span>27.20 <small class="sc">GDB/MI</small>目标操作命令<a class="copiable-link" href="#gdb_002fmi-目标操作命令"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002dattach"></a>
+<h4 class="subheading" id="The-_002dtarget_002dattach-命令"><span>The <code class="code">-target-attach</code>命令<a class="copiable-link" href="#The-_002dtarget_002dattach-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-93"><span>概要<a class="copiable-link" href="#概要-93"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-attach <var class="var">进程ID</var> | <var class="var">线程组ID</var> | <var class="var">文件</var>
+</pre></div>
+
+<p>附加到进程<var class="var">进程ID</var>或<small class="sc">GDB</small>外部的文件<var class="var">文件</var>，或线程组<var class="var">线程组ID</var>。如果附加到线程组，则必须使用之前由&lsquo;<samp class="samp">-list-thread-groups --available</samp>&rsquo;返回的ID。
+</p>
+<h4 class="subsubheading" id="gdb-命令-75"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-75"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">attach</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-75"><span>示例<a class="copiable-link" href="#示例-75"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-attach 34
+=thread-created,id=&quot;1&quot;
+*stopped,thread-id=&quot;1&quot;,frame={addr=&quot;0xb7f7e410&quot;,func=&quot;bar&quot;,args=[]}
+^done
+(gdb)
+</pre></div>
+
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002ddetach"></a>
+<h4 class="subheading" id="The-_002dtarget_002ddetach-命令"><span>The <code class="code">-target-detach</code>命令<a class="copiable-link" href="#The-_002dtarget_002ddetach-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-94"><span>概要<a class="copiable-link" href="#概要-94"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-detach [ <var class="var">进程ID</var> | <var class="var">线程组ID</var> ]
+</pre></div>
+
+<p>从远程目标分离，通常会恢复其执行。如果指定了<var class="var">进程ID</var>或<var class="var">线程组ID</var>，则从指定的进程或指定的线程组分离。没有输出。
+</p>
+<h4 class="subsubheading" id="gdb-命令-76"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-76"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">detach</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-76"><span>示例<a class="copiable-link" href="#示例-76"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-detach
+^done
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002ddisconnect"></a>
+<h4 class="subheading" id="The-_002dtarget_002ddisconnect-命令"><span>The <code class="code">-target-disconnect</code>命令<a class="copiable-link" href="#The-_002dtarget_002ddisconnect-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-95"><span>概要<a class="copiable-link" href="#概要-95"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-disconnect
+</pre></div>
+
+<p>与远程目标断开连接。没有输出，并且目标通常不会恢复。
+</p>
+<h4 class="subsubheading" id="gdb-命令-77"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-77"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">disconnect</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-77"><span>示例<a class="copiable-link" href="#示例-77"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-disconnect
+^done
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002ddownload"></a>
+<h4 class="subheading" id="The-_002dtarget_002ddownload-命令"><span>The <code class="code">-target-download</code>命令<a class="copiable-link" href="#The-_002dtarget_002ddownload-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-96"><span>概要<a class="copiable-link" href="#概要-96"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-download
+</pre></div>
+
+<p>将可执行文件加载到远程目标上。它每半秒打印一条更新消息，其中包括以下字段：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">section</samp>&rsquo;</dt>
+<dd><p>段的名称。
+</p></dd>
+<dt>&lsquo;<samp class="samp">section-sent</samp>&rsquo;</dt>
+<dd><p>到目前为止为该段发送的大小。
+</p></dd>
+<dt>&lsquo;<samp class="samp">section-size</samp>&rsquo;</dt>
+<dd><p>段的大小。
+</p></dd>
+<dt>&lsquo;<samp class="samp">total-sent</samp>&rsquo;</dt>
+<dd><p>到目前为止发送的总大小（当前段和前一段）。
+</p></dd>
+<dt>&lsquo;<samp class="samp">total-size</samp>&rsquo;</dt>
+<dd><p>要下载的整个可执行文件的大小。
+</p></dd>
+</dl>
+
+<p>每条消息都作为状态记录发送（见<a class="pxref" href="GDB_002fMI-Output-Syntax.html"><small class="sc">GDB/MI</small>输出语法</a>）。
+</p>
+<p>此外，它还会在下载段时打印段的名称和大小。这些消息包括以下字段：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">section</samp>&rsquo;</dt>
+<dd><p>段的名称。
+</p></dd>
+<dt>&lsquo;<samp class="samp">section-size</samp>&rsquo;</dt>
+<dd><p>段的大小。
+</p></dd>
+<dt>&lsquo;<samp class="samp">total-size</samp>&rsquo;</dt>
+<dd><p>要下载的整个可执行文件的大小。
+</p></dd>
+</dl>
+
+<p>最后，会打印一个摘要。
+</p>
+<h4 class="subsubheading" id="gdb-命令-78"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-78"> &para;</a></span></h
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">load</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-78"><span>示例<a class="copiable-link" href="#示例-78"> &para;</a></span></h4>
+
+<p>注意：每条状态消息都出现在一行上。这里为了便于排版，将消息进行了拆分。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-download
++download,{section=&quot;.text&quot;,section-size=&quot;6668&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;512&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;512&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;1024&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;1024&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;1536&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;1536&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;2048&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;2048&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;2560&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;2560&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;3072&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;3072&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;3584&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;3584&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;4096&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;4096&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;4608&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;4608&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;5120&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;5120&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;5632&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;5632&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;6144&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;6144&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.text&quot;,section-sent=&quot;6656&quot;,section-size=&quot;6668&quot;,
+total-sent=&quot;6656&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.init&quot;,section-size=&quot;28&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.fini&quot;,section-size=&quot;28&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-size=&quot;3156&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;512&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;7236&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;1024&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;7748&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;1536&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;8260&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;2048&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;8772&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;2560&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;9284&quot;,total-size=&quot;9880&quot;}
++download,{section=&quot;.data&quot;,section-sent=&quot;3072&quot;,section-size=&quot;3156&quot;,
+total-sent=&quot;9796&quot;,total-size=&quot;9880&quot;}
+^done,address=&quot;0x__004&quot;,load-size=&quot;9880&quot;,transfer-rate=&quot;6586&quot;,
+write-rate=&quot;429&quot;
+(gdb)
+</pre></div>
+
+
+
+<h4 class="subsubheading" id="gdb-命令-79"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-79"> &para;</a></span></h4>
+
+<p>无等效命令。
+</p>
+<h4 class="subsubheading" id="示例-79"><span>示例<a class="copiable-link" href="#示例-79"> &para;</a></span></h4>
+<p>无。
+</p>
+<a class="index-entry-id" id="索引-_002dtarget_002dflash_002derase"></a>
+<h4 class="subheading" id="The-_002dtarget_002dflash_002derase-命令"><span>The <code class="code">-target-flash-erase</code>命令<a class="copiable-link" href="#The-_002dtarget_002dflash_002derase-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-97"><span>概要<a class="copiable-link" href="#概要-97"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-flash-erase
+</pre></div>
+
+<p>擦除目标上所有已知闪存区域。
+</p>
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">flash-erase</samp>&rsquo;。
+</p>
+<p>输出是已擦除的闪存区域列表，包括起始地址和内存区域大小。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-flash-erase
+^done,erased-regions={address=&quot;0x0&quot;,size=&quot;0x40000&quot;}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="索引-_002dtarget_002dselect"></a>
+<h4 class="subheading" id="The-_002dtarget_002dselect-命令"><span>The <code class="code">-target-select</code>命令<a class="copiable-link" href="#The-_002dtarget_002dselect-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-98"><span>概要<a class="copiable-link" href="#概要-98"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-select <var class="var">类型</var> <var class="var">参数...</var>
+</pre></div>
+
+<p>将<small class="sc">GDB</small>连接到远程目标。此命令有两个参数：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp"><var class="var">类型</var></samp>&rsquo;</dt>
+<dd><p>目标类型，例如&lsquo;<samp class="samp">remote</samp>&rsquo;等。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">参数</var></samp>&rsquo;</dt>
+<dd><p>设备名称、主机名称等。有关更多详细信息，请参阅<a class="xref" href="Target-Commands.html">管理目标的命令</a>。
+</p></dd>
+</dl>
+
+<p>输出是一个连接通知，后跟目标程序所在的地址，格式如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^connected,addr=&quot;<var class="var">地址</var>&quot;,func=&quot;<var class="var">函数名</var>&quot;, 
+args=[<var class="var">参数列表</var>]
+</pre></div>
+
+<h4 class="subsubheading" id="gdb-命令-80"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-命令-80"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">target</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-80"><span>示例<a class="copiable-link" href="#示例-80"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-select remote /dev/ttya
+^connected,addr=&quot;0xfe00a300&quot;,func=&quot;??&quot;,args=[]
+(gdb)
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-File-Transfer-Commands.html"><small class="sc">GDB/MI</small>文件传输命令</a>，上一页：<a href="GDB_002fMI-File-Commands.html"><small class="sc">GDB/MI</small>文件命令</a>，向上：<a href="GDB_002fMI.html"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

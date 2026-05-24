@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下（a）。
+
+（a）FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>移动命令（使用GDB调试）</title>
+
+<meta name="description" content="移动命令（使用GDB调试）">
+<meta name="keywords" content="移动命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Commands-For-History.html" rel="next" title="历史命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="移动命令">
+<div class="nav-panel">
+<p>
+下一个：<a href="Commands-For-History.html" accesskey="n" rel="next">操作历史记录的命令</a>，上一个：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="移动命令-1"><span>第33.4.1节 移动命令<a class="copiable-link" href="#移动命令-1"> &para;</a></span></h4>
+<dl class="ftable">
+<dt><a id="index-行首_002d（C-a）"></a><span><code class="code">beginning-of-line (C-a)</code><a class="copiable-link" href="#index-行首_002d（C-a）"> &para;</a></span></dt>
+<dd><p>移动到当前行的开头。
+</p>
+</dd>
+<dt><a id="index-行尾_002d（C-e）"></a><span><code class="code">end-of-line (C-e)</code><a class="copiable-link" href="#index-行尾_002d（C-e）"> &para;</a></span></dt>
+<dd><p>移动到行尾。
+</p>
+</dd>
+<dt><a id="index-向前_002d字符_002d（C-f）"></a><span><code class="code">forward-char (C-f)</code><a class="copiable-link" href="#index-向前_002d字符_002d（C-f）"> &para;</a></span></dt>
+<dd><p>向前移动一个字符。
+</p>
+</dd>
+<dt><a id="index-向后_002d字符_002d（C-b）"></a><span><code class="code">backward-char (C-b)</code><a class="copiable-link" href="#index-向后_002d字符_002d（C-b）"> &para;</a></span></dt>
+<dd><p>向后移动一个字符。
+</p>
+
+</dd>
+<dt><a id="index-向前_002d单词_002d（M-f）"></a><span><code class="code">forward-word (M-f)</code><a class="copiable-link" href="#index-向前_002d单词_002d（M-f）"> &para;</a></span></dt>
+<dd><p>向前移动到下一个单词的末尾。
+单词由字母和数字组成。
+</p>
+</dd>
+<dt><a id="index-向后_002d单词_002d（M-b）"></a><span><code class="code">backward-word (M-b)</code><a class="copiable-link" href="#index-向后_002d单词_002d（M-b）"> &para;</a></span></dt>
+<dd><p>向后移动到当前或前一个单词的开头。
+单词由字母和数字组成。
+</p>
+
+</dd>
+<dt><a id="index-上一个_002d屏幕_002d行_002d（）"></a><span><code class="code">previous-screen-line ()</code><a class="copiable-link" href="#index-上一个_002d屏幕_002d行_002d（）"> &para;</a></span></dt>
+<dd><p>尝试将光标移动到上一个物理屏幕行上的相同物理屏幕列。如果当前Readline行不占用超过一个物理行，或者如果光标不大于提示符长度加上屏幕宽度，则不会产生预期效果。
+</p>
+</dd>
+<dt><a id="index-下一个_002d屏幕_002d行_002d（）"></a><span><code class="code">next-screen-line ()</code><a class="copiable-link" href="#index-下一个_002d屏幕_002d行_002d（）"> &para;</a></span></dt>
+<dd><p>尝试将光标移动到下一个物理屏幕行上的相同物理屏幕列。如果当前Readline行不占用超过一个物理行，或者如果当前Readline行的长度不大于提示符长度加上屏幕宽度，则不会产生预期效果。
+</p>
+</dd>
+<dt><a id="index-清除_002d显示_002d（M-C-l）"></a><span><code class="code">clear-display (M-C-l)</code><a class="copiable-link" href="#index-清除_002d显示_002d（M-C-l）"> &para;</a></span></dt>
+<dd><p>清除屏幕，并在可能的情况下清除终端的回滚缓冲区，然后重绘当前行，
+使当前行位于屏幕顶部。
+</p>
+</dd>
+<dt><a id="index-清除_002d屏幕_002d（C-l）"></a><span><code class="code">clear-screen (C-l)</code><a class="copiable-link" href="#index-清除_002d屏幕_002d（C-l）"> &para;</a></span></dt>
+<dd><p>清除屏幕，
+然后重绘当前行，
+使当前行位于屏幕顶部。
+</p>
+</dd>
+<dt><a id="index-重绘_002d当前_002d行_002d（）"></a><span><code class="code">redraw-current-line ()</code><a class="copiable-link" href="#index-重绘_002d当前_002d行_002d（）"> &para;</a></span></dt>
+<dd><p>刷新当前行。默认情况下，此操作未绑定。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Commands-For-History.html">操作历史记录的命令</a>，上一个：<a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Readline移动命令（使用GDB调试）</title>
+
+<meta name="description" content="Readline移动命令（使用GDB调试）">
+<meta name="keywords" content="Readline移动命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Interaction.html" rel="up" title="Readline交互">
+<link href="Readline-Killing-Commands.html" rel="next" title="Readline删除命令">
+<link href="Readline-Bare-Essentials.html" rel="prev" title="Readline基础">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Readline-Movement-Commands">
+<div class="nav-panel">
+<p>
+下一页：<a href="Readline-Killing-Commands.html" accesskey="n" rel="next">Readline删除命令</a>，上一页：<a href="Readline-Bare-Essentials.html" accesskey="p" rel="prev">Readline基础</a>，向上：<a href="Readline-Interaction.html" accesskey="u" rel="up">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Readline-Movement-Commands-1"><span>33.2.2 Readline移动命令<a class="copiable-link" href="#Readline-Movement-Commands-1"> &para;</a></span></h4>
+
+
+<p>上表描述了编辑输入行所需的最基本按键。为方便起见，除了<kbd class="kbd">C-b</kbd>、<kbd class="kbd">C-f</kbd>、<kbd class="kbd">C-d</kbd>和<kbd class="key">DEL</kbd>之外，还添加了许多其他命令。以下是一些用于在该行中更快速移动的命令。
+</p>
+<dl class="table">
+<dt><kbd class="kbd">C-a</kbd></dt>
+<dd><p>移动到行首。
+</p></dd> 
+<dt><kbd class="kbd">C-e</kbd></dt>
+<dd><p>移动到行尾。
+</p></dd> 
+<dt><kbd class="kbd">M-f</kbd></dt>
+<dd><p>向前移动一个单词，其中一个单词由字母和数字组成。
+</p></dd> 
+<dt><kbd class="kbd">M-b</kbd></dt>
+<dd><p>向后移动一个单词。
+</p></dd> 
+<dt><kbd class="kbd">C-l</kbd></dt>
+<dd><p>清除屏幕，将当前行重新打印在顶部。
+</p></dd> 
+</dl>
+
+<p>注意<kbd class="kbd">C-f</kbd>如何向前移动一个字符，而<kbd class="kbd">M-f</kbd>如何向前移动一个单词。一个宽松的约定是，控制按键操作字符，而元按键操作单词。
+</p>
+</div>
+
+
+
+</body>
+</html>

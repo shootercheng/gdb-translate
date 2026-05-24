@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>设置观察点（使用GDB调试）</title>
+
+<meta name="description" content="设置观察点（使用GDB调试）">
+<meta name="keywords" content="设置观察点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Set-Catchpoints.html" rel="next" title="设置捕获点">
+<link href="Set-Breaks.html" rel="prev" title="设置断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="设置观察点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Set-Catchpoints.html" accesskey="n" rel="next">设置捕获点</a>，上一个：<a href="Set-Breaks.html" accesskey="p" rel="prev">设置断点</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="设置观察点"><span>5.1.2 设置观察点<a class="copiable-link" href="#设置观察点"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-设置观察点"></a>
+<p>你可以使用观察点在表达式的值发生变化时停止执行，而无需预测这种情况可能发生的特定位置。（这有时被称为<em class="dfn">数据断点</em>。）表达式可以像单个变量的值一样简单，也可以像由运算符组合的多个变量一样复杂。示例包括：
+</p>
+<ul class="itemize mark-bullet">
+<li>对单个变量值的引用。
+
+</li><li>转换为适当数据类型的地址。例如，&lsquo;<samp class="samp">*(int *)0x12345678</samp>&rsquo; 将观察指定地址处的4字节区域（假设 <code class="code">int</code> 占用4字节）。
+
+</li><li>任意复杂的表达式，如 &lsquo;<samp class="samp">a*b + c/d</samp>&rsquo;。该表达式可以使用程序原生语言中有效的任何运算符（见 <a class="pxref" href="Languages.html">使用不同语言的GDB</a>）。
+</li></ul>
+
+<p>即使表达式尚未求值，你也可以为其设置观察点。例如，在 &lsquo;<samp class="samp">global_ptr</samp>&rsquo; 初始化之前，你可以为 &lsquo;<samp class="samp">*global_ptr</samp>&rsquo; 设置观察点。当你的程序设置 &lsquo;<samp class="samp">global_ptr</samp>&rsquo; 且表达式产生有效值时，GDB将停止。如果表达式通过除修改变量之外的其他方式变得有效（例如，如果 &lsquo;<samp class="samp">*global_ptr</samp>&rsquo; 指向的内存由于 <code class="code">malloc</code> 调用而变得可读），GDB可能直到表达式下次变化时才会停止。
+</p>
+<a class="index-entry-id" id="index-软件观察点"></a>
+<a class="index-entry-id" id="index-硬件观察点"></a>
+<p>根据你的系统，观察点可能通过软件或硬件实现。GDB通过单步执行你的程序并每次测试变量的值来进行软件观察点设置，这比正常执行慢数百倍。（但这可能仍然值得，以捕获你不知道程序的哪个部分是罪魁祸首的错误。）
+</p>
+<p>在某些系统上，例如大多数基于PowerPC或x86的目标，GDB包括对硬件观察点的支持，这不会减慢程序的运行速度。
+</p>
+<dl class="table">
+<dt><a id="index-watch"></a><span><code class="code">watch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span> <span class="r">[</span>task <var class="var">task-id</var><span class="r">]</span></code><a class="copiable-link" href="#index-watch"> &para;</a></span></dt>
+<dd><p>为表达式设置观察点。当程序写入表达式 <var class="var">expr</var> 并使其值发生变化时，GDB将中断。此命令最简单（也是最常用）的用法是观察单个变量的值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch foo
+</pre></div>
+
+<p>如果命令包含 <code class="code"><span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span></code>
+参数，GDB仅在由 <var class="var">thread-id</var> 标识的线程修改变量 <var class="var">expr</var> 的值时中断。如果任何其他线程修改变量 <var class="var">expr</var> 的值，GDB不会中断。请注意，以这种方式限制为单个线程的观察点仅适用于硬件观察点。
+</p>
+<p>同样，如果给出 <code class="code">task</code> 参数，那么观察点将特定于指定的Ada任务（见 <a class="pxref" href="Ada-Tasks.html">Ada任务扩展</a>）。
+</p>
+<p>通常，观察点尊重表达式中变量的作用域（见下文）。<code class="code">-location</code> 参数告诉GDB改为观察表达式引用的内存。在这种情况下，GDB将计算表达式 <var class="var">expr</var>，获取结果的地址，并观察该地址处的内存。结果的类型用于确定观察内存的大小。如果表达式的结果没有地址，GDB将打印错误。
+</p>
+<p><code class="code"><span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code> 参数允许创建掩码观察点，如果当前架构支持此功能（例如，PowerPC嵌入式架构，见 <a class="ref" href="PowerPC-Embedded.html">PowerPC嵌入式</a>）。掩码观察点除了要观察的地址外还指定一个掩码。掩码指定在将下级访问的地址与观察点地址进行匹配时应忽略地址的某些位（掩码中重置的位）。因此，掩码观察点同时观察许多地址 —— 那些未掩码位与观察点地址中的未掩码位相同的地址。<code class="code">mask</code> 参数意味着 <code class="code">-location</code>。
+示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch foo mask 0xffff00ff
+(gdb) watch *0xdeadbeef mask 0xffffff00
+</pre></div>
+
+</dd>
+<dt><a id="index-rwatch"></a><span><code class="code">rwatch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code><a class="copiable-link" href="#index-rwatch"> &para;</a></span></dt>
+<dd><p>设置一个观察点，当程序读取表达式 <var class="var">expr</var> 的值时将中断。
+</p>
+</dd>
+<dt><a id="index-awatch"></a><span><code class="code">awatch <span class="r">[</span>-l<span class="r">|</span>-location<span class="r">]</span> <var class="var">expr</var> <span class="r">[</span>thread <var class="var">thread-id</var><span class="r">]</span> <span class="r">[</span>mask <var class="var">maskvalue</var><span class="r">]</span></code><a class="copiable-link" href="#index-awatch"> &para;</a></span></dt>
+<dd><p>设置一个观察点，当程序读取或写入表达式 <var class="var">expr</var> 时将中断。
+</p>
+</dd>
+<dt><a id="index-info-watchpoints-_005blist_2026_005d"></a><span><code class="code">info watchpoints <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-info-watchpoints-_005blist_2026_005d"> &para;</a></span></dt>
+<dd><p>此命令使用与 <code class="code">info break</code> 相同的格式打印观察点列表（见 <a class="pxref" href="Set-Breaks.html">设置断点</a>）。
+</p></dd>
+</dl>
+
+<p>如果你要观察数值输入地址的变化，需要对其进行解引用，因为地址本身只是一个永远不会改变的常量。GDB拒绝创建观察永远不变值的观察点：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch 0x600850
+无法观察常量值0x600850。
+(gdb) watch *(int *) 0x600850
+观察点1：*(int *) 6293584
+</pre></div>
+
+<p>GDB会尽可能设置<em class="dfn">硬件观察点</em>。硬件观察点执行速度非常快，调试器会在值发生变化的精确指令处报告值的变化。如果GDB无法设置硬件观察点，它会设置一个软件观察点，软件观察点执行速度较慢，会在变化发生后的下一条 <em class="emph">语句</em> 而不是指令处报告值的变化。
+</p>
+<a class="index-entry-id" id="index-仅使用软件观察点"></a>
+<p>你可以使用 <kbd class="kbd">set can-use-hw-watchpoints 0</kbd> 命令强制GDB仅使用软件观察点。将此变量设置为零时，GDB将永远不会尝试使用硬件观察点，即使底层系统支持它们。（请注意，在将 <code class="code">can-use-hw-watchpoints</code> 设置为零之前设置的硬件辅助观察点仍将使用硬件机制来观察表达式的值。）
+</p>
+<dl class="table">
+<dt><a id="index-set-can_002duse_002dhw_002dwatchpoints"></a><span><code class="code">set can-use-hw-watchpoints</code><a class="copiable-link" href="#index-set-can_002duse_002dhw_002dwatchpoints"> &para;</a></span></dt>
+<dd><p>设置是否使用硬件观察点。
+</p>
+</dd>
+<dt><a id="index-show-can_002duse_002dhw_002dwatchpoints"></a><span><code class="code">show can-use-hw-watchpoints</code><a class="copiable-link" href="#index-show-can_002duse_002dhw_002dwatchpoints"> &para;</a></span></dt>
+<dd><p>显示当前使用硬件观察点的模式。
+</p></dd>
+</dl>
+
+<p>对于远程目标，你可以限制GDB将使用的硬件观察点数量，见 <a class="ref" href="Remote-Configuration.html#set-remote-hardware_002dbreakpoint_002dlimit">设置远程硬件断点限制</a>。
+</p>
+<p>当你发出 <code class="code">watch</code> 命令时，GDB会报告
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">硬件观察点 <var class="var">num</var>: <var class="var">expr</var>
+</pre></div>
+
+<p>如果它能够设置硬件观察点。
+</p>
+<p>目前，<code class="code">awatch</code> 和 <code class="code">rwatch</code> 命令只能设置硬件观察点，因为在不检查每条正在执行的指令的情况下，无法检测到不改变观察表达式值的数据访问，而GDB目前不会这样做。如果GDB发现无法使用 <code class="code">awatch</code> 或 <code class="code">rwatch</code> 命令设置硬件断点，它会打印如下消息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">表达式无法用读/访问观察点实现。
+</pre></div>
+
+<p>有时，GDB无法设置硬件观察点是因为观察表达式的数据类型比目标机器上的硬件观察点所能处理的更宽。例如，某些系统只能观察最多4字节宽的区域；在这样的系统上，你不能为产生双精度浮点数（通常为8字节宽）的表达式设置硬件观察点。作为一种解决方法，可能可以将大区域分解为一系列较小的区域，并使用单独的观察景点进行观察。
+</p>
+<p>如果你设置了太多硬件观察点，当你恢复程序执行时，GDB可能无法插入所有观察点。由于在程序即将恢复之前，活动观察点的确切数量是未知的，GDB在你设置观察点时可能无法警告你，并且只有在程序恢复时才会打印警告：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">硬件观察点 <var class="var">num</var>: 无法插入观察点
+</pre></div>
+
+<p>如果发生这种情况，请删除或禁用一些观察点。
+</p>
+<p>观察引用许多变量的复杂表达式也可能耗尽硬件辅助观察点可用的资源。这是因为GDB需要使用单独分配的资源来观察表达式中的每个变量。
+</p>
+
+<p>如果你使用 <code class="code">print</code> 或 <code class="code">call</code> 交互式调用函数，你设置的任何观察点在GDB到达另一种断点或调用完成之前都将无效。
+</p>
+<p>当局部（自动）变量或涉及此类变量的表达式超出作用域时，即当执行离开定义这些变量的块时，GDB会自动删除观察它们的观察点。特别是，当被调试的程序终止时，<em class="emph">所有</em> 局部变量都会超出作用域，因此只有观察全局变量的观察点会保留设置。如果你重新运行程序，你需要再次设置所有此类观察点。一种方法是在 <code class="code">main</code> 函数的入口处设置一个代码断点，当它中断时，设置所有观察点。
+</p>
+<a class="index-entry-id" id="index-观察点和线程"></a>
+<a class="index-entry-id" id="index-线程和观察点"></a>
+<p>在多线程程序中，观察点将检测每个线程对观察表达式的更改。
+</p>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> 在多线程程序中，软件观察点的作用有限。如果GDB创建了一个软件观察点，它只能观察<em class="emph">单个线程</em>中表达式的值。如果你确信表达式只能由于当前线程的活动而改变（并且如果你也确信没有其他线程可以成为当前线程），那么你可以像往常一样使用软件观察点。但是，当非当前线程的活动改变表达式时，GDB可能不会注意到。（相比之下，硬件观察点会观察所有线程中的表达式。）
+</p></blockquote>
+
+<p>见 <a class="xref" href="Remote-Configuration.html#set-remote-hardware_002dwatchpoint_002dlimit">设置远程硬件观察点限制</a>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+
+<p>
+下一个：<a href="Set-Catchpoints.html">设置捕获点</a>，上一个：<a href="Set-Breaks.html">设置断点</a>，向上：<a href="Breakpoints.html">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为"自由软件"和"自由软件需要自由文档"，封面文字为"A GNU Manual"，封底文字如下。
+
+(a) FSF的封底文字是："你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。" -->
+<title>Overlay Commands (Debugging with GDB)</title>
+
+<meta name="description" content="Overlay Commands (Debugging with GDB)">
+<meta name="keywords" content="Overlay Commands (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Overlays.html" rel="up" title="Overlays">
+<link href="Automatic-Overlay-Debugging.html" rel="next" title="Automatic Overlay Debugging">
+<link href="How-Overlays-Work.html" rel="prev" title="How Overlays Work">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+--> 
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Overlay-Commands">
+<div class="nav-panel">
+<p>
+Next: <a href="Automatic-Overlay-Debugging.html" accesskey="n" rel="next">Automatic Overlay Debugging</a>, Previous: <a href="How-Overlays-Work.html" accesskey="p" rel="prev">How Overlays Work</a>, Up: <a href="Overlays.html" accesskey="u" rel="up">Debugging Programs That Use Overlays</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Overlay-Commands-1"><span>14.2 Overlay Commands<a class="copiable-link" href="#Overlay-Commands-1"> &para;</a></span></h3>
+
+<p>要使用GDB的覆盖支持，程序中的每个覆盖必须对应可执行文件的一个单独部分。该部分的虚拟内存地址和加载内存地址必须是覆盖的映射地址和加载地址。通过用部分来标识覆盖，GDB可以根据覆盖是否被映射来确定函数或变量的适当地址。
+</p>
+<p>GDB中的覆盖命令都以单词<code>overlay</code>开头；你可以将其缩写为<code>ov</code>或<code>ovly</code>。这些命令如下：
+</p>
+<dl class="table">
+<dt><a id="index-overlay"></a><span><code>overlay off</code><a class="copiable-link" href="#index-overlay"> &para;</a></span></dt>
+<dd><p>禁用GDB的覆盖支持。当覆盖支持被禁用时，GDB假定所有函数和变量始终存在于它们的映射地址处。默认情况下，GDB的覆盖支持是禁用的。
+</p>
+</dd>
+<dt><a id="index-manual-overlay-debugging"></a><span><code>overlay manual</code><a class="copiable-link" href="#index-manual-overlay-debugging"> &para;</a></span></dt>
+<dd><p>启用<em>手动</em>覆盖调试。在这种模式下，GDB依赖于你使用下面描述的<code>overlay map-overlay</code>和<code>overlay unmap-overlay</code>命令来告诉它哪些覆盖被映射，哪些没有被映射。
+</p>
+</dd>
+<dt><a id="index-map-an-overlay"></a><span><code>overlay map-overlay <var>overlay</var></code><a class="copiable-link" href="#index-map-an-overlay"> &para;</a></span></dt>
+<dt><code>overlay map <var>overlay</var></code></dt>
+<dd><p>告诉GDB <var>overlay</var>现在已被映射；<var>overlay</var>必须是包含该覆盖的目标文件部分的名称。当一个覆盖被映射时，GDB假定它可以在其映射地址处找到该覆盖的函数和变量。GDB假定任何其他其映射范围与<var>overlay</var>重叠的覆盖现在未被映射。
+</p>
+</dd>
+<dt><a id="index-unmap-an-overlay"></a><span><code>overlay unmap-overlay <var>overlay</var></code><a class="copiable-link" href="#index-unmap-an-overlay"> &para;</a></span></dt>
+<dt><code>overlay unmap <var>overlay</var></code></dt>
+<dd><p>告诉GDB <var>overlay</var>不再被映射；<var>overlay</var>必须是包含该覆盖的目标文件部分的名称。当一个覆盖未被映射时，GDB假定它可以在其加载地址处找到该覆盖的函数和变量。
+</p>
+</dd>
+<dt><code>overlay auto</code></dt> 
+<dd><p>启用<em>自动</em>覆盖调试。在这种模式下，GDB会参考覆盖管理器在下位程序中维护的数据结构，以查看哪些覆盖被映射。有关详细信息，请参阅<a class="ref" href="Automatic-Overlay-Debugging.html">Automatic Overlay Debugging</a>。
+</p>
+</dd>
+<dt><a id="index-reloading-the-overlay-table"></a><span><code>overlay load-target</code><a class="copiable-link" href="#index-reloading-the-overlay-table"> &para;</a></span></dt>
+<dt><code>overlay load</code></dt> 
+<dd><p>从下位程序重新读取覆盖表。通常，每次下位程序停止时，GDB会自动重新读取该表，所以只有当你自己使用GDB更改了覆盖映射时，才需要这个命令。这个命令仅在使用自动覆盖调试时有用。 
+</p>
+</dd>
+<dt><a id="index-listing-mapped-overlays"></a><span><code>overlay list-overlays</code><a class="copiable-link" href="#index-listing-mapped-overlays"> &para;</a></span></dt>
+<dt><code>overlay list</code></dt> 
+<dd><p>显示当前已映射的覆盖列表，以及它们的映射地址、加载地址和大小。
+</p>
+</dd>
+</dl>
+
+<p>通常，当GDB打印一个代码地址时，它会包含该地址所在函数的名称：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print main
+$3 = {int ()} 0x11a0 &lt;main&gt; 
+</pre></div>
+<p>当启用覆盖调试时，GDB会识别未映射覆盖中的代码，并在未映射函数的名称周围加上星号进行打印。例如，如果<code>foo</code>是未映射覆盖中的一个函数，GDB会这样打印：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) overlay list
+No sections are mapped.
+(gdb) print foo
+$5 = {int (int)} 0x100000 &lt;*foo*&gt; 
+</pre></div>
+<p>当<code>foo</code>的覆盖被映射时，GDB会正常打印函数的名称：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) overlay list
+Section .ov.foo.text, loaded at 0x100000 - 0x100034,
+        mapped at 0x1016 - 0x104a
+(gdb) print foo
+$6 = {int (int)} 0x1016 &lt;foo&gt; 
+</pre></div>
+
+<p>当启用覆盖调试时，无论覆盖是否被映射，GDB都可以找到覆盖中函数和变量的正确地址。这使得大多数GDB命令，如<code>break</code>和<code>disassemble</code>，即使在未映射的代码上也能正常工作。但是，GDB的断点支持有一些限制：
+</p>
+<ul class="itemize mark-bullet">
+<li><a class="index-entry-id" id="index-breakpoints-in-overlays"></a>
+<a class="index-entry-id" id="index-overlays_002c-setting-breakpoints-in"></a>
+只要GDB能够在其加载地址处写入覆盖，你就可以在未映射覆盖中的函数中设置断点。
+</li><li>GDB不能在未映射覆盖中设置硬件或基于模拟器的断点。但是，如果在覆盖管理器的末尾设置一个断点（如果你使用手动覆盖管理，还要告诉GDB哪些覆盖现在被映射），GDB会正确地重新设置其断点。
+</li></ul>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Automatic-Overlay-Debugging.html">Automatic Overlay Debugging</a>, Previous: <a href="How-Overlays-Work.html">How Overlays Work</a>, Up: <a href="Overlays.html">Debugging Programs That Use Overlays</a> &nbsp; [<a href="index.html

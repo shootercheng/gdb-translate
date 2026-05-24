@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点（使用GDB调试）">
+<meta name="keywords" content="跟踪点（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Overlays.html" rel="next" title="覆盖层">
+<link href="Macros.html" rel="prev" title="宏">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="跟踪点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Overlays.html" accesskey="n" rel="next">调试使用覆盖层 的程序</a>，上一个：<a href="Macros.html" accesskey="p" rel="prev">C预处理器宏</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="跟踪点-1"><span>13跟踪点<a class="copiable-link" href="#跟踪点-1"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="索引-跟踪点"></a>
+<p>在某些应用程序中，调试器中断程序执行的时间不够长，以至于开发人员无法了解其行为的任何有用信息，这种情况是不可行的。如果程序的正确性取决于其实时行为，调试器引入的延迟可能会导致程序行为发生巨大变化，甚至可能失败，即使代码本身是正确的。能够在不中断程序的情况下观察其行为是很有用的。
+</p>
+<p>使用<small class="sc">GDB</small>的<code class="code">trace</code>和<code class="code">collect</code>命令，你可以指定程序中的位置，称为<em class="dfn">跟踪点</em>，以及在到达这些跟踪点时要求值的任意表达式。稍后，使用<code class="code">tfind</code>命令，你可以检查程序命中跟踪点时这些表达式的值。这些表达式也可以表示内存中的对象，例如结构体或数组，表示<small class="sc">GDB</small>应该记录其值；在访问特定的跟踪点时，你可以检查这些对象，就好像它们当时在内存中一样。然而，因为<small class="sc">GDB</small>在不与你交互的情况下记录这些值，所以它可以快速且不显眼地完成记录，希望不会干扰程序的行为。
+</p>
+<p>跟踪点功能目前仅适用于远程目标。请参阅<a class="xref" href="Targets.html">指定调试目标</a>。此外，你的远程目标必须知道如何收集跟踪数据。此功能在远程存根中实现；但是，截至撰写本文时，随<small class="sc">GDB</small>分发的任何存根都不支持跟踪点。用于实现跟踪点的远程数据包格式在<a class="ref" href="Tracepoint-Packets.html">跟踪点数据包</a>中描述。
+</p>
+<p>也可以以类似于核心文件的方式从文件中获取跟踪数据；你指定文件名，然后使用<code class="code">tfind</code>在文件中进行搜索。有关更多详细信息，请参阅<a class="xref" href="Trace-Files.html">使用跟踪文件</a>。
+</p>
+<p>本章介绍跟踪点命令和功能。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Set-Tracepoints.html" accesskey="1">设置跟踪点的命令</a></li>
+<li><a href="Analyze-Collected-Data.html" accesskey="2">使用收集的数据</a></li>
+<li><a href="Tracepoint-Variables.html" accesskey="3">跟踪点便利变量</a></li>
+<li><a href="Trace-Files.html" accesskey="4">使用跟踪文件</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Overlays.html">调试使用覆盖层的程序</a>，上一个：<a href="Macros.html">C预处理器宏</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

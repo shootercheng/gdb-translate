@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>要求（使用GDB调试）</title>
+
+<meta name="description" content="要求（使用GDB调试）">
+<meta name="keywords" content="要求（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Installing-GDB.html" rel="up" title="安装GDB">
+<link href="Running-Configure.html" rel="next" title="运行Configure">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="要求">
+<div class="nav-panel">
+<p>
+下一页：<a href="Running-Configure.html" accesskey="n" rel="next">调用GDB configure脚本</a>，上一级：<a href="Installing-GDB.html" accesskey="u" rel="up">安装GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="构建gdb的要求"><span>C.1构建GDB的要求<a class="copiable-link" href="#构建gdb的要求"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-构建gdb_002c-要求"></a>
+
+<p>构建GDB需要各种工具和包可用。
+只有在找到其他包时才会使用它们。
+</p>
+<h3 class="heading" id="构建gdb所需的工具_002f包"><span>构建GDB所需的工具/包<a class="copiable-link" href="#构建gdb所需的工具_002f包"> ¶</a></span></h3>
+<dl class="table">
+<dt>C++17编译器</dt>
+<dd><p>GDB是用C++17编写的。它应该可以用任何最近的C++17编译器构建，例如GCC。
+</p>
+</dd>
+<dt>GNU make</dt>
+<dd><p>GDB的构建系统依赖于GNU make程序中才有的功能。其他版本的make将不起作用。
+</p>
+</dd>
+<dt>库</dt>
+<dd><p>构建GDB需要以下库。configure脚本会在几个标准位置搜索这些库中的每一个；如果某个库安装在不寻常的位置，你可以使用--with-<var>lib</var> configure选项来指定其安装目录，或者使用两个单独的选项--with-<var>library</var>-include（指定其头文件的位置）和--with-<var>library</var>-lib（指定其库的位置）。例如，对于GMP库，这三个选项是--with-gmp、--with-gmp-include和--with-gmp-lib。请参阅<a class="xref" href="Configure-Options.html">configure选项</a>。我们在下面提到了每个库的主页，以便如果你的系统尚未包含它们，你可以下载并安装它们。
+</p>
+<dl class="table">
+<dt>GMP（GNU多精度算术库）</dt>
+<dd><p>GDB使用GMP来执行一些扩展精度算术。最新版本的GMP可从<a class="url" href="https://gmplib.org/">https://gmplib.org/</a>获得。
+</p>
+<a class="anchor" id="MPFR"></a></dd>
+<dt>MPFR（GNU多精度浮点库）</dt>
+<dd><p>如果目标使用与主机不同的浮点格式，GDB在表达式求值期间使用MPFR来模拟目标浮点算术。最新版本的MPFR可从<a class="url" href="http://www.mpfr.org">http://www.mpfr.org</a>获得。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<h3 class="heading" id="构建gdb可选的工具_002f包"><span>构建GDB可选的工具/包<a class="copiable-link" href="#构建gdb可选的工具_002f包"> ¶</a></span></h3>
+<p>下面列出的工具/包和库是可选的；
+没有它们也可以构建GDB，但会缺少一些运行时功能。如上所述，我们列出了每个包/库的主页，以及configure脚本支持的用于指定其安装目录（如果是非标准目录）的命令行选项。此外，对于每个包，你可以使用--with-<var>package</var>选项强制GDB使用指定的<var>package</var>进行编译，使用--without-<var>package</var>选项即使它可用也禁用使用它进行构建。有关configure选项的详细描述，请参阅<a class="xref" href="Configure-Options.html">configure选项</a>。
+</p>
+<dl class="table">
+<dt>Python</dt>
+<dd><p>可以使用Python语言编写GDB脚本。请参阅<a class="xref" href="Python.html">使用Python扩展GDB</a>。
+最新版本可从<a class="url" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a>获得。使用--with-python=<var>dir</var>选项指定Python安装的非标准目录。
+</p>
+</dd>
+<dt>Guile</dt>
+<dd><p>也可以使用GNU Guile编写GDB脚本。请参阅<a class="xref" href="Guile.html">使用Guile扩展GDB</a>。
+最新版本可以在<a class="url" href="https://www.gnu.org/software/guile/download/">https://www.gnu.org/software/guile/download/</a>找到。如果你安装了多个版本的Guile，请使用--with-guile=<var>guile-version</var>选项指定要包含在构建中的Guile版本。
+</p>
+<a class="anchor" id="Expat"></a></dd>
+<dt>Expat</dt>
+<dd><p>如果可用，GDB使用Expat库来解析XML文件。GDB使用XML文件实现以下功能：
+</p>
+<ul class="itemize mark-bullet">
+<li>远程协议内存映射（请参阅<a class="pxref" href="Memory-Map-Format.html">内存映射格式</a>）
+</li><li>目标描述（请参阅<a class="pxref" href="Target-Descriptions.html">目标描述</a>）
+</li><li>远程共享库列表（请参阅<a class="xref" href="Library-List-Format.html">库列表格式</a>，或者参阅<a class="pxref" href="Library-List-Format-for-SVR4-Targets.html">SVR4目标的库列表格式</a>）
+</li><li>MS-Windows共享库（请参阅<a class="pxref" href="Files.html#Shared-Libraries">共享库</a>）

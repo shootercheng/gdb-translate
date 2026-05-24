@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>[进程记录和重放（使用GDB调试）]</title><meta name="description" content="Process Record and Replay (Debugging with GDB)">
+<meta name="keywords" content="Process Record and Replay (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Stack.html" rel="next" title="检查堆栈">
+<link href="Reverse-Execution.html" rel="prev" title="反向执行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="进程记录和重放">
+<div class="nav-panel">
+<p>
+下一页: <a href="Stack.html" accesskey="n" rel="next">检查堆栈</a>, 上一页: <a href="Reverse-Execution.html" accesskey="p" rel="prev">反向运行程序</a>, 向上: <a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="记录下级进程的执行并重放"><span>7记录下级进程的执行并重放它<a class="copiable-link" href="#记录下级进程的执行并重放它"> &para;</a></span></h2>
+<a class="index-entry-id" id="索引-进程记录和重放"></a>
+<a class="index-entry-id" id="索引-记录下级进程的执行并重放它"></a>
+
+<p>在某些平台上，<small class="sc">GDB</small>提供了一个特殊的<em class="dfn">进程记录和重放</em>目标，它可以记录进程执行的日志，并在以后使用正向和反向执行命令进行重放。
+</p>
+<a class="index-entry-id" id="索引-重放模式"></a>
+<p>当使用这个目标时，如果执行日志包含下一条指令的记录，<small class="sc">GDB</small>将在<em class="dfn">重放模式</em>下进行调试。在重放模式下，下级进程不会真正执行代码指令。相反，代码执行期间通常发生的所有事件都从执行日志中获取。虽然在重放模式下代码不会真正执行，但寄存器（包括程序计数器寄存器）的值和下级进程的内存仍然会像正常情况一样改变。它们的内容从执行日志中获取。
+</p>
+<a class="index-entry-id" id="索引-记录模式"></a>
+<p>如果下一条指令的记录不在执行日志中，<small class="sc">GDB</small>将在<em class="dfn">记录模式</em>下进行调试。在这种模式下，下级进程正常执行，<small class="sc">GDB</small>记录执行日志以供将来重放。
+</p>
+<p>进程记录和重放目标支持反向执行（见<a class="pxref" href="反向执行.html">反向运行程序</a>），即使下级进程运行的平台不支持。然而，在这种情况下，反向执行受到执行日志中记录的指令范围的限制。换句话说，在不直接支持反向执行的平台上，只能在重放模式下进行反向执行。
+</p>
+<p>在反向调试时，只要执行日志包含上一条指令的记录，<small class="sc">GDB</small>将在重放模式下工作；否则，如果平台支持反向执行，它将在记录模式下工作，或者如果不支持则停止。
+</p>
+<p>目前，ARM、Aarch64、龙芯架构、Moxie、PowerPC、PowerPC64、S/390、RISC-V和运行GNU/Linux的x86（i386/amd64）支持进程记录和重放。进程记录和重放可用于本地调试，也可用于通过<code class="code">gdbserver</code>进行远程调试。
+</p>
+<p>记录下级进程时，<small class="sc">GDB</small>可能会在单步执行命令和显示执行历史的命令期间打印辅助信息。
+</p>
+<p>对于支持进程记录和重放的架构环境，<small class="sc">GDB</small>提供以下命令：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-target-record_002dfull"></a>
+<a class="index-entry-id" id="索引-target-record_002dbtrace"></a>
+<a class="index-entry-id" id="索引-记录"></a>
+<a class="index-entry-id" id="索引-记录-full"></a>
+<a class="index-entry-id" id="索引-记录-btrace"></a>
+<a class="index-entry-id" id="索引-记录-btrace-bts"></a>
+<a class="index-entry-id" id="索引-记录-btrace-pt"></a>
+<a class="index-entry-id" id="索引-记录-bts"></a>
+<a class="index-entry-id" id="索引-记录-pt"></a>
+<a class="index-entry-id" id="索引-rec"></a>
+<a class="index-entry-id" id="索引-rec-full"></a>
+<a class="index-entry-id" id="索引-rec-btrace"></a>
+<a class="index-entry-id" id="索引-rec-btrace-bts"></a>
+<a class="index-entry-id" id="索引-rec-btrace-pt"></a>
+<a class="index-entry-id" id="索引-rec-bts"></a>
+<a class="index-entry-id" id="索引-rec-pt"></a>
+<a id="索引-target-record"><span><code class="code">record <var class="var">方法</var></code><a class="copiable-link" href="#索引-target-record"> &para;</a></span></dt>
+<dd><p>此命令启动进程记录和重放目标，可以将记录方法指定为参数。如果没有参数，该命令使用<code class="code">full</code>记录方法。可用的记录方法如下：</p>
+<dl class="table">
+<dt><code class="code">full</code></dt>
+<dd><p>使用<small class="sc">GDB</small>的软件记录和重放实现进行完整记录/重放记录。此方法允许重放和反向执行。</p>
+</dd>
+<dt><code class="code">btrace <var class="var">格式</var></code></dt>
+<dd><p>英特尔处理器支持的硬件指令记录，此方法不记录数据。此外，数据收集在环形缓冲区中，因此当缓冲区满时，旧数据将被覆盖。它允许有限的反向执行。在反向执行期间，变量和寄存器不可用。在远程调试中，断开连接时记录继续。重新连接后，可以检查记录的数据。可以使用<code class="code">record stop</code>停止记录。
+<p>记录格式可以指定为参数。如果没有参数，命令会选择记录格式。可用的记录格式如下：</p>
+<dl class="table">
+<dt><a id="索引-分支跟踪存储"></a><span><code class="code">bts</code><a class="copiable-link" href="#索引-分支跟踪存储"> &para;</a></span></dt>
+<dd><p>使用<em class="dfn">分支跟踪存储</em>（<abbr class="acronym">BTS</abbr>）记录格式。在这种格式中，处理器在btrace环形缓冲区中为每个执行的分支存储一个从/到记录．</p>
+</dd>
+<dt><a id="索引-英特尔处理器跟踪"></a><span><code class="code">pt</code><a class="copiable-link" href="#索引-英特尔处理器跟踪"> &para;</a></span></dt>
+<dd><p>使用<em class="dfn">英特尔处理器跟踪</em>记录格式。在这种格式中，处理器以压缩形式存储执行跟踪，然后由<small class="sc">GDB</small>解码。
+<p>跟踪可以以非常低的开销进行记录。与<abbr class="acronym">BTS</abbr>相比，压缩跟踪格式还允许小跟踪缓冲区已经包含大量指令。
+<p>另一方面．解码记录的执行跟踪比解码<abbr class="acronym">BTS</abbr>跟踪更昂贵。这主要是由于要处理的指令数量增加。你应该小心增加缓冲区大小。</p></dd>
+</dl>
+
+<p>并非所有记录格式在所有处理器上都可用。</p></dd>
+</dl>
+
+<p>进程记录和重放目标只能调试已经在运行的进程。因此，你需要首先使用<kbd class="kbd">run</kbd>或<kbd class="kbd">start</kbd>命令启动进程，然后使用<kbd class="kbd">record <var class="var">方法</var></kbd>命令开始记录。
+</p>
+<a class="index-entry-id" id="索引-位移单步执行与进程记录和重放"></a>
+<p>当启动进程记录和重放目标时，位移单步执行（见<a class="pxref" href="维护命令.html">位移单步执行</a>）将自动禁用。这是因为进程记录和重放目标不支持位移单步执行。
+</p>
+<a class="index-entry-id" id="索引-非停止模式与进程记录和重放"></a>
+<a class="index-entry-id" id="索引-异步执行与进程记录和重放"></a>
+<p>如果下级进程处于非停止模式（见<a class="pxref" href="非停止模式.html">非停止模式</a>）或异步执行模式（见<a class="pxref" href="后台执行.html">后台执行</a>），并非所有记录方法都可用。<code class="code">full</code>记录方法不支持这两种模式。</p></dd>
+<dt><a class="index-entry-id" id="索引-rec-s"></a>
+<a id="索引-record-stop"><span><code class="code">record stop</code><a class="copiable-link" href="#索引-record-stop"> &para;</a></span></dt>
+<dd><p>停止进程记录和重放目标。当进程记录和重放目标停止时，整个执行日志将被删除，下级进程将被终止，或者保持其最终状态。
+<p>当你在记录模式下停止进程记录和重放目标时（在执行日志的末尾），下级进程将在接下来要记录的指令处停止。换句话说，如果您记录一段时间然后停止记录，下级进程将保持与未进行记录时相同状态。
+<p>另一方面，如果进程记录和重放目标在重放模式下停止（即，不在执行日志的末尾，而是在更早的某个点），下级进程将在该更早的状态变为“活动”，然后可以从该状态继续对进程进行通常的“活动”调试。
+<p>当下级进程退出，或者<small class="sc">GDB</small>与其分离时，进程记录和重放目标将自动停止自身。</p></dd>
+<dt><a id="索引-record-goto"></a><span><code class="code">record goto</code><a class="copiable-link" href="#索引-record-goto"> &para;</a></span></dt>
+<dd><p>转到执行日志中的特定位置。有几种方法可以指定要转到的位置：</p>
+<dl class="table">
+<dt><code class="code">record goto begin</code></dt>
+<dt><code class="code">record goto start</code></dt>
+<dd><p>转到执行日志的开头。</p>
+</dd>
+<dt><code class="code">record goto end</code></dt>
+<dd><p>转到执行日志的末尾。</p>
+</dd>
+<dt><code class="code">record goto <var class="var">n</var></code></dt>
+<dd><p>转到执行日志中的指令编号<var class="var">n</var>。</p></dd>
+</dl>
+
+</dd>
+<dt><a id="索引-record-save"></a><span><code class="code">record save <var class="var">文件名</var></code><a class="copiable-link" href="#索引-record-save"> &para;</a></span></dt>
+<dd><p>将执行日志保存到文件<samp class="file"><var class="var">文件名</var></samp>。默认文件名是<samp class="file">gdb_record.<var class="var">进程ID</var></samp>，其中<var class="var">进程ID</var>是下级进程的进程ID。
+<p>此命令可能并非对所有记录方法都可用。</p></dd>
+<dt><a id="索引-record-restore"></a><span><code class="code">record restore <var class="var">文件名</var></code><a class="copiable-link" href="#索引-record-restore"> &para;</a></span></dt>
+<dd><p>从文件<samp class="file"><var class="var">文件名</var></samp>恢复执行日志。文件必须使用<code class="code">record save</code>创建。</p></dd>
+<dt><a id="索引-set-record-full"></a><span><code class="code">set record full insn-number-max <var class="var">限制</var></code><a class="copiable-link" href="#索引-set-record-full"> &para;</a></span></dt>
+<dt><code class="code">set record full insn-number-max unlimited</code></dt>
+<dd><p>设置<code class="code">full</code>记录方法要记录的指令限制。默认值是200000。
+<p>如果<var class="var">限制</var>是一个正数，那么当记录的指令数量大于<var class="var">限制</var>时，<small class="sc">GDB</small>将开始从日志中删除指令。对于每一条新记录的指令，<small class="sc">GDB</small>将删除最早记录的指令，以将记录的指令数量保持在限制范围内。（由于删除记录的指令会丢失信息，<small class="sc">GDB</small>允许您通过下面描述的<code class="code">stop-at-limit</code>选项来控制达到限制时的行为。）
+<p>如果<var class="var">限制</var>是<code class="code">unlimited</code>或零，<small class="sc">GDB</small>将永远不会从执行日志中删除记录的指令。记录的指令数量仅受可用内存的限制。</p></dd>
+<dt><a id="索引-show-record-full"></a><span><code class="code">show record full insn-number-max</code><a class="copiable-link" href="#索引-show-record-full"> &para;</a></span></dt>
+<dd><p>显示使用<code class="code">full</code>记录方法要记录的指令限制。</p></dd>
+<dt><code class="code">set record full stop-at-limit</code></dt>
+<dd><p>控制<code class="code">full</code>记录方法在记录的指令数量达到限制时的行为。如果为ON（默认），当第一次达到限制时，<small class="sc">GDB</small>将停止并询问您是否要停止下级进程或继续运行它并记录执行日志。如果您决定继续记录，每一条新记录的指令将导致最旧的指令被删除。
+<p>如果此选项为OFF，<small class="sc">GDB</small>将自动删除最旧的记录，为每一条新记录腾出空间，而不会询问。</p></dd>
+<dt><code class="code">show record full stop-at-limit</code></dt>
+<dd><p>显示<code class="code">stop-at-limit</code>的当前设置。</p></dd>
+<dt><code class="code">set record full memory-query</code></dt>
+<dd><p>控制当<small class="sc">GDB</small>无法为<code class="code">full</code>记录方法记录指令引起的内存变化时的行为。如果为ON，在这种情况下，<small class="sc">GDB</small>将询问是否停止下级进程。
+<p>如果此选项为OFF（默认），<small class="sc">GDB</small>将自动忽略此类指令对内存的影响。稍后，当<small class="sc">GDB</small>重放此执行日志时，它将把这条指令的日志标记为不可访问，并且不会影响重放结果。</p></dd>
+<dt><code class="code">show record full memory-query</code></dt>
+<dd><p>显示<code class="code">memory-query</code>的当前设置。</p>
+<a class="index-entry-id" id="索引-set-record-btrace"></a>
+<p><code class="code">btrace</code>记录目标不跟踪数据。为了方便起见，在重放时，<small class="sc">GDB</small>直接从正在运行的程序中读取只读内存，假设只读区域的地址不变。例如，这使得在重放时可以反汇编代码，但不能打印变量。
+<p>在某些情况下，能够检查变量可能会很有用。你可以使用以下命令：</p>
+</dd>
+<dt><code class="code">set record btrace replay-memory-access</code></dt>
+<dd><p>控制重放期间访问内存时<code class="code">btrace</code>记录方法的行为。如果为<code class="code">read-only</code>（默认），<small class="sc">GDB</small>将只允许访问只读内存。
+如果为<code class="code">read-write</code>，<small class="sc">GDB</small>将允许访问只读和读写内存。请注意，访问的内存对应于正在运行的目标，不一定对应于当前的重放位置。</p></dd>
+<dt><code class="code">set record btrace cpu <var class="var">标识符</var></code></dt>
+<dd><p>设置在解码跟踪时用于启用处理器勘误修复的处理器。
+<p>处理器勘误是由处理器设计或制造引起的处理器操作中的缺陷。它们可能导致跟踪与规范不匹配。反过来，这可能会导致跟踪解码失败。<small class="sc">GDB</small>可以检测错误的跟踪数据包并进行纠正，从而避免解码失败。这些纠正措施称为<em class="dfn">勘误修复</em>，并根据记录跟踪的处理器启用。
+<p>默认情况下，<small class="sc">GDB</small>会尝试自动检测处理器，并为其应用必要的修复。但是，如果<small class="sc">GDB</small>尚未支持该处理器，您可能需要指定它。此命令允许您这样做，也允许禁用修复。
+<p>参数<var class="var">标识符</var>标识<small class="sc">CPU</small>，格式为：<code class="code"><var class="var">供应商</var>:<var class="var">处理器标识符</var></code>。此外，还有两个特殊标识符，<code class="code">none</code>和<code class="code">auto</code>（默认）。
+<p>目前支持以下供应商标识符和相应的处理器标识符：</p>
+<table class="multitable">
+<tbody><tr><td width="10%"><code class="code">intel</code></td><td width="90%"><var class="var">系列</var>/<var class="var">型号</var>[/<var class="var">步进</var>]</td></tr>
+</tbody>
+</table>
+
+<p>在GNU/Linux系统上，可以从<code class="code">/proc/cpuinfo</code>获取处理器<var class="var">系列</var>、<var class="var">型号</var>和<var class="var">步进</var>。
+<p>如果<var class="var">标识符</var>为<code class="code">auto</code>，为记录跟踪的处理器启用勘误修复。如果<var class="var">标识符</var>为<code class="code">none</code>，则禁用勘误修复。
+<p>例如，在新系统上使用旧版本的<small class="sc">GDB</small>时，解码可能会失败，因为<small class="sc">GDB</small>不支持新处理器。指定一个<small class="sc">GDB</small>支持的旧处理器通常就足够了。</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info record
+Active record target: record-btrace
+Recording format: Intel Processor Trace.
+Buffer size: 16kB.
+Failed to configure the Intel Processor Trace decoder: unknown cpu.
+(gdb) set record btrace cpu intel:6/158
+(gdb)</pre></div>
+
+</dd>
+<dt><a id="索引-show-record-btrace"></a><span><code class="code">show record btrace replay-memory-access</code><a class="copiable-link" href="#索引-show-record-btrace"> &para;</a></span></dt>
+<dd><p>显示<code class="code">replay-memory-access</code>的当前设置。</p></dd>
+<dt><code class="code">show record btrace cpu</code></dt>
+<dd><p>显示用于启用跟踪解码勘误修复的处理器。</p></dd>
+<dt><a id="索引-set-record-btrace-bts"></a><span><code class="code">set record btrace bts buffer-size <var class="var">大小</var></code><a class="copiable-link" href="#索引-set-record-btrace-bts"> &para;</a></span></dt>
+<dt><code class="code">set record btrace bts buffer-size unlimited</code></dt>
+<dd><p>设置以<abbr class="acronym">BTS</abbr>格式进行分支跟踪时请求的环形缓冲区大小。默认值为64KB。
+<p>如果<var class="var">大小</var>是一个正数，那么<small class="sc">GDB</small>将尝试为每个使用btrace记录方法和<abbr class="acronym">BTS</abbr>格式的新线程分配至少<var class="var">大小</var>字节的缓冲区。实际获得的缓冲区大小可能与请求的<var class="var">大小</var>不同。使用<code class="code">info record</code>命令查看每个使用btrace记录方法和<abbr class="acronym">BTS</abbr>格式的线程的实际缓冲区大小。
+<p>如果<var class="var">限制</var>是<code class="code">unlimited</code>或零，<small class="sc">GDB</small>将尝试分配一个4MB的缓冲区。
+<p>更大的缓冲区意味着更长的跟踪。另一方面，<small class="sc">GDB</small>在处理分支跟踪数据之前也需要更长的时间。</p></dd>
+<dt><code class="code">show record btrace bts buffer-size <var class="var">大小</var></code></dt>
+<dd><p>显示以<abbr class="acronym">BTS</abbr>格式进行分支跟踪时请求的环形缓冲区大小的当前设置。</p></dd>
+<dt><a id="索引-set-record-btrace-pt"></a><span><code class="code">set record btrace pt buffer-size <var class="var">大小</var></code><a class="copiable-link" href="#索引-set-record-btrace-pt"> &para;</a></span></dt>
+<dt><code class="code">set record btrace pt buffer-size unlimited</code></dt>
+<dd><p>设置以英特尔处理器跟踪格式进行分支跟踪时请求的环形缓冲区大小。默认值为16KB。
+<p>如果<var class="var">大小</var>是一个正数，那么<small class="sc">GDB</small>将尝试为每个使用btrace记录方法和英特尔处理器跟踪格式的新线程分配至少<var class="var">大小</var>字节的缓冲区。实际获得的缓冲区大小可能与请求的<var class="var">大小</var>不同。使用<code class="code">info record</code>命令查看每个线程的实际缓冲区大小。
+<p>如果<var class="var">限制</var>是<code class="code">unlimited</code>或零，<small class="sc">GDB</small>将尝试分配一个4MB的缓冲区。
+<p>更大的缓冲区意味着更长的跟踪。另一方面，<small class="sc">GDB</small>在处理分支跟踪数据之前也需要更长的时间。</p></dd>
+<dt><code class="code">show record btrace pt buffer-size <var class="var">大小</var></code></dt>
+<dd><p>显示以英特尔处理器跟踪格式进行分支跟踪时请求的环形缓冲区大小的当前设置。</p></dd>
+<dt><code class="code">set record btrace pt event-tracing</code></dt>
+<dd><p>启用或禁用以英特尔处理器跟踪格式进行分支跟踪时的事件跟踪。启用后，事件将在执行期间作为辅助信息记录，并在单步执行命令和显示执行历史的命令期间打印。更改此设置对正在进行的记录没有影响。默认值为关闭。</p></dd>
+<dt><code class="code">show record btrace pt event-tracing</code></dt>
+<dd><p>显示英特尔处理器跟踪事件跟踪的当前设置。</p></dd>
+<dt><a id="索引-info-record"></a><span><code class="code">info record</code><a class="copiable-link" href="#索引-info-record"> &para;</a></span></dt>
+<dd><p>根据记录方法显示有关记录的各种统计信息：</p>
+<dl class="table">
+<dt><code class="code">full</code></dt>
+<dd><p>对于<code class="code">full</code>记录方法，它显示进程记录的状态及其内存中的执行日志缓冲区，包括：</p>
+<ul class="itemize mark-bullet">
+<li>是否处于记录模式或重放模式．</li><li>记录的最低指令编号（从当前执行日志开始记录指令时起计数）。</li><li>记录的最高指令编号。</li><li>即将重放的当前指令（如果处于重放模式）。</li><li>执行日志中包含的指令数量。</li><li>执行日志中可能包含的最大指令数量。</li></ul>
+
+</dd>
+<dt><code class="code">btrace</code></dt>
+<dd><p>对于<code class="code">btrace</code>记录方法，它显示：</p>
+<ul class="itemize mark-bullet">
+<li>记录格式。</li><li>已记录的指令数量。</li><li>由记录的指令形成的顺序控制流块的数量。</li><li>是否处于记录模式或重放模式。</li></ul>
+
+<p>对于<code class="code">bts</code>记录格式，它还显示：</p><ul class="itemize mark-bullet">
+<li>性能环形缓冲区的大小。</li></ul>
+
+<p>对于<code class="code">pt</code>记录格式，它还显示：</p><ul class="itemize mark-bullet">
+<li>性能环形缓冲区的大小。</li></ul>
+</dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="索引-rec-del"></a>
+<a id="索引-record-delete"><span><code class="code">record delete</code><a class="copiable-link" href="#索引-record-delete"> &para;</a></span></dt>
+<dd><p>当记录目标在重放模式下运行时（“在过去”），删除后续执行日志，并从当前地址开始记录新的执行日志。这意味着你将放弃之前记录的“未来”，并开始记录一个新的“未来”。</p></dd>
+<dt><a class="index-entry-id" id="索引-rec-instruction_002dhistory"></a>

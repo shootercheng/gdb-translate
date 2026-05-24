@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>远程调试（使用GDB进行调试）</title>
+
+<meta name="description" content="远程调试（使用GDB进行调试）">
+<meta name="keywords" content="远程调试（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Configurations.html" rel="next" title="配置">
+<link href="Targets.html" rel="prev" title="目标">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Remote-Debugging">
+<div class="nav-panel">
+<p>
+下一页：<a href="Configurations.html" accesskey="n" rel="next">特定于配置的信息</a>，上一页：<a href="Targets.html" accesskey="p" rel="prev">指定调试目标</a>，向上：<a href="index.html" accesskey="u" rel="up">使用 <small class="sc">GDB</small> 进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Debugging-Remote-Programs"><span>20 调试远程程序<a class="copiable-link" href="#Debugging-Remote-Programs"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-remote-debugging"></a>
+
+<p>如果你试图调试在一台无法以常规方式运行 <small class="sc">GDB</small> 的机器上运行的程序，使用远程调试通常会很有用。
+例如，你可能会在操作系统内核上，或者在一个没有足够强大的通用操作系统来运行全功能调试器的小型系统上使用远程调试。
+</p>
+
+<p><small class="sc">GDB</small> 的某些配置具有特殊的串行或TCP/IP接口，以便与特定的调试目标配合使用。此外，
+<small class="sc">GDB</small> 附带了一个通用串行协议（特定于 <small class="sc">GDB</small>，但不特定于任何特定目标系统），如果你编写远程存根程序（即在远程系统上运行以与 <small class="sc">GDB</small> 通信的代码），就可以使用该协议。
+</p>
+
+<p>在你的 <small class="sc">GDB</small> 配置中可能还有其他远程目标； 使用 <code class="code">help target</code> 列出它们。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Connecting.html" accesskey="1">连接到远程目标</a></li>
+<li><a href="File-Transfer.html" accesskey="2">将文件发送到远程系统</a></li>
+<li><a href="Server.html" accesskey="3">使用 <code class="code">gdbserver</code> 程序</a></li>
+<li><a href="Remote-Configuration.html" accesskey="4">远程配置</a></li>
+<li><a href="Remote-Stub.html" accesskey="5">实现远程存根</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

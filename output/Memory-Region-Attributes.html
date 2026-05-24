@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>内存区域属性（使用GDB调试）</title>
+
+<meta name="description" content="内存区域属性（使用GDB调试）">
+<meta name="keywords" content="内存区域属性（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Dump_002fRestore-Files.html" rel="next" title="转储/恢复文件">
+<link href="OS-Information.html" rel="prev" title="操作系统信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="内存区域属性">
+<div class="nav-panel">
+<p>
+下一个：<a href="Dump_002fRestore-Files.html" accesskey="n" rel="next">在内存和文件之间复制</a>，上一个：<a href="OS-Information.html" accesskey="p" rel="prev">操作系统辅助信息</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="内存区域属性-1"><span>10.18内存区域属性<a class="copiable-link" href="#内存区域属性-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-内存区域属性"></a>
+
+<p><em class="dfn">内存区域属性</em> 允许你描述目标内存区域所需的特殊处理。<small class="sc">GDB</small> 使用这些属性来确定是否允许某些类型的内存访问；是否使用特定宽度的访问；以及是否缓存目标内存。默认情况下，内存区域的描述是从目标获取的（如果当前目标支持此功能），但用户可以覆盖获取的区域。
+</p>
+<p>已定义的内存区域可以单独启用和禁用。当一个内存区域被禁用时，<small class="sc">GDB</small> 在访问该区域的内存时使用默认属性。同样，如果没有定义内存区域，<small class="sc">GDB</small> 在访问所有内存时使用默认属性。
+</p>
+<p>当定义一个内存区域时，会给它一个数字来标识它；要启用、禁用或删除一个内存区域，你指定该数字。
+</p>
+<dl class="table">
+<dt><a id="index-mem"></a><span><code class="code">mem <var class="var">下限</var> <var class="var">上限</var> <var class="var">属性</var>&hellip;</code><a class="copiable-link" href="#index-mem"> &para;</a></span></dt>
+<dd><p>定义一个由 <var class="var">下限</var> 和 <var class="var">上限</var> 界定的内存区域，并为其设置属性 <var class="var">属性</var>&hellip;，然后将其添加到 <small class="sc">GDB</small> 监控的区域列表中。请注意，<var class="var">上限</var> == 0 是一种特殊情况：它被视为目标的最大内存地址。
+（16位目标上是0xffff，32位目标上是0xffffffff等）
+</p>
+</dd>
+<dt><code class="code">mem auto</code></dt>
+<dd><p>放弃用户对内存区域所做的任何更改，并使用目标提供的区域（如果可用），如果目标不支持，则不使用任何区域。
+</p>
+</dd>
+<dt><a id="index-delete-mem"></a><span><code class="code">delete mem <var class="var">编号</var>&hellip;</code><a class="copiable-link" href="#index-delete-mem"> &para;</a></span></dt>
+<dd><p>从 <small class="sc">GDB</small> 监控的区域列表中删除内存区域 <var class="var">编号</var>&hellip;。
+</p>
+</dd>
+<dt><a id="index-disable-mem"></a><span><code class="code">disable mem <var class="var">编号</var>&hellip;</code><a class="copiable-link" href="#index-disable-mem"> &para;</a></span></dt>
+<dd><p>禁用对内存区域 <var class="var">编号</var>&hellip; 的监控。
+已禁用的内存区域不会被遗忘。
+以后可以再次启用它。
+</p>
+</dd>
+<dt><a id="index-enable-mem"></a><span><code class="code">enable mem <var class="var">编号</var>&hellip;</code><a class="copiable-link" href="#index-enable-mem"> &para;</a></span></dt>
+<dd><p>启用对内存区域 <var class="var">编号</var>&hellip; 的监控。
+</p>
+</dd>
+<dt><a id="index-info-mem"></a><span><code class="code">info mem</code><a class="copiable-link" href="#index-info-mem"> &para;</a></span></dt>
+<dd><p>打印所有已定义内存区域的表格，每个区域有以下几列：
+</p>
+<dl class="table">
+<dt><em class="emph">内存区域编号</em></dt>
+<dt><em class="emph">启用或禁用。</em></dt>
+<dd><p>启用的内存区域标记为 &lsquo;<samp class="samp">y</samp>&rsquo;。
+禁用的内存区域标记为 &lsquo;<samp class="samp">n</samp>&rsquo;。
+</p>
+</dd>
+<dt><em class="emph">低地址</em></dt>
+<dd><p>定义内存区域包含下限的地址。
+</p>
+</dd>
+<dt><em class="emph">高地址</em></dt>
+<dd><p>定义内存区域排他上限的地址。
+</p>
+</dd>
+<dt><em class="emph">属性</em></dt>
+<dd><p>为此内存区域设置的属性列表。
+</p></dd>
+</dl>
+</dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="#属性" accesskey="1">属性</a></li>
+<li><a href="#内存访问检查" accesskey="2">内存访问检查</a></li>
+</ul>
+<div class="subsection-level-extent" id="属性">
+<h4 class="subsection"><span>10.18.1属性<a class="copiable-link" href="#属性"> &para;</a></span></h4>
+
+<ul class="mini-toc">
+<li><a href="#内存访问模式" accesskey="1">内存访问模式</a></li>
+<li><a href="#内存访问大小" accesskey="2">内存访问大小</a></li>
+<li><a href="#数据缓存" accesskey="3">数据缓存</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="内存访问模式">
+<h4 class="subsubsection"><span>10.18.1.1内存访问模式<a class="copiable-link" href="#内存访问模式"> &para;</a></span></h4>
+<p>访问模式属性设置 <small class="sc">GDB</small> 是否可以对内存区域进行读或写访问。
+</p>
+<p>虽然这些属性可防止 <small class="sc">GDB</small>执行无效的内存访问，但它们无法防止目标系统、I/O DMA等访问内存。
+</p>
+<dl class="table">
+<dt><code class="code">ro</code></dt>
+<dd><p>内存只读。
+</p></dd>
+<dt><code class="code">wo</code></dt>
+<dd><p>内存只写。
+</p></dd>
+<dt><code class="code">rw</code></dt>
+<dd><p>内存可读/写。这是默认值。
+</p></dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="内存访问大小">
+<h4 class="subsubsection"><span>10.18.1.2内存访问大小<a class="copiable-link" href="#内存访问大小"> &para;</a></span></h4>
+<p>访问大小属性告诉 <small class="sc">GDB</small> 在内存区域中使用特定大小的访问。通常，内存映射设备寄存器需要特定大小的访问。如果未指定访问大小属性，<small class="sc">GDB</small> 可以使用任何大小的访问。
+</p>
+<dl class="table">
+<dt><code class="code">8</code></dt>
+<dd><p>使用8位内存访问。
+</p></dd>
+<dt><code class="code">16</code></dt>
+<dd><p>使用16位内存访问。
+</p></dd>
+<dt><code class="code">32</code></dt>
+<dd><p>使用32位内存访问。
+</p></dd>
+<dt><code class="code">64</code></dt>
+<dd><p>使用64位内存访问。
+</p></dd>
+</dl>
+
+
+</div>
+<div class="subsubsection-level-extent" id="数据缓存">
+<h4 class="subsubsection"><span>10.18.1.3数据缓存<a class="copiable-link" href="#数据缓存"> &para;</a></span></h4>
+<p>数据缓存属性设置 <small class="sc">GDB</small> 是否会缓存目标内存。虽然这通常通过减少调试协议开销来提高性能，但可能会导致不正确的结果，因为 <small class="sc">GDB</small> 不知道易失性变量或内存映射设备寄存器。

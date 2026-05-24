@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>范围检查（使用GDB调试）</title>
+
+<meta name="description" content="范围检查（使用GDB调试）">
+<meta name="keywords" content="范围检查（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Checks.html" rel="up" title="检查">
+<link href="Type-Checking.html" rel="prev" title="类型检查">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="范围检查">
+<div class="nav-panel">
+<p>
+上一个：<a href="Type-Checking.html" accesskey="p" rel="prev">类型检查概述</a>，向上：<a href="Checks.html" accesskey="u" rel="up">类型和范围检查</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="范围检查概述"><span>15.3.2范围检查概述<a class="copiable-link" href="#范围检查概述"> &para;</a></span></h4>
+
+<p>在某些语言（如Modula-2）中，超出类型界限是一个错误；这通过运行时检查来强制执行。这种范围检查旨在通过确保计算不会溢出，或者数组元素访问的索引不会超出数组的界限来确保程序的正确性。
+</p>
+<p>对于你在<small class="sc">GDB</small>命令中使用的表达式，你可以告诉<small class="sc">GDB</small>以三种方式之一处理范围错误：忽略它们、始终将它们视为错误并放弃表达式，或者发出警告但无论如何都评估表达式。
+</p>
+<p>范围错误可能由数值溢出、超出数组索引界限或当你输入一个不是任何类型成员的常量时导致。然而，一些语言并不将溢出视为错误。在许多C语言实现中，数学溢出会导致结果“环绕”到较低的值&mdash;例如，如果<var class="var">m</var>是最大整数值，<var class="var">s</var>是最小整数值，那么
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">m</var> + 1 &rArr; <var class="var">s</var>
+</pre></div>
+
+<p>这也特定于个别语言，并且在某些情况下特定于个别编译器或机器。有关特定语言的更多详细信息，请参阅 <a class="xref" href="Supported-Languages.html">支持的语言</a>。
+</p>
+<p><small class="sc">GDB</small>提供了一些用于控制范围检查器的附加命令：
+</p>
+<a class="index-entry-id" id="index-set-check-range"></a>
+<a class="index-entry-id" id="index-show-check-range"></a>
+<dl class="table">
+<dt><code class="code">set check range auto</code></dt>
+<dd><p>根据当前工作语言设置范围检查的开启或关闭。有关每种语言的默认设置，请参阅 <a class="xref" href="Supported-Languages.html">支持的语言</a>。
+</p>
+</dd>
+<dt><code class="code">set check range on</code></dt>
+<dt><code class="code">set check range off</code></dt>
+<dd><p>设置范围检查的开启或关闭，覆盖当前工作语言的默认设置。如果设置与语言默认不匹配，则会发出警告。如果发生范围错误且范围检查开启，则会打印一条消息并中止表达式的评估。
+</p>
+</dd>
+<dt><code class="code">set check range warn</code></dt>
+<dd><p>当<small class="sc">GDB</small>范围检查器检测到范围错误时输出消息，但无论如何都尝试评估表达式。由于其他原因，例如访问进程不拥有的内存（许多Unix系统中的典型示例）之类的原因，评估表达式可能仍然是不可能的。
+</p>
+</dd>
+<dt><code class="code">show check range</code></dt>
+<dd><p>显示范围检查器的当前设置，以及它是否由<small class="sc">GDB</small>自动设置。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Type-Checking.html">类型检查概述</a>，向上：<a href="Checks.html">类型和范围检查</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

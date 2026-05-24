@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>远程不间断（使用GDB调试）</title>
+
+<meta name="description" content="远程不间断（使用GDB调试）">
+<meta name="keywords" content="远程不间断（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Packet-Acknowledgment.html" rel="next" title="数据包确认">
+<link href="Notification-Packets.html" rel="prev" title="通知数据包">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Non_002dStop">
+<div class="nav-panel">
+<p>
+下一页：<a href="Packet-Acknowledgment.html" accesskey="n" rel="next">数据包确认</a>，上一页：<a href="Notification-Packets.html" accesskey="p" rel="prev">通知数据包</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Remote-Protocol-Support-for-Non_002dStop-Mode"><span>E.11 对不间断模式的远程协议支持<a class="copiable-link" href="#Remote-Protocol-Support-for-Non_002dStop-Mode"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small>的远程协议支持多线程程序的不间断调试，如在<a class="ref" href="Non_002dStop-Mode.html">不间断模式</a>中所述。如果存根支持不间断模式，它应通过在其“<samp class="samp">qSupported</samp>”响应中包含“<samp class="samp">QNonStop+</samp>”来向<small class="sc">GDB</small>报告这一点（见<a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）。
+</p>
+<p><small class="sc">GDB</small>通常仅在与存根建立新连接时发送“<samp class="samp">QNonStop</samp>”数据包。进入不间断模式不会改变任何当前正在运行的线程的状态，但目标在进入全停止模式时必须停止任何已附加进程中的所有线程。<small class="sc">GDB</small>在模式更改后根据需要使用“<samp class="samp">?</samp>”数据包来探测目标状态。
+</p>
+<p>在不间断模式下，当一个附加进程遇到一个否则将用停止回复报告的事件时，它使用异步通知机制（见<a class="pxref" href="Notification-Packets.html">通知数据包</a>）来通知<small class="sc">GDB</small>。与全停止模式不同，在全停止模式下，当发送停止回复时所有进程中的所有线程都会停止，在不间断模式下只有报告停止事件的线程会停止。也就是说，当报告“<samp class="samp">S</samp>”或“<samp class="samp">T</samp>”响应以指示单步操作完成、命中断点或发生故障时，只有受影响的线程会停止；任何其他仍在运行的线程继续运行。当报告“<samp class="samp">W</samp>”或“<samp class="samp">X</samp>”响应时，属于其他附加进程的所有运行线程继续运行。
+</p>
+<p>在不间断模式下，目标应按如下方式响应“<samp class="samp">?</samp>”数据包。首先，任何正在进行的不完整停止回复通知/“<samp class="samp">vStopped</samp>”序列将被放弃。目标必须开始一个新的序列，报告所有停止线程的停止事件，无论它之前是否已向<small class="sc">GDB</small>报告过这些事件。第一个停止回复作为对“<samp class="samp">?</samp>”数据包的同步回复发送，后续的停止回复作为对“<samp class="samp">vStopped</samp>”数据包的回复发送，使用上述机制。在序列完成之前，目标不得发送异步停止回复通知。如果目标在收到“<samp class="samp">?</samp>”数据包时所有线程都在运行，或者如果目标未附加到任何进程，它应回复“\(OK\)”。
+</p>
+<p>如果存根支持不间断模式，它还应支持“<samp class="samp">swbreak</samp>”停止原因（如果支持软件断点）和“<samp class="samp">hwbreak</samp>”停止原因（如果支持硬件断点）（见<a class="pxref" href="Stop-Reply-Packets.html#swbreak-stop-reason">swbreak停止原因</a>）。这是因为考虑到不间断模式的异步特性，在线程命中断点到该事件最终由<small class="sc">GDB</small>处理的这段时间内，断点可能已经从目标中移除。因此，<small class="sc">GDB</small>需要能够区分陷阱停止是由延迟的断点事件引起的（应忽略），还是由随机陷阱信号引起的（应报告给用户）。请注意，“<samp class="samp">swbreak</samp>”功能意味着如果需要，目标负责在软件断点触发时调整程序计数器，例如在x86架构上。
+</p>
+</div>
+<hr>
+<div class="nav-panel"> 
+<p>
+下一页：<a href="Packet-Acknowledgment.html">数据包确认</a>，上一页：<a href="Notification-Packets.html">通知数据包</a>，向上：<a href="Remote-Protocol.html"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

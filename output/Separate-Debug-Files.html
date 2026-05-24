@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>单独的调试文件（使用GDB调试）</title>
+
+<meta name="description" content="单独的调试文件（使用GDB调试）">
+<meta name="keywords" content="单独的调试文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="MiniDebugInfo.html" rel="next" title="MiniDebugInfo">
+<link href="File-Caching.html" rel="prev" title="文件缓存">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="单独的调试文件">
+<div class="nav-panel">
+<p>
+下一个：<a href="MiniDebugInfo.html" accesskey="n" rel="next">特殊部分中的调试信息</a>，上一个：<a href="File-Caching.html" accesskey="p" rel="prev">文件缓存</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="单独文件中的调试信息"><span>18.3单独文件中的调试信息<a class="copiable-link" href="#单独文件中的调试信息"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-单独的调试信息文件"></a>
+<a class="index-entry-id" id="索引-单独文件中的调试信息"></a>
+<a class="index-entry-id" id="索引-.debug子目录"></a>
+<a class="index-entry-id" id="索引-调试信息目录，全局"></a>
+<a class="index-entry-id" id="索引-全局调试信息目录"></a>
+<a class="index-entry-id" id="索引-构建ID，以及单独的调试文件"></a>
+<a class="index-entry-id" id="索引-.build-id目录"></a>
+
+<p><small class="sc">GDB</small>允许你将程序的调试信息放在一个与可执行文件本身分开的文件中，并且GDB能够自动找到并加载该调试信息。由于调试信息可能非常大，有时甚至比可执行代码本身还大，因此一些系统将其可执行文件的调试信息分布在单独的文件中，用户可以仅在需要调试问题时才安装这些文件。
+</p>
+<p><small class="sc">GDB</small>支持两种指定单独调试信息文件的方式：
+</p>
+<ul class="itemize mark-bullet">
+<li>可执行文件包含一个<em class="dfn">调试链接</em>，它指定了单独调试信息文件的名称。单独调试文件的名称通常是<samp class="file"><var class="var">可执行文件名</var>.debug</samp>，其中<var class="var">可执行文件名</var>是相应可执行文件的名称，不包含前导目录（例如，对于<samp class="file">/usr/bin/ls</samp>，其调试文件名为<samp class="file">ls.debug</samp>）。此外，调试链接为调试文件指定了一个32位的<em class="dfn">循环冗余校验</em>（CRC）校验和，<small class="sc">GDB</small>使用它来验证可执行文件和调试文件是否来自同一构建。
+
+</li><li><a class="anchor" id="构建ID"></a>可执行文件包含一个<em class="dfn">构建ID</em>，这是一个唯一的位串，在相应的调试信息文件中也存在。（仅在某些操作系统上，当对二进制文件使用ELF或PE文件格式以及<small class="sc">GNU</small> Binutils时，才支持此功能。）有关此功能的更多详细信息，请参阅<cite class="cite">The GNU Linker</cite>中<a data-manual="ld" href="https://sourceware.org/binutils/docs/ld/Options.html#Options">命令行选项</a>中对<samp class="option">--build-id</samp>命令行选项的描述。构建ID并未明确指定调试信息文件的名称，但可以根据构建ID计算得出，如下所示。
+</li></ul>
+
+<p>根据调试信息文件的指定方式不同，<small class="sc">GDB</small>使用两种不同的方法来查找调试文件：
+</p>
+<ul class="itemize mark-bullet">
+<li>对于“调试链接”方法，<small class="sc">GDB</small>首先在可执行文件所在的目录中查找指定的文件，然后在该目录的一个名为<samp class="file">.debug</samp>的子目录中查找，最后在每个全局调试目录下，在一个名称与可执行文件绝对文件名的前导目录相同的子目录中查找。（在MS-Windows/MS-DOS上，可执行文件前导目录的驱动器字母会转换为一个单字母的子目录，例如，<samp class="file">d:/usr/bin/</samp>会转换为<samp class="file">/d/usr/bin/</samp>，因为Windows文件系统不允许文件名中包含冒号。）
+
+</li><li>对于“构建ID”方法，<small class="sc">GDB</small>在每个全局调试目录的<samp class="file">.build-id</samp>子目录中查找一个名为<samp class="file"><var class="var">nn</var>/<var class="var">nnnnnnnn</var>.debug</samp>的文件，其中<var class="var">nn</var>是构建ID位串的前2个十六进制字符，<var class="var">nnnnnnnn</var>是位串的其余部分。（实际的构建ID字符串为32个或更多十六进制字符，而不是10个。）<small class="sc">GDB</small>可以使用构建ID自动查询<code class="code">debuginfod</code>服务器，以便下载本地找不到的单独调试文件。有关更多信息，请参阅<a class="ref" href="Debuginfod.html">使用Debuginfod下载调试资源</a>。
+</li></ul>
+
+<p>例如，假设你要求<small class="sc">GDB</small>调试<samp class="file">/usr/bin/ls</samp>，它有一个调试链接指定文件<samp class="file">ls.debug</samp>，并且其构建ID的十六进制值为<code class="code">abcdef1234</code>。如果全局调试目录列表包括<samp class="file">/usr/lib/debug</samp>，那么<small class="sc">GDB</small>将按以下指定顺序查找以下调试信息文件：
+</p>
+<ul class="itemize mark-minus">
+<li><samp class="file">/usr/lib/debug/.build-id/ab/cdef1234.debug</samp>
+</li><li><samp class="file">/usr/bin/ls.debug</samp>
+</li><li><samp class="file">/usr/bin/.debug/ls.debug</samp>
+</li><li><samp class="file">/usr/lib/debug/usr/bin/ls.debug</samp>。
+</li></ul>
+
+<p>如果仍然找不到调试文件并且启用了<code class="code">debuginfod</code>（请参阅<a class="pxref" href="Debuginfod.html">使用Debuginfod下载调试资源</a>），<small class="sc">GDB</small>将尝试从<code class="code">debuginfod</code>服务器下载该文件。
+</p>
+<a class="anchor" id="调试文件目录"></a><p>全局调试信息目录默认为由<small class="sc">GDB</small>配置选项<samp class="option">--with-separate-debug-dir</samp>设置的值，并由通过<small class="sc">GDB</small>配置选项<samp class="option">--additional-debug-dirs</samp>提供的以冒号分隔的目录列表进行扩充。在<small class="sc">GDB</small>运行期间，你也可以设置全局调试信息目录，并查看<small class="sc">GDB</small>当前正在使用的目录列表。
+</p>
+<dl class="table">
+<dt><a id="索引-设置调试文件目录"></a><span><code class="code">set debug-file-directory <var class="var">目录</var></code><a class="copiable-link" href="#索引-设置调试文件目录"> &para;</a></span></dt>
+<dd><p>将<small class="sc">GDB</small>搜索单独调试信息文件的目录设置为<var class="var">目录</var>。可以通过路径分隔符连接多个路径组件来设置。
+</p>
+</dd>
+<dt><a id="索引-显示调试文件目录"></a><span><code class="code">show debug-file-directory</code><a class="copiable-link" href="#索引-显示调试文件目录"> &para;</a></span></dt>
+<dd><p>显示<small class="sc">GDB</small>搜索单独调试信息文件的目录。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="索引-.gnu_debuglink节"></a>
+<a class="index-entry-id" id="索引-调试链接节"></a>
+<p>调试链接是可执行文件中一个名为<code class="code">.gnu_debuglink</code>的特殊节。该节必须包含：
+</p>
+<ul class="itemize mark-bullet">
+<li>一个文件名，去除任何前导目录组件，后面跟着一个零字节，
+</li><li>零到三个字节的填充，以达到该节内下一个四字节边界所需，
+</li><li>一个四字节的CRC校验和，以与可执行文件本身相同的字节序存储。该校验和是通过下面给出的函数对调试信息文件的完整内容进行计算得出的，将零作为<var class="var">crc</var>参数传递。
+</li></ul>
+
+<p>只要可执行文件格式能够包含一个名为<code class="code">.gnu_debuglink</code>且内容如上所述的节，任何可执行文件格式都可以携带调试链接。
+</p>
+<a class="index-entry-id" id="索引-.note.gnu.build-id节"></a>
+<a class="index-entry-id" id="索引-构建ID节"></a>
+<p>构建ID是可执行文件（以及<small class="sc">GDB</small>可能考虑的其他ELF二进制文件）中的一个特殊节。这个节通常名为<code class="code">.note.gnu.build-id</code>，但该名称不是必需的。它包含已构建文件的唯一标识 —— 在同一构建树的多个构建中，该ID保持不变。默认算法SHA1会生成160位（40个十六进制字符）的构建ID字符串内容。在带有符号的原始构建二进制文件、其剥离变体以及单独的调试信息文件中，都存在具有相同值的相同节。
+</p>
+<p>调试信息文件本身应该是一个普通的可执行文件，包含一整套链接器符号、节和调试信息。调试信息文件的节应该与原始文件具有相同的名称、地址和大小，但它们不需要包含任何数据 —— 这很像普通可执行文件中的<code class="code">.bss</code>节。
+</p>
+<p><small class="sc">GNU</small>二进制实用工具（Binutils）包包括“<samp class="samp">objcopy</samp>”实用工具，它可以使用以下命令生成单独的可执行文件/调试信息文件对：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><kbd class="kbd">objcopy --only-keep-debug foo foo.debug</kbd>
+<kbd class="kbd">strip -g foo</kbd>
+</pre></div>
+
+<p>这些命令从可执行文件<samp class="file">foo</samp>中移除调试信息，并将其放置在文件<samp class="file">foo.debug</samp>中。你可以使用第一种、第二种方法或两者来链接这两个文件：
+</p>
+<ul class="itemize mark-bullet">
+<li>调试链接方法还需要以下额外命令，以便在<samp class="file">foo</samp>中留下一个调试链接：
+
+<div class="example smallexample">
+<pre class="example-preformatted"><kbd class="kbd">objcopy --add-gnu-debuglink=foo.debug foo</kbd>
+</pre></div>
+
+<p>Ulrich Drepper的<samp class="file">elfutils</samp>包从0.53版本开始，包含一个版本的<code class="code">strip</code>命令，使得命令<kbd class="kbd">strip foo -f foo.debug</kbd>具有与上述两个<code class="code">objcopy</code>命令和<code class="code">ln -s</code>命令相同的功能。
+</p>
+</li><li>使用<code class="code">ld --build-id</code>或<small class="sc">GCC</small>对应的<code class="code">gcc -Wl,--build-id</code>将构建ID嵌入到主可执行文件中。自2.18版本以来，<small class="sc">GNU</small>二进制实用工具（Binutils）包中提供了构建ID支持以及调试文件分离的兼容性修复。
+</li></ul>
+
+
+<a class="index-entry-id" id="索引-CRC算法定义"></a>
+<p><code class="code">.gnu_debuglink</code>中使用的CRC是IEEE 802.3中定义的CRC-32，使用的多项式为：
+</p>
+<div class="display">
+<pre class="display-preformatted"> <em>x</em><sup>32</sup> + <em>x</em><sup>26</sup> + <em>x</em><sup>23</sup> + <em>x</em><sup>22</sup> + <em>x</em><sup>16</sup> + <em>x</em><sup>12</sup> + <em>x</em><sup>11</sup>
+ + <em>x</em><sup>10</sup> + <em>x</em><sup>8</sup> + <em>x</em><sup>7</sup> + <em>x</em><sup>5</sup> + <em>x</em><sup>4</sup> + <em>x</em><sup>2</sup> + <em>x</em> + 1
+</pre></div>
+
+<p>该函数按字节计算，首先取每个字节的最低有效位。使用初始模式<code class="code">0xffffffff</code>，以确保前导零会影响CRC，并且最终结果取反以确保尾随零也会影响CRC。
+</p>
+<p><em class="emph">注意：</em>这与处理<em class="dfn">远程串行协议</em> <code class="code">qCRC</code>数据包（请参阅<a class="pxref" href="General-Query-Packets.html#qCRC-packet">qCRC数据包</a>）时使用的CRC多项式相同。然而，在远程串行协议的情况下，CRC是按<em class="emph">最高</em>有效位优先计算的，并且结果不取反，因此尾随零对CRC值没有影响。
+</p>
+<p>为了完整描述，下面展示了生成<code class="code">.gnu_debuglink</code>中使用的CRC的函数代码。对最初提供的<code class="code">crc</code>参数取反意味着，对该函数的初始调用传入零时，将开始使用<code class="code">0xffffffff</code>计算CRC。
+</p>
+<a class="index-entry-id" id="索引-gnu_debuglink_crc32"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">unsigned long gnu_debuglink_crc32 (unsigned long crc, unsigned char *buf, size_t len)
+{
+  static const unsigned long crc32_table[256] =
+    {
+      0x00000000, 0x77073096, 0xee0e612c, ...（此处省略部分内容）... 0x2d02ef8d
+    };
+  unsigned char *end;
+
+  crc = ~crc &amp; 0xffffffff;
+  for (end = buf + len; buf &lt; end; ++buf)
+    crc = crc32_table[(crc ^ *buf) &amp; 0xff] ^ (crc &gt;&gt; 8);
+  return ~crc &amp; 0xffffffff;
+}
+</pre></div>
+
+<p>此计算不适用于“构建ID”方法。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="MiniDebugInfo.html">特殊部分中的调试信息</a>，上一个：<a href="File-Caching.html">文件缓存</a>，向上<a href="GDB-Files.html"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

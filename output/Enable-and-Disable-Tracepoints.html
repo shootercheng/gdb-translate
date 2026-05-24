@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>启用和禁用跟踪点（使用GDB调试）</title>
+
+<meta name="description" content="启用和禁用跟踪点（使用GDB调试）">
+<meta name="keywords" content="启用和禁用跟踪点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Tracepoint-Passcounts.html" rel="next" title="跟踪点通过计数">
+<link href="Create-and-Delete-Tracepoints.html" rel="prev" title="创建和删除跟踪点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+        
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="启用和禁用跟踪点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Tracepoint-Passcounts.html" accesskey="n" rel="next">跟踪点通过计数</a>, 上一个：<a href="Create-and-Delete-Tracepoints.html" accesskey="p" rel="prev">创建和删除跟踪点</a>, 向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="启用和禁用跟踪点-1"><span>13.1.2启用和禁用跟踪点<a class="copiable-link" href="#启用和禁用跟踪点-1"> &para;</a></span></h4>
+
+<p>这些命令已被弃用；它们等同于普通的<code class="code">disable</code>和<code class="code">enable</code>。
+</p>
+<dl class="table">
+<dt><a id="index-disable-tracepoint"></a><span><code class="code">disable tracepoint <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-disable-tracepoint"> &para;</a></span></dt>
+<dd><p>禁用跟踪点<var class="var">num</var>，如果没有给出参数<var class="var">num</var>，则禁用所有跟踪点。禁用的跟踪点在跟踪实验期间不会产生任何影响，但不会被遗忘。你可以使用<code class="code">enable tracepoint</code>命令重新启用禁用的跟踪点。如果在跟踪实验期间发出此命令，并且调试目标支持在跟踪实验期间禁用跟踪点，那么更改将立即生效。否则，它将应用于下一次跟踪实验。
+</p>
+</dd>
+<dt><a id="index-enable-tracepoint"></a><span><code class="code">enable tracepoint <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-enable-tracepoint"> &para;</a></span></dt>
+<dd><p>启用跟踪点<var class="var">num</var>，或所有跟踪点。如果在跟踪实验期间发出此命令，并且调试目标支持在跟踪实验期间启用跟踪点，那么启用的跟踪点将立即生效。否则，它们将在下次运行跟踪实验时生效。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>`

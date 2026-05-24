@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gdb手册（使用GDB进行调试）</title>
+
+<meta name="description" content="gdb手册（使用GDB进行调试）">
+<meta name="keywords" content="gdb手册（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdb-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gdb-man-1"><span>gdb手册<a class="copiable-link" href="#gdb-man-1"> ¶</a></span></h3>
+
+
+<p>gdb [选项] [<var class="var">程序</var>|<var class="var">程序</var> <var class="var">进程ID</var>|<var class="var">程序</var> <var class="var">核心文件</var>]
+</p>
+<p>像GDB这样的调试器旨在让你在另一个程序执行时查看其“内部”发生了什么，或者在程序崩溃时查看它当时在做什么。
+</p>
+<p>GDB可以做四种主要的事情（以及其他支持这些的事情）来帮助你当场捕捉错误：
+</p>
+<ul class="itemize mark-bullet">
+<li>启动你的程序，指定任何可能影响其行为的因素。
+
+</li><li>使你的程序在指定条件下停止。
+
+</li><li>检查程序停止时发生了什么。
+
+</li><li>更改程序中的内容，以便你可以试验纠正一个错误的影响并继续了解另一个错误。
+</li></ul>
+
+<p>你可以使用GDB调试用C、C++、Fortran和Modula-2编写的程序。
+</p>
+<p>通过 shell 命令<code class="code">gdb</code>调用GDB。启动后，它从终端读取命令，直到你使用GDB命令<code class="code">quit</code>或<code class="code">exit</code>告诉它退出。你可以使用命令<code class="code">help</code>从GDB本身获得在线帮助。
+</p>
+<p>你可以不带任何参数或选项运行<code class="code">gdb</code>；但启动GDB最常见的方法是带一个或两个参数，指定一个可执行程序作为参数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb 程序
+</pre></div>
+
+<p>你也可以同时指定一个可执行程序和一个核心文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb 程序 核心文件
+</pre></div>
+
+<p>如果你想调试一个正在运行 的进程，你可以改为指定一个进程ID作为第二个参数或使用选项<code class="code">-p</code>：
+</p>
+<div class="example smallexample">  
+<pre class="example-preformatted">gdb 程序 1234
+gdb -p 1234
+</pre></div>
+
+<p>这将把GDB附加到进程<code class="code">1234</code>。使用选项<code class="samp">-p</code>时，你可以省略<var class="var">程序</var>文件名。
+</p>
+<p>以下是一些最常用的GDB命令：
+</p>
+<dl class="table">
+<dt><code class="env">break [<var class="var">文件</var>:][<var class="var">函数</var>|<var class="var">行号</var>]</code></dt>
+<dd><p>在<var class="var">函数</var>或<var class="var">行号</var>（在<var class="var">文件</var>中）处设置断点。
+</p>
+</dd>
+<dt><code class="env">run [<var class="var">参数列表</var>]</code></dt>
+<dd><p>启动你的程序（如果指定了<var class="var">参数列表</var>）。
+</p>
+</dd>
+<dt><code class="env">bt</code></dt>
+<dd><p>回溯：显示程序堆栈。
+</p>
+</dd>
+<dt><code class="env">print <var class="var">表达式</var></code></dt>
+<dd><p>显示一个表达式的值。
+</p>
+</dd>
+<dt><code class="env">c</code></dt>
+<dd><p>继续运行你的程序（在停止后，例如在断点处）。
+</p>
+</dd>
+<dt><code class="env">next</code></dt>
+<dd><p>执行下一行程序（在停止后）；跳过该行中的任何函数调用。
+</p>
+</dd>
+<dt><code class="env">edit [<var class="var">文件</var>:]<var class="var">函数</var></code></dt>
+<dd><p>查看当前停止的程序行。
+</p>
+</dd>
+<dt><code class="env">list [<var class="var">文件</var>:]<var class="var">函数</var></code></dt>
+<dd><p>输入当前停止位置附近的程序文本。
+</p>
+</dd>
+<dt><code class="env">step</code></dt>
+<dd><p>执行下一行程序（在停止后）；进入该行中的任何函数调用。
+</p>
+</dd>
+<dt><code class="env">help [<var class="var">名称</var>]</code></dt>
+<dd><p>显示有关GDB命令<var class="var">名称</var>的信息，或有关使用GDB的一般信息。
+</p>
+</dd>
+<dt><code class="env">quit</code></dt>
+<dt><code class="env">exit</code></dt>
+<dd><p>退出GDB。
+</p></dd>
+</dl>
+
+
+<p>除选项外的任何参数都指定一个可执行文件和核心文件（或进程ID）；也就是说，第一个没有关联选项标志的参数等同于一个<code class="samp">--se</samp>选项，第二个（如果有）如果是文件名，则等同于一个<code class="samp">-c</samp>选项。许多选项都有长格式和缩写形式；这里都显示了。如果你截断长格式，只要存在足够的选项以使其明确，GDB也会识别它们。
+</p>
+<p>缩写形式在这里用“<samp class="samp">-</samp>”表示，长格式用“<samp class="samp">--</samp>”表示，以反映它们在<code class="samp">--help</samp>中的显示方式。然而，GDB对于大多数选项都识别以下所有约定：
+</p>
+<dl class="table">
+<dt><code class="code">--选项=<var class="var">值</var></code></dt>
+<dt><code class="code">--选项 <var class="var">值</var></code></dt>
+<dt><code class="code">-选项=<var class="var">值</var></code></dt>
+<dt><code class="code">-选项 <var class="var">值</var></code></dt>
+<dt><code class="code">--o=<var class="var">值</var></code></dt>
+<dt><code class="code">--o <var class="var">值</var></code></dt>
+<dt><code class="code">-o=<var class="var">值</var></code></dt>
+<dt><code class="code">-o <var class="var">值</var></code></dt>
+</dl>
+
+<p>你给出的所有选项和命令行参数都是按顺序处理的。当使用<code class="samp">-x</samp>选项时，顺序很重要。
+</p>
+<dl class="table">
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项，并给出简要解释。
+</p>
+</dd>
+<dt><code class="env">--symbols=<var class="var">文件</var></code></dt>
+<dt><code class="env">-s <var class="var">文件</var></code></dt>
+<dd><p>从<var class="var">文件</var>中读取符号表。
+</p>
+</dd>
+<dt><code class="env">--write</code></dt>
+<dd><p>启用对可执行文件和核心文件的写入。
+</p>
+</dd>
+<dt><code class="env">--exec=<var class="var">文件</var></code></dt>
+<dt><code class="env">-e <var class="var">文件</var></code></dt>
+<dd><p>在适当的时候使用<var class="var">文件</var>作为要执行的可执行文件，并结合核心转储检查纯数据。
+</p>
+</dd>
+<dt><code class="env">--se=<var class="var">文件</var></code></dt>
+<dd><p>从<var class="var">文件</var>中读取符号表并将其用作可执行文件。
+</p>
+</dd>
+<dt><code class="env">--core=<var class="var">文件</var></code></dt>
+<dt><code class="env">-c <var class="var">文件</var></code></dt>
+<dd><p>使用<var class="var">文件</var>作为要检查的核心转储。
+</p>
+</dd>
+<dt><code class="env">--command=<var class="var">文件</var></code></dt>
+<dt><code class="env">-x <var class="var">文件</var></code></dt>
+<dd><p>从<var class="var">文件</var>中执行GDB命令。
+</p>
+</dd>
+<dt><code class="env">--eval-command=<var class="var">命令</var></code></dt>  
+<dt><code class="env">-ex <var class="var">命令</var></code></dt>
+<dd><p>执行给定的GDB<var class="var">命令</var>。
+</p>
+</dd>
+<dt><code class="env">--init-eval-command=<var class="var">命令</var></code></dt>
+<dt><code class="env">-iex</code></dt>
+<dd><p>在加载下级之前执行GDB<var class="var">命令</var>。
+</p>
+</dd>
+<dt><code class="env">--directory=<var class="var">目录</var></code></dt>
+<dt><code class="env">-d <var class="var">目录</var></code></dt>
+<dd><p>将<var class="var">目录</var>添加到搜索源文件的路径中。
+</p>
+</dd>
+<dt><code class="env">--nh</code></dt>
+<dd><p>不执行来自<samp class="file">~/.config/gdb/gdbinit</samp>、<samp class="file">~/.gdbinit</samp>、<samp class="file">~/.config/gdb/gdbearlyinit</samp>或<samp class="file">~/.gdbearlyinit</samp>的命令。
+</p>
+</dd>
+<dt><code class="env">--nx</code></dt>
+<dt><code class="env">-n</code></dt>
+<dd><p>不执行来自任何<samp class="file">.gdbinit</samp>或<samp class="file">.gdbearlyinit</samp>初始化文件的命令。
+</p>
+</dd>
+<dt><code class="env">--quiet</code></dt>
+<dt><code class="env">--silent</code></dt>
+<dt><code class="env">-q</code></dt>
+<dd><p>“安静”。不打印介绍性和版权信息。这些信息在批处理模式下也会被抑制。
+</p>
+</dd>
+<dt><code class="env">--batch</code></dt>
+<dd><p>以批处理模式运行。在处理所有用<code class="samp">-x</samp>指定的命令文件（以及如果未禁止的话，<samp class="file">.gdbinit</samp>）后以状态码<code class="code">0</code>退出。如果在执行命令文件中的GDB命令时发生错误，则以非零状态退出。
+</p>
+<p>批处理模式对于将GDB用作过滤器可能很有用，例如在另一台计算机上下载并运行程序；为了使其更有用，在批处理模式下运行时不会发出
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序正常退出。
+</pre></div>
+
+<p>（通常在GDB控制下运行的程序终止时会发出此消息）。
+</p>
+</dd>
+<dt><code class="env">--batch-silent</code></dt>
+<dd><p>以批处理模式运行，与<code class="samp">--batch</samp>一样，但完全安静。所有GDB输出都被抑制（stderr不受影响）。这比<code class="samp">--silent</samp>安静得多，对于交互式会话将毫无用处。
+</p>
+<p>例如在使用给出“<samp class="samp">加载段</samp>”消息的目标时，这特别有用。
+</p>
+<p>请注意，通过GDB输出其输出而不是直接写入<code class="code">stdout</code>的目标也将被设为安静。
+</p>
+</dd>
+<dt><code class="env">--args <var class="var">程序</var> [<var class="var">参数列表</var>]</code></dt>
+<dd><p>更改命令行的解释，以便此选项之后的参数作为参数传递给下级。例如，对于以下命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb ./a.out -q
+</pre></div>
+
+<p>它将以<code class="samp">-q</samp>启动GDB，不打印介绍性消息。另一方面，使用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb --args ./a.out -q
+</pre></div>
+
+<p>启动GDB时会打印介绍性消息，并将选项传递给下级。
+</p>
+</dd>
+<dt><code class="env">--pid=<var class="var">pid</var></code></dt>
+<dd><p>将GDB附加到一个已经在运行的程序，其PID为<var class="var">pid</var>。
+</p>
+</dd>
+<dt><code class="env">--tui</code></dt>
+<dd><p>打开终端用户界面。
+</p>
+</dd>
+<dt><code class="env">--readnow</code></dt>
+<dd><p>在首次访问时从给定的符号文件中读取所有符号

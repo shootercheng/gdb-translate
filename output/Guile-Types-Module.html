@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile类型模块（使用GDB调试）</title>
+
+<meta name="description" content="Guile类型模块（使用GDB调试）">
+<meta name="keywords" content="Guile类型模块（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-Modules.html" rel="up" title="Guile模块">
+<link href="Guile-Printing-Module.html" rel="prev" title="Guile打印模块">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-Types-Module">
+<div class="nav-panel">
+<p>
+上一个：<a href="Guile-Printing-Module.html" accesskey="p" rel="prev">Guile打印模块</a>，向上：<a href="Guile-Modules.html" accesskey="u" rel="up">Guile模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-Types-Module-1"><span>23.4.5.2 Guile类型模块<a class="copiable-link" href="#Guile-Types-Module-1"> &para;</a></span></h4>
+
+<p>此模块提供了一组用于处理<code class="code">&lt;gdb:type&gt;</code>对象的实用工具。
+</p>
+<p>用法：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb types))
+</pre></div>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-get_002dbasic_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">get-basic-type</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-get_002dbasic_002dtype"> &para;</a></span></dt>
+<dd><p>返回去除了const和volatile限定符的<var class="var">type</var>，并将typedef和C++引用转换为底层类型。
+</p>
+<p>C++示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">typedef const int const_int;
+const_int foo (3);
+const_int&amp; foo_ref (foo);
+int main () { return 0; }
+</pre></div>
+
+<p>然后在gdb中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) start
+(gdb) guile (use-modules (gdb) (gdb types))
+(gdb) guile (define foo-ref (parse-and-eval &quot;foo_ref&quot;))
+(gdb) guile (get-basic-type (value-type foo-ref))
+#&lt;gdb:type int&gt;
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dhas_002dfield_002ddeep_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">type-has-field-deep?</strong> <var class="def-var-arguments">type field</var><a class="copiable-link" href="#index-type_002dhas_002dfield_002ddeep_003f"> &para;</a></span></dt>
+<dd><p>如果假定<var class="var">type</var>是一个具有字段的类型（例如，结构体或联合体）并且有字段<var class="var">field</var>，则返回<code class="code"># t</code>。
+否则返回<code class="code"># f</code>。
+这会搜索基类，而<code class="code">type-has-field?</code>不会。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002denum_002dhashtable"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-enum-hashtable</strong> <var class="def-var-arguments">enum-type</var><a class="copiable-link" href="#index-make_002denum_002dhashtable"> &para;</a></span></dt>
+<dd><p>返回从<var class="var">enum-type</var>生成的Guile哈希表。
+哈希表中的元素用<code class="code">hashq-ref</code>引用。
+</p></dd></dl>
+
+</div>
+
+
+
+</body>
+</html>

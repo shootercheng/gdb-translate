@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>搜索（使用GDB调试）</title>
+
+<meta name="description" content="搜索（使用GDB调试）">
+<meta name="keywords" content="搜索（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Source-Path.html" rel="next" title="源路径">
+<link href="Edit.html" rel="prev" title="编辑">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="搜索">
+<div class="nav-panel">
+<p>
+下一页：<a href="Source-Path.html" accesskey="n" rel="next">指定源目录</a>，上一页：<a href="Edit.html" accesskey="p" rel="prev">编辑源文件</a>，向上：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="搜索源文件"><span>9.4搜索源文件<a class="copiable-link" href="#搜索源文件"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-搜索源文件"></a>
+
+<p>有两个命令用于在当前源文件中搜索正则表达式。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-正向搜索"></a>
+<a class="index-entry-id" id="索引-fo-（正向搜索）"></a>
+<a id="索引-搜索"></a><span><code class="code">forward-search <var class="var">regexp</var></code><a class="copiable-link" href="#索引-搜索"> &para;</a></span></dt>
+<dt><code class="code">search <var class="var">regexp</var></code></dt>
+<dd><p>命令‘<samp class="samp">forward-search <var class="var">regexp</var></samp>’从列出的最后一行之后的那一行开始，检查每一行是否与<var class="var">regexp</var>匹配。它会列出找到匹配的行。你可以使用同义词‘<samp class="samp">search <var class="var">regexp</var></samp>’，或者将命令名缩写为<code class="code">fo</code>。
+</p>
+</dd>
+<dt><a id="索引-反向搜索"></a><span><code class="code">reverse-search <var class="var">regexp</var></code><a class="copiable-link" href="#索引-反向搜索"> &para;</a></span></dt>
+<dd><p>命令‘<samp class="samp">reverse-search <var class="var">regexp</var></samp>’从列出的最后一行之前的那一行开始，向后检查每一行是否与<var class="var">regexp</var>匹配。它会列出找到匹配的行。你可以将这个命令缩写为<code class="code">rev</code>。

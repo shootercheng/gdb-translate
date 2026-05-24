@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>MIPS寄存器包格式（使用GDB调试）</title>
+
+<meta name="description" content="MIPS寄存器包格式（使用GDB调试）">
+<meta name="keywords" content="MIPS寄存器包格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="MIPS_002dSpecific-Protocol-Details.html" rel="up" title="MIPS特定协议细节">
+<link href="MIPS-Breakpoint-Kinds.html" rel="next" title="MIPS断点类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="MIPS-Register-packet-Format">
+<div class="nav-panel">
+<p>
+下一个：<a href="MIPS-Breakpoint-Kinds.html" accesskey="n" rel="next">MIPS断点类型</a>，上一个：<a href="MIPS_002dSpecific-Protocol-Details.html" accesskey="u" rel="up">MIPS特定协议细节</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="MIPS-Register-Packet-Format"><span>E.6.2.1 MIPS寄存器包格式<a class="copiable-link" href="#MIPS-Register-Packet-Format"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-register-packet-format_002c-MIPS"></a>
+
+<p>以下 <code class="code">g</code>/<code class="code">G</code> 包之前已经定义。
+在下面，一些32位寄存器作为64位进行传输。 那些寄存器应该进行零/符号扩展（扩展方式？）以填充分配的空间。 寄存器字节按目标字节顺序传输。 寄存器字节内的两个半字节按最高有效位 - 最低有效位的顺序传输。
+</p>
+<dl class="table">
+<dt><span class="r">MIPS32</span></dt>
+<dd><p>所有寄存器按以下顺序作为32位量进行传输：
+32个通用寄存器；状态寄存器（sr）；低32位（lo）；高32位（hi）；错误寄存器（bad）；原因寄存器（cause）；程序计数器（pc）；32个浮点寄存器；浮点状态寄存器（fsr）；浮点指令寄存器（fir）；浮点指针（fp）。
+</p>
+</dd>
+<dt><span class="r">MIPS64</span></dt>
+<dd><p>所有寄存器按64位量进行传输（包括像 <code class="code">sr</code> 这样的32位寄存器）。 顺序与 <code class="code">MIPS32</code> 相同。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI符号查询 (使用GDB调试)</title>
+
+<meta name="description" content="GDB/MI符号查询 (使用GDB调试)">
+<meta name="keywords" content="GDB/MI符号查询 (使用GDB调试)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-File-Commands.html" rel="next" title="GDB/MI文件命令">
+<link href="GDB_002fMI-Tracepoint-Commands.html" rel="prev" title="GDB/MI跟踪点命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Symbol-Query">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-File-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>文件命令</a>，上一个：<a href="GDB_002fMI-Tracepoint-Commands.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>跟踪点命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Symbol-Query-Commands"><span>27.18 <small class="sc">GDB/MI</small>符号查询命令<a class="copiable-link" href="#gdb_002fmi-Symbol-Query-Commands"> &para;</a></span></h3>
+
+
+
+<a class="index-entry-id" id="index-_002dsymbol_002dinfo_002dfunctions"></a>
+<a class="anchor" id="g_t_002dsymbol_002dinfo_002dfunctions"></a><h4 class="subheading" id="The-_002dsymbol_002dinfo_002dfunctions-Command"><span>The <code class="code">-symbol-info-functions</code>命令<a class="copiable-link" href="#The-_002dsymbol_002dinfo_002dfunctions-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-80"><span>概要<a class="copiable-link" href="#Synopsis-80"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -symbol-info-functions [--include-nondebug]
+                        [--type <var class="var">type_regexp</var>]
+                        [--name <var class="var">name_regexp</var>]
+                        [--max-results <var class="var">limit</var>]
+</pre></div>
+
+<p>返回一个列表，其中包含从调试信息中获取的所有全局函数的名称和类型。函数按源文件分组，并显示每个函数定义所在的行号。
+</p>
+<p><code class="code">--include-nondebug</code>选项使输出包括符号表中的代码符号。
+</p>
+<p><code class="code">--type</code>和<code class="code">--name</code>选项允许根据函数名称或函数类型签名对返回的符号进行过滤。
+</p>
+<p><code class="code">--max-results</code>选项限制命令返回不超过<var class="var">limit</var>个结果。如果恰好返回<var class="var">limit</var>个结果，那么使用更高的限制可能会有更多结果。
+</p>
+<h4 class="subsubheading" id="gdb-Command-62"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-62"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">info functions</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-62"><span>示例<a class="copiable-link" href="#Example-62"> &para;</a></span></h4>
+<div class="example smallexample"> 
+<div class="group"><pre class="example-preformatted">(gdb)
+-symbol-info-functions
+^done,symbols=
+  {debug=
+    [{filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      symbols=[{line=&quot;36&quot;, name=&quot;f4&quot;, type=&quot;void (int *)&quot;,
+                description=&quot;void f4(int *);&quot;},
+               {line=&quot;42&quot;, name=&quot;main&quot;, type=&quot;int ()&quot;,
+                description=&quot;int main();&quot;},
+               {line=&quot;30&quot;, name=&quot;f1&quot;, type=&quot;my_int_t (int, int)&quot;,
+                description=&quot;static my_int_t f1(int, int);&quot;}]},
+     {filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      symbols=[{line=&quot;33&quot;, name=&quot;f2&quot;, type=&quot;float (another_float_t)&quot;,
+                description=&quot;float f2(another_float_t);&quot;},
+               {line=&quot;39&quot;, name=&quot;f3&quot;, type=&quot;int (another_int_t)&quot;,
+                description=&quot;int f3(another_int_t);&quot;},
+               {line=&quot;27&quot;, name=&quot;f1&quot;, type=&quot;another_float_t (int)&quot;,
+                description=&quot;static another_float_t f1(int);&quot;}]}]}
+</pre></div><div class="group"><pre class="example-preformatted">(gdb)
+-symbol-info-functions --name f1
+^done,symbols=
+  {debug=
+    [{filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      symbols=[{line=&quot;30&quot;, name=&quot;f1&quot;, type=&quot;my_int_t (int, int)&quot;,
+                description=&quot;static my_int_t f1(int, int);&quot;}]},
+     {filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      symbols=[{line=&quot;27&quot;, name=&quot;f1&quot;, type=&quot;another_float_t (int)&quot;,
+                description=&quot;static another_float_t f1(int);&quot;}]}]}
+</pre></div><div class="group"><pre class="example-preformatted">(gdb)
+-symbol-info-functions --type void
+^done,symbols=
+  {debug=
+    [{filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      symbols=[{line=&quot;36&quot;, name=&quot;f4&quot;, type=&quot;void (int *)&quot;,
+                description=&quot;void f4(int *);&quot;}]}]}
+</pre></div><div class="group"><pre class="example-preformatted">(gdb)
+-symbol-info-functions --include-nondebug
+^done,symbols=
+  {debug=
+    [{filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-1.c&quot;,
+      symbols=[{line=&quot;36&quot;, name=&quot;f4&quot;, type=&quot;void (int *)&quot;,
+                description=&quot;void f4(int *);&quot;},
+               {line=&quot;42&quot;, name=&quot;main&quot;, type=&quot;int ()&quot;,
+                description=&quot;int main();&quot;},
+               {line=&quot;30&quot;, name=&quot;f1&quot;, type=&quot;my_int_t (int, int)&quot;,
+                description=&quot;static my_int_t f1(int, int);&quot;}]},
+     {filename=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      fullname=&quot;/project/gdb/testsuite/gdb.mi/mi-sym-info-2.c&quot;,
+      symbols=[{line=&quot;33&quot;, name=&quot;f2&quot;, type=&quot;float (another_float_t)&quot;,
+                description=&quot;float f2(another_float_t);&quot;},
+               {line=&quot;39&quot;, name=&quot;f3&quot;, type=&quot;int (another_int_t)&quot;,
+                description=&quot;int f3(another_int_t);&quot;},
+               {line=&quot;27&quot;, name=&quot;f1&quot;, type=&quot;another_float_t (int)&quot;,
+                description=&quot;static another_float_t f1(int);&quot;}]}],
+   nondebug=
+    [{address=&quot;0x0000000000400398&quot;,name=&quot;_init&quot;},
+     {address=&quot;0x00000...
+    ]}
+</pre></div></div>
+
+<a class="index-entry-id" id="index-_002dsymbol_002dinfo_002dmodule_002dfunctions"></a>
+<a class="anchor" id="g_t_002dsymbol_002dinfo_002dmodule_002dfunctions"></a><h4 class="subheading" id="The-_002dsymbol_002dinfo_002dmodule_002dfunctions-Command"><span>The <code class="code">-symbol-info-module-functions</code>命令<a class="copiable-link" href="#The-_002dsymbol_002dinfo_002dmodule_00

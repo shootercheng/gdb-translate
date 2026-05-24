@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>停止（使用GDB调试）</title>
+
+<meta name="description" content="停止（使用GDB调试）">
+<meta name="keywords" content="停止（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Reverse-Execution.html" rel="next" title="反向执行">
+<link href="Running.html" rel="prev" title="运行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="停止">
+<div class="nav-panel">
+<p>
+下一页：<a href="Reverse-Execution.html" accesskey="n" rel="next">反向运行程序</a>，上一页：<a href="Running.html" accesskey="p" rel="prev">在GDB下运行程序</a>，向上：<a href="index.html" accesskey="u" rel="up">使用GDB调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="停止和继续"><span>5停止和继续<a class="copiable-link" href="#停止和继续"> &para;</a></span></h2>
+
+<p>使用调试器的主要目的是，以便你可以在程序终止之前停止它；或者，如果你的程序遇到问题，你可以进行调查并找出原因。
+</p>
+<p>在GDB内部，你的程序可能由于多种原因而停止，例如信号、断点，或者在执行诸如<code class="code">step</code>之类的GDB命令后到达新行。然后，你可以检查和修改变量，设置新断点或删除旧断点，然后继续执行。通常，GDB显示的数据提供了有关你的程序状态的充分解释——但你也可以随时明确请求此信息。
+</p>
+<dl class="table">
+<dt><a id="index-info-program"></a><span><code class="code">info program</code><a class="copiable-link" href="#index-info-program"> &para;</a></span></dt>
+<dd><p>显示有关你的程序状态的信息：它是否正在运行、它是什么进程以及它停止的原因。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Breakpoints.html" accesskey="1">断点、观察点和捕获点</a></li>
+<li><a href="Continuing-and-Stepping.html" accesskey="2">继续和单步执行</a></li>
+<li><a href="Skipping-Over-Functions-and-Files.html" accesskey="3">跳过函数和文件</a></li>
+<li><a href="Signals.html" accesskey="4">信号</a></li>
+<li><a href="Thread-Stops.html" accesskey="5">停止和启动多线程程序</a></li>

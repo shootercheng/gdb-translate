@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Fortran内部函数（使用GDB调试）</title>
+
+<meta name="description" content="Fortran内部函数（使用GDB调试）">
+<meta name="keywords" content="Fortran内部函数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Fortran.html" rel="up" title="Fortran">
+<link href="Special-Fortran-Commands.html" rel="next" title="特殊Fortran命令">
+<link href="Fortran-Operators.html" rel="prev" title="Fortran运算符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Fortran-Intrinsics">
+<div class="nav-panel">
+<p>
+下一页：<a href="Special-Fortran-Commands.html" accesskey="n" rel="next">特殊Fortran命令</a>，上一页：<a href="Fortran-Operators.html" accesskey="p" rel="prev">Fortran运算符和表达式</a>，向上：<a href="Fortran.html" accesskey="u" rel="up">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Fortran-Intrinsics-1"><span>15.4.6.3 Fortran内部函数<a class="copiable-link" href="#Fortran-Intrinsics-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Fortran-Intrinsics"></a>
+
+<p>Fortran提供了大量的内部过程。GDB实现了这些过程及其重载的一个不完整子集。其中一些过程接受一个可选的<code class="code">KIND</code>参数，见<a class="ref" href="Fortran-Types.html">Fortran类型</a>。
+</p>
+<dl class="table">
+<dt><code class="code">ABS(<var class="var">a</var>)</code></dt>
+<dd><p>计算其参数<var class="var">a</var>的绝对值。目前不支持对<code class="code">Complex</code>类型参数进行此操作。
+</p>
+</dd>
+<dt><code class="code">ALLOCATE(<var class="var">array</var>)</code></dt>
+<dd><p>返回<var class="var">array</var>是否已分配。
+</p>
+</dd>
+<dt><code class="code">ASSOCIATED(<var class="var">pointer</var> [, <var class="var">target</var>])</code></dt>
+<dd><p>返回指针<var class="var">pointer</var>的关联状态，或者，如果存在<var class="var">target</var>，则返回<var class="var">pointer</var>是否与目标<var class="var">target</var>相关联。
+</p>
+</dd>
+<dt><code class="code">CEILING(<var class="var">a</var> [, <var class="var">kind</var>])</code></dt>
+<dd><p>计算大于或等于<var class="var">a</var>的最小整数。可选参数<var class="var">kind</var>指定返回类型<code class="code">Integer(<var class="var">kind</var>)</code>的种类。
+</p>
+</dd>
+<dt><code class="code">CMPLX(<var class="var">x</var> [, <var class="var">y</var> [, <var class="var">kind</var>]])</code></dt>
+<dd><p>返回一个复数，其中<var class="var">x</var>被转换为实部。如果存在<var class="var">y</var>，则将其转换为虚部。如果不存在<var class="var">y</var>，则虚部设置为<code class="code">0.0</code>，除非<var class="var">x</var>本身是<code class="code">Complex</code>类型。可选参数<var class="var">kind</var>指定返回类型<code class="code">Complex(<var class="var">kind</var>)</code>的种类。
+</p>
+</dd>
+<dt><code class="code">FLOOR(<var class="var">a</var> [, <var class="var">kind</var>])</code></dt>
+<dd><p>计算小于或等于<var class="var">a</var>的最大整数。可选参数<var class="var">kind</var>指定返回类型<code class="code">Integer(<var class="var">kind</var>)</code>的种类。
+</p>
+</dd>
+<dt><code class="code">KIND(<var class="var">a</var>)</code></dt>
+<dd><p>返回参数<var class="var">a</var>的种类值，见<a class="ref" href="Fortran-Types.html">Fortran类型</a>。
+</p>
+</dd>
+<dt><code class="code">LBOUND(<var class="var">array</var> [, <var class="var">dim</var> [, <var class="var">kind</var>]])</code></dt>
+<dd><p>返回数组<var class="var">array</var>的下界，如果存在<var class="var">dim</var>，则返回沿<var class="var">dim</var>维度的单个下界。可选参数<var class="var">kind</var>指定返回类型<code class="code">Integer(<var class="var">kind</var>)</code>的种类。 
+</p>
+</dd>
+<dt><code class="code">LOC(<var class="var">x</var>)</code></dt>
+<dd><p>返回<var class="var">x</var>的地址作为一个<code class="code">Integer</code>。
+</p>
+</dd>
+<dt><code class="code">MOD(<var class="var">a</var>, <var class="var">p</var>)</code></dt>
+<dd><p>计算<var class="var">a</var>除以<var class="var">p</var>的余数。
+</p>
+</dd>
+<dt><code class="code">MODULO(<var class="var">a</var>, <var class="var">p</var>)</code></dt>
+<dd><p>计算<var class="var">a</var>对<var class="var">p</var>取模。
+</p>
+</dd>
+<dt><code class="code">RANK(<var class="var">a</var>)</code></dt>
+<dd><p>返回标量或数组的秩（标量的秩为<code class="code">0</code>）。
+</p>
+</dd>
+<dt><code class="code">SHAPE(<var class="var">a</var>)</code></dt> 
+<dd><p>返回标量或数组的形状（标量的形状为‘<samp class="samp">()</samp>’）。
+</p>
+</dd>
+<dt><code class="code">SIZE(<var class="var">array</var>[, <var class="var">dim</var> [, <var class="var">kind</var>]])</code></dt>
+<dd><p>返回数组<var class="var">array</var>沿指定维度<var class="var">dim</var>的范围，如果不存在<var class="var">dim</var>，则返回<var class="var">array</var>中的元素总数。可选参数<var class="var">kind</var>指定返回类型<code class="code">Integer(<var class="var">kind</var>)</code>的种类。
+</p>
+</dd>
+<dt><code class="code">UBOUND(<var class="var">array</var> [, <var class="var">dim</var> [, <var class="var">kind</var>]])</code></dt>
+<dd><p>返回数组<var class="var">array</var>的上界，如果存在<var class="var">dim</var>则返回沿<var class="var">dim</var>维度的单个上界。可选参数<var class="var">kind</var>指定返回类型<code class="code">Integer(<var class="var">kind</var>)</code>的种类。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Special-Fortran-Commands.html">特殊Fortran命令</a>，上一页：<a href="Fortran-Operators.html">Fortran运算符和表达式</a>，向上：<a href="Fortran.html">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

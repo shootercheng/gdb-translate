@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>其他杂项设置（使用GDB调试）</title>
+
+<meta name="description" content="其他杂项设置（使用GDB调试）">
+<meta name="keywords" content="其他杂项设置（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Debugging-Output.html" rel="prev" title="调试输出">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="其他杂项设置">
+<div class="nav-panel">
+<p>
+上一个：<a href="Debugging-Output.html" accesskey="p" rel="prev">关于内部事件的可选消息</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="其他杂项设置"><span>22.11其他杂项设置<a class="copiable-link" href="#其他杂项设置"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-杂项设置"></a>
+
+<dl class="table">
+<dt><a id="索引-set-interactive_002dmode"></a><span><code class="code">set interactive-mode</code><a class="copiable-link" href="#索引-set-interactive_002dmode"> &para;</a></span></dt>
+<dd><p>如果设置为<code class="code">on</code>，则强制GDB假定它是在终端中启动的。实际上，这意味着GDB应该等待用户回答在命令提示符处输入的命令所产生的查询。如果设置为<code class="code">off</code>，则强制GDB以相反的模式运行，并且它使用所有查询的默认答案。如果设置为<code class="code">auto</code>（默认值），GDB会尝试确定其标准输入是否为终端，如果是，则以交互模式工作，否则以非交互模式工作。
+</p>
+<p>在绝大多数情况下，调试器应该能够正确猜出应该使用哪种模式。但此设置在某些特定情况下可能会很有用，例如在cygwin窗口中运行MinGW GDB。
+</p>
+</dd>
+<dt><a id="索引-show-interactive_002dmode"></a><span><code class="code">show interactive-mode</code><a class="copiable-link" href="#索引-show-interactive_002dmode"> &para;</a></span></dt>
+<dd><p>显示调试器是否正在以交互模式运行。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="索引-set-suppress_002dcli_002dnotifications"></a><span><code class="code">set suppress-cli-notifications</code><a class="copiable-link" href="#索引-set-suppress_002dcli_002dnotifications"> &para;</a></span></dt>
+<dd><p>如果设置为<code class="code">on</code>，则抑制GDB打印的命令行界面（CLI）通知。如果设置为<code class="code">off</code>，则像往常一样打印通知。默认值为<code class="code">off</code>。当你更改选定的上下文或正在调试的程序停止时，会发生CLI通知，如下所述。
+</p>
+<dl class="table">
+<dt><em class="emph">用户选定的上下文更改：</em></dt>
+<dd><p>当你更改选定的上下文（即当前进程、线程和/或帧）时，GDB会打印有关新上下文的信息。例如，默认行为如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) inferior 1
+[切换到进程1 [进程634] (/tmp/test)]
+[切换到线程1（进程634）]
+#0  main () 在test.c:3
+3         return 0;
+(gdb)
+</pre></div>
+
+<p>当通知被抑制时，不会打印新上下文：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set suppress-cli-notifications on
+(gdb) inferior 1
+(gdb)
+</pre></div>
+
+</dd>
+<dt><em class="emph">正在调试的程序停止：</em></dt>
+<dd><p>当你正在调试的程序停止时（例如，因为命中断点、完成源步进、中断等），GDB会打印有关停止事件的信息。例如，下面是一个断点命中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break test.c:�
+断点2位于0x555555555155：文件test.c，第3行。
+(gdb) continue
+继续。
+
+断点2，main () 在test.c:3
+3         return 0;
+(gdb)
+</pre></div>
+
+<p>当通知被抑制时，输出变为：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break test.c:3
+断点2位于0x555555555155：文件test.c，第3行。
+(gdb) set suppress-cli-notifications on
+(gdb) continue
+继续。
+(gdb)
+</pre></div>
+
+<p>抑制CLI通知在脚本中可能很有用，以便从命令列表中获得简化的输出。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="索引-show-suppress_002dcli_002dnotifications"></a><span><code class="code">show suppress-cli-notifications</code><a class="copiable-link" href="#索引-show-suppress_002dcli_002dnotifications"> &para;</a></span></dt>
+<dd><p>显示是否抑制打印CLI通知。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">

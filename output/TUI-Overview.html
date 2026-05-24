@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TUI概述（使用GDB调试）</title>
+
+<meta name="description" content="TUI概述（使用GDB调试）">
+<meta name="keywords" content="TUI概述（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Keys.html" rel="next" title="TUI按键">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-概述">
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Keys.html" accesskey="n" rel="next">TUI按键绑定</a>，上一级：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI-概述-1"><span>25.1 TUI概述<a class="copiable-link" href="#TUI-概述-1"> &para;</a></span></h3>
+
+<p>在TUI模式下，<small class="sc">GDB</small>可以显示多个 text 窗口：
+</p>
+<dl class="table">
+<dt><em class="emph">命令</em></dt>
+<dd><p>此窗口是带有<small class="sc">GDB</small>提示符和<small class="sc">GDB</small>输出的<small class="sc">GDB</small>命令窗口。<small class="sc">GDB</small>输入仍使用readline进行管理。
+</p>
+</dd>
+<dt><em class="emph">源文件</em></dt>
+<dd><p>源文件窗口显示程序的源文件。当前行和活动断点会显示在此窗口中。
+</p>
+</dd>
+<dt><em class="emph">汇编</em></dt>
+<dd><p>汇编窗口显示程序的反汇编输出。
+</p>
+</dd>
+<dt><em class="emph">寄存器</em></dt>
+<dd><p>此窗口显示处理器寄存器。当寄存器的值发生变化时，会突出显示。
+</p></dd>
+</dl>
+
+<p>源文件和汇编窗口通过突出显示当前行并用“<samp class="samp">&gt;</samp>”标记来显示当前程序位置。默认情况下，突出显示的文本禁用了源文件和汇编代码样式，但你可以使用<code class="code">set style tui-current-position on</code>命令启用它。请参阅 <a class="xref" href="Output-Styling.html">输出样式</a>。
+</p>
+<p>断点用两个标记表示。第一个标记表示断点类型：
+</p>
+<dl class="table">
+<dt><code class="code">B</code></dt>
+<dd><p>至少被命中一次的断点。
+</p>
+</dd>
+<dt><code class="code">b</code></dt>
+<dd><p>从未被命中的断点。
+</p>
+</dd>
+<dt><code class="code">H</code></dt>
+<dd><p>至少被命中一次的硬件断点。
+</p>
+</dd>
+<dt><code class="code">h</code></dt> 
+<dd><p>从未被命中的硬件断点。
+</p></dd>
+</dl>
+
+<p>第二个标记表示断点是否启用：
+</p>
+<dl class="table">
+<dt><code class="code">+</code></dt>
+<dd><p>断点已启用。
+</p>
+</dd>
+<dt><code class="code">-</code></dt>
+<dd><p>断点已禁用。
+</p></dd>
+</dl>
+
+<p>当当前线程、帧或程序计数器发生变化时，源文件、汇编和寄存器窗口会更新。
+</p>
+<p>这些窗口并非同时全部可见。命令窗口始终可见。其他窗口可以按几种布局排列：
+</p>
+<ul class="itemize mark-bullet">
+<li>仅源文件，
+
+</li><li>仅汇编，
+
+</li><li>源文件和汇编，
+
+</li><li>源文件和寄存器，或
+
+</li><li>汇编和寄存器。
+</li></ul>
+
+<p>这些是标准布局，但也可以定义其他布局。
+</p>
+<p>命令窗口上方的状态行显示以下信息：
+</p>
+<dl class="table">
+<dt><em class="emph">目标</em></dt>
+<dd><p>指示当前的<small class="sc">GDB</small>目标。
+（请参阅 <a class="pxref" href="Targets.html">指定调试目标</a>）。
+</p>
+</dd>
+<dt><em class="emph">进程</em></dt>
+<dd><p>给出当前的进程或线程号。
+当没有正在调试的进程时，此字段设置为“<code class="code">No process</code>”。
+</p>
+</dd>
+<dt><em class="emph">焦点</em></dt>
+<dd><p>显示具有焦点的TUI窗口的名称。
+</p>
+</dd>
+<dt><em class="emph">函数</em></dt>
+<dd><p>给出所选帧的当前函数名。
+如果启用了解析（请参阅 <a class="pxref" href="Print-Settings.html">打印设置</a>），则名称会被解析。
+当没有与当前程序计数器对应的符号时，显示字符串“<code class="code">??</code>”。
+</p>
+</dd>
+<dt><em class="emph">行</em></dt>
+<dd><p>指示所选帧的当前行号。
+当当前行号未知时，显示字符串“<code class="code">??</code>”。
+</p>
+</dd>
+<dt><em class="emph">程序计数器</em></dt>
+<dd><p>指示当前的程序计数器地址。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Keys.html">TUI按键绑定</a>，上一级：<a href="TUI.html"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪文件（使用GDB调试）</title>
+
+<meta name="description" content="跟踪文件（使用GDB调试）">
+<meta name="keywords" content="跟踪文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Tracepoints.html" rel="up" title="跟踪点">
+<link href="Tracepoint-Variables.html" rel="prev" title="跟踪点变量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跟踪文件">
+<div class="nav-panel">
+<p>
+上一个：<a href="Tracepoint-Variables.html" accesskey="p" rel="prev">跟踪点的便利变量</a>，向上：<a href="Tracepoints.html" accesskey="u" rel="up">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="使用跟踪文件"><span>13.4 使用跟踪文件<a class="copiable-link" href="#使用跟踪文件"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-跟踪文件"></a>
+
+<p>在某些情况下，运行跟踪实验的目标可能不再可用；也许它崩溃了，或者硬件被用于其他活动。为了处理这些情况，你可以安排将跟踪数据转储到文件中，然后通过<code class="code">target tfile</code>命令将该文件用作跟踪数据的源。
+</p>
+<dl class="table">
+<dt><a id="索引-tsave"></a><span><code class="code">tsave [ -r ] <var class="var">文件名</var></code><a class="copiable-link" href="#索引-tsave"> &para;</a></span></dt>
+<dt><code class="code">tsave [-ctf] <var class="var">目录名</var></code></dt>
+<dd><p>将跟踪数据保存到<var class="var">文件名</var>。默认情况下，此命令假定<var class="var">文件名</var>指的是主机文件系统，因此如果需要，<small class="sc">GDB</small>将从目标复制原始跟踪数据，然后保存它。如果目标支持，你还可以提供可选参数<code class="code">-r</code>（“远程”），以指示目标将数据直接保存到其自己文件系统中的<var class="var">文件名</var>中，如果跟踪缓冲区非常大，这可能更有效。（但是请注意，<code class="code">target tfile</code>只能从主机可访问的文件中读取。）默认情况下，此命令将以tfile格式保存跟踪帧。你可以提供可选参数<code class="code">-ctf</code>以CTF格式保存数据。<em class="dfn">通用跟踪格式</em>（CTF）被提议作为一种可由多个调试和跟踪工具共享的跟踪格式。请访问‘<code class="indicateurl">http://www.efficios.com/ctf</code>’获取更多信息。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-tfile"></a>
+<a class="index-entry-id" id="索引-target-ctf"></a>
+<a class="index-entry-id" id="索引-ctf"></a>
+<a id="索引-target-tfile"></a><span><code class="code">target tfile <var class="var">文件名</var></code><a class="copiable-link" href="#索引-target-tfile"> &para;</a></span></dt>
+<dt><code class="code">target ctf <var class="var">目录名</var></code></dt>
+<dd><p>使用名为<var class="var">文件名</var>的文件或名为<var class="var">目录名</var>的目录作为跟踪数据的源。检查数据的命令与处理实时目标时的工作方式相同，但无法运行任何新的跟踪实验。<code class="code">tstatus</code>将报告保存数据时跟踪运行的状态，以及你正在检查的当前跟踪帧。<var class="var">文件名</var>和<var class="var">目录名</var>都必须位于主机可访问的文件系统上。
+</p>
+<p><var class="var">文件名</var>和<var class="var">目录名</var>参数支持转义和引用，见 <a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) target ctf ctf.ctf
+(gdb) tfind
+找到跟踪帧0，跟踪点2
+39            ++a;  /* 在此处设置跟踪点1 */
+(gdb) tdump
+在跟踪点2，跟踪帧0收集的数据：i = 0
+a = 0
+b = 1 '\001'
+c = {"123", "456", "789", "123", "456", "789"}
+d = {{{a = 1, b = 2}, {a = 3, b = 4}}, {{a = 5, b = 6}, {a = 7, b = 8}}}
+(gdb) p b
+$1 = 1
+</pre></div>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Tracepoint-Variables.html">跟踪点的便利变量</a>，向上：<a href="Tracepoints.html">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

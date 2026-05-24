@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>字节序（使用GDB调试）</title>
+
+<meta name="description" content="字节序（使用GDB调试）">
+<meta name="keywords" content="字节序（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Targets.html" rel="up" title="目标">
+<link href="Target-Commands.html" rel="prev" title="目标命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="字节序">
+<div class="nav-panel">
+<p>
+上一个：<a href="Target-Commands.html" accesskey="p" rel="prev">管理目标的命令</a>，向上：<a href="Targets.html" accesskey="u" rel="up">指定调试目标</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="选择目标字节序"><span>19.3选择目标字节序<a class="copiable-link" href="#选择目标字节序"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-选择目标字节序"></a>
+<a class="index-entry-id" id="索引-目标字节序"></a>
+
+<p>某些类型的处理器，如MIPS、PowerPC和瑞萨SH，能够以大端或小端字节序运行。通常，可执行文件或符号会包含一个位来指定字节序，你无需担心使用哪种。然而，手动调整GDB对处理器字节序的理解可能仍然有用。
+</p>
+<dl class="table">
+<dt><a id="索引-set-endian"></a><span><code class="code">set endian big</code><a class="copiable-link" href="#索引-set-endian"> &para;</a></span></dt>
+<dd><p>指示GDB假设目标是大端字节序。
+</p>
+</dd>
+<dt><code class="code">set endian little</code></dt>
+<dd><p>指示GDB假设目标是小端字节序。
+</p>
+</dd>
+<dt><code class="code">set endian auto</code></dt>
+<dd><p>指示GDB使用与可执行文件相关联的字节序。
+</p>
+</dd>
+<dt><code class="code">show endian</code></dt>
+<dd><p>显示GDB当前对目标字节序的理解。
+</p>
+</dd>
+</dl>
+
+<p>如果<code class="code">set endian auto</code>模式有效且未选择可执行文件，则使用的字节序是上次由<code class="code">set endian big</code>和<code class="code">set endian little</code>命令之一选择的，或者是从上次使用的可执行文件推断出来的。如果之前没有选择字节序，则此模式的默认值是根据GDB所构建的目标推断出来的，如果目标CPU的名称有<code class="code">el</code>后缀，则为<code class="code">little</code>，否则为<code class="code">big</code>。
+</p>
+<p>请注意，这些命令仅调整主机上符号数据的解释，对目标系统绝对没有影响。
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Target-Commands.html">管理目标的命令</a>，向上：<a href="Targets.html">指定调试目标</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>                                                                                                                          
+</html>

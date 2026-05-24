@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>中断的系统调用（使用GDB调试）</title>
+
+<meta name="description" content="中断的系统调用（使用GDB调试）">
+<meta name="keywords" content="中断的系统调用（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Observer-Mode.html" rel="next" title="观察模式">
+<link href="Thread_002dSpecific-Breakpoints.html" rel="prev" title="线程特定断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Interrupted-System Calls">
+<div class="nav-panel">
+<p>
+下一页：<a href="Observer-Mode.html" accesskey="n" rel="next">观察模式</a>，上一页：<a href="Thread_002dSpecific-Breakpoints.html" accesskey="p" rel="prev">线程特定断点</a>，向上：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Interrupted-System Calls-1"><span>5.5.5 中断的系统调用<a class="copiable-link" href="#Interrupted-System Calls-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-thread-breakpoints-and-system-calls"></a>
+<a class="index-entry-id" id="index-system-calls-and-thread-breakpoints"></a>
+<a class="index-entry-id" id="index-premature-return-from-system-calls"></a>
+<p>在使用GDB调试多线程程序时，会有一个不幸的副作用。如果一个线程因断点或其他原因停止，而另一个线程在系统调用中被阻塞，那么该系统调用可能会过早返回。这是多个线程与GDB用于实现断点和其他停止执行事件的信号之间相互作用的结果。
+</p>
+<p>为了解决这个问题，你的程序应该检查每个系统调用的返回值并做出适当反应。无论如何，这都是良好的编程风格。
+</p>
+<p>例如，不要编写这样的代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  sleep (10);
+</pre></div>
+
+<p>如果另一个线程因断点或其他原因停止，对<code class="code">sleep</code>的调用将提前返回。
+</p>
+<p>相反，编写如下代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  int unslept = 10;
+  while (unslept &gt; 0)
+    unslept = sleep (unslept);
+</pre></div>
+
+<p>系统调用允许提前返回，所以系统仍然符合其规范。但是GDB确实会使你的多线程程序的行为与没有GDB时不同。
+</p>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>操作系统信息（使用GDB调试）</title>
+
+<meta name="description" content="操作系统信息（使用GDB调试）">
+<meta name="keywords" content="操作系统信息（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Trace-File-Format.html" rel="next" title="跟踪文件格式">
+<link href="Target-Descriptions.html" rel="prev" title="目标描述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="操作系统信息">
+<div class="nav-panel">
+<p>
+下一页：<a href="Trace-File-Format.html" accesskey="n" rel="next">跟踪文件格式</a>，上一页：<a href="Target-Descriptions.html" accesskey="p" rel="prev">目标描述</a>，向上：<a href="index.html" accesskey="u" rel="up">使用 <small class="sc">GDB</small> 调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="操作系统信息-1"><span>附录H 操作系统信息<a class="copiable-link" href="#操作系统信息-1"> &para;</a></span></h2>
+<a class="index-entry-id" id="索引-操作系统信息"></a>
+
+<p><small class="sc">GDB</small> 的用户常常希望获取有关目标上运行的操作系统状态的信息，例如进程列表或打开文件列表。本节描述了实现这一目的的机制。该机制类似于目标特性机制（见 <a class="pxref" href="目标描述.html">目标描述</a>）但侧重于目标的不同方面。
+</p>
+<p>操作系统信息是通过远程协议从目标获取的，使用 &lsquo;<samp class="samp">qXfer</samp>&rsquo; 请求（见 <a class="pxref" href="通用查询数据包.html#qXfer-osdata-read">qXfer osdata read</a>）。请求中的对象名称应为 &lsquo;<samp class="samp">osdata</samp>&rsquo;，并且 <var class="var">附件</var> 标识要获取的数据。
+</p>
+
+<ul class="mini-toc">
+<li><a href="进程列表.html" accesskey="1">进程列表</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

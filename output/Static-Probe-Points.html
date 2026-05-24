@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>静态探测点（使用GDB调试）</title>
+
+<meta name="description" content="静态探测点（使用GDB调试）">
+<meta name="keywords" content="静态探测点（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Error-in-Breakpoints.html" rel="next" title="断点中的错误">
+<link href="Save-Breakpoints.html" rel="prev" title="保存断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="静态探测点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Error-in-Breakpoints.html" accesskey="n" rel="next">&ldquo;无法插入断点&rdquo;</a>，上一个：<a href="Save-Breakpoints.html" accesskey="p" rel="prev">如何将断点保存到文件</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="静态探测点-1"><span>5.1.10 静态探测点<a class="copiable-link" href="#静态探测点-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-静态探测点_002c-SystemTap"></a>
+<a class="index-entry-id" id="索引-静态探测点_002c-DTrace"></a>
+<p><small class="sc">GDB</small>支持代码中的<em class="dfn">SDT</em>探测点。<abbr class="acronym">SDT</abbr>代表静态定义跟踪，这些探测点旨在具有极小的运行时代码和数据占用空间，并且没有动态重定位。
+</p>
+<p>目前，在与ELF兼容的系统上支持以下类型的探测点：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">SystemTap</code>（<a class="uref" href="http://sourceware.org/systemtap/">http://sourceware.org/systemtap/</a>）<abbr class="acronym">SDT</abbr>探测点<a class="footnote" id="DOCF5" href="#FOOT5"><sup>5</sup></a>。<code class="code">SystemTap</code>探测点可用于汇编、C和C<code class="t">++</code>语言<a class="footnote" id="DOCF6" href="#FOOT6"><sup>6</sup></a>。  
+
+</li><li><code class="code">DTrace</code>（<a class="uref" href="http://oss.oracle.com/projects/DTrace">http://oss.oracle.com/projects/DTrace</a>）<abbr class="acronym">USDT</abbr>探测点。<code class="code">DTrace</code>探测点可用于C和C<code class="t">++</code>语言。
+</li></ul>
+
+<a class="index-entry-id" id="索引-静态探测点上的信号量"></a>
+<p>一些<code class="code">SystemTap</code>探测点有一个关联的信号量变量；例如，如果您使用DTrace风格的<samp class="file">.d</samp>文件定义探测点，就会自动出现这种情况。如果您的探测点有一个信号量，当您使用&lsquo;<samp class="samp">-probe-stap</samp>&rsquo;表示法指定断点时，<small class="sc">GDB</small>将自动启用它。但是，如果您通过其他方法（例如，<code class="code">break file:line</code>）在探测点位置设置断点，那么<small class="sc">GDB</small>不会自动设置信号量。<code class="code">DTrace</code>探测点不支持信号量。
+</p>
+<p>您可以使用<code class="code">info probes</code>检查可用的静态探测点，并带有可选参数：
+</p>
+<dl class="table">
+<dt><a id="索引-info-probes"></a><span><code class="code">info probes <span class="r">[</span><var class="var">type</var><span class="r">]</span> <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#索引-info-probes"> &para;</a></span></dt>
+<dd><p>如果给出，<var class="var">type</var>可以是<code class="code">stap</code>，用于列出<code class="code">SystemTap</code>探测点，或者是<code class="code">dtrace</code>，用于列出<code class="code">DTrace</code>探测点。如果省略，则列出所有探测点，无论其类型如何。
+</p>
+<p>如果给出，<var class="var">provider</var>是一个正则表达式，用于在选择要列出的探测点时与提供程序名称进行匹配。如果省略，则列出所有提供程序的所有探测点。
+</p>
+<p>如果给出，<var class="var">name</var>是一个正则表达式，用于在选择要列出的探测点时与探测点名称进行匹配。如果省略，则在决定是否显示探测点时不考虑探测点名称。
+</p>
+<p>如果给出，<var class="var">objfile</var>是一个正则表达式，用于选择要检查的对象文件（可执行文件或共享库）。如果未给出，则考虑所有对象文件。
+</p>
+</dd>
+<dt><code class="code">info probes all</code></dt>
+<dd><p>列出所有类型的可用静态探测点。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-启用和禁用探测点"></a>
+<p>一些探测点可以启用和/或禁用。启用或禁用探测点的效果取决于所处理的探测点类型。一些<code class="code">DTrace</code>探测点可以启用或禁用，但<code class="code">SystemTap</code>探测点不能禁用。
+</p>
+<p>您可以使用以下命令启用（或禁用）一个或多个探测点，并带有可选参数：
+</p>
+<a class="anchor" id="启用探测点"></a><dl class="table">
+<dt><a id="索引-启用探测点"></a><span><code class="code">enable probes <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#索引-启用探测点"> &para;</a></span></dt>
+<dd><p>如果给出，<var class="var">provider</var>是一个正则表达式，用于在选择要启用的探测点时与提供程序名称进行匹配。如果省略，则启用所有提供程序的所有探测点。
+</p>
+<p>如果给出，<var class="var">name</var>是一个正则表达式，用于在选择要启用的探测点时与探测点名称进行匹配。如果省略，则在决定是否启用探测点时不考虑探测点名称。
+</p>
+<p>如果给出，<var class="var">objfile</var>是一个正则表达式，用于选择要检查的对象文件（可执行文件或共享库）。如果未给出，则考虑所有对象文件。
+</p>
+</dd>
+<dt><a id="索引-禁用探测点"></a><span><code class="code">disable probes <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#索引-禁用探测点"> &para;</a></span></dt>
+<dd><p>有关此命令接受的可选参数的描述，请参阅上面的<code class="code">enable probes</code>命令。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-_0024_005fprobe_005farg_002c-便利变量"></a>
+<p>一个探测点最多可以指定十二个参数。这些参数在探测点定义的位置可用——也就是说，当当前程序计数器位于探测点位置时。可以使用便利变量（见 <a class="pxref" href="Convenience-Vars.html">便利变量</a>）<code class="code">$_probe_arg0</code>&hellip;<code class="code">$_probe_arg11</code>来获取这些参数。在<code class="code">SystemTap</code>探测点中，每个探测点参数都是一个适当大小的整数；类型不会保留。在<code class="code">DTrace</code>探测点中，只要<small class="sc">GDB</small>能够识别类型，类型就会保留；否则，探测点参数的值将是一个长整数。便利变量<code class="code">$_probe_argc</code>保存当前探测点的参数数量。
+</p>
+<p>这些变量始终可用，但在探测点之外的任何位置尝试访问它们都会导致<small class="sc">GDB</small>给出错误消息。
+</p>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT5" href="#DOCF5">(5)</a></h5>
+<p>有关如何在应用程序中添加<code class="code">SystemTap</code> <abbr class="acronym">SDT</abbr>探测点的更多信息，请参阅
+<a class="uref" href="http://sourceware.org/systemtap/wiki/AddingUserSpaceProbingToApps">http://sourceware.org/systemtap/wiki/AddingUserSpaceProbingToApps</a>。</p>
+<h5 class="footnote-body-heading"><a id="FOOT6" href="#DOCF6">(6)</a></h5>
+<p>有关<abbr class="acronym">SDT</abbr>探测点如何实现的良好参考，请参阅
+<a class="uref" href="http://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation">http://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation</a>。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Error-in-Breakpoints.html">&ldquo;无法插入断点&rdquo;</a>，上一个：<a href="Save-Breakpoints.html">如何将断点保存到文件</a>，向上：<a href="Breakpoints.html">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

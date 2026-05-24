@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TUI配置（使用GDB调试）</title>
+
+<meta name="description" content="TUI配置（使用GDB调试）">
+<meta name="keywords" content="TUI配置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Commands.html" rel="prev" title="TUI命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-配置">
+<div class="nav-panel">
+<p>
+上一个：<a href="TUI-Commands.html" accesskey="p" rel="prev">TUI特定命令</a>，向上：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI-配置变量"><span>25.6 TUI配置变量<a class="copiable-link" href="#TUI-配置变量"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-TUI-配置变量"></a>
+
+<p>有几个配置变量控制TUI窗口的外观。
+</p>
+<dl class="table">
+<dt><a id="索引-set-tui-border_002dkind"></a><span><code class="code">set tui border-kind <var class="var">种类</var></code><a class="copiable-link" href="#索引-set-tui-border_002dkind"> &para;</a></span></dt>
+<dd><p>为源窗口、汇编窗口和寄存器窗口选择边框外观。
+可能的值如下：
+</p><dl class="table">
+<dt><code class="code">space</code></dt>
+<dd><p>使用空格字符绘制边框。
+</p>
+</dd>
+<dt><code class="code">ascii</code></dt>
+<dd><p>使用<small class="sc">ASCII</small>字符‘<samp class="samp">+</samp>’、‘<samp class="samp">-</samp>’和‘<samp class="samp">|</samp>’绘制边框。
+</p>
+</dd>
+<dt><code class="code">acs</code></dt>
+<dd><p>使用备用字符集绘制边框。如果终端支持，边框将使用字符线图形绘制。
+</p></dd>
+
+</dd>
+<dt><a id="索引-set-tui-active_002dborder_002dmode"></a><span><code class="code">set tui border-mode <var class="var">模式</var></code><a class="copiable-link" href="#索引-set-tui-active_002dborder_002dmode"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="索引-set-tui-border_002dmode"></a>
+</dd>
+
+<dt><code class="code">set tui active-border-mode <var class="var">模式</var></code></dt>
+<dd><p>为非活动窗口或活动窗口的边框选择显示属性。<var class="var">模式</var>可以是以下之一：
+</p><dl class="table">
+<dt><code class="code">normal</code></dt>
+<dd><p>使用正常属性显示边框。
+</p>
+</dd>
+<dt><code class="code">standout</code></dt>
+<dd><p>使用突出显示模式。
+</p>
+
+</dd>
+<dt><code class="code">reverse</code></dt>
+<dd><p>使用反显模式。
+</p>
+</dd>
+<dt><code class="code">half</code></dt>
+<dd><p>使用半亮模式。
+</p>
+</dd>
+<dt><code class="code">half-standout</code></dt>
+<dd><p>使用半亮和突出显示模式。
+</p>
+</dd>
+<dt><code class="code">bold</code></dt>
+<dd><p>使用超亮或粗体模式。
+</p>
+</dd>
+<dt><code class="code">bold-standout</code></dt>
+<dd><p>使用超亮或粗体和突出显示模式。
+</p></dd>
+
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="索引-tabset"></a>
+<a id="索引-set-tui-tab_002dwidth"></a><span><code class="code">set tui tab-width <var class="var">字符数</var></code><a class="copiable-link" href="#索引-set-tui-tab_002dwidth"> &para;</a></span></dt>
+<dd><p>将制表符停止位的宽度设置为<var class="var">字符数</var>个字符。此设置会影响源窗口和汇编窗口中制表符的显示。
+</p>
+</dd>
+<dt><a id="索引-set-tui-compact_002dsource"></a><span><code class="code">set tui compact-source <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#索引-set-tui-compact_002dsource"> &para;</a></span></dt>
+<dd><p>设置TUI源窗口是否以“紧凑”形式显示。默认显示为行号使用更多空间；紧凑显示仅使用当前文件中行号所需的空间。
+</p>
+<a class="anchor" id="tui_002dmouse_002devents"></a></dd>
+<dt><a id="索引-set-tui-mouse_002devents"></a><span><code class="code">set tui mouse-events <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#索引-set-tui-mouse_002devents"> &para;</a></span></dt>
+<dd><p>开启时（默认），鼠标点击控制TUI（见 <a class="pxref" href="TUI-鼠标支持.html">TUI鼠标支持</a>）。
+关闭时，鼠标点击由终端处理，可以进行终端原生的文本选择。
+</p>
+</dd>
+<dt><a id="索引-set-debug-tui"></a><span><code class="code">set debug tui <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#索引-set-debug-tui"> &para;</a></span></dt>
+<dd><p>开启或关闭与TUI相关的<small class="sc">GDB</small>内部调试消息的显示。
+</p>
+</dd>
+<dt><a id="索引-show-debug-tui"></a><span><code class="code">show debug tui</code><a class="copiable-link" href="#索引-show-debug-tui"> &para;</a></span></dt>
+<dd><p>显示与TUI相关的当前<small class="sc">GDB</small>内部调试消息的显示状态。
+</p>
+</dd>
+</dl>
+
+<p>请注意，可以使用适当 的<code class="code">set style</code>命令控制TUI边框的颜色。 见 <a class="xref" href="输出样式.html">输出样式</a>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="TUI-Commands.html">TUI特定命令</a>，向上：<a href="TUI.html"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

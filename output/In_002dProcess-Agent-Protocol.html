@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>进程内代理协议（使用GDB调试）</title>
+
+<meta name="description" content="进程内代理协议（使用GDB调试）">
+<meta name="keywords" content="进程内代理协议（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="In_Process-Agent.html" rel="up" title="进程内代理">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="进程内代理协议">
+<div class="nav-panel">
+<p>
+上一级：<a href="In_Process-Agent.html" accesskey="u" rel="up">进程内代理</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="进程内代理协议-1"><span>31.1进程内代理协议<a class="copiable-link" href="#进程内代理协议-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-进程内代理协议"></a>
+
+<p>进程内代理能够与GDB和GDBserver进行通信（见<a class="pxref" href="In_Process-Agent.html">进程内代理</a>）。本节记录了GDB或GDBserver与IPA之间用于通信的协议。一般来说，GDB或GDBserver向进程内代理发送命令（见<a class="pxref" href="IPA-Protocol-Commands.html">IPA协议命令</a>）和数据，然后进程内代理用命令的返回结果或其他一些信息进行回复。发送给进程内代理的数据由基本数据类型（如4字节或8字节类型）和复合类型（称为对象，见<a class="pxref" href="IPA-Protocol-Objects.html">IPA协议对象</a>）组成。
+</p>
+
+<ul class="mini-toc">
+<li><a href="IPA-Protocol-Objects.html" accesskey="1">IPA协议对象</a></li>
+<li><a href="IPA-Protocol-Commands.html" accesskey="2">IPA协议命令</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

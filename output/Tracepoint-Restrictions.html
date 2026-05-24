@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点限制（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点限制（使用GDB调试）">
+<meta name="keywords" content="跟踪点限制（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Starting-and-Stopping-Trace-Experiments.html" rel="prev" title="启动和停止跟踪实验">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Restrictions">
+<div class="nav-panel">
+<p>
+上一个：<a href="Starting-and-Stopping-Trace-Experiments.html" accesskey="p" rel="prev">启动和停止跟踪实验</a>，向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Tracepoint-Restrictions-1"><span>13.1.10跟踪点限制<a class="copiable-link" href="#Tracepoint-Restrictions-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-tracepoint-restrictions"></a>
+<p>在使用跟踪点时存在一些限制。如上所述，跟踪点数据收集是在目标上进行的，无需GDB的交互。因此，在数据收集期间调试器的全部功能不可用，然后在数据检查时，你将只能受限于所收集到的内容。以下各项描述了一些常见问题，但并不详尽，你可能会遇到此处未提及的其他困难。
+</p>
+<ul class="itemize mark-bullet">
+<li>跟踪点表达式旨在收集对象（左值）。因此，GDB表达式求值器的全部灵活性不可用。你不能调用函数、将对象强制转换为聚合类型、访问便利变量或修改值（除了通过赋值给跟踪状态变量）。某些语言特性可能会隐式调用函数（例如带有访问器的Objective-C字段），因此也无法收集。
+
+</li><li>在单步执行期间，单独或使用<code class="code">$locals</code>或<code class="code">$args</code>批量收集局部变量时，行为可能不稳定。单步执行操作可能会进入新的作用域（例如通过单步进入函数），或者变量的位置可能会改变（例如它被加载到寄存器中）。记录的跟踪点数据使用的是与跟踪点位置对应的变量的位置信息。通常，在创建跟踪点时，无法确定单步执行序列的步骤将使程序前进到何处&mdash;特别是如果单步执行了条件分支。
+
+</li><li>收集未完全初始化或部分销毁的对象可能会导致GDB无法显示某些内容，或者以误导性的方式显示。
+
+</li><li>当GDB显示指向字符的指针时，它会自动解引用该指针以显示所指向字符串的字符。但是，在跟踪期间收集指针不会自动收集字符串。如果你不仅想收集指针，还想收集所指向的内存，则需要显式解引用指针并提供大小信息。例如，<code class="code">*ptr@50</code>可用于收集由<code class="code">ptr</code>指向的50元素数组。
+
+</li><li>在跟踪点处不可能收集完整的堆栈回溯。相反，你可以使用类似<code class="code">*(unsigned char *)$esp@300</code>的方式收集寄存器和从堆栈指针开始的几百字节（根据目标架构调整以使用实际堆栈指针寄存器的名称以及你希望捕获的堆栈量）。然后，当使用跟踪帧时，<code class="code">backtrace</code>命令将显示部分堆栈回溯。可以检查的堆栈帧数取决于收集到的堆栈中帧的大小。请注意，如果要求的块太大以至于超出了堆栈底部，目标代理可能会报告试图从无效地址读取的错误。
+
+</li><li>如果你在跟踪点不收集寄存器，则GDB可以推断出<code class="code">$pc</code>的值必须与跟踪点的地址相同，并在查看该跟踪点的跟踪帧时使用该值。但是，如果跟踪点有多个位置（例如如果它是在一个内联函数中设置的），或者如果它有一个<code class="code">while-stepping</code>循环，则此方法不起作用。在这些情况下，GDB会警告你它无法推断出<code class="code">$pc</code>，并将其默认设置为零。
+
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Starting-and-Stopping-Trace-Experiments.html">启动和停止跟踪实验</a>，向上：<a href="Set-Tracepoints.html">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

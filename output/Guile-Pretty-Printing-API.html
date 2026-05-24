@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile漂亮打印API（使用GDB调试）</title>
+
+<meta name="description" content="Guile漂亮打印API（使用GDB调试）">
+<meta name="keywords" content="Guile漂亮打印API（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Selecting-Guile-Pretty_002dPrinters.html" rel="next" title="选择Guile漂亮打印机">
+<link href="Types-In-Guile.html" rel="prev" title="Guile中的类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-Pretty-Printing-API">
+<div class="nav-panel">
+<p>
+下一页：<a href="Selecting-Guile-Pretty_002dPrinters.html" accesskey="n" rel="next">选择Guile漂亮打印机</a>，上一页：<a href="Types-In-Guile.html" accesskey="p" rel="prev">Guile中的类型</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-Pretty-Printing-API-1"><span>23.4.3.8 Guile漂亮打印API<a class="copiable-link" href="#Guile-Pretty-Printing-API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-guile-pretty-printing-api"></a>
+
+<p>提供了一个示例输出（见 <a class="pxref" href="Pretty-Printing.html">漂亮打印</a>）。
+</p>
+<p>一个漂亮打印机由类型为&lt;gdb:pretty-printer&gt;的对象表示。漂亮打印机对象通过<code class="code">make-pretty-printer</code>创建。
+</p>
+<p><code class="code">(gdb)</code>模块提供了以下与漂亮打印机相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dpretty_002dprinter"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-pretty-printer</strong> <var class="def-var-arguments">name lookup-function</var><a class="copiable-link" href="#index-make_002dpretty_002dprinter"> &para;</a></span></dt>
+<dd><p>返回一个名为<var class="var">name</var>的<code class="code">&lt;gdb:pretty-printer&gt;</code>对象。
+</p>
+<p><var class="var">lookup-function</var>是一个单参数函数：要打印的值。如果该值由这个漂亮打印机处理，那么<var class="var">lookup-function</var>返回一个类型为&lt;gdb:pretty-printer-worker&gt;的对象来执行实际的漂亮打印。否则<var class="var">lookup-function</var>返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-pretty_002dprinter_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">pretty-printer?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-pretty_002dprinter_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">object</var>是一个<code class="code">&lt;gdb:pretty-printer&gt;</code>对象，则返回<code class="code">#t</code>。否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-pretty_002dprinter_002denabled_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">pretty-printer-enabled?</strong> <var class="def-var-arguments">pretty-printer</var><a class="copiable-link" href="#index-pretty_002dprinter_002denabled_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">pretty-printer</var>已启用，则返回<code class="code">#t</code>。否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dpretty_002dprinter_002denabled_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-pretty-printer-enabled!</strong> <var class="def-var-arguments">pretty-printer flag</var><a class="copiable-link" href="#index-set_002dpretty_002dprinter_002denabled_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">pretty-printer</var>的启用标志设置为<var class="var">flag</var>。返回值未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-pretty_002dprinters"><span class="category-def">Scheme过程： </span><span><strong class="def-name">pretty-printers</strong><a class="copiable-link" href="#index-pretty_002dprinters"> &para;</a></span></dt>
+<dd><p>返回全局漂亮打印机列表。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dpretty_002dprinters_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-pretty-printers!</strong> <var class="def-var-arguments">pretty-printers</var><a class="copiable-link" href="#index-set_002dpretty_002dprinters_0021"> &para;</a></span></dt>
+<dd><p>将全局漂亮打印机列表设置为<var class="var">pretty-printers</var>。返回值未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dpretty_002dprinter_002dworker"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-pretty-printer-worker</strong> <var class="def-var-arguments">display-hint to-string children</var><a class="copiable-link" href="#index-make_002dpretty_002dprinter_002dworker"> &para;</a></span></dt>
+<dd><p>返回一个类型为<code class="code">&lt;gdb:pretty-printer-worker&gt;</code>的对象。
+</p>
+<p>此函数接受三个参数：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">display-hint</samp>&rsquo;</dt>
+<dd><p><var class="var">display-hint</var>通过MI向GDB或GDB前端提供一个提示，以更改正在打印的值的格式。该值必须是一个字符串或<code class="code">#f</code>（表示没有提示）。
+GDB预定义了几个<var class="var">display-hint</var>的值：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">array</samp>&rsquo;</dt>
+<dd><p>表示正在打印的对象是“类似数组的”。CLI使用此提示来遵守诸如<code class="code">set print elements</code>和<code class="code">set print array</code>等参数。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">map</samp>&rsquo;</dt>
+<dd><p>表示正在打印的对象是“类似映射的”，并且可以假设此值的子项在键和值之间交替。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">string</samp>&rsquo;</dt>
+<dd><p>表示正在打印的对象是“类似字符串的”。如果打印机 的<code class="code">to-string</code>函数返回某种Guile字符串，那么GDB将调用其内部特定于语言的字符串打印函数来格式化该字符串。对于CLI，这意味着添加引号，可能转义一些字符，遵守<code class="code">set print elements</code>等。
+</p></dd>
+</dl>
+
+</dd>
+<dt>&lsquo;<samp class="samp">to-string</samp>&rsquo;</dt>
+<dd><p><var class="var">to-string</var>要么是一个单参数函数，即<code class="code">&lt;gdb:pretty-printer-worker&gt;</code>对象，要么是<code class="code">#f</code>。
+</p>
+<p>从CLI打印时，如果<code class="code">to-string</code>方法存在，那么GDB将把它的结果附加到<code class="code">children</code>返回的值之前。这种格式化的确切方式取决于显示提示，并且可能会随着添加更多提示而改变。此外，根据打印设置（见 <a class="pxref" href="Print-Settings.html">打印设置</a>），CLI可能在堆栈跟踪中只打印<code class="code">to-string</code>的结果，而省略<code class="code">children</code>的结果。
+</p>
+<p>If this method returns a string, it is printed verbatim.
+</p>
+<p>否则，如果此方法返回一个<code class="code">&lt;gdb:value&gt;</code>实例，那么GDB将打印此值。这可能会导致调用另一个漂亮打印机。
+</p>
+<p>如果该方法返回一个可转换为<code class="code">&lt;gdb:value&gt;</code>的Guile值，那么GDB将执行转换并打印结果值。同样，这可能会导致调用另一个漂亮打印机。Guile标量（整数、浮点数和布尔值）和字符串可转换为<code class="code">&lt;gdb:value&gt;</code>；其他类型则不行。
+</p>
+
+<p>最后，如果此方法返回<code class="code">#f</code>，则在此方法中不执行进一步操作，也不打印任何内容。
+</p>
+<p>如果结果不是这些类型之一，则会引发异常。
+</p>
+<p><var class="var">to-string</var>也可以是<code class="code">#f</code>，在这种情况下，将由<var class="var">children</var>来打印该值。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">children</samp>&rsquo;</dt>
+<dd><p><var class="var">children</var>要么是一个单参数函数，即<code class="code">&lt;gdb:pretty-printer-worker&gt;</code>对象，要么是<code class="code">#f</code>。
+</p>
+<p>GDB将在漂亮打印机上调用此函数，以计算漂亮打印机值的子项。
+</p>
+<p>此函数必须返回一个&lt;gdb:iterator&gt;对象。迭代器返回的每个项必须是一个包含两个元素的元组。第一个元素是子项的“名称”；第二个元素是子项的值。该值可以是任何可转换为GDB值的Guile对象。
+</p>
+<p>If <var class="var">children</var> is <code class="code">#f</code>, <small class="sc">GDB</small> will act
+as though the value has no children.
+</p>
+<p>根据“<samp class="samp">set print max-depth</samp>”的值（见 <a class="pxref" href="Print-Settings.html">打印设置</a>），子项可能会被隐藏不显示。
+</p></dd>
+</dl>
+</dd></dl>
+
+<p>GDB提供了一个函数，可用于查找<code class="code">&lt;gdb:value&gt;</code>的默认漂亮打印机：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-default_002dvisualizer"><span class="category-def">Scheme过程： </span><span><strong class="def-name">default-visualizer</strong> <var class="def-var-arguments">value</var><a class="copiable-link" href="#index-default_002dvisualizer"> &para;</a></span></dt>
+<dd><p>此函数接受一个<code class="code">&lt;gdb:value&gt;</code>对象作为参数。如果存在针对此值的漂亮打印机，则返回该打印机。如果不存在这样的打印机，则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Selecting-Guile-Pretty_002dPrinters.html">选择Guile漂亮打印机</a>，上一页：<a href="Types-In-Guile.html">Guile中的类型</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

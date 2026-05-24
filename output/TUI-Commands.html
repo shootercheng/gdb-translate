@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TUI命令（使用GDB调试）</title>
+
+<meta name="description" content="TUI命令（使用GDB调试）">
+<meta name="keywords" content="TUI命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Configuration.html" rel="next" title="TUI配置">
+<link href="TUI-Mouse-Support.html" rel="prev" title="TUI鼠标支持">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-命令">
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Configuration.html" accesskey="n" rel="next">TUI配置变量</a>，上一页：<a href="TUI-Mouse-Support.html" accesskey="p" rel="prev">TUI鼠标支持</a>，向上：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="特定于TUI的命令"><span>25.5 特定于TUI的命令<a class="copiable-link" href="#TUI_002dspecific-Commands"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-TUI-命令"></a>
+
+<p>TUI有用于控制文本窗口的特定命令。
+即使<small class="sc">GDB</small>不在TUI模式下，这些命令也始终可用。当<small class="sc">GDB</small>处于标准模式时，大多数这些命令将自动切换到TUI模式。
+</p>
+<p>请注意，如果<small class="sc">GDB</small>的<code class="code">stdout</code>未连接到终端，或者<small class="sc">GDB</small>是使用机器接口解释器启动的（见<a class="pxref" href="GDB_002fMI.html">GDB/MI接口</a>），大多数这些命令将因错误而失败，因为启用curses窗口管理是不可能或不可取的。
+</p>
+<dl class="table">
+<dt><a id="index-tui-enable"></a><span><code class="code">tui enable</code><a class="copiable-link" href="#index-tui-enable"> &para;</a></span></dt>
+<dd><p>激活TUI模式。如果在当前调试会话中之前使用过TUI模式，则将使用最后一个活动的TUI窗口布局，否则使用默认布局。
+</p>
+</dd>
+<dt><a id="index-tui-disable"></a><span><code class="code">tui disable</code><a class="copiable-link" href="#index-tui-disable"> &para;</a></span></dt>
+<dd><p>禁用TUI模式，返回控制台解释器。
+</p>
+<a class="anchor" id="info_005fwin_005fcommand"></a></dd>
+<dt><a id="index-info-win"></a><span><code class="code">info win</code><a class="copiable-link" href="#index-info-win"> &para;</a></span></dt>
+<dd><p>列出所有当前显示窗口的名称和大小。
+</p>
+</dd>
+<dt><a id="index-tui-new_002dlayout"></a><span><code class="code">tui new-layout <var class="var">名称</var> <var class="var">窗口</var> <var class="var">权重</var> <span class="r">[</span><var class="var">窗口</var> <var class="var">权重</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-tui-new_002dlayout"> &para;</a></span></dt>
+<dd><p>创建一个新的TUI布局。新布局将被命名为<var class="var">名称</var>，并且可以使用<code class="code">layout</code>命令访问（见下文）。
+</p>
+<p>每个<var class="var">窗口</var>参数要么是要显示的窗口名称，要么是窗口描述。窗口将按照列出的顺序从上到下显示。
+</p>
+<p>窗口的名称与给<code class="code">focus</code>命令的名称相同（见下文）；此外，可以指定<code class="code">status</code>窗口。请注意，由于它具有固定高度，因此分配给状态窗口的权重并不重要。这里通常使用‘<samp class="samp">0</samp>’。
+</p>
+<p>窗口描述看起来有点像<code class="code">tui new-layout</code>的调用形式，形式为
+{<span class="r">[</span><code class="code">-horizontal</code><span class="r">]</span><var class="var">窗口</var> <var class="var">权重</var> <span class="r">[</span><var class="var">窗口</var> <var class="var">权重</var>&hellip;<span class="r">]</span>}。
+</p>
+<p>这指定了一个子布局。如果给出了<code class="code">-horizontal</code>，则此描述中的窗口将并排排列，而不是从上到下排列。
+</p>
+<p>每个<var class="var">权重</var>是一个整数。它是此窗口相对于布局中所有其他窗口的权重。这些数字用于计算每个窗口分配到多少屏幕空间。
+</p>
+<p>例如：
+</p>
+<div class="example">
+<pre class="example-preformatted">(gdb) tui new-layout example src 1 regs

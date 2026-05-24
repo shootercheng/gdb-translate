@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI跟踪点命令（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI跟踪点命令（使用GDB进行调试）">
+<meta name="keywords" content="GDB/MI跟踪点命令（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"> 
+<link href="GDB_002fMI-Symbol-Query.html" rel="next" title="GDB/MI符号查询">
+<link href="GDB_002fMI-Data-Manipulation.html" rel="prev" title="GDB/MI数据操作">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Tracepoint-Commands">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Symbol-Query.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>符号查询命令</a>，上一页：<a href="GDB_002fMI-Data-Manipulation.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>数据操作</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Tracepoint-Commands"><span>27.17 <small class="sc">GDB/MI</small>跟踪点命令<a class="copiable-link" href="#gdb_002fmi-Tracepoint-Commands"> &para;</a></span></h3>
+
+<p>本节中定义的命令实现了对跟踪点的MI支持。有关详细介绍，请参阅 <a class="ref" href="Tracepoints.html">跟踪点</a>。
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002dfind"></a>
+<h4 class="subheading" id="The-_002dtrace_002dfind-Command"><span><code class="code">-trace-find</code>命令<a class="copiable-link" href="#The-_002dtrace_002dfind-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-72"><span>概要<a class="copiable-link" href="#Synopsis-72"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-find <var class="var">模式</var> [<var class="var">参数</var>...]</pre></div>
+
+<p>使用由<var class="var">模式</var>和<var class="var">参数</var>定义的条件查找跟踪帧。下表列出了允许的模式及其参数。有关操作细节，请参阅 <a class="ref" href="tfind.html"><code class="code">tfind <var class="var">n</var></code></a>。
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">none</samp>&rsquo;</dt>
+<dd><p>不需要参数。停止检查跟踪帧。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">frame-number</samp>&rsquo;</dt>
+<dd><p>需要一个整数作为参数。选择具有该索引的跟踪点帧。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">tracepoint-number</samp>&rsquo;</dt>
+<dd><p>需要一个整数作为参数。查找与指定编号的跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">pc</samp>&rsquo;</dt>
+<dd><p>需要一个地址作为参数。查找与指定地址处的任何跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">pc-inside-range</samp>&rsquo;</dt>
+<dd><p>需要两个地址作为参数。查找与指定范围内地址处的跟踪点对应的下一个跟踪帧。两个边界都被视为在范围内。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">pc-outside-range</samp>&rsquo;</dt>
+<dd><p>需要两个地址作为参数。查找与指定范围外地址处的跟踪点对应的下一个跟踪帧。两个边界都被视为在范围内。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">line</samp>&rsquo;</dt>
+<dd><p>需要位置规范作为参数。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>。查找与指定位置处的跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+</dl>
+
+<p>如果传递给<var class="var">模式</var>的是&lsquo;<samp class="samp">none</samp>&rsquo;，则响应没有字段。否则，响应可能具有以下字段：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">found</samp>&rsquo;</dt>
+<dd><p>该字段的值为&lsquo;<samp class="samp">0</samp>&rsquo;或&lsquo;<samp class="samp">1</samp>&rsquo;，取决于是否找到匹配的跟踪点。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">traceframe</samp>&rsquo;</dt>
+<dd><p>找到的跟踪帧的索引。如果&lsquo;<samp class="samp">found</samp>&rsquo;字段的值为&lsquo;<samp class="samp">1</samp>&rsquo;，则此字段存在。
+</p>
+</dd}
+<dt>&lsquo;<samp class="samp">tracepoint</samp>&rsquo;</dt>
+<dd><p>找到的跟踪点的索引。如果&lsquo;<samp class="samp">found</samp>&rsquo;字段的值为&lsquo;<samp class="samp">1</samp>&rsquo;，则此字段存在。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">frame</samp>&rsquo;</dt>
+<dd><p>与找到的跟踪帧对应的帧的信息。仅当找到跟踪帧时，此字段才存在。有关此字段的描述，请参阅 <a class="xref" href="GDB_002fMI-Frame-Information.html"><small class="sc">GDB/MI</small>帧信息</a>。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-54"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-54"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">tfind</samp>&rsquo;。 
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002ddefine_002dvariable"></a>
+<h4 class="subheading" id="The-_002dtrace_002ddefine_002dvariable-Command"><span><code class="code">-trace-define-variable</code>命令<a class="copiable-link" href="#The-_002dtrace_

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>枚举目标类型（使用GDB调试）</title>
+
+<meta name="description" content="枚举目标类型（使用GDB调试）">
+<meta name="keywords" content="枚举目标类型（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Target-Descriptions.html" rel="up" title="目标描述">
+<link href="Standard-Target-Features.html" rel="next" title="标准目标特性">
+<link href="Predefined-Target-Types.html" rel="prev" title="预定义目标类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="枚举目标类型">
+<div class="nav-panel">
+<p>
+下一页：<a href="Standard-Target-Features.html" accesskey="n" rel="next">标准目标特性</a>，上一页：<a href="Predefined-Target-Types.html" accesskey="p" rel="prev">预定义目标类型</a>，向上：<a href="Target-Descriptions.html" accesskey="u" rel="up">目标描述</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="枚举目标类型-1"><span>G.4枚举目标类型<a class="copiable-link" href="#枚举目标类型-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-目标描述_002c-枚举类型"></a>
+
+<p>枚举目标类型在‘<samp class="samp">struct</samp>’和‘<samp class="samp">flags</samp>’寄存器描述中很有用。请参阅 <a class="xref" href="Target-Description-Format.html">目标描述格式</a>。
+</p>
+<p>枚举类型有一个名称、大小和一个名称/值对列表。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;enum id=&quot;<var class="var">id</var>&quot; size=&quot;<var class="var">size</var>&quot;&gt;
+  &lt;evalue name=&quot;<var class="var">name</var>&quot; value=&quot;<var class="var">value</var>&quot;/&gt;
+ ...
+&lt;/enum&gt;
+</pre></div>
+
+<p>枚举必须在使用之前定义。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;enum id=&quot;levels_type&quot; size=&quot;4&quot;&gt;
+  &lt;evalue name=&quot;low&quot; value=&quot;0&quot;/&gt;
+  &lt;evalue name=&quot;high&quot; value=&quot;1&quot;/&gt;
+&lt;/enum&gt;
+&lt;flags id=&quot;flags_type&quot; size=&quot;4&quot;&gt;
+  &lt;field name=&quot;X&quot; start=&quot;0&quot;/&gt;
+  &lt;field name=&quot;LEVEL&quot; start=&quot;1&quot; end=&quot;1&quot; type=&quot;levels_type&quot;/&gt;
+&lt;/flags&gt;
+&lt;reg name=&quot;flags&quot; bitsize=&quot;32&quot; type=&quot;flags_type&quot;/&gt;
+</pre></div>
+
+<p>根据该描述，‘<samp class="samp">flags</samp>’寄存器的值为3时将打印为：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info register flags
+flags 0x3 [ X LEVEL=high ]
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

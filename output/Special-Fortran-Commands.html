@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>特殊Fortran命令（使用GDB调试）</title>
+
+<meta name="description" content="特殊Fortran命令（使用GDB调试）">
+<meta name="keywords" content="特殊Fortran命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Fortran.html" rel="up" title="Fortran">
+<link href="Fortran-Intrinsics.html" rel="prev" title="Fortran内部函数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="特殊-Fortran-命令">
+<div class="nav-panel">
+<p>
+上一个：<a href="Fortran-Intrinsics.html" accesskey="p" rel="prev">Fortran内部函数</a>，向上：<a href="Fortran.html" accesskey="u" rel="up">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="特殊-Fortran-命令-1"><span>15.4.6.4特殊Fortran命令<a class="copiable-link" href="#特殊-Fortran-命令-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-特殊-Fortran-命令"></a>
+
+<p><small class="sc">GDB</small>有一些命令来支持Fortran特定的功能，比如显示公用块。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-info-common"></a>
+<a id="索引-COMMON-块_002c-Fortran"></a><span><code class="code">info common <span class="r">[</span><var class="var">公用块名称</var><span class="r">]</span></code><a class="copiable-link" href="#索引-COMMON-块_00_2c-Fortran"> &para;</a></span></dt>
+<dd><p>此命令打印Fortran <code class="code">COMMON</code>块中包含的值，该块的名称为<var class="var">公用块名称</var>。不带参数时，将打印当前程序位置可见的所有<code class="code">COMMON</code>块的名称。
+<a class="index-entry-id" id="索引-数组切片-_0028Fortran_0029"></a>
+<a class="index-entry-id" id="索引-set-fortran-repack_002darray_002dslices"></a>
+<a class="index-entry-id" id="索引-show-fortran-repack_002darray_002dslices"></a>
+</p></dd>
+<dt><code class="code">set fortran repack-array-slices [on|off]</code></dt>
+<dt><code class="code">show fortran repack-array-slices</code></dt>
+<dd><p>从数组中提取切片时，Fortran编译器可以选择生成一个就地描述切片的数组描述符，或者重新打包切片，将切片的元素复制到新的内存区域。
+</p>
+<p>当此设置为on时，那么<small class="sc">GDB</small>在某些情况下也会重新打包数组切片。当此设置为off时，那么<small class="sc">GDB</small>将为引用原始数据的切片创建数组描述符。
+</p>
+<p>如果切片的数据在原始数组中是连续的，<small class="sc">GDB</small>将永远不会重新打包数组切片。
+</p>
+<p>如果切片的数据在原始字符串中不连续，<small class="sc">GDB</small>将始终重新打包字符串切片，因为<small class="sc">GDB</small>不支持打印不连续的字符串。
+</p>
+<p>此设置的默认值为<code class="code">off</code>。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

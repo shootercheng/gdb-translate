@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的惰性字符串（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的惰性字符串（使用GDB调试）">
+<meta name="keywords" content="Guile中的惰性字符串（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Architectures-In-Guile.html" rel="next" title="Guile中架构的表示">
+<link href="Breakpoints-In-Guile.html" rel="prev" title="使用Guile操作断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的惰性字符串">
+<div class="nav-panel">
+<p>
+下一个：<a href="Architectures-In-Guile.html" accesskey="n" rel="next">Guile中架构的表示</a>，上一个：<a href="Breakpoints-In-Guile.html" accesskey="p" rel="prev">使用Guile操作断点</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+
+<h4 class="subsubsection" id="Guile中惰性字符串的表示"><span>23.4.3.20 Guile中惰性字符串的表示。<a class="copiable-link" href="#Guile中惰性字符串的表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的惰性字符串"></a>
+<a class="index-entry-id" id="index-_003cgdb_003alazy_002dstring_003e"></a>
+
+<p>惰性字符串是一种其内容直到需要时才会被检索或编码的字符串。
+</p>
+<p>在GDB中，<code class="code">&lt;gdb:lazy-string&gt;</code>被表示为一个指向内存区域的<code class="code">地址</code>、一个将用于对该内存区域进行编码的<code class="code">编码方式</code>以及一个用于界定表示该字符串的内存区域的<code class="code">长度</code>。<code class="code">&lt;gdb:lazy-string&gt;</code>与包装在<code class="code">&lt;gdb:value&gt;</code>中的字符串的区别在于，在打印时GDB会对它们进行不同的处理。<code class="code">&lt;gdb:lazy-string&gt;</code>在打印时会被检索并编码，而包装字符串的<code class="code">&lt;gdb:value&gt;</code>在创建时会立即被检索并编码。
+</p>
+<p><code class="code">(gdb)</code>模块提供了以下与惰性字符串相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-lazy_002dstring_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是<code class="code">&lt;gdb:lazy-string&gt;</code>类型的对象，则返回<code class="code">#f</code>。否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002daddress"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-address</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002daddress"> &para;</a></span></dt>
+<dd><p>返回<var class="var">惰性字符串</var>的地址。
+</p></dd></dl>
+
+<dl class="first-deffn">

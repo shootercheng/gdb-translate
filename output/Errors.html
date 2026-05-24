@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>错误（使用GDB调试）</title>
+
+<meta name="description" content="错误（使用GDB调试）">
+<meta name="keywords" content="错误（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Annotations.html" rel="up" title="注释">
+<link href="Invalidation.html" rel="next" title="无效通知">
+<link href="Prompting.html" rel="prev" title="提示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="错误">
+<div class="nav-panel">
+<p>下一页：<a href="Invalidation.html" accesskey="n" rel="next">无效通知</a>，上一页： <a href="Prompting.html" accesskey="p" rel="prev">GDB输入的注释</a>，向上：<a href="Annotations.html" accesskey="u" rel="up">GDB注释</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="错误-1"><span>第28.4节 错误<a class="copiable-link" href="#错误-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-错误、警告和中断的注释"></a>
+
+<a class="index-entry-id" id="index-退出注释"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z退出
+</pre></div>
+
+<p>此注释恰好在GDB响应中断之前出现。
+</p>
+<a class="index-entry-id" id="index-错误注释"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z错误
+</pre></div>
+
+<p>此注释恰好在GDB响应错误之前出现。
+</p>
+<p>退出和错误注释表明，GDB正在处理的任何注释可能会突然结束。例如，如果一个<code class="code">值历史开始</code>注释之后跟着一个<code class="code">错误</code>，则不能期望收到匹配的<code class="code">值历史结束</code>。然而，也不能期望不会收到它；错误注释并不一定意味着GDB会立即一直返回到顶级。
+</p>
+<a class="index-entry-id" id="index-错误开始注释"></a>
+<p>退出或错误注释之前可能会有
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z错误开始
+</pre></div>
+
+<p>在该注释与退出或错误注释之间的任何输出都是错误消息。
+</p>
+<p>警告消息尚未添加注释。
+</p>
+</div>
+
+
+
+</body>
+</html>

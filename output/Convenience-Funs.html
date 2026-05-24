@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>便利函数（使用GDB调试）</title>
+
+<meta name="description" content="便利函数（使用GDB调试）">
+<meta name="keywords" content="便利函数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Registers.html" rel="next" title="寄存器">
+<link href="Convenience-Vars.html" rel="prev" title="便利变量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="便利函数">
+<div class="nav-panel">
+<p>
+下一个：<a href="Registers.html" accesskey="n" rel="next">寄存器</a>，上一个：<a href="Convenience-Vars.html" accesskey="p" rel="prev">便利变量</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="便利函数"><span>10.13 便利函数<a class="copiable-link" href="#便利函数"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-便利函数"></a>
+<p><small class="sc">GDB</small> 还提供了一些 <em class="dfn">便利函数</em>。这些函数的语法与便利变量类似。便利函数可以像普通函数一样在表达式中使用；然而，便利函数是在 <small class="sc">GDB</small> 内部实现的。
+</p>
+<p>这些函数不需要 <small class="sc">GDB</small> 配置Python支持，这意味着它们始终可用。
+</p>
+<dl class="table">
+<dt><a id="索引-_0024_005fisvoid_002c-便利函数"></a><span><code class="code">$_isvoid (<var class="var">expr</var>)</code><a class="copiable-link" href="#索引-_0024_005fisvoid_002c-便利函数"> &para;</a></span></dt>
+<dd><p>如果表达式 <var class="var">expr</var> 是 <code class="code">void</code>，则返回1。否则返回0。
+</p>
+<p>一个 <code class="code">void</code> 表达式是指结果类型为 <code class="code">void</code> 的表达式。例如，你可以检查一个便利变量（见 <a class="ref" href="便利变量.html">便利变量</a>），以检查它是否是 <code class="code">void</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $_exitcode
+$1 = void
+(gdb) print $_isvoid ($_exitcode)
+$2 = 1
+(gdb) run
+启动程序：./a.out
+[进程1（进程29572）正常退出]
+(gdb) print $_exitcode
+$3 = 0    
+(gdb) print $_isvoid ($_exitcode)
+$4 = 0
+</pre></div>
+
+<p>在上面的例子中，我们在调试的程序执行之前和之后使用 <code class="code">$_isvoid</code> 来检查 <code class="code">$_exitcode</code> 是否是 <code class="code">void</code>。在执行之前，没有退出码可供检查，因此 <code class="code">$_exitcode</code> 是 <code class="code">void</code>。在执行之后调试的程序返回零，因此 <code class="code">$_exitcode</code> 是零，这意味着它不再是 <code class="code">void</code>。
+</p>
+<p><code class="code">void</code> 表达式也可以是对正在调试的程序中的函数的调用。例如，给定以下函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+foo (void)
+{
+}
+</pre></div>
+
+<p>在 <small class="sc">GDB</small> 中调用它的结果是 <code class="code">void</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print foo ()
+$1 = void
+(gdb) print $_isvoid (foo ())
+$2 = 1
+(gdb) set $v = foo ()
+(gdb) print $v
+$3 = void
+(gdb) print $_isvoid ($v)
+$4 = 1
+</pre></div>
+
+</dd>
+<dt><a id="索引-_0024_005fgdb_005fsetting_005fstr_002c-便利函数"></a><span><code class="code">$_gdb_setting_str (<var class="var">setting</var>)</code><a class="copiable-link" href="#索引-_0024_005fgdb_005fsetting_005fstr_002c-便利函数"> &para;</a></span></dt>
+<dd><p>将 <small class="sc">GDB</small> <var class="var">setting</var> 的值作为字符串返回。<var class="var">setting</var> 是任何可以在 <code class="code">set</code> 或 <code class="code">show</code> 命令中使用的设置（见 <a class="pxref" href="控制GDB.html">控制 <small class="sc">GDB</small></a>）。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) show print frame-arguments
+打印非标量帧参数为 &quot;scalars&quot;。
+(gdb) p $_gdb_setting_str(&quot;print frame-arguments&quot;)
+$1 = &quot;scalars&quot;
+(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$2 = &quot;30&quot;
+(gdb)
+</pre></div>
+
+</dd>
+<dt><a id="索引-_0024_005fgdb_005fsetting_002c-便利函数"></a><span><code class="code">$_gdb_setting (<var class="var">setting</var>)</code><a class="copiable-link" href="#索引-_0024_005fgdb_005fsetting_002c-便利函数"> &para;</a></span></dt>
+<dd><p>返回 <small class="sc">GDB</small> <var class="var">setting</var> 的值。
+返回值的类型取决于设置。
+</p>
+<p>布尔和自动布尔设置的值类型是 <code class="code">int</code>。布尔值 <code class="code">off</code> 和 <code class="code">on</code> 分别转换为整数值 <code class="code">0</code> 和 <code class="code">1</code>。值 <code class="code">auto</code> 转换为值 <code class="code">-1</code>。
+</p>
+<p>整数设置的值类型是 <code class="code">unsigned int</code> 或 <code class="code">int</code>，具体取决于设置。
+</p>
+<p>一些整数设置接受 <code class="code">unlimited</code> 值。根据设置，<code class="code">set</code> 命令也接受值 <code class="code">0</code> 或值 <code class="code">-1</code> 作为 <code class="code">unlimited</code> 的同义词。
+例如，<code class="code">set height unlimited</code> 等同于 <code class="code">set height 0</code>。
+</p>
+<p>一些其他接受 <code class="code">unlimited</code> 值的设置使用值 <code class="code">0</code> 表示零。
+例如 <code class="code">set history size 0</code> 表示不记录任何 <small class="sc">GDB</small> 命令历史。
+对于这样的设置，<code class="code">-1</code> 是 <code class="code">unlimited</code> 的同义词。
+</p>
+<p>有关与 <code class="code">unlimited</code> 等效的数值，请参阅相应 <code class="code">set</code> 命令的文档。
+</p>
+<p><code class="code">$_gdb_setting</code> 函数根据 <code class="code">set</code> 命令的使用方式将无限值转换为 <code class="code">0</code> 或 <code class="code">-1</code> 值。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$1 = &quot;30&quot;
+(gdb) p $_gdb_setting(&quot;height&quot;)
+$2 = 30
+(gdb) set height unlimited
+(gdb) p $_gdb_setting_str(&quot;height&quot;)
+$3 = &quot;unlimited&quot;
+(gdb) p $_gdb_setting(&quot;height&quot;)
+$4 = 0
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&quot;history size&quot;)
+$5 = &quot;unlimited&quot;
+(gdb) p $_gdb_setting(&quot;history size&quot;)
+$6 = -1
+(gdb) p $_gdb_setting_str(&quot;disassemble-next-line&quot;)
+$7 = &quot;auto&quot;
+(gdb) p $_gdb_setting(&quot;disassemble-next-line&quot;)
+$8 = -1
+(gdb)
+</pre></div></div>
+
+<p>其他设置类型（枚举、文件名、可选文件名、字符串、无转义字符串）作为字符串值返回。
+</p>
+
+</dd>
+<dt><a id="索引-_0024_005fgdb_00

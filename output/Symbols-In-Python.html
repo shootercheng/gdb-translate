@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为 “自由软件” 和 “自由软件需要自由文档”，封面文字为 “GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>Python中的符号（使用GDB调试）</title>
+
+<meta name="description" content="Python中的符号（使用GDB调试）">
+<meta name="keywords" content="Python中的符号（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Symbol-Tables-In-Python.html" rel="next" title="Python中的符号表表示">
+<link href="Blocks-In-Python.html" rel="prev" title="从Python访问块">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的符号">
+<div class="nav-panel">
+<p>
+下一个：<a href="Symbol-Tables-In-Python.html" accesskey="n" rel="next">Python中的符号表表示</a>，上一个：<a href="Blocks-In-Python.html" accesskey="p" rel="prev">从Python访问块</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="符号的Python表示"><span>23.3.2.30 符号的Python表示<a class="copiable-link" href="#符号的Python表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python中的符号"></a>
+<a class="index-entry-id" id="index-gdb_002eSymbol"></a>
+
+<p><small class="sc">GDB</small> 将每个变量、函数和类型表示为符号表中的一个条目。请参阅 <a class="xref" href="Symbols.html">检查符号表</a>。
+类似地，Python使用 <code class="code">gdb.Symbol</code> 对象在 <small class="sc">GDB</small> 中表示这些符号。
+</p>
+<p><code class="code">gdb</code> 模块中提供了以下与符号相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_symbol</strong> <var class="def-var-arguments">(name <span class="r">[</span>, block <span class="r">[</span>, domain<span class="r">]]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fsymbol"> &para;</a></span></dt>
+<dd><p>此函数按名称搜索符号。搜索范围可以限制在可选的域和块参数中定义的参数。
+</p>
+<p><var class="var">name</var> 是符号的名称。它必须是一个字符串。可选的 <var class="var">block</var> 参数将搜索限制为在该 <var class="var">block</var> 中可见的符号。<var class="var">block</var> 参数必须是一个 <code class="code">gdb.Block</code> 对象。如果省略，则使用当前帧的块。可选的 <var class="var">domain</var> 参数将搜索限制为域类型。<var class="var">domain</var> 参数必须是在 <code class="code">gdb</code> 模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个由两个元素组成的元组。
+第一个元素是一个 <code class="code">gdb.Symbol</code> 对象，如果未找到符号则为 <code class="code">None</code>。
+如果找到符号，第二个元素如果符号是方法对象的字段（例如，C<code class="t">++</code> 中的 <code class="code">this</code>）则为 <code class="code">True</code>，否则为 <code class="code">False</code>。
+如果未找到符号，第二个元素为 <code class="code">False</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fglobal_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_global_symbol</strong> <var class="def-var-arguments">(name <span class="r">[</span>, domain<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fglobal_005fsymbol"> &para;</a></span></dt>
+<dd><p>此函数按名称搜索全局符号。
+搜索范围可以由域参数限制。
+</p>
+<p><var class="var">name</var> 是符号的名称。它必须是一个字符串。
+可选的 <var class="var">domain</var> 参数将搜索限制为域类型。
+<var class="var">domain</var> 参数必须是在 <code class="code">gdb</code> 模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象，如果未找到符号则为 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fstatic_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_static_symbol</strong> <var class="def-var-arguments">(name <span class="r">[</span>, domain<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fstatic_005fsymbol"> &para;</a></span></dt>
+<dd><p>此函数按名称搜索具有静态链接的全局符号。
+搜索范围可以由域参数限制。
+</p>
+<p><var class="var">name</var> 是符号的名称。它必须是一个字符串。
+可选的 <var class="var">domain</var> 参数将搜索限制为域类型。
+<var class="var">domain</var> 参数必须是在 <code class="code">gdb</code> 模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象，如果未找到符号则为 <code class="code">None</code>。
+</p>
+<p>请注意，此函数不会找到函数作用域的静态变量。要查找此类变量，请遍历函数的 <code class="code">gdb.Block</code> 的变量，并检查 <code class="code">block.addr_class</code> 是否为 <code class="code">gdb.SYMBOL_LOC_STATIC</code>。
+</p>
+<p>可能有多个具有相同名称的具有静态链接的全局符号。此函数只会返回它找到的第一个匹配符号。找到哪个符号取决于 <small class="sc">GDB</small> 当前停止的位置，因为 <small class="sc">GDB</small> 首先会在当前目标文件中搜索匹配符号，然后搜索所有其他目标文件。如果应用程序尚未运行，则 <small class="sc">GDB</small> 会按调试信息中出现的顺序搜索所有目标文件。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fstatic_005fsymbols"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_static_symbols</strong> <var class="def-var-arguments">(name <span class="r">[</span>, domain<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fstatic_005fsymbols"> &para;</a></span></dt>
+<dd><p>与 <code class="code">gdb.lookup_static_symbol</code> 类似，此函数按名称搜索具有静态链接的全局符号，并可选地由域参数限制。但是，此函数返回找到的所有匹配符号的列表，而不仅仅是第一个。 
+</p>
+<p><var class="var">name</var> 是符号的名称。它必须是一个字符串。
+可选酌 <var class="var">domain</var> 参数将搜索限制为域类型。
+<var class="var">domain</var> 参数必须是在 <code class="code">gdb</code> 模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象列表，如果未找到匹配符号则可能为空。
+</p>
+<p>请注意，此函数不会找到函数作用域的静态变量。要查找此类变量，请遍历函数的 <code class="code">gdb.Block</code> 的变量，并检查 <code class="code">block.addr_class</code> 是否为 <code class="code">gdb.SYMBOL_LOC_STATIC</code>。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Symbol</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002etype"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.type</strong><a class="copiable-link" href="#index-Symbol_002etype"> &para;</a></span></dt>
+<dd><p>符号的类型，如果没有记录类型则为 <code class="code">None</code>。
+此属性表示为一个 <code class="code">gdb.Type</code> 对象。
+请参阅 <a class="xref" href="Types-In-Python.html">Python中的类型</a>。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002esymtab"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.symtab</strong><a class="copiable-link" href="#index-Symbol_002esymtab"> &para;</a></span></dt>
+<dd><p>符号所在的符号表。此属性表示为一个 <code class="code">gdb.Symtab</code> 对象。请参阅 <a class="xref" href="Symbol-Tables-In-Python.html">Python中的符号表表示</a>。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eline"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.line</strong><a class="copiable-link" href="#index-Symbol_002eline"> &para;</a></span></dt>
+<dd><p>符号在源代码中定义的行号。
+这是一个整数。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002ename"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.name</strong><a class="copiable-link" href="#index-Symbol_0

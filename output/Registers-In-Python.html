@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的寄存器（使用GDB调试）</title>
+
+<meta name="description" content="Python中的寄存器（使用GDB调试）">
+<meta name="keywords" content="Python中的寄存器（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Connections-In-Python.html" rel="next" title="Python中的连接">
+<link href="Architectures-In-Python.html" rel="prev" title="Python中架构的表示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的寄存器">
+<div class="nav-panel">
+<p>
+下一页：<a href="Connections-In-Python.html" accesskey="n" rel="next">Python中的连接</a>，上一页：<a href="Architectures-In-Python.html" accesskey="p" rel="prev">Python中架构的表示</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的寄存器-1"><span>23.3.2.38 Python中的寄存器<a class="copiable-link" href="#Python中的寄存器-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python中的寄存器"></a>
+
+<p>Python代码可以从<code class="code">gdb.Architecture</code>请求有关可用寄存器集的信息
+（见 <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005fregisters"><code class="code">Architecture.registers</code></a>）。
+寄存器信息作为一个
+<code class="code">gdb.RegisterDescriptorIterator</code>返回，它是一个迭代器，依次返回
+<code class="code">gdb.RegisterDescriptor</code>对象。
+</p>
+<p><code class="code">gdb.RegisterDescriptor</code>不提供寄存器的值（见 <a class="pxref" href="Frames-In-Python.html#gdbpy_005fframe_005fread_005fregister"><code class="code">Frame.read_register</code></a>
+用于读取寄存器的值），相反，<code class="code">RegisterDescriptor</code>
+是一种发现特定架构可用哪些寄存器的方法。
+</p>
+<p><code class="code">gdb.RegisterDescriptor</code>具有以下只读属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterDescriptor_002ename"><span class="category-def">变量： </span><span><strong class="def-name">RegisterDescriptor.name</strong><a class="copiable-link" href="#index-RegisterDescriptor_002ename"> &para;</a></span></dt>
+<dd><p>此寄存器的名称。
+</p></dd></dl>
+
+<p>也可以使用以下 <code class="code">gdb.RegisterDescriptorIterator</code> 函数根据寄存器名称查找寄存器描述符：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-RegisterDescriptorIterator_002efind"><span class="category-def">函数： </span><span><strong class="def-name">RegisterDescriptorIterator.find</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-RegisterDescriptorIterator_002efind"> &para;</a></span></dt>
+<dd><p>以 <var class="var">name</var>为参数，它必须是一个字符串，并返回具有该名称的寄存器的
+<code class="code">gdb.RegisterDescriptor</code>，如果没有该名称的寄存器，则返回
+<code class="code">None</code>。
+</p></dd></dl>
+
+<p>Python代码还可以从 <code class="code">gdb.Architecture</code> 请求有关给定架构上可用寄存器组集的信息
+（见 <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005freggroups"><code class="code">Architecture.register_groups</code></a>）。
+</p>
+<p>每个寄存器可以是零个或多个寄存器组的成员。 一些
+寄存器组在GDB内部用于控制诸如在调用被调试程序时哪些寄存器必须保存之类的事情
+（见 <a class="pxref" href="Calling.html">调用程序函数</a>）。
+其他寄存器组的存在是为了让用户在诸如 <code class="code">info registers</code> 之类的命令中轻松查看相关的寄存器集
+（见 <a class="pxref" href="Registers.html#info_005fregisters_005freggroup"><code class="code">info registers <var class="var">reggroup</var></code></a>）。
+</p>
+<p>寄存器组信息作为一个
+<code class="code">gdb.RegisterGroupsIterator</code>返回，它是一个迭代器，依次返回
+<code class="code">gdb.RegisterGroup</code>对象。
+</p>
+<p><code class="code">gdb.RegisterGroup</code>对象具有以下只读属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RegisterGroup_002ename"><span class="category-def">变量： </span><span><strong class="def-name">RegisterGroup.name</strong><a class="copiable-link" href="#index-RegisterGroup_002ename"> &para;</a></span></dt>
+<dd><p>一个字符串，是此寄存器组的名称。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Connections-In-Python.html">Python中的连接</a>，上一页：<a href="Architectures-In-Python.html">Python中架构的表示</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

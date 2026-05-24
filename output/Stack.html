@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>栈（使用GDB调试）</title>
+
+<meta name="description" content="栈（使用GDB调试）">
+<meta name="keywords" content="栈（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Source.html" rel="next" title="源文件"> 
+<link href="Process-Record-and-Replay.html" rel="prev" title="进程记录与重放">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Stack">
+<div class="nav-panel">
+<p>
+下一页：<a href="Source.html" accesskey="n" rel="next">检查源文件</a>，上一页：<a href="Process-Record-and-Replay.html" accesskey="p" rel="prev">记录下级进程的执行并重放</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h标题2 class="chapter" id="Examining-the-Stack"><span>8 检查栈<a class="copiable-link" href="#Examining-the-Stack"> &para;</a></span></h标题2>
+
+<p>当你的程序停止时，你首先需要知道它在哪里停止以及它是如何到达那里的。</p>
+<a class="index-entry-id" id="index-call-stack"></a>
+<p>每次你的程序执行函数调用时，都会生成关于该调用的信息。
+该信息包括调用在程序中的位置、调用的参数以及被调用函数的局部变量。
+这些信息保存在一个称为<em class="dfn">栈帧</em>的数据块中。
+栈帧在称为<em class="dfn">调用栈</em>的内存区域中分配。</p>
+<p>当你的程序停止时，用于检查栈的<small class="sc">GDB</small>命令允许你查看所有这些信息。</p>
+<a class="index-entry-id" id="index-selected-frame"></a>
+<p><small class="sc">GDB</small>会选择一个栈帧，许多<small class="sc">GDB</small>命令会隐式地引用所选帧。 特别是，每当你要求<small class="sc">GDB</small>获取程序中变量的值时，该值会在所选帧中找到。 有一些特殊的 <small class="sc">GDB</small> 命令可以选择你感兴趣的任何帧。 请参阅 <a class="xref" href="Selection.html">选择一个帧</a>。</p>
+<p>当你的程序停止时，<small class="sc">GDB</small>会自动选择当前正在执行的帧并简要描述它，类似于 <code class="code">frame</code> 命令（请参阅 <a class="pxref" href="Frame-Info.html">关于一个帧的信息</a>）。</p>
+
+<ul class="mini-toc">
+<li><a href="Frames.html" accesskey="1">栈帧</a></li> 
+<li><a href="Backtrace.html" accesskey="2">回溯</a></li> 
+<li><a href="Selection.html" accesskey="3">选择一个帧</a></li> 
+<li><a href="Frame-Info.html" accesskey="4">关于一个帧的信息</a></li> 
+<li><a href="Frame-Apply.html" accesskey="5">对多个帧应用命令。</a></li> 
+<li><a href="Frame-Filter-Management.html" accesskey="6">帧过滤器的管理。</a></li> 
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Source.html">检查源文件</a>，上一页：<a href="Process-Record-and-Replay.html">记录下级进程的执行并重放</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

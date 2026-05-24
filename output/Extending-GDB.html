@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>扩展GDB（使用GDB进行调试）</title>
+
+<meta name="description" content="扩展GDB（使用GDB进行调试）">
+<meta name="keywords" content="扩展GDB（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Interpreters.html" rel="next" title="解释器">
+<link href="Controlling-GDB.html" rel="prev" title="控制GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Extending-GDB">
+<div class="nav-panel">
+<p>
+下一页：<a href="Interpreters.html" accesskey="n" rel="next">命令解释器</a>，上一页：<a href="Controlling-GDB.html" accesskey="p" rel="prev">控制GDB</a>，向上：<a href="index.html" accesskey="u" rel="up">使用GDB进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Extending-gdb"><span>23 扩展GDB<a class="copiable-link" href="#Extending-gdb"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-extending-GDB"></a>
+
+<p>GDB提供了几种扩展机制。
+GDB还提供了在读取用于调试的文件时自动加载扩展的功能。这允许用户为正在调试的程序自动定制GDB。
+</p>
+<p>为了便于使用扩展语言，GDB能够评估文件的内容。在这样做时，GDB可以通过查看文件名扩展名来识别正在使用的扩展语言。具有无法识别的文件名扩展名的文件始终被视为GDB命令文件。
+请参阅 <a class="xref" href="Command-Files.html">命令文件</a>。
+</p>
+<p>你可以使用以下设置来控制GDB如何评估这些文件：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-script_002dextension"></a>
+<a id="index-set-script_002dextension"></a><span><code class="code">set script-extension off</code><a class="copiable-link" href="#index-set-script_002dextension"> &para;</a></span></dt>
+<dd><p>所有脚本始终被评估为GDB命令文件。
+</p>
+</dd>
+<dt><code class="code">set script-extension soft</code></dt>
+<dd><p>调试器根据文件名扩展名确定脚本语言。如果支持这种脚本语言，GDB将使用该语言评估脚本。否则它将该文件评估为GDB命令文件。
+</p>
+</dd>
+<dt><code class="code">set script-extension strict</code></dt>
+<dd><p>调试器根据文件名扩展名确定脚本语言，并使用该语言评估脚本。如果该语言不受支持，则评估失败。
+</p>
+</dd>
+<dt><code class="code">show script-extension</code></dt>
+<dd><p>显示<code class="code">script-extension</code>选项的当前值。
+</p>
+</dd>
+</dl>
+
+
+
+<ul class="mini-toc">
+<li><a href="Sequences.html" accesskey="1">预定义命令序列</a></li>
+<li><a href="Aliases.html" accesskey="2">命令别名</a></li>
+<li><a href="Python.html" accesskey="3">使用Python扩展GDB</a></li>
+<li><a href="Guile.html" accesskey="4">使用Guile扩展GDB</a></li>
+<li><a href="Auto_002dloading-extensions.html" accesskey="5">自动加载扩展</a></li>
+<li><a href="Multiple-Extension-Languages.html" accesskey="6">多种扩展语言</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Interpreters.html">命令解释器</a>，上一页：<a href="Controlling-GDB.html">控制GDB</a>，向上：<a href="index.html">使用GDB进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

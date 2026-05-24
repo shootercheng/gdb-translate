@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跳转（使用GDB调试）</title>
+
+<meta name="description" content="跳转（使用GDB调试）">
+<meta name="keywords" content="跳转（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Altering.html" rel="up" title="改变">
+<link href="Signaling.html" rel="next" title="发送信号">
+<link href="Assignment.html" rel="prev" title="变量赋值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跳转">
+<div class="nav-panel">
+<p>
+下一页：<a href="Signaling.html" accesskey="n" rel="next">给你的程序发送信号</a>，上一页：<a href="Assignment.html" accesskey="p" rel="prev">变量赋值</a>，向上：<a href="Altering.html" accesskey="u" rel="up">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="在不同地址继续"><span>17.2在不同地址继续<a class="copiable-link" href="#在不同地址继续"> &para;</a></span></h3>
+
+<p>通常，当你继续运行程序时，是使用<code class="code">continue</code>命令在程序停止的地方继续。你也可以使用以下命令在你自己选择的地址继续：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-j-_0028跳转_0029"></a>
+<a id="index-跳转"></a><span><code class="code">jump <var class="var">locspec</var></code><a class="copiable-link" href="#index-跳转"> &para;</a></span></dt>
+<dt><code class="code">j <var class="var">locspec</var></code></dt> 
+<dd><p>在解析<var class="var">locspec</var>后得到的代码位置的地址处恢复执行。
+有关<var class="var">locspec</var>的不同形式的描述，请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>。如果<var class="var">locspec</var>解析为多个地址，则当前编译单元之外的地址将被忽略。如果仅考虑当前编译单元中的地址仍无法产生唯一地址，则该命令在跳转前中止。
+如果在那里有一个断点，执行会立即再次停止。通常的做法是将<code class="code">tbreak</code>命令与<code class="code">jump</code>结合使用。请参阅 <a class="xref" href="Set-Breaks.html">设置断点</a>。
+</p>
+<p><code class="code">jump</code>命令不会改变当前的栈帧或栈指针，也不会改变除程序计数器之外的任何内存位置或任何寄存器的内容。如果<var class="var">locspec</var>解析为与当前正在执行的函数不同的函数中的地址，那么如果这两个函数期望不同的参数或局部变量模式，结果可能会很奇怪。因此，如果跳转地址不在当前正在执行的函数中，<code class="code">jump</code>命令会请求确认。但是，如果你熟悉程序的机器语言代码，即使是奇怪的结果也是可预测的。
+</p></dd>
+</dl>
+
+<p>在许多系统上，通过将一个新值存储到寄存器<code class="code">$pc</code>中，你可以获得与<code class="code">jump</code>命令大致相同的效果。不同之处在于，这不会启动你的程序运行；它只会改变当你继续时程序<em class="emph">将</em>运行的地址。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $pc = 0x485
+</pre></div>
+
+<p>使得下一个<code class="code">continue</code>命令或单步执行命令在地址<code class="code">0x485</code>处执行，而不是在你的程序停止的地址处执行。请参阅 <a class="xref" href="Continuing-and-Stepping.html">继续和单步执行</a>。
+</p>
+<p>然而，直接写入<code class="code">$pc</code>只会改变程序计数器寄存器的值，而使用<code class="code">jump</code>将确保任何额外的辅助状态也被更新。例如在SPARC上，<code class="code">jump</code>会在恢复执行之前更新<code class="code">$pc</code>和<code class="code">$npc</code>寄存器。当使用直接写入<code class="code">$pc</code>的方法时，你有责任也更新<code class="code">$npc</code>寄存器。
+</p>
+<p>使用<code class="code">jump</code>命令最常见的情况是备份&mdash;&mdash;也许设置了更多断点&mdash;&mdash;到已经执行过的程序部分，以便更详细地检查其执行情况。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Signaling.html">给你的程序发送信号</a>，上一页：<a href="Assignment.html">变量赋值</a>

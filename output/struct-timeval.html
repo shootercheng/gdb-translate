@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>struct timeval（使用GDB调试）</title>
+
+<meta name="description" content="struct timeval（使用GDB调试）">
+<meta name="keywords" content="struct timeval（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Protocol_--specific-Representation-of-Datatypes.html" rel="up" title="协议特定的数据类型表示">
+<link href="struct-stat.html" rel="prev" title="struct stat">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="struct-timeval">
+<div class="nav-panel">
+<p>
+上一个：<a href="struct-stat.html" accesskey="p" rel="prev">struct stat</a>，向上：<a href="Protocol_--specific-Representation-of-Datatypes.html" accesskey="u" rel="up">协议特定的数据类型表示</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="struct-timeval-1"><span>struct timeval<a class="copiable-link" href="#struct-timeval-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-struct-timeval_002c-in-file_002di_002fo-protocol"></a>
+
+<p>文件I/O协议使用的<code class="code">struct timeval</code>类型的缓冲区定义如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct timeval {
+    time_t tv_sec;  /* 秒 */
+    long   tv_usec; /* 微秒 */
+};
+</pre></div>
+
+<p>整数数据类型符合相应章节中给出的定义（详情见 <a class="ref" href="Integral-Datatypes.html">整数数据类型</a>），因此这个结构的大小为8字节。
+</p>
+</div>
+
+
+
+</body>
+</html>

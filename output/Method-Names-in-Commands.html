@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>命令中的方法名（使用GDB调试）</title>
+
+<meta name="description" content="命令中的方法名（使用GDB调试）">
+<meta name="keywords" content="命令中的方法名（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Objective_002dC.html" rel="up" title="Objective-C">
+<link href="The-Print-Command-with-Objective_002dC.html" rel="next" title="Objective-C的打印命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="命令中的方法名">
+<div class="nav-panel">
+<p>
+下一个：<a href="The-Print-Command-with-Objective_002dC.html" accesskey="n" rel="next">Objective-C的打印命令</a>，上一级：<a href="Objective_002dC.html" accesskey="u" rel="up">Objective-C</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="命令中的方法名-扩展"><span>15.4.4.1命令中的方法名<a class="copiable-link" href="#命令中的方法名-扩展"> &para;</a></span></h4>
+
+<p>以下命令已扩展为可接受Objective-C方法名作为行规范：
+</p>
+<a class="index-entry-id" id="index-clear_清除，和Objective_002dC"></a>
+<a class="index-entry-id" id="index-break_断点，和Objective_002dC"></a>
+<a class="index-entry-id" id="index-info-line_信息行，和Objective_002dC"></a>
+<a class="index-entry-id" id="index-jump_跳转，和Objective_002dC"></a>
+<a class="index-entry-id" id="index-list_列出，和Objective_002dC"></a>
+<ul class="itemize mark-bullet">
+<li><code class="code">clear</code>
+</li><li><code class="code">break</code>
+</li><li><code class="code">info line</code>
+</li><li><code class="code">jump</code>
+</li><li><code class="code">list</code>
+</li></ul>
+
+<p>一个完全限定的Objective-C方法名指定如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-[<var class="var">类名</var> <var class="var">方法名</var>]
+</pre></div>
+
+<p>其中减号用于表示实例方法，加号（未显示）用于表示类方法。类名<var class="var">类名</var>和方法名<var class="var">方法名</var>用方括号括起来，类似于Objective-C源代码中消息的指定方式。例如，要在当前正在调试的程序中为类<code class="code">Fruit</code>的<code class="code">create</code>实例方法设置断点，输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break -[Fruit create]
+</pre></div>
+
+<p>要列出类方法<code class="code">initialize</code>周围的十行程序，输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">list +[NSText initialize]
+</pre></div>
+
+<p>在当前版本的<small class="sc">GDB</small>中，加号或减号是必需的。在未来版本的<small class="sc">GDB</small>中，加号或减号将是可选的，但你可以使用它来缩小搜索范围。也可以只指定一个方法名：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break create
+</pre></div>
+
+<p>你必须指定完整的方法名，包括任何冒号。如果你的程序源文件包含多个<code class="code">create</code>方法，将为你呈现一个实现该方法的类的编号列表。通过数字表示你的选择，如果没有适用的选项，则输入‘<samp class="samp">0</samp>’退出。
+</p>
+<p>再举一个例子，要清除在<code class="code">NSWindow</code>类的<code class="code">makeKeyAndOrderFront:</code>方法处设置的断点，输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">clear -[NSWindow makeKeyAndOrderFront:]
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="The-Print-Command-with-Objective_002dC.html">Objective-C的打印命令</a>，上一级：<a href="Objective_002dC.html">Objective-C</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+
+</html> 

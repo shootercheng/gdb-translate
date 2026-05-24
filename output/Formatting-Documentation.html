@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>格式化文档（使用GDB调试）</title>
+
+<meta name="description" content="格式化文档（使用GDB调试）">
+<meta name="keywords" content="格式化文档（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Installing-GDB.html" rel="next" title="安装GDB">
+<link href="In-Memoriam.html" rel="prev" title="纪念">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Formatting-Documentation">
+<div class="nav-panel">
+<p>
+下一页：<a href="Installing-GDB.html" accesskey="n" rel="next">安装 <small class="sc">GDB</small></a>，上一页：<a href="In-Memoriam.html" accesskey="p" rel="prev">纪念</a>，向上：<a href="index.html" accesskey="u" rel="up">使用 <small class="sc">GDB</small> 调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="Formatting-Documentation-1"><span>附录B 格式化文档<a class="copiable-link" href="#Formatting-Documentation-1"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-gdb-reference-card"></a>
+<a class="index-entry-id" id="index-reference-card"></a>
+<p>GDB 4版本在主源目录的<samp class="file">gdb</samp>子目录中包含一张已经格式化好的参考卡片，可用于使用PostScript或Ghostscript进行打印<a class="footnote" id="DOCF20" href="#FOOT20"><sup>20</sup></a>。如果你可以将PostScript或Ghostscript与你的打印机配合使用，你可以立即使用<samp class="file">refcard.ps</samp>打印参考卡片。
+</p>
+<p>该版本还包含参考卡片的源文件。你可以使用TeX通过以下方式对其进行格式化：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make refcard.dvi
+</pre></div>
+
+<p>GDB参考卡片设计为以横向模式打印在美国“信纸”尺寸的纸张上；
+也就是说，在一张宽11英寸高8.5英寸的纸上。你需要将这种打印形式指定为你的<small class="sc">DVI</small>输出程序的一个选项。
+</p>
+<a class="index-entry-id" id="index-documentation"></a>
+
+<p>GDB的所有文档都是机器可读发行版的一部分。文档采用Texinfo格式编写，这是一种文档系统，使用单个源文件来生成在线信息和印刷手册。你可以使用Info格式化命令之一来创建文档的在线版本，并使用TeX（或<code class="code">texi2roff</code>）来排版印刷版本。
+</p>
+<p>GDB在<samp class="file">gdb</samp>子目录中包含此手册的在线Info版本的已格式化副本。主Info文件是<samp class="file">gdb-17.2/gdb/gdb.info</samp>（对于17.2版本），它引用同一目录中与&lsquo;<samp class="samp">gdb.info*</samp>&rsquo;匹配的从属文件。如有必要，你可以打印这些文件，或使用任何编辑器读取它们；但使用GNU Emacs中的<code class="code">info</code>子系统或独立的<code class="code">info</code>程序（作为GNU Texinfo发行版的一部分提供）来读取它们会更容易。
+</p>
+<p>如果你想自己格式化这些Info文件，你需要一个Info格式化程序，例如<code class="code">texinfo-format-buffer</code>或<code class="code">makeinfo</code>。
+</p>
+<p>如果你安装了<code class="code">makeinfo</code>，并且位于顶级GDB源目录（对于17.2版本，为<samp class="file">gdb-17.2</samp>），你可以通过以下方式生成Info文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">cd gdb
+make gdb.info
+</pre></div>
+
+<p>如果你想排版并打印本手册的副本，你需要TeX、一个用于打印其<small class="sc">DVI</small>输出文件的程序以及<samp class="file">texinfo.tex</samp>，即Texinfo定义文件。
+</p>
+<p>TeX是一个排版程序；它不会直接打印文件，而是生成称为<small class="sc">DVI</small>文件的输出文件。要打印排版后的文档，你需要一个用于打印<small class="sc">DVI</small>文件的程序。如果你的系统安装了TeX，很可能它有这样一个程序。具体使用的命令取决于你的系统；<kbd class="kbd">lpr -d</kbd>很常见；另一个（用于PostScript设备）是<kbd class="kbd">dvips</kbd>。<small class="sc">DVI</small>打印命令可能需要一个没有任何扩展名的文件名或一个&lsquo;<samp class="samp">.dvi</samp>&rsquo;扩展名。
+</p>
+<p>TeX还需要一个名为<samp class="file">texinfo.tex</samp>的宏定义文件。该文件告诉TeX如何排版以Texinfo格式编写的文档。仅靠TeX本身无法读取或排版Texinfo文件。<samp class="file">texinfo.tex</samp>随GDB一起分发，位于<samp class="file">gdb-<var class="var">版本号</var>/texinfo</samp>目录中。
+</p>
+<p>如果你安装了TeX和一个<small class="sc">DVI</small>打印机程序，你可以排版并打印本手册。首先切换到主源目录中的<samp class="file">gdb</samp>子目录（例如，切换到<samp class="file">gdb-17.2/gdb</samp>）并输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make gdb.dvi
+</pre></div>
+
+<p>然后将<samp class="file">gdb.dvi</samp>提供给你的<small class="sc">DVI</small>打印程序。
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT20" href="#DOCF20">(20)</a></h5>
+<p>在17.2版本的<samp class="file">gdb-17.2/gdb/refcard.ps</samp>中。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Installing-GDB.html">安装 <small class="sc">GDB</small></a>，上一页：<a href="In-Memoriam.html">纪念</a>，向上：<a href="index.html">使用 <small class="sc">GDB</small> 调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的符号表（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的符号表（使用GDB调试）">
+<meta name="keywords" content="Guile中的符号表（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Breakpoints-In-Guile.html" rel="next" title="Guile中的断点">
+<link href="Symbols-In-Guile.html" rel="prev" title="Guile中的符号">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的符号表">
+<div class="nav-panel">
+<p>
+下一页：<a href="Breakpoints-In-Guile.html" accesskey="n" rel="next">使用Guile操作断点</a>，上一页：<a href="Symbols-In-Guile.html" accesskey="p" rel="prev">符号的Guile表示。</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中的符号表表示"><span>23.4.3.18 Guile中的符号表表示。<a class="copiable-link" href="#Guile中的符号表表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的符号表"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asymtab_003e"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asal_003e"></a>
+
+<p>通过两个对象，Guile可以访问由GDB在被调试程序中维护的符号表数据：<code class="code">&lt;gdb:sal&gt;</code>（符号表和行）和<code class="code">&lt;gdb:symtab&gt;</code>。帧的符号表和行数据从<code class="code">frame-find-sal</code> <code class="code">&lt;gdb:frame&gt;</code>过程返回。
+请参阅 <a class="xref" href="Frames-In-Guile.html">从Guile访问被调试程序的堆栈帧。</a>。
+</p>
+<p>有关GDB符号表管理的更多信息，请参阅 <a class="ref" href="Symbols.html">检查符号表</a>。
+</p>
+<p><code class="code">(gdb)</code>模块提供了以下与符号表相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-symtab_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是<code class="code">&lt;gdb:symtab&gt;</code>类型的对象，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dvalid_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-valid?</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dvalid_003f"> &para;</a></span></dt>
+<dd><p>如果<code class="code">&lt;gdb:symtab&gt;</code>对象有效，则返回<code class="code">#t</code>，
+否则返回<code class="code">#f</code>。当它所引用的符号表在GDB中不再存在时，<code class="code">&lt;gdb:symtab&gt;</code>对象将变为无效。
+如果在调用过程时它无效，所有其他<code class="code">&lt;gdb:symtab&gt;</code>过程将抛出异常。</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dfilename"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-filename</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dfilename"> &para;</a></span></dt>
+<dd><p>返回符号表的源文件名。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dfullname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-fullname</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dfullname"> &para;</a></span></dt>
+<dd><p>返回符号表的源绝对文件名。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dobjfile"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-objfile</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dobjfile"> &para;</a></span></dt>
+<dd><p>返回符号表的支持对象文件。请参阅 <a class="xref" href="Objfiles-In-Guile.html">Guile中的目标文件</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dglobal_002dblock"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-global-block</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dglobal_002dblock"> &para;</a></span></dt>
+<dd><p>返回底层符号表的全局块。
+请参阅 <a class="xref" href="Blocks-In-Guile.html">从Guile访问块</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symtab_002dstatic_002dblock"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symtab-static-block</strong> <var class="def-var-arguments">symtab</var><a class="copiable-link" href="#index-symtab_002dstatic_002dblock"> &para;</a></span></dt>
+<dd><p>返回底层符号表的静态块。
+请参阅 <a class="xref" href="Blocks-In-Guile.html">从Guile访问块</a>。
+</p></dd></dl>
+
+<p><code class="code">(gdb)</code>模块提供了以下与符号表和行相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-sal_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是<code class="code">&lt;gdb:sal&gt;</code>类型的对象，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dvalid_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal-valid?</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dvalid_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">sal</var>有效，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。
+当它所引用的符号表对象在GDB中不再存在时，<code class="code">&lt;gdb:sal&gt;</code>对象将变为无效。如果在调用过程时它无效，所有其他<code class="code">&lt;gdb:sal&gt;</code>过程将抛出异常。</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dsymtab"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal-symtab</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dsymtab"> &para;</a></span></dt>
+<dd><p>返回<var class="var">sal</var>的符号表对象（<code class="code">&lt;gdb:symtab&gt;</code>）。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dline"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal-line</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dline"> &para;</a></span></dt>
+<dd><p>返回<var class="var">sal</var>的行号。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dpc"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal-pc</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dpc"> &para;</a></span></dt>
+<dd><p>返回<var class="var">sal</var>的代码所占用地址范围的起始地址。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-sal_002dlast"><span class="category-def">Scheme过程： </span><span><strong class="def-name">sal-last</strong> <var class="def-var-arguments">sal</var><a class="copiable-link" href="#index-sal_002dlast"> &para;</a></span></dt>
+<dd><p>返回<var class="var">sal</var>的代码所占用地址范围的结束地址。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-find_002dpc_002dline"><span class="category-def">Scheme过程： </span><span><strong class="def-name">find-pc-line</strong> <var class="def-var-arguments">pc</var><a class="copiable-link" href="#index-find_002dpc_002dline"> &para;</a></span></dt>
+<dd><p>返回与<pc>值对应的<code class="code">&lt;gdb:sal&gt;</code>对象。
+如果将无效的<pc>值作为参数传递，则返回的<code class="code">&lt;gdb:sal&gt;</code>对象的<code class="code">symtab</code>和<code class="code">line</code>属性将分别为<code class="code">#f</code>和0。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Breakpoints-In-Guile.html">使用Guile操作断点</a>，上一页：<a href="Symbols-In-Guile.html">符号的Guile表示。</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

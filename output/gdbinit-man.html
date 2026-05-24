@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gdbinit手册（使用GDB进行调试）</title>
+
+<meta name="description" content="gdbinit手册（使用GDB进行调试）">
+<meta name="keywords" content="gdbinit手册（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+pre.format-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdbinit-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gdbinit"><span>gdbinit<a class="copiable-link" href="#gdbinit"> ¶</a></span></h3>
+
+
+<div class="format">
+<pre class="format-preformatted">
+
+
+~/.config/gdb/gdbinit
+
+~/.gdbinit
+
+./.gdbinit
+</pre></div>
+
+<p>这些文件包含在GDB启动期间自动执行的GDB命令。内容行是预定义的命令序列，在
+<a class="ref" href="Sequences.html">命令预定义序列</a> 中有描述。
+</p>
+<p>请在
+<a class="ref" href="Startup.html">GDB启动时的操作</a> 中阅读更多内容。
+</p>
+<dl class="table">  
+<dt><code class="env">(编译期间未使用<code class="code">--with-system-gdbinit</code>启用)</code></dt>
+<dd><p>系统范围的初始化文件。除非用户指定了GDB选项<code class="code">-nx</code>或<code class="code">-n</code>，否则它会被执行。
+更多信息见
+</p></dd>  
+<dt><code class="env">(编译期间未使用<code class="code">--with-system-gdbinit-dir</code>启用)</code></dt>
+<dd><p>系统范围的初始化目录。只要这些文件具有可识别的文件扩展名，该目录中的所有文件在启动时都会被执行，除非用户指定了GDB选项<code class="code">-nx</code>或<code class="code">-n</code>。
+更多信息见
+<a class="ref" href="System_002dwide-configuration.html">系统范围的配置和设置</a>。
+</p>
+</dd>  
+<dt><code class="env"><samp class="file">~/.config/gdb/gdbinit</samp> 或 <samp class="file">~/.gdbinit</samp></code></dt>
+<dd><p>用户初始化文件。除非用户指定了GDB选项<code class="code">-nx</code>、<code class="code">-n</code>或<code class="code">-nh</code>，否则它会被执行。</p>
+</dd>  
+<dt><code class="env"><samp class="file">.gdbinit</samp></code></dt>
+<dd><p>当前目录的初始化文件。可能需要使用GDB安全命令<code class="code">set auto-load local-gdbinit</code>来启用它。
+更多信息见
+<a class="ref" href="Init-File-in-the-Current-Directory.html">自动加载当前目录中的初始化文件</a>。
+</p></dd>
+</dl>
+
+
+
+
+
+</body>
+</html>

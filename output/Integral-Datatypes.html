@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>整数数据类型（使用GDB调试）</title>
+
+<meta name="description" content="整数数据类型（使用GDB调试）">
+<meta name="keywords" content="整数数据类型（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="特定协议的数据类型表示">
+<link href="Pointer-Values.html" rel="next" title="指针值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="Integral-Datatypes">  
+<div class="nav-panel">
+<p>
+下一页：<a href="Pointer-Values.html" accesskey="n" rel="next">指针值</a>，上一级：<a href="Protocol_002dspecific-Representation-of-Datatypes.html" accesskey="u" rel="up">特定协议的数据类型表示</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="Integral-Datatypes-1"><span>整数数据类型<a class="copiable-link" href="#Integral-Datatypes-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-integral-datatypes_002c-in-file_002di_002fo-protocol"></a>
+
+<p>系统调用中使用的整数数据类型有 <code class="code">int</code>、
+<code class="code">unsigned int</code>、<code class="code">long</code>、<code class="code">unsigned long</code>、
+<code class="code">mode_t</code> 和 <code class="code">time_t</code>。  
+</p>
+<p><code class="code">int</code>、<code class="code">unsigned int</code>、<code class="code">mode_t</code> 和 <code class="code">time_t</code> 在本协议中实现为32位值。
+</p>
+<p><code class="code">long</code> 和 <code class="code">unsigned long</code> 实现为64位类型。
+</p>  
+<p>有关相应的MIN和MAX值（类似于 <samp class="file">limits.h</samp> 中的值），请参阅 <a class="xref" href="Limits.html">限制</a>，以便对主机和目标进行范围检查。
+</p>
+<p><code class="code">time_t</code> 数据类型定义为自纪元以来的秒数。
+</p>
+<p>作为结构化数据类型（例如 <code class="code">struct stat</code>）的内存读取或写入的一部分传输的所有整数数据类型都必须以大端字节序给出。
+</p>
+</div>
+
+
+
+</body>
+</html> 

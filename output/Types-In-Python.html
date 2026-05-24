@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Python中的类型（使用GDB进行调试）</title>
+
+<meta name="description" content="Python中的类型（使用GDB进行调试）">
+<meta name="keywords" content="Python中的类型（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Pretty-Printing-API.html" rel="next" title="漂亮打印API">
+<link href="Values-From-Inferior.html" rel="prev" title="来自下级的值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的类型">
+<div class="nav-panel">
+<p>
+下一个：<a href="Pretty-Printing-API.html" accesskey="n" rel="next">漂亮打印API</a>，上一个：<a href="Values-From-Inferior.html" accesskey="p" rel="prev">来自下级的值</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的类型-1"><span>23.3.2.5 Python中的类型<a class="copiable-link" href="#Python中的类型-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python中的类型"></a>
+<a class="index-entry-id" id="index-Python_002c处理类型"></a>
+
+<a class="index-entry-id" id="index-gdb_002eType"></a>
+<p><small class="sc">GDB</small> 使用 <code class="code">gdb.Type</code> 类来表示下级中的类型。
+</p>
+<p><code class="code">gdb</code> 模块中提供了以下与类型相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005ftype"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_type</strong> <var class="def-var-arguments">(name <span class="r">[</span>, block<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005ftype"> &para;</a></span></dt>
+<dd><p>此函数通过其 <var class="var">name</var>（必须是字符串）查找类型。
+</p>
+<p>如果给出了 <var class="var">block</var>，则在该作用域中查找 <var class="var">name</var>。
+否则，将在全局范围内搜索。
+</p>
+<p>通常，此函数将返回一个 <code class="code">gdb.Type</code> 实例。
+如果找不到指定的类型，它将引发异常。
+</p></dd></dl>
+
+<p>无需按名称查找即可找到整数类型。
+有关 <code class="code">integer_type</code> 方法，请参阅 <a class="xref" href="Python中架构的表示.html">Python中架构的表示</a>。
+</p>
+<p>如果类型是结构体或类类型，或者是枚举类型，则可以使用Python的 <em class="dfn">字典语法</em> 来访问该类型的字段。
+例如，如果 <code class="code">some_type</code> 是一个持有结构体类型的 <code class="code">gdb.Type</code> 实例，则可以使用以下方式访问其 <code class="code">foo</code> 字段：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">bar = some_type['foo']
+</pre></div>
+
+<p><code class="code">bar</code> 将是一个 <code class="code">gdb.Field</code> 对象；有关 <code class="code">gdb.Field</code> 类的描述，请参阅下面 <code class="code">Type.fields</code> 方法的描述。
+</p>
+<p><code class="code">Type</code> 的实例具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002ealignof"><span class="category-def">变量： </span><span><strong class="def-name">Type.alignof</strong><a class="copiable-link" href="#index-Type_002ealignof"> &para;</a></span></dt>
+<dd><p>此类型的对齐方式，以字节为单位。类型对齐来自调试信息；如果未指定，则 <small class="sc">GDB</small> 将使用相关的ABI来尝试确定对齐方式。在某些情况下，即使这样也不可能，将返回零。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002ecode"><span class="category-def">变量： </span><span><strong class="def-name">Type.code</strong><a class="copiable-link" href="#index-Type_002ecode"> &para;</a></span></dt>
+<dd><p>此类型的类型代码。类型代码将是下面定义的 <code class="code">TYPE_CODE_</code> 常量之一。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002edynamic"><span class="category-def">变量： </span><span><strong class="def-name">Type.dynamic</strong><a class="copiable-link" href="#index-Type_002edynamic"> &para;</a></span></dt>
+<dd><p>一个布尔值，指示此类型是否为动态类型。在某些情况下，例如Rust <code class="code">enum</code> 类型或Ada变体记录，值的具体类型可能因其内容而异。也就是说，变量的声明类型或 <code class="code">gdb.lookup_type</code> 返回的类型可能是动态的；而变量值的类型将是该动态类型的具体实例。
+</p>
+<p>例如，考虑以下代码：
+</p><div class="example smallexample">
+<pre class="example-preformatted">int n;
+int array[n];
+</pre></div>
+
+<p>在这里，至少在概念上（您的编译器是否实际这样做是另一个问题），检查 <code class="code">gdb.lookup_symbol(&quot;array&quot;,&nbsp;...).type</code><!-- /@w -->
+可能会产生一个 <code class="code">gdb.Type</code>，它报告的大小为 <code class="code">None</code>。
+这就是动态类型。
+</p>
+<p>但是，检查 <code class="code">gdb.parse_and_eval(&quot;array&quot;).type</code> 将产生一个具体类型，其长度是已知的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002ename"><span class="category-def">变量： </span><span><strong class="def-name">Type.name</strong><a class="copiable-link" href="#index-Type_002ename"> &para;</a></span></dt>
+<dd><p>此类型的名称。如果此类型没有名称，则返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002esizeof"><span class="category-def">变量： </span><span><strong class="def-name">Type.sizeof</strong><a class="copiable-link" href="#index-Type_002esizeof"> &para;</a></span></dt>
+<dd><p>此类型的大小，以目标 <code class="code">char</code> 单位表示。通常，目标的 <code class="code">char</code> 类型将是一个八位字节。但是，在一些不寻常的平台上，此类型可能具有不同的大小。动态类型可能没有固定的大小；在这种情况下，此属性的值将为 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002etag"><span class="category-def">变量： </span><span><strong class="def-name">Type.tag</strong><a class="copiable-link" href="#index-Type_002etag"> &para;</a></span></dt>
+<dd><p>此类型的标签名称。标签名称是C和C<code class="t">++</code> 中 <code class="code">struct</code>、<code class="code">union</code> 或 <code class="code">enum</code> 后面的名称；并非所有语言都有此概念。如果此类型没有标签名称，则返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002eobjfile"><span class="category-def">变量： </span><span><strong class="def-name">Type.objfile</strong><a class="copiable-link" href="#index-Type_002eobjfile"> &para;</a></span></dt>
+<dd><p>定义此类型的 <code class="code">gdb.Objfile</code>，如果没有关联的目标文件，则为 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002eis_005fscalar"><span class="category-def">变量： </span><span><strong class="def-name">Type.is_scalar</strong><a class="copiable-link" href="#index-Type_002eis_005fscalar"> &para;</a></span></dt>
+<dd><p>如果类型是标量类型，则此属性为 <code class="code">True</code>，否则为 <code class="code">False</code>。非标量类型的示例包括结构体、联合体和类。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002eis_005fsigned"><span class="category-def">变量： </span><span><strong class="def-name">Type.is_signed</strong><a class="copiable-link" href="#index-Type_002eis_005fsigned"> &para;</a></span></dt>
+<dd><p>对于标量类型（即 <code class="code">Type.is_scalar</code> 为 <code class="code">True</code> 的类型），如果类型是有符号的，则此属性为 <code class="code">True</code>，否则为 <code class="code">False</code>。
+</p>
+<p>尝试为非标量类型（即 <code class="code">Type.is_scalar</code> 为 <code class="code">False</code> 的类型）读取此属性将引发 <code class="code">ValueError</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002eis_005farray_005flike"><span class="category-def">变量： </span><span><strong class="def-name">Type.is_array_like</strong><a class="copiable-link" href="#index-Type_002eis_005farray_005flike"> &para;</a></span></dt>
+<dd><a class="anchor" id="Type_002eis_005farray_005flike"></a><p>一个布尔值，指示此类型是否类似数组。
+</p>
+<p>一些语言具有内部表示为结构体的类似数组的对象。例如，Rust切片类型或Ada无约束数组就是如此。<small class="sc">GDB</small> 可能知道这些类型。此判断是基于类型起源的语言进行的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Type_002eis_005fstring_005flike"><span class="category-def">变量： </span><span><strong class="def-name">Type.is_string_like</strong><a class="copiable-link" href="#index-Type_002eis_005fstring_005flike"> &para;</a></span></dt>
+<dd><p>一个布尔值，指示此类型是否类似字符串。与 <code class="code">Type.is_array_like</code> 一样，这是基于类型起源的语言确定的。
+</p></dd></dl>
+
+<p>提供了以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002efields"><span class="category-def">函数： </span><span><strong class="def-name">Type.fields</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002efields"> &para;</a></span></dt>
+<dd>
+<p>返回此类型的字段。行为取决于类型代码：
+</p>
+<ul class="itemize mark-bullet">
+<li>对于结构体和联合体类型，此方法返回字段。
+
+</li><li>枚举类型每个枚举常量有一个字段。
+
+</li><li>函数和方法类型每个参数有一个字段。C<code class="t">++</code> 类的基类型也表示为字段。
+
+</li><li>数组类型有一个表示数组范围的字段。
+
+</li><li>如果类型不属于这些类别之一，则会引发 <code class="code">TypeError</code>。
+
+</li></ul>
+
+<p>每个字段都是一个 <code class="code">gdb.Field</code> 对象，具有一些预定义的属性：
+</p><dl class="table">
+<dt><code class="code">bitpos</code></dt>
+<dd><p>此属性不适用于 <code class="code">enum</code> 或 <code class="code">static</code>（如在C<code class="t">++</code> 中）字段。值是从包含类型的开头开始以位为单位的位置。请注意，在动态类型中，字段的位置可能不是常量。在这种情况下，值将为 <code class="code">None</code>。此外，动态类型可能有一些在相应具体类型中不出现的字段。
+</p>
+</dd>
+<dt><code class="code">enumval</code></dt>
+<dd><p>此属性仅适用于 <code class="code">enum</code> 字段，其值是枚举成员的整数表示。
+</p>
+</dd>
+<dt><code class="code">name</code></dt>
+<dd><p>字段的名称，如果是匿名字段则为 <code class="code">None</code>。
+</p>
+</dd>
+<dt><code class="code">artificial</code></dt>
+<dd><p>如果字段是人为的（通常意味着它是由编译器提供而不是用户提供的），则此属性为 <code class="code">True</code>。此属性总是提供的，如果字段不是人为的，则为 <code class="code">False</code>。
+</p>
+</dd>
+<dt><code class="code">is_base_class</code></dt>
+<dd><p>如果字段表示C<code class="t">++</code> 结构体的基类，则此属性为 <code class="code">True</code>。此属性总是提供的，如果字段不是 <code class="code">fields</code> 方法的参数类型的基类，或者该类型不是C<code class="t">++</code> 类，则为 <code class="code">False</code>。
+</p>
+</dd>
+<dt><code class="code">bitsize</code></dt>
+<dd><p>如果字段是打包的或位域，则此属性将具有非零值，即字段的位大小。否则，此属性将为零；在这种情况下，字段的大小由其类型给出。
+</p>
+</dd>
+<dt><code class="code">type</code></dt>
+<dd><p>字段的类型。这通常是一个 <code class="code">Type</code> 实例，但在某些情况下可能为 <code class="code">None</code>。
+</p>
+</dd>
+<dt><code class="code">parent_type</code></dt>
+<dd><p>包含此字段的类型。这是一个 <code class="code">gdb.Type</code> 实例。
+</p></dd>
+</dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002earray"><span class="category-def">函数： </span><span><strong class="def-name">Type.array</strong> <var class="def-var-arguments">(n1 <span class="r">[</span>, n2<span class="r">]</span>)</var><a class="copiable-link" href="#index-Type_002earray"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的数组。如果给出一个参数，则它是数组的包含上限；在这种情况下，下限为零。如果给出两个参数，则第一个参数是数组的下限，第二个参数是数组的上限。数组的长度不能为负，但边界可以为负。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002evector"><span class="category-def">函数： </span><span><strong class="def-name">Type.vector</strong> <var class="def-var-arguments">(n1 <span class="r">[</span>, n2<span class="r">]</span>)</var><a class="copiable-link" href="#index-Type_002evector"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的向量。如果给出一个参数，则它是向量的包含上限；在这种情况下，下限为零。如果给出两个参数，则第一个参数是向量的下限，第二个参数是向量的上限。向量的长度不能为负，但边界可以为负。
+</p>
+<p>数组和向量的区别在于，数组的行为类似于C中的数组：在表达式中使用时，它们会衰减为指向第一个元素的指针，而向量被视为一等值。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002econst"><span class="category-def">函数： </span><span><strong class="def-name">Type.const</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002econst"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的 <code class="code">const</code> 限定变体。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002evolatile"><span class="category-def">函数： </span><span><strong class="def-name">Type.volatile</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002evolatile"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的 <code class="code">volatile</code> 限定变体。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002eunqualified"><span class="category-def">函数： </span><span><strong class="def-name">Type.unqualified</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002eunqualified"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的非限定变体。也就是说，表示既不是 <code class="code">const</code> 也不是 <code class="code">volatile</code> 的类型。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002erange"><span class="category-def">函数： </span><span><strong class="def-name">Type.range</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002erange"> &para;</a></span></dt>
+<dd><p>返回一个Python <code class="code">Tuple</code> 对象，该对象包含两个元素：参数类型的下限和上限。如果类型没有范围，<small class="sc">GDB</small> 将引发 <code class="code">gdb.error</code> 异常（请参阅 <a class="pxref" href="异常处理.html">异常处理</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002ereference"><span class="category-def">函数： </span><span><strong class="def-name">Type.reference</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002ereference"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示对此类型的引用。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002epointer"><span class="category-def">函数： </span><span><strong class="def-name">Type.pointer</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002epointer"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示指向此类型的指针。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002estrip_005ftypedefs"><span class="category-def">函数： </span><span><strong class="def-name">Type.strip_typedefs</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002estrip_005ftypedefs"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code>，该对象表示去除所有typedef层后的实际类型。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002etarget"><span class="category-def">函数： </span><span><strong class="def-name">Type.target</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Type_002etarget"> &para;</a></span></dt>
+<dd><p>返回一个新的 <code class="code">gdb.Type</code> 对象，该对象表示此类型的目标类型。
+</p>
+<p>对于指针类型，目标类型是指向的对象的类型。对于数组类型（指C风格的数组），目标类型是数组元素的类型。对于函数或方法类型，目标类型是返回值的类型。对于复杂类型，目标类型是元素的类型。对于typedef，目标类型是别名类型。
+</p>
+<p>如果类型没有目标，此方法将引发异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Type_002etemplate_005fargument"><span class="category-def">函数： </span><span><strong class="def-name">Type.template_argument</strong> <var class="def-var-arguments">(n <span class="r">[</span>, block<span class="r">]</span>)</var><a class="copiable-link" href="#index-Type_002etemplate_005fargument"> &para;</a></span></dt>

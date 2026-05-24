@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>退出GDB（使用GDB调试）</title>
+
+<meta name="description" content="退出GDB（使用GDB调试）">
+<meta name="keywords" content="退出GDB（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invocation.html" rel="up" title="调用">
+<link href="Shell-Commands.html" rel="next" title="Shell命令">
+<link href="Invoking-GDB.html" rel="prev" title="调用GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="退出GDB">
+<div class="nav-panel">
+<p>
+下一页: <a href="Shell-Commands.html" accesskey="n" rel="next">Shell命令</a>, 上一页: <a href="Invoking-GDB.html" accesskey="p" rel="prev">调用<small class="sc">GDB</small></a>, 向上: <a href="Invocation.html" accesskey="u" rel="up">进入和退出<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="退出gdb"><span>2.2退出<small class="sc">GDB</small><a class="copiable-link" href="#退出gdb"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-退出gdb"></a>
+<a class="index-entry-id" id="index-离开gdb"></a>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-exit-_005b表达式_005d"></a>
+<a class="index-entry-id" id="index-q-_0028退出_0029"></a>
+<a id="index-退出-_005b表达式_005d"></a><span><code class="code">退出 <span class="r">[</span><var class="var">表达式</var><span class="r">]</span></code><a class="copiable-link" href="#index-退出-_005b表达式_005d"> &para;</a></span></dt>
+<dt><code class="code">exit <span class="r">[</span><var class="var">表达式</var><span class="r">]</span></code></dt>
+<dt><code class="code">q</code></dt>
+<dd><p>要退出<small class="sc">GDB</small>，可使用<code class="code">退出</code>命令（缩写为<code class="code">q</code>）、<code class="code">exit</code>命令，或者输入文件结束字符（通常是<kbd class="kbd">Ctrl-d</kbd>）。如果不提供<var class="var">表达式</var>，<small class="sc">GDB</small>将正常终止；否则它将使用<var class="var">表达式</var>的结果作为错误代码来终止。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-中断"></a>
+<p>中断（通常是<kbd class="kbd">Ctrl-c</kbd>）不会退出<small class="sc">GDB</small>，而是会终止任何正在进行的<small class="sc">GDB</small>命令的操作，并返回<small class="sc">GDB</small>命令级别。随时输入中断字符都是安全的，因为<small class="sc">GDB</small>直到安全的时候才会允许它生效。
+</p>
+<p>如果你一直在使用<small class="sc">GDB</small>来控制一个附加的进程或设备，可以使用<code class="code">detach</code>命令来释放它（见<a class="pxref" href="Attach.html">调试一个已经运行的进程</a>）。
+</p>
+</div>
+
+
+
+</body>
+</html>

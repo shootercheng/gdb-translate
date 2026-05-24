@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>自由文档（使用GDB调试）</title>
+
+<meta name="description" content="自由文档（使用GDB调试）">
+<meta name="keywords" content="自由文档（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Summary.html" rel="up" title="总结">
+<link href="Contributors.html" rel="next" title="贡献者">
+<link href="Free-Software.html" rel="prev" title="自由软件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsec-level-extent" id="自由文档">
+<div class="nav-panel">
+<p>
+下一页：<a href="Contributors.html" accesskey="n" rel="next">GDB的贡献者</a>，上一页：<a href="Free-Software.html" accesskey="p" rel="prev">自由软件</a>，向上：<a href="Summary.html" accesskey="u" rel="up">GDB总结</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="unnumberedsec" id="自由软件需要自由文档"><span>自由软件需要自由文档<a class="copiable-link" href="#自由软件需要自由文档"> &para;</a></span></h3>
+
+<p>当今自由软件社区最大的不足不在于软件本身，而是缺乏我们可以与自由软件一起包含的优质自由文档。我们许多最重要的程序都没有附带免费的参考手册和免费的入门文本。文档是任何软件包的重要组成部分；当一个重要的自由软件包没有附带免费的手册和免费的教程时，这就是一个重大差距。如今我们有许多这样的差距。
+</p>
+<p>以Perl为例。人们通常使用的教程手册不是自由的。这是怎么发生的呢？因为那些手册的作者以限制性条款发布它们，不允许复制、修改，也不提供源文件，这就将它们排除在了自由软件世界之外。
+</p>
+<p>这种事情不是第一次发生，也远不是最后一次。我们多次听到一位GNU用户热切地描述他正在编写的一本手册，这是他打算对社区做出的贡献，结果却得知他因为签署了一份使其变为非自由的出版合同而毁了一切。
+</p>
+<p>自由文档和自由软件一样，关乎自由而非价格。非自由手册的问题不在于出版商对印刷副本收费，这本身是可以的。（自由软件基金会也出售手册的印刷副本。）问题在于对手册使用的限制。自由手册以源代码形式提供，并允许你复制和修改。非自由手册则不允许这样做。
+</p>
+<p>自由手册的自由标准与自由软件大致相同。必须允许重新分发（包括正常的商业重新分发），以便手册可以伴随程序的每一份副本，无论是在线还是纸质的。
+</p>
+<p>允许修改技术内容也至关重要。当人们修改软件，添加或更改功能时，如果他们认真负责，也会修改手册，以便他们可以为修改后的程序提供准确清晰的文档。一本让你别无选择，只能编写一本新手册来记录程序更改版本的手册，对我们的社区来说实际上是不可用的。
+</p>
+<p>对修改处理方式的某些限制是可以接受的。例如，要求保留原作者的版权声明、分发条款或作者列表是可以的。要求修改后的版本包含它们已被修改的通知也没问题。甚至整个不可删除或更改的部分也是可以接受的，只要它们涉及非技术主题（就像这部分）。这些限制是可以接受的，因为它们不会妨碍社区对手册的正常使用。
+</p>
+<p>然而，必须能够修改手册的所有<em class="emph">技术</em>内容，然后通过所有常见媒体、所有常见渠道分发结果。否则，这些限制会妨碍手册的使用，它就不是自由的，我们需要另一本手册来取代它。
+</p>
+<p>请传播关于这个问题的信息。我们的社区仍在不断失去被专有出版的手册。如果我们宣传自由软件需要自由参考手册和自由教程，也许下一个想通过编写文档做出贡献的人会在为时已晚之前意识到，只有自由手册才能为自由软件社区做出贡献。
+</p>
+<p>如果你正在编写文档，请坚持根据GNU自由文档许可证或其他自由文档许可证发布它。记住，这个决定需要你的批准，你不必让出版商决定。如果你坚持，一些商业出版商将使用自由许可证，但他们不会主动提出这个选项；由你提出这个问题并坚定地表明这就是你想要的。如果你正在打交道的出版商拒绝了，请尝试其他出版商。如果你不确定提议的许可证是否自由，请写信至 <a class="email" href="mailto:licensing@gnu.org">licensing@gnu.org</a>。
+</p>
+<p>你可以通过购买来鼓励商业出版商销售更多自由的、遵循著作权共享的手册和教程，特别是从为编写或重大改进支付费用的出版商那里购买副本。同时，尽量完全避免购买非自由文档。在购买手册之前检查其分发条款，并坚持要求任何寻求你业务的人都必须尊重你的自由。查看书籍历史，并尝试奖励那些已经支付或正在支付作者编写书籍费用的出版商。
+</p>
+<p>自由软件基金会在 <a class="url" href="http://www.fsf.org/doc/other-free-books.html">http://www.fsf.org/doc/other-free-books.html</a> 维护了一份由其他出版商发布的自由文档列表。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Contributors.html">GDB的贡献者</a>，上一页：<a href="Free-Software.html">自由软件</a>，向上：<a href="Summary.html">GDB总结</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

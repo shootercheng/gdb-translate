@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>检查点/重启（使用GDB调试）</title>
+
+<meta name="description" content="检查点/重启（使用GDB调试）">
+<meta name="keywords" content="检查点/重启（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Forks.html" rel="prev" title="分叉">
+<style type="text/css"> 
+<!-- 
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em} 
+span:hover a.copiable-link {visibility: visible} 
+--> 
+</style> 
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Checkpoint_002fRestart">
+<div class="nav-panel">
+<p>
+上一个：<a href="Forks.html" accesskey="p" rel="prev">调试分叉</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p>
+</div>
+<hr>
+<h3 class="section" id="Setting-a-Bookmark-to-Return-to-Later"><span>4.12 设置书签以便稍后返回<a class="copiable-link" href="#Setting-a-Bookmark-to-Return-to-Later"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-checkpoint"></a>
+<a class="index-entry-id" id="index-restart"></a>
+<a class="index-entry-id" id="index-bookmark"></a>
+<a class="index-entry-id" id="index-snapshot-of-a-process"></a>
+<a class="index-entry-id" id="index-rewind-program-state"></a>
+
+<p>在某些操作系统上<a class="footnote" id="DOCF4" href="#FOOT4"><sup>4</sup></a>，GDB能够保存程序状态的一个<em class="dfn">快照</em>，称为<em class="dfn">检查点</em>，并在以后返回该状态。
+</p>
+<p>返回到检查点实际上会撤销自保存检查点以来程序中发生的所有事情。这包括内存、寄存器的变化，甚至（在某些限制范围内）系统状态的变化。实际上，这就像是回到了保存检查点的那一刻。
+</p>
+<p>因此，如果您正在逐步调试一个程序，并且认为自己接近出错的点，您可以保存一个检查点。然后，如果您不小心走得太远而错过了关键语句，不必从头重新启动程序，只需回到检查点并从那里重新开始。
+</p>
+<p>如果到达您认为错误发生的点需要花费大量时间或步骤，这可能会特别有用。
+</p>
+<p>要使用检查点/重启的调试方法：
+</p>
+<dl class="table">
+<dt><a id="index-checkpoint-1"></a><span><code class="code">checkpoint</code><a class="copiable-link" href="#index-checkpoint-1"> &para;</a></span></dt>
+<dd><p>保存被调试程序当前执行状态的一个快照。checkpoint命令不带参数，但每个检查点都被分配一个小整数ID，类似于断点ID。
+</p>
+</dd>
+<dt><a id="index-info-checkpoints"></a><span><code class="code">info checkpoints</code><a class="copiable-link" href="#index-info-checkpoints"> &para;</a></span></dt>
+<dd><p>列出当前调试会话中保存的检查点。对于每个检查点，将列出以下信息：
+</p>
+<dl class="table">
+<dt><code class="code">检查点ID</code></dt>
+<dt><code class="code">活动状态指示器</code></dt>
+<dt><code class="code">进程ID</code></dt>
+<dt><code class="code">代码地址</code></dt>
+<dt><code class="code">源行或标签</code></dt>
+</dl>
+
+<p>检查点ID将显示为非负整数或形式为<var class="var">i</var>.<var class="var">n</var>，其中<var class="var">i</var>是子进程编号，一个正整数，如命令<code class="code">info inferiors</code>所示，<var class="var">n</var>是该子进程的检查点编号，一个非负整数。当只有一个子进程时使用单个非负整数形式。当有多个子进程时使用<var class="var">i</var>.<var class="var">n</var>形式。
+</p>
+<p>活动状态指示器是一个单字母，要么是‘<samp class="samp">y</samp>’（是）要么是‘<samp class="samp">n</samp>’（否），表示是或否。每个子进程一次只能有一个活动检查点。当前子进程中的活动检查点在该行开头也会用‘*’表示。活动状态为‘<samp class="samp">n</samp>’的检查点可以使用restart命令切换为活动状态，或使用delete checkpoint命令删除。
+</p>
+</dd>
+<dt><a id="index-restart-checkpoint_002did"></a><span><code class="code">restart <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-restart-checkpoint_002did"> &para;</a></span></dt>
+<dd><p>恢复保存为检查点编号<var class="var">checkpoint-id</var>的程序状态。所有程序变量、寄存器、栈帧等将恢复到保存检查点时它们所具有的值。本质上，gdb将“倒回时钟”到保存检查点的时间点。检查点编号<var class="var">checkpoint-id</var>的指定形式与info checkpoints命令输出的形式相同。
+</p>
+<p>请注意，断点、GDB变量、命令历史等不受恢复检查点的影响。一般来说，检查点只恢复驻留在被调试程序中的内容，而不是调试器中的内容。
+</p>
+</dd>
+<dt><a id="index-delete-checkpoint-checkpoint_002did"></a><span><code class="code">delete checkpoint <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-delete-checkpoint-checkpoint_002did"> &para;</a></span></dt>
+<dd><p>删除由<var class="var">checkpoint-id</var>标识的先前保存的检查点。
+</p> 
+</dd>
+</dl>
+
+<p>返回到先前保存的检查点将恢复被调试程序的用户状态，以及系统（操作系统）状态的一个重要子集，包括文件指针。它不会“撤销”从文件写入的数据，但会将文件指针倒回到先前的位置，以便可以覆盖先前写入的数据。对于以读模式打开的文件，指针也将被恢复，以便可以再次读取先前读取的数据。
+</p>
+<p>当然，已经发送到打印机（或其他外部设备）的字符不能“抢回”，从例如串行设备接收的字符可以从内部程序缓冲区中删除，但不能“推回”到串行管道中以便再次接收。同样，已更改的文件的实际内容此时无法恢复。
+</p>
+<p>然而，在这些限制范围内，您实际上可以将程序“倒回”到先前保存的时间点，并再次开始调试它——并且您可以改变事件的进程，以便这次调试不同的执行路径。
+</p>
+<a class="index-entry-id" id="index-checkpoints-and-process-id"></a>
+<p>最后，当您返回到检查点时，程序的一个内部状态会有所不同——程序的进程ID。每个检查点将有一个唯一的进程ID（或<var class="var">pid</var>），并且每个都将与程序的原始<var class="var">pid</var>不同。如果您的程序保存了其进程ID的本地副本，这可能会带来潜在问题。
+</p>
+<ul class="mini-toc">
+<li><a href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints" accesskey="1">使用检查点的一个不明显的好处</a></li>
+</ul>
+<div class="subsection-level-extent" id="A-Non_002dobvious-Benefit-of-Using-Checkpoints">
+<h4 class="subsection"><span>4.12.1 使用检查点的一个不明显的好处<a class="copiable-link" href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints"> &para;</a></span></h4>
+
+<p>在某些系统上如GNU/Linux，出于安全原因，新进程会进行地址空间随机化。这使得如果必须重新启动程序，很难或不可能在绝对地址上设置断点或观察点，因为符号的绝对位置在每次执行时都会改变。
+</p>
+<p>然而，检查点是进程的一个<em class="emph">相同</em>副本。因此，如果您在（例如）main开始时创建一个检查点，并且只是返回到该检查点而不是重新启动进程，您可以避免地址随机化的影响，并且您的符号都将保持在相同的位置。
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT4" href="#DOCF4">(4)</a></h5>
+<p>目前，仅适用于GNU/Linux。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Forks.html">调试分叉</a>，向上：<a href="Running.html">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p> 
+</div> 
+
+</body>
+</html> 

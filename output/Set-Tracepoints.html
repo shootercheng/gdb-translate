@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>设置跟踪点（使用GDB调试）</title>
+
+<meta name="description" content="设置跟踪点（使用GDB调试）">
+<meta name="keywords" content="设置跟踪点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Tracepoints.html" rel="up" title="跟踪点">
+<link href="Analyze-Collected-Data.html" rel="next" title="分析收集的数据">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="设置跟踪点">
+<div class="nav-panel">
+<p>
+下一页：<a href="Analyze-Collected-Data.html" accesskey="n" rel="next">使用收集的数据</a>，上一级：<a href="Tracepoints.html" accesskey="u" rel="up">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="设置跟踪点的命令"><span>13.1 设置跟踪点的命令<a class="copiable-link" href="#设置跟踪点的命令"> &para;</a></span></h3>
+
+<p>在运行这样的<em class="dfn">跟踪实验</em>之前，可以设置任意数量的跟踪点。跟踪点实际上是一种特殊类型的断点（见<a class="pxref" href="设置断点.html">设置断点</a>），因此可以使用标准的断点命令来操作它。例如，与断点一样，跟踪点编号是从1开始的连续整数，并且许多与跟踪点相关的命令都将跟踪点编号作为其参数，以确定要操作的是哪个跟踪点。
+</p>
+<p>对于每个跟踪点，可以预先指定一些任意的数据集合，希望目标在命中该跟踪点时将这些数据收集到跟踪缓冲区中。收集的数据可以包括寄存器、局部变量或全局数据。稍后，可以使用<small class="sc">GDB</small>命令来检查这些数据在跟踪点被命中时的值。
+</p>
+<p>跟踪点不支持所有的断点功能。跟踪点上的忽略计数没有效果，并且跟踪点在被命中时不能运行<small class="sc">GDB</small>命令。跟踪点也可能不是特定于线程的。
+</p>
+<a class="index-entry-id" id="索引-快速跟踪点"></a>
+<p>一些目标可能支持<em class="dfn">快速跟踪点</em>，它们以不同的方式插入（例如使用跳转而不是陷阱），这样更快，但可能在安装位置上受到限制。
+</p>
+<a class="index-entry-id" id="索引-静态跟踪点"></a>
+<a class="index-entry-id" id="索引-标记，静态跟踪点"></a>
+<a class="index-entry-id" id="索引-探测标记，静态跟踪点"></a>
+<p>常规和快速跟踪点是动态跟踪工具，这意味着它们可以用于在目标中的（几乎）任何位置插入跟踪点。一些目标可能还支持从<small class="sc">GDB</small>控制<em class="dfn">静态跟踪点</em>。通过静态跟踪，一组检测点，也称为<em class="dfn">标记</em>，被嵌入到目标程序中，并且可以通过名称或地址激活或停用它们。这些通常放置在便于调查目标实际在做什么的位置。<small class="sc">GDB</small>对静态跟踪的支持包括能够列出检测点，并将它们与<small class="sc">GDB</small>定义的高级跟踪点关联，这些高级跟踪点展示了<small class="sc">GDB</small>跟踪点支持的全部便利性。具体来说，支持收集寄存器值以及全局或局部（相对于检测点）变量的值；跟踪点条件和跟踪状态变量。在检测点或标记上安装<small class="sc">GDB</small>静态跟踪点的行为被称为<em class="dfn">探测</em>一个静态跟踪点标记。
+</p>
+<p><code class="code">gdbserver</code>在一些目标系统上支持跟踪点。
+见<a class="xref" href="服务器.html"><code class="code">gdbserver</code>中的跟踪点支持</a>。
+</p>
+<p>本节描述设置跟踪点以及相关条件和操作的命令。
+</p>
+
+<ul class="mini-toc">
+<li><a href="创建和删除跟踪点.html" accesskey="1">创建和删除跟踪点</a></li>
+<li><a href="启用和禁用跟踪点.html" accesskey="2">启用和禁用跟踪点</a></li>
+<li><a href="跟踪点通过计数.html" accesskey="3">跟踪点通过计数</a></li>
+<li><a href="跟踪点条件.html" accesskey="4">跟踪点条件</a></li>
+<li><a href="跟踪状态变量.html" accesskey="5">跟踪状态变量</a></li>
+<li><a href="跟踪点操作.html" accesskey="6">跟踪点操作列表</a></li>
+<li><a href="列出跟踪点.html" accesskey="7">列出跟踪点</a></li>
+<li><a href="列出静态跟踪点标记.html" accesskey="8">列出静态跟踪点标记</a></li>
+<li><a href="启动和停止跟踪实验.html" accesskey="9">启动和停止跟踪实验</a></li>
+<li><a href="跟踪点限制.html">跟踪点限制</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Analyze-Collected-Data.html">使用收集的数据</a>，上一级：<a href="Tracepoints.html">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

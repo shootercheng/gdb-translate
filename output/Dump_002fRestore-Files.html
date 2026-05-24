@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>转储/恢复文件（使用GDB调试）</title>
+
+<meta name="description" content="转储/恢复文件（使用GDB调试）">
+<meta name="keywords" content="转储/恢复文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Core-File-Generation.html" rel="next" title="核心文件生成">
+<link href="Memory-Region-Attributes.html" rel="prev" title="内存区域属性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="转储_002f恢复文件">
+<div class="nav-panel">
+<p>
+下一页：<a href="Core-File-Generation.html" accesskey="n" rel="next">如何从你的程序生成核心文件</a>，上一页：<a href="Memory-Region-Attributes.html" accesskey="p" rel="prev">内存区域属性</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="内存与文件之间的复制"><span>10.19内存与文件之间的复制<a class="copiable-link" href="#内存与文件之间的复制"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-转储_002f恢复文件"></a>
+<a class="index-entry-id" id="索引-将数据追加到文件"></a>
+<a class="index-entry-id" id="索引-将数据转储到文件"></a>
+<a class="index-entry-id" id="索引-从文件恢复数据"></a>
+
+<p>你可以使用命令<code>dump</code>、<code>append</code>和<code>restore</code>在目标内存和文件之间复制数据。<code>dump</code>和<code>append</code>命令将数据写入文件，而<code>restore</code>命令将文件中的数据读回到下级进程的内存中。文件可以是二进制、摩托罗拉S记录、英特尔十六进制、泰克tronix十六进制或Verilog十六进制格式；但是，GDB只能追加到二进制文件，并且不能从Verilog十六进制文件读取。
+</p>
+<dl class="table">
+<dt><a id="索引-dump"></a><span><code>dump [<var>格式</var>] memory <var>文件名</var> <var>起始地址</var> <var>结束地址</var></code><a class="copiable-link" href="#索引-dump"> &para;</a></span></dt>
+<dt><code>dump [<var>格式</var>] value <var>文件名</var> <var>表达式</var></code></dt>
+<dd><p>将从<var>起始地址</var>到<var>结束地址</var>的内存内容，或<var>表达式</var>的值，以给定格式转储到<var>文件名</var>。
+</p>
+<p><var>格式</var>参数可以是以下任何一种：
+</p><dl class="table">
+<dt><code>binary</code></dt>
+<dd><p>原始二进制形式。
+</p></dd>
+<dt><code>ihex</code></dt>
+<dd><p>英特尔十六进制格式。
+</p></dd>
+<dt><code>srec</code></dt>
+<dd><p>摩托罗拉S记录格式。
+</p></dd>
+<dt><code>tekhex</code></dt>
+<dd><p>泰克tronix十六进制格式。
+</p></dd>
+<dt><code>verilog</code></dt> 
+<dd><p>Verilog十六进制格式 (GDB不能从Verilog Hex文件读取数据，这里只做格式列举)。 
+</p></dd>
+</dl>
+
+<p>GDB使用与GNU二进制实用程序（如‘objdump’和‘objcopy’）相同的这些格式定义。如果省略<var>格式</var>，GDB将以原始二进制形式转储数据。
+</p>
+</dd>
+<dt><a id="索引-append"></a><span><code>append [binary] memory <var>文件名</var> <var>起始地址</var> <var>结束地址</var></code><a class="copiable-link" href="#索引-append"> &para;</a></span></dt>
+<dt><code>append [binary] value <var>文件名</var> <var>表达式</var></code></dt>
+<dd><p>将从<var>起始地址</var>到<var>结束地址</var>的内存内容，或<var>表达式</var>的值，以原始二进制形式追加到文件<var>文件名</var>。(GDB只能将数据追加到原始二进制形式的文件。)</p>
+</dd>
+<dt><a id="索引-restore"></a><span><code>restore <var>文件名</var> [binary] <var>偏移量</var> <var>起始位置</var> <var>结束位置</var></code><a class="copiable-link" href="#索引-restore"> &para;</a></span></dt>
+<dd><p>将文件<var>文件名</var>的内容恢复到内存中。restore命令可以自动识别任何已知的BFD文件格式，但原始二进制格式除外。要恢复原始二进制文件，你必须在文件名后指定可选关键字binary。
+</p>
+<p>如果<var>偏移量</var>不为零，其值将添加到文件中包含的地址。二进制文件总是从地址零开始，因此它们将在地址<var>偏移量</var>处恢复。其他bfd文件有一个内置位置；它们将从该位置偏移<var>偏移量</var>处恢复。
+</p>
+<p>如果<var>起始位置</var>和/或<var>结束位置</var>不为零，那么只恢复文件偏移量<var>起始位置</var>和文件偏移量<var>结束位置</var>之间的数据。这些偏移量是相对于文件中的地址的，在应用<var>偏移量</var>参数之前。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Core-File-Generation.html">如何从你的程序生成核心文件</a>，上一页：<a href="Memory-Region-Attributes.html">内存区域属性</a>

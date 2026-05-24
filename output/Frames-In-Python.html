@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>Python中的栈帧（使用GDB调试）</title>
+
+<meta name="description" content="Python中的栈帧（使用GDB调试）">
+<meta name="keywords" content="Python中的栈帧（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Blocks-In-Python.html" rel="next" title="Python中的代码块">
+<link href="Objfiles-In-Python.html" rel="prev" title="Python中的目标文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的栈帧">
+<div class="nav-panel">
+<p>
+下一个：<a href="Blocks-In-Python.html" accesskey="n" rel="next">从Python访问代码块</a>，上一个：<a href="Objfiles-In-Python.html" accesskey="p" rel="prev">Python中的目标文件</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="从Python访问底层栈帧"><span>23.3.2.28从Python访问底层栈帧<a class="copiable-link" href="#从Python访问底层栈帧"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python中的栈帧"></a>
+<p>当被调试程序停止时，GDB能够分析其调用栈（见<a class="pxref" href="Frames.html">栈帧</a>）。<code>gdb.Frame</code>类表示栈中的一个帧。一个<code>gdb.Frame</code>对象仅在其对应的帧存在于底层进程的栈中时才有效。如果你尝试使用一个无效的帧对象，GDB将抛出一个<code>gdb.error</code>异常（见<a class="pxref" href="Exception-Handling.html">异常处理</a>）。
+</p>
+<p>两个<code>gdb.Frame</code>对象可以使用<code>==</code>运算符进行相等性比较，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python print gdb.newest_frame() == gdb.selected_frame ()
+True
+</pre></div>
+
+<p><code>gdb</code>模块中提供了以下与帧相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005fframe"><span class="category-def">函数： </span><span><strong class="def-name">gdb.selected_frame</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005fframe"> &para;</a></span></dt>
+<dd><p>返回选定的帧对象。（见<a class="pxref" href="Selection.html">选择一个帧</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002enewest_005fframe"><span class="category-def">函数： </span><span><strong class="def-name">gdb.newest_frame</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002enewest_005fframe"> &para;</a></span></dt>
+<dd><p>返回选定线程的最新帧对象。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eframe_005fstop_005freason_005fstring"><span class="category-def">函数： </span><span><strong class="def-name">gdb.frame_stop_reason_string</strong> <var class="def-var-arguments">(reason)</var><a class="copiable-link" href="#index-gdb_002eframe_005fstop_005freason_005fstring"> &para;</a></span></dt>
+<dd><p>返回一个字符串，解释GDB停止展开帧的原因，由给定的<var>reason</var>代码（一个整数，见本节后面的<code>unwind_stop_reason</code>方法）表示。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einvalidate_005fcached_005fframes"><span class="category-def">函数： </span><span><strong class="def-name">gdb.invalidate_cached_frames</strong><a class="copiable-link" href="#index-gdb_002einvalidate_005fcached_005fframes"> &para;</a></span></dt>
+<dd><p>GDB在内部保存了已展开帧的缓存。此函数使该缓存无效。
+</p>
+<p>一般情况下，普通的Python代码不应调用此函数。为了完整性而记录在此。
+</p></dd></dl>
+
+<p>一个<code>gdb.Frame</code>对象有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Frame.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>如果<code>gdb.Frame</code>对象有效，则返回True，否则返回False。如果它所引用的帧在底层进程中不再存在，则帧对象可能会变为无效。如果在调用方法时帧对象无效，所有<code>gdb.Frame</code>方法都将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002ename"><span class="category-def">函数： </span><span><strong class="def-name">Frame.name</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002ename"> &para;</a></span></dt>
+<dd><p>返回帧的函数名，如果无法获取则返回<code>None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002earchitecture"><span class="category-def">函数： </span><span><strong class="def-name">Frame.architecture</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002earchitecture"> &para;</a></span></dt>
+<dd><p>返回与帧的体系结构对应的<code>gdb.Architecture</code>对象。见<a class="xref" href="Architectures-In-Python.html">体系结构的Python表示</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002etype"><span class="category-def">函数： </span><span><strong class="def-name">Frame.type</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002etype"> &para;</a></span></dt>

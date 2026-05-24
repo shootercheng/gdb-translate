@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>目标描述格式（使用GDB调试）</title>
+
+<meta name="description" content="目标描述格式（使用GDB调试）">
+<meta name="keywords" content="目标描述格式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Target-Descriptions.html" rel="up" title="目标描述">
+<link href="Predefined-Target-Types.html" rel="next" title="预定义目标类型">
+<link href="Retrieving-Descriptions.html" rel="prev" title="获取描述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="目标描述格式">
+<div class="nav-panel">
+<p>
+下一个：<a href="Predefined-Target-Types.html" accesskey="n" rel="next">预定义目标类型</a>，上一个：<a href="Retrieving-Descriptions.html" accesskey="p" rel="prev">获取描述</a>，向上：<a href="Target-Descriptions.html" accesskey="u" rel="up">目标描述</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+
+<h3 class="section" id="目标描述格式-1"><span>G.2目标描述格式<a class="copiable-link" href="#目标描述格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-目标描述_002c-XML格式"></a>
+
+<p>目标描述附件是一个符合<small class="sc">GDB</small>源文件中<samp class="file">gdb/features/gdb-target.dtd</samp>提供的文档类型定义的<a class="uref" href="http://www.w3.org/XML/">XML</a>文档。这意味着你可以使用像<code class="command">xmllint</code>这样的通用工具来检查你的功能描述是否格式良好且有效。
+然而，为了帮助不熟悉XML的人编写目标描述，我们也在此描述语法。
+</p>
+<p>目标描述可以识别远程目标的架构，并且（对于某些架构）提供有关自定义寄存器集的信息。它们还可以识别远程目标的OS ABI。<small class="sc">GDB</small>可以使用此信息为你的目标自动配置，或者在你连接到不受支持的目标时发出警告。
+</p>
+<p>这是一个简单的目标描述：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;目标 version=&quot;1.0&quot;&gt;
+  &lt;架构&gt;i386:x86-64&lt;/架构&gt;
+&lt;/目标&gt;
+</pre></div>
+
+<p>这个最小描述仅表示目标使用x86-64架构。
+</p>
+<p>目标描述具有以下总体形式，其中[ ]表示可选元素，...表示可重复元素。下面将进一步解释这些元素。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE目标 SYSTEM &quot;gdb-target.dtd&quot;&gt;
+&lt;目标 version=&quot;1.0&quot;&gt;
+  <span class="r">[</span><var class="var">架构</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">osabi</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">兼容</var><span class="r">]</span>
+  <span class="r">[</span><var class="var">功能</var>...<span class="r">]</span>
+&lt;/目标&gt;
+</pre></div>
+
+<p>根据通常的常识规则，描述通常对空白和换行不敏感。XML版本声明和文档类型声明通常可以省略（<small class="sc">GDB</small>不需要它们），但指定它们可能对XML验证工具有用。'&lt;目标&gt;'的'&lsquo;<samp class="samp">版本</samp>&rsquo;'属性也可以省略，但我们建议包含它；如果<small class="sc">GDB</small>的未来版本使用不兼容的<samp class="file">gdb-target.dtd</samp>修订版，它们将检测并报告版本不匹配。
+</p>
+<ul class="mini-toc">
+<li><a href="#包含" accesskey="1">包含</a></li>
+<li><a href="#架构" accesskey="2">架构</a></li>
+<li><a href="#OS-ABI" accesskey="3">OS ABI</a></li>
+<li><a href="#兼容架构" accesskey="4">兼容架构</a></li>
+<li><a href="#功能" accesskey="5">功能</a></li>
+<li><a href="#类型" accesskey="6">类型</a></li>
+<li><a href="#寄存器-2" accesskey="7">寄存器</a></li>
+</ul>
+<div class="subsection-level-extent" id="包含">
+<h4 class="subsection"><span>G.2.1包含<a class="copiable-link" href="#包含"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-目标描述_002c-包含"></a>
+<a class="index-entry-id" id="索引-XInclude"></a>
+<a class="index-entry-id" id="索引-_003cxi_003ainclude_003e"></a>
+
+<p>有时将目标描述拆分为几个不同的附件可能很有价值，要么是出于组织目的，要么是为了在不同的可能目标描述之间共享文件。你可以通过用以下形式的包含指令替换目标描述的任何元素，将描述分成多个文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;xi:include href=&quot;<var class="var">文档</var>&quot;/&gt;
+</pre></div>
+
+<p>当<small class="sc">GDB</small>遇到这种形式的元素时，它将检索指定的XML <var class="var">文档</var>，并用该文档的内容替换包含指令。如果当前描述是使用'&lsquo;<samp class="samp">qXfer</samp>&rsquo;'读取的，那么包含的文档也将如此；<var class="var">文档</var>将被解释为附件的名称。如果当前描述是从文件中读取的，<small class="sc">GDB</small>将在找到原始描述的同一目录中查找<var class="var">文档</var>作为文件。
+</p>
+</div>
+<div class="subsection-level-extent" id="架构">
+<h4 class="subsection"><span>G.2.2架构<a class="copiable-link" href="#架构"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-_003c架构_003e"></a>
+
+<p>'&lt;架构&gt;'元素具有以下形式：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;架构&gt;<var class="var">arch</var>&lt;/架构&gt;
+</pre></div>
+
+<p><var class="var">arch</var>是'&lsquo;<samp class="samp">set architecture</samp>&rsquo;'接受集合中的架构之一（见<a class="pxref" href="Targets.html">指定调试目标</a>）。
+</p>
+</div>
+<div class="subsection-level-extent" id="OS-ABI">
+
+<h4 class="subsection"><span>G.2.3 OS ABI<a class="copiable-link" href="#OS-ABI"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-_003cosabi_003e"></a>
+
+<p>这个可选字段是在<small class="sc">GDB</small> 7.0版本中引入的。<small class="sc">GDB</small>的早期版本会忽略它。
+</p>
+<p>'&lt;osabi&gt;'元素具有以下形式：
+</p>
+
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;osabi&gt;<var class="var">abi-name</var>&lt;/osabi&gt;
+</pre></div>
+
+<p><var class="var">abi-name</var>是'&lsquo;<samp class="samp">set&nbsp;osabi</samp>&rsquo;'接受的相同选择中的OS ABI名称（见<a class="pxref" href="ABI.html">配置当前ABI</a>）。
+</p>
+</div>
+<div class="subsection-level-extent" id="兼容架构">
+<h4 class="subsection"><span>G.2.4兼容架构<a class="copiable-link" href="#兼容架构"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-_003ccompatible_003e"></a>
+
+<p>这个可选字段是在<small class="sc">GDB</small> 7.0版本中引入的。<small class="sc">GDB</small>的早期版本会忽略它。
+</p>
+<p>'&lt;兼容&gt;'元素具有以下形式：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;兼容&gt;<var class="var">arch</var>&lt;/兼容&gt;
+</pre></div>
+
+<p><var class="var">arch</var>是'&lsquo;<samp class="samp">set architecture</samp>&rsquo;'接受集合中的架构之一（见<a class="pxref" href="Targets.html">指定调试目标</a>）。
+</p>
+<p>'&lt;兼容&gt;'元素用于指定目标能够运行除'&lsquo;<samp class="samp">&lt;架构&gt;</samp>&rsquo;'元素给出的主要目标架构之外的其他架构的二进制文件。例如，在Cell Broadband Engine上，主要架构是'&lsquo;<samp class="samp">powerpc:common</samp>&rsquo;'或'&lsquo;<samp class="samp">powerpc:common64</samp>&rsquo;'，但系统也能够运行'&lsquo;<samp class="samp">spu</samp>&rsquo;'架构的二进制文件。使用'&lsquo;<samp class="samp">&lt;兼容&gt;</samp>&rsquo;'描述此功能的方式如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  &lt;架构&gt;powerpc:common&lt;/架构&gt;
+  &lt;兼容&gt;spu&lt;/兼容&gt;
+</pre></div>
+
+</div>
+<div class="subsection-level-extent" id="功能">
+<h4 class="subsection"><span>G.2.5功能<a class="copiable-link" href="#功能"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-_003c功能_003e"></a>
+
+<p>每个'&lsquo;<samp class="samp">&lt;功能&gt;</samp>&rsquo;'描述目标系统的某个逻辑部分。功能目前用于描述可用的CPU寄存器及其内容的类型。'&lsquo;<samp class="samp">&lt;功能&gt;</samp>&rsquo;'元素具有以下形式：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;功能 name=&quot;<var class="var">name</var>&quot;&gt;
+  <span class="r">[</span><var class="var">类型</var>...<span class="r">]</span>
+  <var class="var">寄存器</var>...
+&lt;/功能&gt;
+</pre></div>
+
+<p>每个功能的名称在描述中应该是唯一的

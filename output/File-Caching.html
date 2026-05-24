@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文件缓存（使用GDB调试）</title>
+
+<meta name="description" content="文件缓存（使用GDB调试）">
+<meta name="keywords" content="文件缓存（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="Separate-Debug-Files.html" rel="next" title="单独的调试文件">
+<link href="Files.html" rel="prev" title="文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="文件缓存">
+<div class="nav-panel">
+<p>
+下一个：<a href="Separate-Debug-Files.html" accesskey="n" rel="next">单独文件中的调试信息</a>，上一个：<a href="Files.html" accesskey="p" rel="prev">指定文件的命令</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="文件缓存-1"><span>18.2 文件缓存<a class="copiable-link" href="#文件缓存-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-打开文件的缓存"></a>
+<a class="index-entry-id" id="索引-bfd对象的缓存"></a>
+
+<p>为了加快文件加载速度并减少内存使用，<small class="sc">GDB</small>将重用用于跟踪打开文件的<code class="code">bfd</code>对象。请参阅《二进制文件描述符库》中的 <a data-manual="bfd" href="https://sourceware.org/binutils/docs/bfd/index.html#Top">BFD</a>。以下命令允许查看和控制缓存行为。
+</p>
+<dl class="table">
+<dt><a id="索引-maint-info-bfds"></a><span><code class="code">maint info bfds</code><a class="copiable-link" href="#索引-maint-info-bfds"> &para;</a></span></dt>
+<dd><p>打印有关<small class="sc">GDB</small>已知的每个<code class="code">bfd</code>对象的信息。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-maint-show-bfd_002dsharing"></a>
+<a class="index-entry-id" id="索引-bfd缓存"></a>
+<a id="索引-maint-set-bfd_002dsharing"></a><span><code class="code">maint set bfd-sharing</code><a class="copiable-link" href="#索引-maint-set-bfd_002dsharing"> &para;</a></span></dt>
+<dt><code class="code">maint show bfd-sharing</code></dt>
+<dd><p>控制是否可以共享<code class="code">bfd</code>对象。启用共享时，<small class="sc">GDB</small>会重用已打开的<code class="code">bfd</code>对象，而不是重新打开同一文件。关闭共享不会导致已共享的<code class="code">bfd</code>对象取消共享，但所有未来打开的文件将创建一个新的<code class="code">bfd</code>对象。同样，重新启用共享不会导致多个现有的<code class="code">bfd</code>对象合并为一个共享的<code class="code">bfd</code>对象。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-bfd缓存-1"></a>
+<a id="索引-set-debug-bfd_002dcache-level"></a><span><code class="code">set debug bfd-cache <var class="var">level</var></code><a class="copiable-link" href="#索引-set-debug-bfd_002dcache-level"> &para;</a></span></dt>
+<dd><p>开启bfd缓存的调试，将级别设置为<var class="var">level</var>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-bfd缓存-2"></a>
+<a id="索引-show-debug-bfd_002dcache"></a><span><code class="code">show debug bfd-cache</code><a class="copiable-link" href="#索引-show-debug-bfd_002dcache"> &para;</a></span></dt>
+<dd><p>显示bfd缓存的当前调试级别。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>编写Guile漂亮打印机（使用GDB调试）</title>
+
+<meta name="description" content="编写Guile漂亮打印机（使用GDB调试）">
+<meta name="keywords" content="编写Guile漂亮打印机（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Commands-In-Guile.html" rel="next" title="Guile中的命令">
+<link href="Selecting-Guile-Pretty_002dPrinters.html" rel="prev" title="选择Guile漂亮打印机">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Writing-a-Guile-Pretty_002dPrinter">
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-In-Guile.html" accesskey="n" rel="next">Guile中的命令</a>，上一页：<a href="Selecting-Guile-Pretty_002dPrinters.html" accesskey="p" rel="prev">选择Guile漂亮打印机</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Writing-a-Guile-Pretty_002dPrinter-1"><span>23.‌4.‌3.‌10编写Guile漂亮打印机<a class="copiable-link" href="#Writing-a-Guile-Pretty_002dPrinter-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-writing-a-Guile-pretty_002dprinter"></a>
+
+<p>一个漂亮打印机由两个基本部分组成：一个查找函数，用于确定类型是否受支持；以及打印机本身。
+</p>
+<p>以下是一个示例代码，展示了如何编写一个用于打印 <code class="code">std::string</code> 的打印机。有关详细信息，请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (make-my-string-printer value)
+  &quot;打印一个my::string字符串&quot;
+  (make-pretty-printer-worker
+   &quot;string&quot;
+   (lambda (printer)
+     (value-field value &quot;_data&quot;))
+   #f))
+</pre></div>
+
+<p>以下是一个示例代码，展示了如何为上述打印机编写查找函数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (str-lookup-function pretty-printer value)
+  (let ((tag (type-tag (value-type value))))
+    (and tag
+         (string-prefix? &quot;std::string&lt;&quot; tag)
+         (make-my-string-printer value))))
+</pre></div>
+
+<p>然后，要将此打印机注册到全局打印机列表中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(append-pretty-printer!
+ (make-pretty-printer &quot;my-string&quot; str-lookup-function))
+</pre></div>
+
+<p>示例查找函数提取值的类型，并尝试将其与可以漂亮打印的类型进行匹配。如果它是打印机可以漂亮打印的类型，它将返回一个 &lt;gdb:pretty-printer-worker&gt; 对象。如果不是，它返回 <code class="code">#f</code>。
+</p>
+<p>我们建议将核心漂亮打印机放入Guile包中。如果你的漂亮打印机用于某个库，我们进一步建议在包名中嵌入版本号。这种做法将使 <small class="sc">GDB</small> 能够同时加载你的漂亮打印机的多个版本，因为它们将有不同的名称。
+</p>
+<p>你应该编写自动加载代码（请参阅 <a class="pxref" href="Guile-Auto_002dloading.html">Guile自动加载</a>），使其可以多次求值而不改变其含义。一个理想的自动加载文件将仅由你的打印机模块的 <code class="code">import</code> 组成，然后是一个调用，用于向当前目标文件注册漂亮打印机。
+</p>
+<p>总体而言，这种方法可以很好地扩展到多个进程，每个进程可能使用不同版本的库。在Guile包名中嵌入版本号将确保 <small class="sc">GDB</small> 能够同时加载两组打印机。然后，因为漂亮打印机的搜索是按目标文件进行的，并且因为你的自动加载代码小心地为特定目标文件注册了库的打印机，所以 <small class="sc">GDB</small> 将为每个进程使用的库的特定版本找到正确的打印机。
+</p>
+<p>以 <code class="code">my::string</code> 为例，这段代码可能出现在 <code class="code">(my-project my-library v1)</code> 中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb))
+(define (register-printers objfile)
+  (append-objfile-pretty-printer!
+   (make-pretty-printer &quot;my-string&quot; str-lookup-function)))
+</pre></div>
+
+<p>然后自动加载文件的相应内容将是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb) (my-project my-library v1))
+(register-printers (current-objfile))
+</pre></div>
+
+<p>前面的示例说明了一个基本的漂亮打印机。有一些可以改进的地方。该打印机只处理一种类型，而一个库通常有几种类型。可以为库中每个所需类型安装一个查找函数，但也可以有一个单一的查找函数识别几种类型。后者是处理这个问题的传统方法。如果一个漂亮打印机可以处理多种数据类型，那么它的 <em class="dfn">子打印机</em> 就是用于各个数据类型的打印机。
+</p>

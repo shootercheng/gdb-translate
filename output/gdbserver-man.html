@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档编写”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>gdbserver手册（使用GDB进行调试）</title>
+
+<meta name="description" content="gdbserver手册（使用GDB进行调试）">
+<meta name="keywords" content="gdbserver手册（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+pre.format-preformatted {font-family: inherit}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdbserver-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gdbserver-man-1"><span>gdbserver手册<a class="copiable-link" href="#gdbserver-man-1"> ¶</a></span></h3>
+
+<div class="format">
+<pre class="format-preformatted">gdbserver <var class="var">通信方式</var> <var class="var">程序</var> [<var class="var">参数</var>...]</pre>
+<pre class="format-preformatted">gdbserver &ndash;attach <var class="var">通信方式</var> <var class="var">进程ID</var></pre>
+<pre class="format-preformatted">gdbserver &ndash;multi <var class="var">通信方式</var></pre>
+</div>
+
+<p><code class="command">gdbserver</code>是一个程序，它允许你在与运行被调试程序的机器不同的另一台机器上运行<small class="sc">GDB</small>。
+</p>
+<h4 class="subheading" id="Usage-_0028server-_0028target_0029-side_0029"><span>用法（服务器（目标）端）<a class="copiable-link" href="#Usage-_0028server-_0028target_0029-side_0029"> ¶</a></span></h4>
+
+<p>首先，你需要将想要调试的程序的副本放到目标系统上。如果需要，可以对程序进行剥离以节省空间，因为<code class="command">gdbserver</code>并不关心符号。所有符号处理由主机系统上运行的<small class="sc">GDB</small>负责。
+</p>
+<p>要使用服务器，你登录到目标系统并运行<code class="command">gdbserver</code>程序。你必须告诉它（a）如何与<small class="sc">GDB</small>通信，（b）你的程序的名称，以及（c）它的参数。一般语法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver <var class="var">通信方式</var> <var class="var">程序</var> [<var class="var">参数</var>...]</pre>
+</div>
+
+<p>例如，使用串口时，你可以这样说：
+</p>
+<div class="example smallexample">  
+<pre class="example-preformatted">目标系统&gt; gdbserver <samp class="file">/dev/com1</samp> emacs foo.txt</pre>
+</div>
+
+<p>这告诉<code class="command">gdbserver</code>使用参数foo.txt调试emacs，并通过<samp class="file">/dev/com1</samp>与<small class="sc">GDB</small>通信。<code class="command">gdbserver</code>现在耐心等待主机<small class="sc">GDB</small>与它通信。
+</p>
+<p>要使用TCP连接，你可以这样说：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver host:2345 emacs foo.txt</pre>
+</div>
+
+<p>这与上一个例子的意思基本相同，只是我们将通过TCP与<code class="code">host</code>上的<small class="sc">GDB</small>通信。<code class="code">host:2345</code>参数表示我们期望看到从<code class="code">host</code>到本地TCP端口2345的TCP连接。（目前，<code class="code">host</code>部分被忽略。）只要端口号不与目标系统上任何现有的TCP端口冲突，你可以选择任何你想要的端口号。在主机<small class="sc">GDB</small>的<code class="code">target remote</code>命令中必须使用相同的端口号，这将在后面描述。请注意，如果选择的端口号与另一个服务冲突，<code class="command">gdbserver</code>将打印错误消息并退出。
+</p>
+<p><code class="command">gdbserver</code>还可以附加到正在运行的程序。这通过<samp class="option">--attach</samp>参数完成。语法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver --attach <var class="var">通信方式</var> <var class="var">进程ID</var></pre>
+</div>
+
+<p><var class="var">进程ID</var>是当前正在运行的进程的进程ID。不需要将<code class="command">gdbserver</code>指向正在运行进程的二进制文件。
+</p>
+<p>要在不提供初始要运行的命令或要附加的进程ID的情况下启动<code class="code">gdbserver</code>，使用<samp class="option">--multi</samp>命令行选项。在这种情况下，你应该使用<kbd class="kbd">target extended-remote</kbd>进行连接，以启动你想要调试的程序。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver --multi <var class="var">通信方式</var></pre>
+</div>
+
+<h4 class="subheading" id="Usage-_0028host-side_0029"><span>用法（主机端）<a class="copiable-link" href="#Usage-_0028host-side_0029"> ¶</a></span></h4>
+
+<p>在你的主机系统上需要有目标程序的未剥离副本，因为<small class="sc">GDB</small>需要检查其符号表等。像平常一样启动<small class="sc">GDB</small>，将目标程序作为第一个参数。如果串口运行速度不是9600波特，你可能需要使用<samp class="option">--baud</samp>选项。即<code class="code">gdb TARGET-PROG</code>，或者<code class="code">gdb --baud BAUD TARGET-PROG</code>。之后，你需要了解的唯一新命令是<code class="code">target remote</code>（或<code class="code">target extended-remote</code>）。它的参数可以是设备名称（通常是串口设备，如<samp class="file">/dev/ttyb</samp>），或者是<code class="code">HOST:PORT</code>描述符。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) target remote <samp class="file">/dev/ttyb</samp></pre>
+</div>
+
+<p>通过串口<samp class="file">/dev/ttyb</samp>与服务器通信，以及：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) target remote the-target:2345</pre>
+</div>
+
+<p>通过TCP连接到主机“the-target”上的端口2345进行通信，你之前在该主机上使用相同的端口号启动了<code class="command">gdbserver</code>。请注意，对于TCP连接，你必须在使用“target remote”命令之前启动<code class="command">gdbserver</code>，否则你可能会得到类似“Connection refused”的错误。
+</p>
+<p><code class="command">gdbserver</code>还可以一次调试多个下级进程，在
+<a class="ref" href="Inferiors-Connections-and-Programs.html">调试多个下级进程、连接和程序</a>中有描述。在这种情况下，使用<code class="code">extended-remote</code> <small class="sc">GDB</small>命令变体：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) target extended-remote the-target:2345</pre>
+</div>
+
+<p>在这种情况下，可能使用也可能不使用<code class="command">gdbserver</code>选项<samp class="option">--multi</samp>。
+</p>
+<p>调用<code class="command">gdbserver</code>有三种不同模式：
+</p>
+<ul class="itemize mark-bullet">
+<li>通过程序名称调试特定程序：
+
+<div class="example smallexample">
+<pre class="example-preformatted">gdbserver <var class="var">通信方式</var> <var class="var">程序</var> [<var class="var">参数</var>...]</pre>
+</div>
+
+<p><var class="var">通信方式</var>参数指定服务器应如何与<small class="sc">GDB</small>通信；它可以是设备名称（用于使用串口）、TCP端口号（<code class="code">:1234</code>），或者是<code class="code">-</code>或<code class="code">stdio</code>以使用<code class="code">gdbserver</code>的标准输入/输出。在<var class="var">程序</var>中指定要调试的程序名称。任何剩余的参数将原封不动地传递给程序。当程序退出时，<small class="sc">GDB</small>将关闭连接并且<code class="code">gdbserver</code>将退出。
+</p>
+</li><li>通过指定正在运行程序的进程ID来调试特定程序：
+
+<div class="example smallexample">
+<pre class="example-preformatted">gdbserver --attach <var class="var">通信方式</var> <var class="var">进程ID</var></pre>        </div>
+
+<p><var class="var">通信方式</var>参数如上所述。在<var class="var">进程ID</var>中提供正在运行程序的进程ID；<small class="sc">GDB</small>将处理其他所有事情。与前一种模式一样，当进程<var class="var">进程ID</var>退出时，<small class="sc">GDB</small>将关闭连接并且<code class="code">gdbserver</code>将退出。
+</p>
+</li><li>多进程模式 - 调试多个程序/进程：
+
+<div class="example smallexample">
+<pre class="example-preformatted">gdbserver --multi <var class="var">通信方式</var></pre>
+</div>
+
+<p>在这种模式下，<small class="sc">GDB</small>可以指示<code class="command">gdbserver</code>运行哪些命令。与其他两种模式不同，当被调试的进程退出时，<small class="sc">GDB</small>不会关闭连接，因此你可以在同一会话中调试多个进程。
+</p></li></ul>
+
+<p>在每种模式下，你可以指定这些选项：
+</p>
+<dl class="table">
+<dt><code class="env">--help</code></dt>
+<dd><p>列出所有选项并给出简要解释。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dd><p>此选项使<code class="command">gdbserver</code>打印其版本号并退出。
+</p>
+</dd>
+<dt><code class="env">--attach</code></dt>
+<dd><p><code class="command">gdbserver</code>将附加到正在运行的程序。语法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver --attach <var class="var">通信方式</var> <var class="var">进程ID</var></pre>
+</div>
+
+<p><var class="var">进程ID</var>是当前正在运行的进程的进程ID。不需要将<code class="command">gdbserver</code>指向正在运行进程的二进制文件。
+</p>
+</dd>
+<dt><code class="env">--multi</code></dt>  
+<dd><p>要在不提供初始要运行的命令或要附加的进程ID的情况下启动<code class="code">gdbserver</code>，使用此命令行选项。然后你可以使用<kbd class="kbd">target extended-remote</kbd>进行连接并启动你想要调试的程序。语法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver --multi <var class="var">通信方式</var></pre>
+</div>
+
+</dd>
+<dt><code class="env">--debug<span class="r">[</span>=选项1,选项2,...<span class="r">]</span></code></dt>
+<dd><p>指示<code class="code">gdbserver</code>显示有关调试过程的额外状态信息。此选项用于<code class="code">gdbserver</code>开发以及向开发人员报告错误。
+</p>
+<p>每个<var class="var">选项</var>是应启用调试的组件的名称。可能的选项列表是<samp class="option">all</samp>、<samp class="option">threads</samp>、<samp class="option">event-loop</samp>、<samp class="option">remote</samp>。特殊选项<samp class="option">all</samp>启用所有组件。选项列表从左到右处理，并且一个选项可以前缀为<kbd class="kbd">-</kbd>字符以禁用该组件的输出，因此你可以这样写：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标系统&gt; gdbserver --debug=all,-event-loop</pre>
+</div>
+
+<p>以打开除<samp class="option">event-loop</samp>之外的所有组件的调试输出。如果没有选项传递给<samp class="option">--debug</samp>，则这被视为等同于<samp class="option">--debug=threads</samp>。在未来的<code class="code">gdbserver</code>版本中这可能会改变。
+</p>
+</dd>
+<dt><code class="env">--debug-file=<var class="var">文件名</var></code></dt>
+<dd><p>指示<code class="code">gdbserver</code>将任何调试输出发送到给定的<var class="var">文件名</var>。此选项用于<code class="code">gdbserver</code>开发以及向开发人员报告错误。
+</p>  
+</dd>
+<dt><code class="env">--debug-format=选项1<span class="r">[</span>,选项2,...<span class="r">]</span></code></dt>
+<dd><p>指示<code class="code">gdbserver</code>在调试输出的每一行中包含额外信息。
+请参阅 <a class="xref" href="Server.html#Other-Command_002dLine-Arguments-for-gdbserver">gdbserver的其他命令行参数</a>。
+</p>
+</dd>
+<dt><code class="env">--wrapper</code></dt>
+<dd><p>指定一个包装器来启动用于调试的程序。该选项后面应跟包装器的名称，然后是要传递给包装器的任何命令行参数，然后是<kbd class="kbd">--</kbd>表示包装器参数的结束。
+</p>
+</dd>
+<dt><code class="env">--once</code></dt>
+<dd><p>默认情况下，<code class="command">gdbserver</code>保持监听的TCP端口打开，以便可以进行额外的连接。但是，如果使用<samp class="option">--once</samp>选项启动<code class="code">gdbserver</code>，它将在连接到第一个<small class="sc">GDB</small>会话后停止监听任何进一步的连接尝试。
+</p>
+
+
+</dd>
+</dl>
+
+
+<hr>
+<div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

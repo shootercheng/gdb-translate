@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>注册代码（使用GDB调试）</title>
+
+<meta name="description" content="注册代码（使用GDB调试）">
+<meta name="keywords" content="注册代码（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="JIT-Interface.html" rel="up" title="JIT接口">
+<link href="Unregistering-Code.html" rel="next" title="注销代码">
+<link href="Declarations.html" rel="prev" title="声明">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="注册代码">
+<div class="nav-panel">
+<p>
+下一页：<a href="Unregistering-Code.html" accesskey="n" rel="next">注销代码</a>，上一页：<a href="Declarations.html" accesskey="p" rel="prev">JIT声明</a>，向上：<a href="JIT-Interface.html" accesskey="u" rel="up">JIT编译接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="注册代码-1"><span>30.2注册代码<a class="copiable-link" href="#注册代码-1"> &para;</a></span></h3>
+
+<p>要使用GDB注册代码，JIT应遵循以下协议：
+</p>
+<ul class="itemize mark-bullet">
+<li>在内存中生成一个带有符号和其他所需调试信息的目标文件。该文件必须包含各节的虚拟地址。
+
+</li><li>为该文件创建一个代码条目，该条目给出符号文件的起始地址和大小。
+
+</li><li>将其添加到JIT描述符中的链表中。
+
+</li><li>将描述符的relevant_entry字段指向该条目。
+
+</li><li>将action_flag设置为JIT_REGISTER并调用__jit_debug_register_code。
+</li></ul>
+
+<p>当GDB附加且断点触发时，GDB使用relevant_entry指针，这样它就不必遍历链表来查找新代码。然而，链表仍必须维护，以便GDB能够附加到正在运行的进程并仍然找到符号文件。
+</p>
+</div>
+
+
+
+</body>
+</html>

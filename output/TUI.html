@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。” -->
+<title>TUI（使用GDB调试）</title>
+
+<meta name="description" content="TUI（使用GDB调试）">
+<meta name="keywords" content="TUI（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Emacs.html" rel="next" title="Emacs">
+<link href="Interpreters.html" rel="prev" title="解释器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="TUI">
+<div class="nav-panel">
+<p>
+下一页：<a href="Emacs.html" accesskey="n" rel="next">在GNU Emacs下使用GDB</a>，上一页：<a href="Interpreters.html" accesskey="p" rel="prev">命令解释器</a>，向上：<a href="index.html" accesskey="u" rel="up">使用GDB调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="gdb-Text-User-Interface"><span>25 GDB文本用户界面<a class="copiable-link" href="#gdb-Text-User-Interface"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-TUI"></a>
+<a class="index-entry-id" id="index-Text-User-Interface"></a>
+
+<p>GDB文本用户界面（TUI）是一个终端界面，它使用<code>curses</code>库在单独的文本窗口中显示源文件、汇编输出、程序寄存器和GDB命令。TUI模式仅在有合适版本的<code>curses</code>库的平台上受支持。
+</p>
+<p>当你以‘<samp class="samp">gdb -tui</samp>’调用GDB时，TUI模式默认启用。
+你也可以在GDB运行时通过使用各种TUI命令和键绑定（如<code>tui enable</code>或<kbd class="kbd">C-x C-a</kbd>）来切换进出TUI模式。 请参阅 <a class="xref" href="TUI-Commands.html">TUI命令</a> 和 <a class="ref" href="TUI-Keys.html">TUI键绑定</a>。
+</p>
+
+<ul class="mini-toc">
+<li><a href="TUI-Overview.html" accesskey="1">TUI概述</a></li>
+<li><a href="TUI-Keys.html" accesskey="2">TUI键绑定</a></li>
+<li><a href="TUI-Single-Key-Mode.html" accesskey="3">TUI单键模式</a></li>
+<li><a href="TUI-Mouse-Support.html" accesskey="4">TUI鼠标支持</a></li>
+<li><a href="TUI-Commands.html" accesskey="5">特定于TUI的命令</a></li>
+<li><a href="TUI-Configuration.html" accesskey="6">TUI配置变量</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

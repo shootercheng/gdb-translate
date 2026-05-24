@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>漂亮打印API（使用GDB调试）</title>
+
+<meta name="description" content="漂亮打印API（使用GDB调试）">
+<meta name="keywords" content="漂亮打印API（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Selecting-Pretty_002dPrinters.html" rel="next" title="选择漂亮打印机">
+<link href="Types-In-Python.html" rel="prev" title="Python中的类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="漂亮打印API">
+<div class="nav-panel">
+<p>
+下一个：<a href="Selecting-Pretty_002dPrinters.html" accesskey="n" rel="next">选择漂亮打印机</a>，上一个：<a href="Types-In-Python.html" accesskey="p" rel="prev">Python中的类型</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="漂亮打印API-1"><span>23.3.2.6漂亮打印API<a class="copiable-link" href="#漂亮打印API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python-漂亮打印-api"></a>
+
+<p>一个漂亮打印机只是一个持有值并实现此处定义的特定接口的对象。提供了一个示例输出（见 <a class="pxref" href="漂亮打印.html">漂亮打印</a>）。
+</p>
+<p>由于GDB没有记录漂亮打印机的可扩展性，默认情况下，GDB将假定只有基本的漂亮打印机方法可用。基本方法如下所示。
+</p>
+<p>为了允许可扩展性，GDB提供了 <code class="code">gdb.ValuePrinter</code> 基类。这个类不提供任何属性或行为，而是作为一个可以被GDB识别的标签。对于这样的打印机，GDB保留所有以小写字母开头的属性。也就是说，将来，GDB可能会向漂亮打印机协议添加新的方法或属性，基于 <code class="code">gdb.ValuePrinter</code> 的打印机预计将优雅地处理这个问题。一种简单的方法是对实现中的任何本地属性使用前导下划线（或两个，遵循Python名称混淆方案）。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-pretty_005fprinter_002echildren"><span class="category-def">函数：</span><span><strong class="def-name">pretty_printer.children</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-pretty_0

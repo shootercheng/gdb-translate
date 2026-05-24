@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>补全（使用GDB调试）</title>
+
+<meta name="description" content="补全（使用GDB调试）">
+<meta name="keywords" content="补全（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Commands.html" rel="up" title="命令">
+<link href="Filename-Arguments.html" rel="next" title="文件名参数">
+<link href="Command-Settings.html" rel="prev" title="命令设置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="补全">
+<div class="nav-panel">
+<p>
+下一个：<a href="Filename-Arguments.html" accesskey="n" rel="next">作为命令参数的文件名</a>，上一个：<a href="Command-Settings.html" accesskey="p" rel="prev">命令设置</a>，向上：<a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令补全"><span>3.3 命令补全<a class="copiable-link" href="#命令补全"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-补全"></a>
+<a class="index-entry-id" id="索引-单词补全"></a>
+<p>如果只有一种可能，<small class="sc">GDB</small>可以为你补全命令中的单词；它也可以在任何时候向你展示命令中下一个单词的有效可能性。这适用于<small class="sc">GDB</small>命令、<small class="sc">GDB</small>子命令、命令选项以及程序中的符号名称。
+</p>
+<p>每当你希望<small class="sc">GDB</small>补全单词的其余部分时，按下<kbd class="key">TAB</kbd>键。如果只有一种可能，<small class="sc">GDB</small>会补全单词，并等待你完成命令（或按下<kbd class="key">RET</kbd>键输入它）。例如，如果输入
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info bre<kbd class="key">TAB</kbd>
+</pre></div>
+
+<p><small class="sc">GDB</small>会补全单词“<samp class="samp">breakpoints</samp>”的其余部分，因为这是唯一以“<samp class="samp">bre</samp>”开头的<code class="code">info</code>子命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info breakpoints
+</pre></div>
+
+<p>此时你可以按下<kbd class="key">RET</kbd>键来运行<code class="code">info breakpoints</code>命令，或者按退格键并输入其他内容，如果“<samp class="samp">breakpoints</samp>”看起来不是你期望的命令。（如果你一开始就确定想要<code class="code">info breakpoints</code>，你也可以在“<samp class="samp">info bre</samp>”之后立即按下<kbd class="key">RET</kbd>键，以利用命令缩写而不是命令补全）。
+</p>
+<p>当你按下<kbd class="key">TAB</kbd>键时，如果下一个单词有多种可能，<small class="sc">GDB</small>会发出提示音。你可以提供更多字符并再次尝试，或者再按一次<kbd class="key">TAB</kbd>键；<small class="sc">GDB</small>会显示该单词的所有可能补全。例如，你可能想在一个以“<samp class="samp">make_</samp>”开头的子例程上设置断点，但当你输入<kbd class="kbd">b make_<kbd class="key">TAB</kbd></kbd>时，<small class="sc">GDB</small>只会发出提示音。再次按下<kbd class="key">TAB</kbd>键会显示程序中所有以这些字符开头的函数名，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b make_<kbd class="key">TAB</kbd>
+</pre><pre class="exdent"><span class="sc">GDB</span>发出提示音；再按一次<kbd class="key">TAB</kbd>键，查看：
+</pre><pre class="example-preformatted">make_a_section_from_file     make_environ
+make_abs_section             make_function_type
+make_blockvector             make_pointer_type
+make_cleanup                 make_reference_type
+make_command                 make_symbol_completion_list
+(gdb) b make_
+</pre></div>
+
+<p>显示可用可能性后，<small class="sc">GDB</small>会复制你的部分输入（例如示例中的“<samp class="samp">b make_</samp>”），以便你完成命令。
+</p>
+<p>如果你试图补全的命令期望接下来是一个关键字或数字，那么“<samp class="samp">NUMBER</samp>”会出现在可用补全中，例如：
+</p>  
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -elements <kbd class="key">TAB</kbd><kbd class="key">TAB</kbd>
+NUMBER     unlimited
+(gdb) print -elements&nbsp;
+</pre></div>
+
+<p>这里，该选项期望一个数字（例如<code class="code">100</code>），而不是字面的<code class="code">NUMBER</code>。这种元语法参数总是以大写形式呈现。
+</p>
+<p>如果你只是想首先查看替代列表，可以按下<kbd class="kbd">M-?</kbd>而不是按两次<kbd class="key">TAB</kbd>键。<kbd class="kbd">M-?</kbd>表示<kbd class="kbd"><kbd class="key">META</kbd> ?</kbd>。你可以通过在键盘上按住指定为<kbd class="key">META</kbd>  shift的键（如果有的话）同时输入<kbd class="kbd">?</kbd>来输入，或者输入<kbd class="key">ESC</kbd>后跟 <kbd class="kbd">?</kbd>。
+</p>
+<p>如果可能的补全数量很大，<small class="sc">GDB</small>会打印出它收集到的尽可能多的列表，以及一条表明列表可能被截断的消息。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b m<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd>
+main
+&lt;... 其余可能的补全 ...&gt;
+*** 列表可能被截断，达到最大补全数。 ***
+(gdb) b m
+</pre></div>
+
+<p>可以使用以下命令控制此行为：
+</p>
+<dl class="table">
+<dt><a id="索引-set-max_002dcompletions"></a><span><code class="code">set max-completions <var class="var">limit</var></code><a class="copiable-link" href="#索引-set-max_002dcompletions"> &para;</a></span></dt>
+<dt><code class="code">set max-completions unlimited</code></dt>
+<dd><p>设置补全候选的最大数量。<small class="sc">GDB</small>收集到这么多候选后将停止寻找更多补全。在补全函数名等内容时这很有用，因为收集所有可能的候选可能很耗时。
+默认值是200。值为零会禁用制表符补全。请注意，设置无限制或非常大的限制可能会使补全变慢。
+<a class="index-entry-id" id="索引-show-max_002dcompletions"></a>
+</p></dd>
+<dt><code class="code">show max-completions</code></dt>
+<dd><p>显示<small class="sc">GDB</small>在补全过程中收集并显示的候选的最大数量。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-命令中的引号"></a>
+<a class="index-entry-id" id="索引-带引号字符串的补全"></a>
+<p>有时你需要的字符串，从逻辑上讲是一个“单词”，但可能包含括号或其他<small class="sc">GDB</small>通常在其单词概念中排除的字符。为了在这种情况下允许单词补全起作用，你可以在 <small class="sc">GDB</small> 命令中用 <code class="code">'</code>（单引号）将单词括起来。
+</p>
+<p>你可能需要这样做的一个常见情况是在输入一个涉及带有模板参数的C<code class="t">++</code>符号名称的表达式时。这是因为在补全表达式时，GDB将“<samp class="samp">&lt;</samp>”字符视为单词分隔符，假设它是小于比较运算符（见 <a class="pxref" href="C-Operators.html">C和C<code class="t">++</code>运算符</a>）。
+</p>
+<p>例如，当你想使用 <code class="code">print</code> 或 <code class="code">call</code> 命令交互式调用一个C<code class="t">++</code>模板函数时，你可能需要区分你指的是专门针对 <code class="code">int</code> 的 <code class="code">name</code> 版本，即 <code class="code">name&lt;int&gt;()</code>，还是专门针对 <code class="code">float</code> 的版本，即 <code class="code">name&lt;float&gt;()</code>。在这种情况下，要使用单词补全功能，在函数名开头输入一个单引号 <code class="code">'</code>。这会提醒 <small class="sc">GDB</small>，当你按下 <kbd class="key">TAB</kbd> 或 <kbd class="kbd">M-?</kbd> 请求单词补全时，它可能需要考虑比平时更多的信息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p 'func&lt;<kbd class="kbd">M-?</kbd>
+func&lt;int&gt;()    func&lt;float&gt;()
+(gdb) p 'func&lt;
+</pre></div>
+
+<p>然而，在设置断点时（见 <a class="pxref" href="Location-Specifications.html">位置规范</a>），你通常不需要在函数名前输入引号，因为 <small class="sc">GDB</small> 理解你想在一个函数上设置断点：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b func&lt;<kbd class="kbd">M-?</kbd>
+func&lt;int&gt;()    func&lt;float&gt;()
+(gdb) b func&lt;
+</pre></div>
+
+<p>即使在输入C<code class="t">++</code>重载函数（同一函数的多个定义，通过参数类型区分）的名称时也是如此。例如，当你想设置断点时，你不需要区分你指的是接受 <code class="code">int</code> 参数的 <code class="code">name</code> 版本，即 <code class="code">name(int)</code>，还是接受 <code class="code">float</code> 参数的版本，即 <code class="code">name(float)</code>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b bubble(<kbd class="kbd">M-?</kbd)
+bubble(int)    bubble(double)
+(gdb) b bubble(dou<kbd class="kbd">M-?</kbd)
+bubble(double)
+</pre></div>
+
+<p>有关其他需要加引号的场景的描述，请参阅 <a class="ref" href="Symbols.html#quoting-names">引用名称</a>。
+</p>
+<p>有关重载函数的更多信息，请参阅 <a class="ref" href="C-Plus-Plus-Expressions.html">C<code class="t">++</code>表达式</a>。你可以使用命令 <code class="code">set overload-resolution off</code> 禁用重载解析；
+见 <a class="ref" href="Debugging-C-Plus-Plus.html"><small class="sc">GDB</small>的C<code class="t">++</code>功能</a>。
+</p>
+<a class="index-entry-id" id="索引-结构体字段名的补全"></a>
+<a class="index-entry-id" id="索引-结构体字段名补全"></a>
+<a class="index-entry-id" id="索引-联合体字段名的补全"></a>  
+<a class="index-entry-id" id="索引-联合体字段名补全"></a>
+<p>当在一个表达式中补全查找结构体中的字段时，<small class="sc">GDB</small>也会尝试<a class="footnote" id="DOCF3" href="#FOOT3"><sup>3</sup></a>将补全限制为左侧类型中可用的字段名：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p gdb_stdout.<kbd class="kbd">M-?</kbd>
+magic                to_fputs             to_rewind
+to_data              to_isatty            to_write
+to_delete            to_put               to_write_async_safe
+to_flush             to_read
+</pre></div>
+
+<p>这是因为 <code class="code">gdb_stdout</code> 是 <code class="code">struct ui_file</code> 类型的变量，在 <small class="sc">GDB</small> 源文件中定义如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct ui_file
+{
+   int *magic;
+   ui_file_flush_ftype *to_flush;
+   ui_file_write_ftype *to_write;
+   ui_file_write_async_safe_ftype *to_write_async_safe;
+   ui_file_fputs_ftype *to_fputs;
+   ui_file_read_ftype *to_read;
+   ui_file_delete_ftype *to_delete;
+   ui_file_isatty_ftype *to_isatty;
+   ui_file_rewind_ftype *to_rewind;
+   ui_file_put_ftype *to_put;
+   void *to_data;
+}
+</pre></div>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT3" href="#DOCF3">(③)</a></h5>
+<p>某些无效表达式可能会使补全器感到困惑。此外，它只检查表达式的静态类型，而不是动态类型。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Filename-Arguments.html">作为命令参数的文件名</a>，上一个：<a href="Command-Settings.html">命令设置</a>，向上：<a href="Commands.html"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>字节码描述（使用GDB调试）</title>
+
+<meta name="description" content="字节码描述（使用GDB调试）">
+<meta name="keywords" content="字节码描述（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Agent-Expressions.html" rel="up" title="代理表达式">
+<link href="Using-Agent-Expressions.html" rel="next" title="使用代理表达式">
+<link href="General-Bytecode-Design.html" rel="prev" title="通用字节码设计">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="字节码描述">
+<div class="nav-panel">
+<p>
+下一页：<a href="Using-Agent-Expressions.html" accesskey="n" rel="next">使用代理表达式</a>，上一页：<a href="General-Bytecode-Design.html" accesskey="p" rel="prev">通用字节码设计</a>，向上：<a href="Agent-Expressions.html" accesskey="u" rel="up">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="字节码描述-1"><span>F.2字节码描述<a class="copiable-link" href="#字节码描述-1"> &para;</a></span></h3>
+
+<p>每个字节码描述具有以下形式：
+</p>
+<dl class="table">
+<dt><code class="code">add</code> (0x02): <var class="var">a</var> <var class="var">b</var> &rArr; <var class="var">a+b</var></dt>
+<dd>
+<p>从栈顶弹出两个栈项，即整数<var class="var">a</var>和<var class="var">b</var>；将它们的和作为整数压入栈中。
+</p>
+</dd>
+</dl>
+
+<p>在这个例子中，<code class="code">add</code>是字节码的名称，<code class="code">(0x02)</code>是用于编码该字节码的一个字节值，以十六进制表示。短语“<var class="var">a</var> <var class="var">b</var> &rArr; <var class="var">a+b</var>”展示了字节码执行前后的栈状态。在此之前，栈中必须至少包含两个值，即<var class="var">a</var>和<var class="var">b</var>；由于栈顶在右侧，所以<var class="var">b</var>在栈顶，<var class="var">a</var>在其下方。执行后，字节码将从栈中弹出<var class="var">a</var>和<var class="var">b</var>，并用单个值<var class="var">a+b</var>替换它们。在所示的这些值下方的栈中可能还有其他值，但字节码仅影响所示的值。
+</p>
+<p>这里是另一个例子：
+</p>
+<dl class="table">
+<dt><code class="code">const8</code> (0x22) <var class="var">n</var>: &rArr; <var class="var">n</var></dt>
+<dd><p>将8位整数常量<var class="var">n</var>压入栈中，不进行符号扩展。
+</p>
+</dd>
+</dl>
+
+<p>在这个例子中，字节码<code class="code">const8</code>直接从字节码流中获取操作数<var class="var">n</var>；操作数紧跟在<code class="code">const8</code>字节码本身之后。我们将任何此类操作数直接写在字节码名称之后、冒号之前，并在字节码描述的主体部分描述其在字节码流中的精确编码。
+</p>
+<p>对于<code class="code">const8</code>字节码，在“&rArr;”之前没有给出栈项；这仅仅意味着该字节码不从栈中消耗值。如果一个字节码不消耗值，或者不产生值，那么“&rArr;”两侧的列表可能为空。
+</p>
+<p>如果一个值被写为<var class="var">a</var>、<var class="var">b</var>或<var class="var">n</var>，那么字节码将其视为整数。如果一个值被写为<var class="var">addr</var>，那么字节码将其视为地址。
+</p>
+<p>我们在此处不完整描述浮点运算；尽管此设计可以以一种清晰的方式扩展以处理浮点值，但客户对此并不直接感兴趣，所以为了节省时间我们避免描述它们。
+</p>
+
+<dl class="table">
+<dt><code class="code">float</code> (0x01): &rArr;</dt>
+<dd>
+<p>浮点字节码的前缀。尚未实现。
+</p>
+</dd>
+<dt><code class="code">add</code> (0x02): <var class="var">a</var> <var class="var">b</var> &rArr; <var class="var">a+b</var></dt>
+<dd><p>从栈中弹出两个整数，将它们的和作为整数压入栈中。
+</p>

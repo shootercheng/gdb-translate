@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>显示（使用GDB调试）</title>
+
+<meta name="description" content="显示（使用GDB调试）">
+<meta name="keywords" content="显示（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">  
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Languages.html" rel="up" title="语言">
+<link href="Checks.html" rel="next" title="检查">
+<link href="Setting.html" rel="prev" title="设置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">  
+<div class="section-level-extent" id="显示">
+<div class="nav-panel">
+<p>
+下一个：<a href="Checks.html" accesskey="n" rel="next">类型和范围检查</a>，上一个：<a href="Setting.html" accesskey="p" rel="prev">在源语言之间切换</a>，向上： <a href="Languages.html" accesskey="u" rel="up">使用不同语言的<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="显示语言"><span>15.2显示语言<a class="copiable-link" href="#显示语言"> &para;</a></span></h3>
+
+<p>以下命令可帮助你找出当前使用的语言，以及源文件是用什么语言编写的。
+</p>
+<dl class="table">
+<dt><code class="code">show language</code></dt>
+<dd><a class="anchor" id="显示语言"></a><a class="index-entry-id" id="索引-显示语言"></a>
+<p>显示当前使用的语言。这是你可以与诸如 <code class="code">print</code> 之类的命令一起使用的语言，用于构建和计算可能涉及程序中变量的表达式。
+</p>
+</dd>
+<dt><a id="索引-信息框架_002c-显示源语言"></a><span><code class="code">info frame</code><a class="copiable-link" href="#索引-信息框架_002c-显示源语言"> &para;</a></span></dt>
+<dd><p>显示此框架的源语言。如果使用此框架中的标识符，则此语言将成为当前使用的语言。
+请参阅 <a class="xref" href="Frame-Info.html">框架信息</a>，以了解此处列出的其他信息。
+</p>
+</dd>
+<dt><a id="索引-信息源_002c-显示源语言"></a><span><code class="code">info source</code><a class="copiable-link" href="#索引-信息源_002c-显示源语言"> &para;</a></span></dt>
+<dd><p>显示此源文件的源语言。
+请参阅 <a class="xref" href="Symbols.html">检查符号表</a>，以了解此处列出的其他信息。
+</p></dd>
+</dl>
+
+<p>在特殊情况下，你可能有一些扩展名不在标准列表中的源文件。然后，你可以显式设置与一种语言相关联的扩展名：
+</p>
+<dl class="table">
+<dt><a id="索引-设置扩展名_002d语言"></a><span><code class="code">set extension-language <var class="var">ext</var> <var class="var">language</var></code><a class="copiable-link" href="#索引-设置扩展名_002d语言"> &para;</a></span></dt>
+<dd><p>告诉<small class="sc">GDB</small>，扩展名 为<var class="var">ext</var> 的源文件应被视为用源语言<var class="var">language</var> 编写的。
+</p>
+</dd>
+<dt><a id="索引-信息扩展名"></a><span><code class="code">info extensions</code><a class="copiable-link" href="#索引-信息扩展名"> &para;</a></span></dt>
+<dd><p>列出所有文件名扩展名及其关联的语言。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html> 

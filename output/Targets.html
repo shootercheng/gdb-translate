@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>目标（使用GDB调试）</title>
+
+<meta name="description" content="目标（使用GDB调试）">
+<meta name="keywords" content="目标（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Remote-Debugging.html" rel="next" title="远程调试">
+<link href="GDB-Files.html" rel="prev" title="GDB文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Targets">
+<div class="nav-panel">
+<p>
+下一页：<a href="Remote-Debugging.html" accesskey="n" rel="next">调试远程程序</a>，上一页：<a href="GDB-Files.html" accesskey="p" rel="prev"><small class="sc">GDB</small>文件</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Specifying-a-Debugging-Target"><span>19 指定调试目标<a class="copiable-link" href="#Specifying-a-Debugging-Target"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="index-debugging-target"></a>
+<p>一个<em class="dfn">目标</em>是你的程序所占用的执行环境。
+</p>
+<p>通常，<small class="sc">GDB</small>与你的程序在同一主机环境中运行；在这种情况下，当你使用<code class="code">file</code>或<code class="code">core</code>命令时，调试目标会作为副作用被指定。当你需要更多灵活性时&mdash;&mdash;例如在物理上分离的主机上运行<small class="sc">GDB</small>，或者通过串口控制独立系统或通过TCP/IP连接控制实时系统&mdash;&mdash;你可以使用<code class="code">target</code>命令来指定为<small class="sc">GDB</small>配置的目标类型之一（见 <a class="pxref" href="Target-Commands.html">管理目标的命令</a>）。
+</p>
+<a class="index-entry-id" id="index-target-architecture"></a>
+<p>可以为几种不同的<em class="dfn">目标架构</em>构建<small class="sc">GDB</small>。当以这种方式构建<small class="sc">GDB</small>时，你可以使用<kbd class="kbd">set architecture</kbd>命令选择可用架构之一。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-architecture"></a>
+<a id="index-set-architecture"></a><span><code class="code">set architecture <var class="var">arch</var></code><a class="copiable-link" href="#index-set-architecture"> &para;</a></span></dt>
+<dd><p>此命令将当前目标架构设置为<var class="var">arch</var>。<var class="var">arch</var>的值除了可以是支持的架构之一外，还可以是<code class="code">&quot;auto&quot;</code>。
+</p>
+</dd>
+<dt><code class="code">show architecture</code></dt>
+<dd><p>显示当前目标架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-processor"></a>
+<a id="index-set-processor"></a><span><code class="code">set processor</code><a class="copiable-link" href="#index-set-processor"> &para;</a></span></dt>
+<dt><code class="code">processor</code></dt>
+<dd><p>这些分别是<code class="code">set architecture</code>和<code class="code">show architecture</code>的别名命令。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Active-Targets.html" accesskey="1">活动目标</a></li>
+<li><a href="Target-Commands.html" accesskey="2">管理目标的命令</a></li>
+<li><a href="Byte-Order.html" accesskey="3">选择目标字节序</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

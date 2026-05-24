@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>NDS32特性（使用GDB调试）</title>
+
+<meta name="description" content="NDS32特性（使用GDB调试）">
+<meta name="keywords" content="NDS32特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="OpenRISC-1000-Features.html" rel="next" title="OpenRISC 1000特性">
+<link href="M68K-Features.html" rel="prev" title="M68K特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="NDS32-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="OpenRISC-1000-Features.html" accesskey="n" rel="next">Openrisc 1000特性</a>，上一页：<a href="M68K-Features.html" accesskey="p" rel="prev">M68K特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="NDS32-Features-1"><span>G.5.10 NDS32特性<a class="copiable-link" href="#NDS32-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-NDS32-features"></a>
+
+<p>NDS32目标需要“<samp class="samp">org.gnu.gdb.nds32.core</samp>”特性。它应至少包含寄存器“<samp class="samp">r0</samp>”到“<samp class="samp">r10</samp>”、“<samp class="samp">r15</samp>”、“<samp class="samp">fp</samp>”、“<samp class="samp">gp</samp>”、“<samp class="samp">lp</samp>”、“<samp class="samp">sp</samp>”和“<samp class="samp">pc</samp>”。
+</p>
+<p>“<samp class="samp">org.gnu.gdb.nds32.fpu</samp>”特性是可选的。如果存在，它应包含64位双精度浮点寄存器“<samp class="samp">fd0</samp>”到<em class="emph">fdN</em>，根据实现的FPU配置，<em class="emph">fdN</em>应为“<samp class="samp">fd3</samp>”、“<samp class="samp">fd7</samp>”、“<samp class="samp">fd15</samp>”或“<samp class="samp">fd31</samp>”。
+</p>
+<p><em class="emph">注意：</em>前十六个64位双精度浮点寄存器与三十二个32位单精度浮点寄存器重叠。如果未明确列出32位单精度寄存器，它们将由重叠的64位双精度寄存器的低半部分合成。明确列出32位单精度寄存器已过时，并且将来某天可能会完全移除对它的支持。
+</p>
+</div>
+
+
+
+</body>
+</html>

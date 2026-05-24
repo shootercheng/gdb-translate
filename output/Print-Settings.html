@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为 "自由软件" 和 "自由软件需要自由文档"，封面文字为 "GNU手册"，封底文字如下。
+
+(a) FSF的封底文字是："你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。" -->
+<title>打印设置（使用GDB调试）</title>
+
+<meta name="description" content="打印设置（使用GDB调试）">
+<meta name="keywords" content="打印设置（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Pretty-Printing.html" rel="next" title="漂亮打印">
+<link href="Auto-Display.html" rel="prev" title="自动显示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Print-Settings">
+<div class="nav-panel">
+<p>
+下一页：<a href="Pretty-Printing.html" accesskey="n" rel="next">漂亮打印</a>，上一页：<a href="Auto-Display.html" accesskey="p" rel="prev">自动显示</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Print-Settings-1"><span>10.9打印设置<a class="copiable-link" href="#Print-Settings-1"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-format-options"></a>
+<a class="index-entry-id" id="index-print-settings"></a>
+<p><small class="sc">GDB</small>提供了以下几种方式来控制数组、结构体和符号的打印方式。
+</p>
+<p>这些设置对于调试任何语言的程序都很有用：
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-set-print"></a>
+<a class="anchor" id="set-print-address"></a></dd>
+<dt><a id="index-print_002fdon_0027t-print-memory-addresses"></a><span><code class="code">set print address</code><a class="copiable-link" href="#index-print_002fdon_0027t-print-memory-addresses"> ¶</a></span></dt>
+<dt><code class="code">set print address on</code></dt>
+<dd><p><small class="sc">GDB</small>在显示堆栈跟踪、结构体值、指针值、断点等的位置时会打印内存地址，即使它也会显示这些地址的内容。默认值为<code class="code">on</code>。例如，这是使用<code class="code">set print address on</code>时堆栈帧显示的样子：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) f
+#0  set_quotes (lq=0x34c78 &quot;&lt;&lt;&quot;, rq=0x34c88 &quot;&gt;&gt;&quot;)
+    at input.c:530
+530         if (lquote != def_lquote)
+</pre></div></div>
+
+</dd>
+<dt><code class="code">set print address off</code></dt>
+<dd><p>在显示内存地址的内容时不打印地址。例如，这是以<code class="code">set print address off</code>显示的相同堆栈帧：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) set print addr off
+(gdb) f
+#0  set_quotes (lq=&quot;&lt;&lt;&quot;, rq=&quot;&gt;&gt;&quot;) at input.c:530
+530         if (lquote != def_lquote)
+</pre></div></div>
+
+<p>你可以使用&lsquo;<samp class="samp">set print address off</samp>&rsquo;来消除<small class="sc">GDB</small>界面中所有与机器相关的显示。例如，使用<code class="code">print address off</code>，你应该在所有机器上得到相同的回溯文本 —— 无论它们是否涉及指针参数。
+</p>
+</dd>
+<dt><a id="index-show-print"></a><span><code class="code">show print address</code><a class="copiable-link" href="#index-show-print"> ¶</a></span></dt>
+<dd><p>显示是否要打印地址。
+</p></dd>
+</dl>
+
+<p>当<small class="sc">GDB</small>打印一个符号地址时，它通常会打印最近的前一个符号加上一个偏移量。如果该符号不能唯一标识该地址（例如，它是一个作用域为单个源文件的名称），你可能需要进行澄清。一种方法是使用<code class="code">info line</code>，例如&lsquo;<samp class="samp">info line *0x4537</samp>&rsquo;。或者，你可以设置<small class="sc">GDB</small>在打印符号地址时打印源文件名和行号：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-symbol_002c-source-file-and-line"></a>
+<a id="index-source-file-and-line-of-a-symbol"></a><span><code class="code">set print symbol-filename on</code><a class="copiable-link" href="#index-source-file-and-line-of-a-symbol"> ¶</a></span></dt>
+<dd><p>告诉<small class="sc">GDB</small>在以符号地址的形式打印符号时，打印该符号的源文件名和行号。
+</p>
+</dd>
+<dt><code class="code">set print symbol-filename off</code></dt>
+<dd><p>不打印符号的源文件名和行号。这是默认设置。
+</p>
+</dd>
+<dt><code class="code">show print symbol-filename</code></dt>
+<dd><p>显示<small class="sc">GDB</small>是否会在以符号地址的形式打印符号时，打印该符号的源文件名和行号。
+</p></dd>
+</dl>
+
+<p>在反汇编代码时，显示符号文件名和行号也很有帮助；<small class="sc">GDB</small>会显示与每条指令对应的行号和源文件。
+</p>
+<p>此外，你可能只想在打印的地址与最近的前一个符号相当接近时才看到符号形式：
+</p>
+<dl class="table">
+<dt><a id="index-maximum-value-for-offset-of-closest-symbol"></a><span><code class="code">set print max-symbolic-offset <var class="var">max-offset</var></code><a class="copiable-link" href="#index-maximum-value-for-offset-of-closest-symbol"> ¶</a></span></dt>
+<dt><code class="code">set print max-symbolic-offset unlimited</code></dt>
+<dd><p>告诉<small class="sc">GDB</small>，只有当最近的前一个符号与该地址之间的偏移量小于<var class="var">max-offset</var>时，才显示该地址的符号形式。默认值是<code class="code">unlimited</code>，这告诉<small class="sc">GDB</small>，如果有任何符号在该地址之前，总是打印该地址的符号形式。零等同于<code class="code">unlimited</code>。
+</p>
+</dd>
+<dt><code class="code">show print max-symbolic-offset</code></dt>
+<dd><p>询问<small class="sc">GDB</small>在符号地址中打印的最大偏移量是多少。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-wild-pointer_002c-interpreting"></a>
+<a class="index-entry-id" id="index-pointer_002c-finding-referent"></a>
+<p>如果你有一个指针，但不确定它指向哪里，可以尝试&lsquo;<samp class="samp">set print symbol-filename on</samp>&rsquo;。然后，你可以使用&lsquo;<samp class="samp">p/a <var class="var">pointer</var></samp>&rsquo;来确定它指向的变量的名称和源文件位置。这将以符号形式解释该地址。例如，这里<small class="sc">GDB</small>显示变量<code class="code">ptt</code>指向另一个在<samp class="file">hi2.c</samp>中定义的变量<code class="code">t</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set print symbol-filename on
+(gdb) p/a ptt
+$4 = 0xe008 &lt;t in hi2.c&gt;
+</pre></div>
+
+<blockquote class="quotation">
+<p><em class="emph">警告：</em>对于指向局部变量的指针，即使启用了适当的<code class="code">set print</code>选项，&lsquo;<samp class="samp">p/a</samp>&rsquo;也不会显示被引用对象的符号名称和文件名。
+</p></blockquote>
+
+<p>你也可以使用&lsquo;<samp class="samp">set print symbol on</samp>&rsquo;始终启用类似&lsquo;<samp class="samp">/a</samp>&rsquo;的格式化：
+</p>
+<a class="anchor" id="set-print-symbol"></a><dl class="table">
+<dt><code class="code">set print symbol on</code></dt>
+<dd><p>告诉<small class="sc">GDB</small>，如果存在对应的符号，则打印与地址对应的符号。
+</p>
+</dd>
+<dt><code class="code">set print symbol off</code></dt>
+<dd><p>告诉<small class="sc">GDB</small>不打印与地址对应的符号。在这种模式下，<small class="sc">GDB</small>仍然会打印指向函数的指针对应的符号。这是默认设置。
+</p>
+</dd>
+<dt><code class="code">show print symbol</code></dt>
+<dd><p>显示<small class="sc">GDB</small>是否会显示与地址对应的符号。
+</p></dd>
+</dl>
+
+<p>其他设置控制不同类型对象的打印方式：
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-print-array"></a></dd>
+<dt><a id="index-pretty-print-arrays"></a><span><code class="code">set print array</code><a class="copiable-link" href="#index-pretty-print-arrays"> ¶</a></span></dt>
+<dt><code class="code">set print array on</code></dt>
+<dd><p>以漂亮格式打印数组。这种格式更便于阅读，但会占用更多空间。默认值为关闭。
+</p>
+</dd>
+<dt><code class="code">set print array off</code></dt>
+<dd><p>恢复数组的压缩格式。
+</p>
+</dd>
+<dt><code class="code">show print array</code></dt>
+<dd><p>显示在显示数组时选择的是压缩格式还是漂亮格式。
+<a class="index-entry-id" id="index-print-array-indexes"></a>
+<a class="anchor" id="set-print-array_002dindexes"></a></dd>
+<dt><code class="code">set print array-indexes</code></dt>
+<dt><code class="code">set print array-indexes on</code></dt>
+<dd><p>在显示数组时打印每个元素的索引。这可能更便于在数组中定位给定元素或快速找到打印数组中给定元素的索引。默认值为关闭。
+</p>
+</dd>
+<dt><code class="code">set print array-indexes off</code></dt>
+<dd><p>在显示数组时停止打印元素索引。
+</p>
+</dd>
+<dt><code class="code">show print array-indexes</code></dt>
+<dd><p>显示在显示数组时是否打印每个元素的索引。
+<a class="anchor" id="set-print-nibbles"></a></dd>
+<dt><a id="index-print-binary-values-in-groups-of-four-bits"></a><span><code class="code">set print nibbles</code><a class="copiable-link" href="#index-print-binary-values-in-groups-of-four-bits"> ¶</a></span></dt>
+<dt><code class="code">set print nibbles on</code></dt>
+<dd><p>当使用<small class="sc">GDB</small>的打印命令并带有&lsquo;<samp class="samp">/t</samp>&rsquo;选项时，以四位一组的形式打印二进制值，即所谓的<em class="dfn">半字节</em>。例如，这是使用<code class="code">set print nibbles on</code>时的样子：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb)= 1230
+(gdb) print/t val_flags
+$2 = 0100 1100 1110
+</pre></div></div>
+
+</dd>
+<dt><code class="code">set print nibbles off</code></dt>
+<dd><p>不以组的形式打印二进制值。这是默认设置。
+</p>
+</dd>
+<dt><code class="code">show print nibbles</code></dt>
+<dd><p>显示是否以四位一组的形式打印二进制值。
+<a class="anchor" id="set-print-characters"></a></dd>
+<dt><a class="index-entry-id" id="index-limit-on-number-of-printed-string-characters"></a>
+<a id="index-number-of-string-characters-to-print"></a><span><code class="code">set print characters <var class="var">number-of-characters</var></code><a class="copiable-link" href="#index-number-of-string-characters-to-print"> ¶</a></span></dt>
+<dt><code class="code">set print characters elements</code></dt>
+<dt><code class="code">set print characters unlimited</code></dt>
+<dd><p>设置<small class="sc">GDB</small>将打印的字符串字符数限制。如果<small class="sc">GDB</small>正在打印一个长字符串，它在打印了由<code class="code">set print characters</code>命令设置的字符数后就会停止打印。这同样适用于多字节和宽字符字符串，也就是说，对于字符类型为<code class="code">wchar_t</code>、<code class="code">char16_t</code>或<code class="code">char32_t</code>的字符串，这个设置控制的是实际字符数，而不是编码使用的底层字节数。
+将<var class="var">number-of-characters</var>设置为<code class="code">elements</code>意味着打印字符数的限制遵循数组元素的限制；见<a class="ref" href="#set-print-elements">set print elements</a>。
+将<var class="var">number-of-characters</var>设置为<code class="code">unlimited</code>意味着打印的字符数没有限制。
+当<small class="sc">GDB</small>启动时，这个限制设置为<code class="code">elements</code>。
+</p>
+</dd>
+<dt><code class="code">show print characters</code></dt>
+<dd><p>显示<small class="sc">GDB</small>将打印的长字符串的字符数。
+<a class="anchor" id="set-print-elements"></a></dd>
+<dt><a class="index-entry-id" id="index-limit-on-number-of-printed-array-elements"></a>
+<a id="index-number-of-array-elements-to-print"></a><span><code class="code">set print elements <var class="var">number-of-elements</var></code><a class="copiable-link" href="#index-number-of-array-elements-to-print"> ¶</a></span></dt>
+<dt><code class="code">set print elements unlimited</code></dt>
+<dd><p>设置<small class="sc">GDB</small>将打印的数组元素数限制。如果<small class="sc">GDB</small>正在打印一个大数组，它在打印了由<code class="code">set print elements</code>命令设置的元素数后就会停止打印。默认情况下，这个限制也适用于字符串的显示；见<a class="ref" href="#set-print-characters">set print characters</a>。
+当<small class="sc">GDB</small>启动时，这个限制设置为200。
+将<var class="var">number-of-elements</var>设置为<code class="code">unlimited</code>或零意味着打印的元素数没有限制。
+</p>
+<p>当打印非常大的数组时，如果其大小大于<code class="code">max-value-size</code>（见<a class="pxref" href="Value-Sizes.html#set-max_002dvalue_002dsize">max-value-size</a>），并且<code class="code">print elements</code>设置为使得正在打印的元素大小小于或等于<code class="code">max-value-size</code>，那么<small class="sc">GDB</small>将打印该数组（直到<code class="code">print elements</code>限制），并且只有价值为<code class="code">max-value-size</code>的数据会被添加到值历史中（见<a class="pxref" href="Value-History.html">值历史</a>）。
+</p>
+</dd>
+<dt><code class="code">show print elements</code></dt>
+<dd><p>显示<small class="sc">GDB</small>将打印的大数组的元素数。
+<a class="anchor" id="set-print-frame_002darguments"></a></dd>
+<dt><a class="index-entry-id" id="index-printing-frame-argument-values"></a>
+<a class="index-entry-id" id="index-print-all-frame-argument-values"></a>
+<a class="index-entry-id" id="index-print-frame-argument-values-for-scalars-only"></a>
+<a class="index-entry-id" id="index-do-not-print-frame-arguments"></a>
+<a id="index-set-print-frame_002darguments"></a><span><code class="code">set print frame-arguments <var class="var">value</var></code><a class="copiable-link" href="#index-set-print-frame_002darguments"> ¶</a></span></dt>
+<dd><p>此命令允许控制调试器在打印帧时（见<a class="pxref" href="Frames.html">堆栈帧</a>）如何打印参数值。可能的值如下：
+</p>
+<dl class="table">
+<dt><code class="code">all</code></dt>
+<dd><p>打印所有参数的值。
+</p>
+</dd>
+<dt><code class="code">scalars</code></dt>
+<dd><p>仅当参数是标量时才打印其值。更复杂的参数（如数组、结构体、联合体等）的值将被替换为<code class="code">&hellip;</code>。这是默认设置。这里有一个只显示标量参数的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#1  0x08048361 in call_me (i=3, s=..., ss=0xbf8d508c, u=..., e=green)
+  at frame-args.c:23
+</pre></div>
+
+</dd>
+<dt><code class="code">none</code></dt>
+<dd><p>不打印任何参数值。相反，每个参数的值都被替换为<code class="code">&hellip;</code>。在这种情况下，上面的示例现在变为：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#1  0x08048361 in call_me (i=..., s=..., ss=..., u=..., e=...)
+  at frame-args.c:23
+</pre></div>
+
+</dd>
+<dt><code class="code">presence</code></dt>
+<dd><p>仅用<code class="code">&hellip;</code>表示参数的存在。对于没有任何参数的函数，不打印<code class="code">&hellip;</code>。不打印任何参数名称和值。
+在这种情况下，上面的示例现在变为：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#1  0x08048361 in call_me (...) at frame-args.c:23
+</pre></div>
+
+</dd>
+</dl>
+
+<p>默认情况下，只打印标量参数。此命令可用于配置调试器以打印所有参数的值，而不管其类型如何。然而，通常不打印更复杂参数的值是有利的。例如，这减少了每个帧中打印的信息量，使回溯更具可读性。此外，在显示Ada帧时，这还提高了性能，因为计算大型参数有时可能会占用大量CPU资源，尤其是在大型应用程序中。将<code class="code">print frame-arguments</code>设置为<code class="code">scalars</code>（默认值）、<code class="code">none</code>或<code class="code">presence</code>可以避免这种计算，从而加快每个Ada帧的显示速度。
+</p>
+</dd>
+<dt><code class="code">show print frame-arguments</code></dt>
+<dd><p>显示在打印帧时应如何显示参数值。
+<a class="anchor" id="set-print-raw_002dframe_002darguments"></a></dd>
+<dt><code class="code">set print raw-frame-arguments on</code></dt>
+<dd><p>以原始的、不漂亮打印的形式打印帧参数。
+</p>
+</dd>
+<dt><code class="code">set print raw-frame-arguments off</code></dt>
+<dd><p>如果有针对该值的漂亮打印机（见<a class="pxref" href="Pretty-Printing.html">漂亮打印</a>），则以漂亮打印的形式打印帧参数，否则以原始形式打印该值。
+这是默认设置。
+</p>
+</dd>
+<dt><code class="code">show print raw-frame-arguments</code></dt>
+<dd><p>显示是否以原始形式打印帧参数。
+<a class="anchor" id="set-print-entry_002dvalues"></a></dd>
+<dt><a id="index-set-print-entry_002dvalues"></a><span><code class="code">set print entry-values <var class="var">value</var></code><a class="copiable-link" href="#index-set-print-entry_002dvalues"> ¶</a></span></dt>
+<dd><p>设置在函数入口处打印帧参数值。在某些情况下，<small class="sc">GDB</small>可以确定函数调用者传递的函数参数的值，即使该值在被调用函数内部被修改，因此是不同的。对于优化后的代码，当前值可能不可用，但入口值可能仍然已知。
+</p>
+<p>默认值是<code class="code">default</code>（见下文对其描述）。较旧的<small class="sc">GDB</small>的行为与设置<code class="code">no</code>时相同。不支持此功能的编译器在<code class="code">default</code>设置下的行为与在<code class="code">no</code>设置下相同。
+</p>
+<p>此功能目前仅由DWARF 2调试格式支持，并且编译器必须生成&lsquo;<samp class="samp">DW_TAG_call_site</samp>&rsquo;标签。使用<small class="sc">GCC</small>时，你需要在编译期间指定<samp class="option">-O -g</samp>，以获取此信息。
+</p>
+<p><var class="var">value</var>参数可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">no</code></dt>
+<dd><p>仅打印实际参数值，从不打印函数入口点的值。
+</p><div class="example smallexample">
+<pre class="example-preformatted">#0  equal (val=5)
+#0  different (val=6)
+#0  lost (val=&lt;optimized out&gt;)
+#0  born (val=10)
+#0  invalid (val=&lt;optimized out&gt;)
+</pre></div>
+
+</dd>
+<dt><code class="code">only</code></dt>
+<dd><p>仅打印函数入口点的参数值。从不打印实际参数值。
+</p><div class="example smallexample">

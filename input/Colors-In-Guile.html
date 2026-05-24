@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Colors In Guile (Debugging with GDB)</title>
+
+<meta name="description" content="Colors In Guile (Debugging with GDB)">
+<meta name="keywords" content="Colors In Guile (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Iterators-In-Guile.html" rel="prev" title="Iterators In Guile">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Colors-In-Guile">
+<div class="nav-panel">
+<p>
+Previous: <a href="Iterators-In-Guile.html" accesskey="p" rel="prev">Iterators In Guile</a>, Up: <a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Colors-In-Guile-1"><span>23.4.3.26 Colors In Guile<a class="copiable-link" href="#Colors-In-Guile-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-colors"></a>
+<a class="index-entry-id" id="index-_003cgdb_003acolor_003e"></a>
+<p>You can assign instance of <code class="code">&lt;gdb:color&gt;</code> to the value of
+a <code class="code">&lt;gdb:parameter&gt;</code> object created with <code class="code">PARAM_COLOR</code>.
+</p>
+<p><code class="code">&lt;gdb:color&gt;</code> may refer to an index from color palette or contain
+components of a color from some colorspace.
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dcolor"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">make-color</strong> <var class="def-var-arguments"><span class="r">[</span>value<!-- /@w -->     <span class="r">[</span>#:color-space&nbsp;color-space<span class="r">]</span><span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dcolor"> &para;</a></span></dt>
+<dd>
+<p><var class="var">value</var> is an integer index of a color in palette, tuple with color
+components or a string.  String can be a hex RGB triplet in &lsquo;<samp class="samp">#RRGGBB</samp>&rsquo;
+format or one of the following color names:
+&lsquo;<samp class="samp">none</samp>&rsquo; (meaning the terminal&rsquo;s default color), &lsquo;<samp class="samp">black</samp>&rsquo;, &lsquo;<samp class="samp">red</samp>&rsquo;,
+&lsquo;<samp class="samp">green</samp>&rsquo;, &lsquo;<samp class="samp">yellow</samp>&rsquo;, &lsquo;<samp class="samp">blue</samp>&rsquo;, &lsquo;<samp class="samp">magenta</samp>&rsquo;, &lsquo;<samp class="samp">cyan</samp>&rsquo;,
+or &lsquo;<samp class="samp">white</samp>&rsquo;.
+</p>
+<p><var class="var">color-space</var> should be one of the &lsquo;<samp class="samp">COLORSPACE_</samp>&rsquo; constants.  This
+argument tells <small class="sc">GDB</small> which color space <var class="var">value</var> belongs.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-color_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">object</var> is a <code class="code">&lt;gdb:color&gt;</code> object.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dnone_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-none?</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dnone_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">color</var> is terminal&rsquo;s default.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dindexed_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-indexed?</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dindexed_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">color</var> is indexed, i.e. belongs to some palette.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002ddirect_003f"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-direct?</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002ddirect_003f"> &para;</a></span></dt>
+<dd><p>Return <code class="code">#t</code> if <var class="var">color</var> is direct in the sense of ISO/IEC 8613-6.
+Otherwise return <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dstring"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-string</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dstring"> &para;</a></span></dt>
+<dd><p>Return the textual representation of a <code class="code">&lt;gdb:color&gt;</code> object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dcolorspace"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-colorspace</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dcolorspace"> &para;</a></span></dt>
+<dd><p>Return the color space of a <code class="code">&lt;gdb:color&gt;</code> object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dindex"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-index</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dindex"> &para;</a></span></dt>
+<dd><p>Return index of the color of a <code class="code">&lt;gdb:color&gt;</code> object in a palette.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dcomponents"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-components</strong> <var class="def-var-arguments">color</var><a class="copiable-link" href="#index-color_002dcomponents"> &para;</a></span></dt>
+<dd><p>Return components of the direct <code class="code">&lt;gdb:color&gt;</code> object.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002descape_002dsequence"><span class="category-def">Scheme Procedure: </span><span><strong class="def-name">color-escape-sequence</strong> <var class="def-var-arguments">color is_foreground</var><a class="copiable-link" href="#index-color_002descape_002dsequence"> &para;</a></span></dt>
+<dd><p>Return string to change terminal&rsquo;s color to this.
+</p>
+<p>If <var class="var">is_foreground</var> is <code class="code">#t</code>, then the returned sequence will change
+foreground color.  Otherwise, the returned sequence will change background
+color.
+</p>
+<p>If styling is currently disabled (see <a class="pxref" href="Output-Styling.html"><kbd class="kbd">set style
+enabled</kbd></a>), then this procedure will return an empty string.
+</p></dd></dl>
+
+<p>When color is initialized, its color space must be specified.  The
+available color spaces are represented by constants defined in the <code class="code">gdb</code>
+module:
+</p>
+<dl class="vtable">
+<dt><a id="index-COLORSPACE_005fMONOCHROME-1"></a><span><code class="code">COLORSPACE_MONOCHROME</code><a class="copiable-link" href="#index-COLORSPACE_005fMONOCHROME-1"> &para;</a></span></dt>
+<dd><p>Palette with only terminal&rsquo;s default color.
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fANSI_005f8COLOR-1"></a><span><code class="code">COLORSPACE_ANSI_8COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fANSI_005f8COLOR-1"> &para;</a></span></dt>
+<dd><p>Palette with eight standard colors of ISO/IEC 6429 &quot;black&quot;, &quot;red&quot;, &quot;green&quot;, etc.
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fAIXTERM_005f16COLOR-1"></a><span><code class="code">COLORSPACE_AIXTERM_16COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fAIXTERM_005f16COLOR-1"> &para;</a></span></dt>
+<dd><p>Palette with 16 colors.  First eight are standard colors of ISO/IEC 6429
+&quot;black&quot;, &quot;red&quot;, &quot;green&quot;, etc.  Next eight are their bright version.
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fXTERM_005f256COLOR-1"></a><span><code class="code">COLORSPACE_XTERM_256COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fXTERM_005f256COLOR-1"> &para;</a></span></dt>
+<dd><p>Palette with 256 colors.  First 16 are from COLORSPACE_AIXTERM_16COLOR.  Next
+216 colors are 6x6x6 RGB cube.  And last 24 colors form grayscale ramp.
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fRGB_005f24BIT-1"></a><span><code class="code">COLORSPACE_RGB_24BIT</code><a class="copiable-link" href="#index-COLORSPACE_005fRGB_005f24BIT-1"> &para;</a></span></dt>
+<dd><p>Direct 24-bit RGB colors.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Iterators-In-Guile.html">Iterators In Guile</a>, Up: <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>远程存根（使用GDB调试）</title>
+
+<meta name="description" content="远程存根（使用GDB调试）">
+<meta name="keywords" content="远程存根（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Debugging.html" rel="up" title="远程调试">
+<link href="Remote-Configuration.html" rel="prev" title="远程配置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Stub">
+<div class="nav-panel">
+<p>
+上一个：<a href="Remote-Configuration.html" accesskey="p" rel="prev">远程配置</a>，向上：<a href="Remote-Debugging.html" accesskey="u" rel="up">调试远程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Implementing-a-Remote-Stub"><span>20.5 实现一个远程存根<a class="copiable-link" href="#Implementing-a-Remote-Stub"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-debugging-stub_002c-example"></a>
+<a class="index-entry-id" id="index-remote-stub_002c-example"></a>
+<a class="index-entry-id" id="index-stub-example_002c-remote-debugging"></a>
+<p>GDB提供的存根文件实现了通信协议的目标端，而GDB端则在GDB源文件remote.c中实现。通常，您只需让这些子例程进行通信，而忽略细节。（如果您要实现自己的存根文件，仍然可以忽略细节：从现有的存根文件之一开始。sparc-stub.c的组织最为良好，因此最容易阅读。）
+</p>
+<a class="index-entry-id" id="index-remote-serial-debugging_002c-overview"></a>
+<p>要调试在另一台机器（调试<em class="dfn">目标</em>机器）上运行的程序，您必须首先安排好程序自行运行所需的所有常规先决条件。例如，对于一个C程序，您需要：
+</p>
+<ol class="enumerate">
+<li> 一个启动例程来设置C运行时环境；这些通常有一个类似<samp class="file">crt0</samp>的名称。启动例程可能由您的硬件供应商提供，或者您可能需要自己编写。
+
+</li><li> 一个C子例程库来支持您程序的子例程调用，特别是管理输入和输出。
+
+</li><li> 一种将您的程序传输到另一台机器的方法 —— 例如，一个下载程序。这些通常由硬件制造商提供，但您可能需要根据硬件文档自己编写。
+</li></ol>
+
+<p>下一步是安排您的程序使用串行端口与运行GDB的机器（<em class="dfn">主机</em>机器）进行通信。一般来说，方案如下：
+</p>
+<dl class="table">
+<dt><em class="emph">在主机上，</em></dt>
+
+<dd><p>GDB已经知道如何使用此协议；当其他一切都设置好后，您只需使用“<samp class="samp">target remote</samp>”命令（见<a class="pxref" href="Targets.html">指定调试目标</a>）。
+</p>
+</dd>
+<dt><em class="emph">在目标上，</em></dt>
+
+<dd><p>您必须将一些实现GDB远程串行协议的专用子例程与您的程序链接。包含这些子例程的文件称为<em class="dfn">调试存根</em>。
+</p>
+<p>在某些远程目标上，您可以使用辅助程序<code class="code">gdbserver</code>而不是将存根链接到您的程序中。有关详细信息，请参阅<a class="xref" href="Server.html">使用<code class="code">gdbserver</code>程序</a>。
+</p></dd>
+</dl>
+
+<p>调试存根特定于远程机器的架构；例如，使用<samp class="file">sparc-stub.c</samp>来调试SPARC板上的程序。
+</p>
+<a class="index-entry-id" id="index-remote-serial-stub-list"></a>
+<p>这些可用的远程存根随GDB一起分发：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-Intel"></a>
+<a class="index-entry-id" id="index-i386"></a>
+<a id="index-i386_002dstub_002ec"></a><span><code class="code">i386-stub.c</code><a class="copiable-link" href="#index-i386_002dstub_002ec"> &para;</a></span></dt>
+
+<dd><p>适用于英特尔386及兼容架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Motorola-680x0"></a>
+<a class="index-entry-id" id="index-m680x0"></a>
+<a id="index-m68k_002dstub_002ec"></a><span><code class="code">m68k-stub.c</code><a class="copiable-link" href="#index-m68k_002dstub_00

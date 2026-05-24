@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TUI单键模式（使用GDB调试）</title>
+
+<meta name="description" content="TUI单键模式（使用GDB调试）">
+<meta name="keywords" content="TUI单键模式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Mouse-Support.html" rel="next" title="TUI鼠标支持">
+<link href="TUI-Keys.html" rel="prev" title="TUI按键绑定">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI单键模式">
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Mouse-Support.html" accesskey="n" rel="next">TUI鼠标支持</a>，上一页：<a href="TUI-Keys.html" accesskey="p" rel="prev">TUI按键绑定</a>，向上：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI单键模式-1"><span>25.3 TUI单键模式<a class="copiable-link" href="#TUI单键模式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-TUI单键模式"></a>
+
+<p>TUI还提供了一种<em class="dfn">单键</em>模式，它将几个常用的<small class="sc">GDB</small>命令绑定到单个按键上。输入<kbd class="kbd">C-x s</kbd>可切换到该模式，其中使用以下按键绑定：
+</p>
+<dl class="table">
+<dt><a id="index-c-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">c</kbd><a class="copiable-link" href="#index-c-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>继续
+</p>
+</dd>
+<dt><a id="index-C-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">C</kbd><a class="copiable-link" href="#index-C-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向继续
+</p>
+</dd>
+<dt><a id="index-d-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">d</kbd><a class="copiable-link" href="#index-d-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>向下
+</p>
+</dd>
+<dt><a id="index-f-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">f</kbd><a class="copiable-link" href="#index-f-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>完成
+</p>
+</dd>
+<dt><a id="index-F-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">F</kbd><a class="copiable-link" href="#index-F-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向完成
+</p>
+</dd>
+<dt><a id="index-n-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">n</kbd><a class="copiable-link" href="#index-n-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>下一步
+</p>
+</dd>
+<dt><a id="index-N-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">N</kbd><a class="copiable-link" href="#index-N-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向下一步
+</p>
+</dd>
+<dt><a id="index-o-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">o</kbd><a class="copiable-link" href="#index-o-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>nexti。快捷键字母‘<samp class="samp">o</samp>’代表“单步跳过”。
+</p>
+</dd>
+<dt><a id="index-O-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">O</kbd><a class="copiable-link" href="#index-O-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向nexti
+</p>
+</dd>
+<dt><a id="index-q-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">q</kbd><a class="copiable-link" href="#index-q-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>退出单键模式。
+</p>
+</dd>
+<dt><a id="index-r-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">r</kbd><a class="copiable-link" href="#index-r-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>运行
+</p>
+</dd>
+<dt><a id="index-s-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">s</kbd><a class="copiable-link" href="#index-s-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>单步执行
+</p>
+</dd>
+<dt><a id="index-S-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">S</kbd><a class="copiable-link" href="#index-S-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向单步执行
+</p>
+</dd>
+<dt><a id="index-i-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">i</kbd><a class="copiable-link" href="#index-i-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>stepi。快捷键字母‘<samp class="samp">i</samp>’代表“单步进入”。
+</p>
+</dd>
+<dt><a id="index-I-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">I</kbd><a class="copiable-link" href="#index-I-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>反向stepi
+</p>
+</dd>
+<dt><a id="index-u-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">u</kbd><a class="copiable-link" href="#index-u-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>向上
+</p>
+</dd>
+<dt><a id="index-v-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">v</kbd><a class="copiable-link" href="#index-v-_0028单键-TUI按键_0029"> &para;</a></span></dt>
+<dd><p>显示局部变量
+</p>
+</dd>
+<dt><a id="index-w-_0028单键-TUI按键_0029"></a><span><kbd class="kbd">w</kbd><a class="copiable-link" href="#index-w-_0028单键-TUI按键_二9"> &para;</a></span></dt>
+<dd><p>显示当前执行位置
+</p></dd>
+</dl>
+
+<p>其他按键会临时切换到<small class="sc">GDB</small>命令提示符。按下的按键会插入到编辑缓冲区，这样就可以在不与TUI单键模式交互的情况下输入大多数<small class="sc">GDB</small>命令。输入命令后，TUI单键模式将恢复。永久离开此模式的唯一方法是输入<kbd class="kbd">q</kbd>或<kbd class="kbd">C-x s</kbd>。
+</p>
+<a class="index-entry-id" id="index-单键键盘映射名称"></a>
+<p>如果<small class="sc">GDB</small>是使用Readline 8.0或更高版本构建的，TUI单键键盘映射将被命名为‘<samp class="samp">SingleKey</samp>’。这可以在<samp class="file">.inputrc</samp>中用于向此键盘映射添加其他绑定。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Mouse-Support.html">TUI鼠标支持</a>，上一页：<a href="TUI-Keys.html">TUI按键绑定</a>，向上：<a href="TUI.html"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

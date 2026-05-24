@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>不间断模式（使用GDB调试）</title>
+
+<meta name="description" content="不间断模式（使用GDB调试）">
+<meta name="keywords" content="不间断模式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Background-Execution.html" rel="next" title="后台执行">
+<link href="All_002dStop-Mode.html" rel="prev" title="全停止模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Non_002dStop-Mode">
+<div class="nav-panel">
+<p>
+下一页：<a href="Background-Execution.html" accesskey="n" rel="next">后台执行</a>，上一页：<a href="All_002dStop-Mode.html" accesskey="p" rel="prev">全停止模式</a>，向上：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Non_002dStop-Mode-1"><span>5.5.2 不间断模式<a class="copiable-link" href="#Non_002dStop-Mode-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-non_002dstop-mode"></a>
+
+
+<p>对于某些多线程目标，GDB支持一种可选的操作模式，在这种模式下，你可以在调试器中检查已停止的程序线程，而其他线程继续自由执行。这在调试实时系统（如某些线程有实时约束或必须继续响应外部事件的程序）时将干扰降至最低。这被称为<em class="dfn">不间断</em>模式。
+</p>
+<p>在不间断模式下，当一个线程停止以报告调试事件时，<em class="emph">只有</em>那个线程会停止；与全停止模式的行为不同，GDB不会停止其他线程。此外，在不间断模式下，诸如<code class="code">continue</code>和<code class="code">step</code>等执行命令默认仅应用于当前线程，而不是像在全停止模式下那样应用于所有线程。这使你能够以全停止模式无法实现的方式显式控制线程 —— 例如，单步执行一个线程，同时允许其他线程自由运行；单步执行一个线程，同时保持其他所有线程停止；或者独立且同时地单步执行多个线程。
+</p>
+<p>要进入不间断模式，请在运行或附加到程序之前使用以下命令序列：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"># 如果使用CLI，分页会破坏不间断模式。
+set pagination off
+
+# 最后，打开它！
+set non-stop on
+</pre></div>
+
+<p>你可以使用以下命令来操作不间断模式设置：
+</p>
+<dl class="table">
+<dt><a id="index-set-non_002dstop"></a><span><code class="code">set non-stop on</code><a class="copiable-link" href="#index-set-non_002dstop"> &para;</a></span></dt>
+<dd><p>启用不间断模式选择。
+</p></dd>
+<dt><code class="code">set non-stop off</code></dt>
+<dd><p>禁用不间断模式选择。
+<a class="index-entry-id" id="index-show-non_002dstop"></a>
+</p></dd>
+<dt><code class="code">show non-stop</code></dt>
+<dd><p>显示当前不间断启用设置。
+</p></dd>
+</dl>
+
+<p>请注意，这些命令仅反映是否启用了不间断模式，而不是当前正在执行的程序是否以不间断模式运行。特别是，<code class="code">set non-stop</code>首选项仅在GDB启动或连接到目标程序时才会被参考，并且一旦调试开始，通常不可能切换模式。此外，由于并非所有目标都支持不间断模式，即使你启用了不间断模式，GDB默认情况下仍可能回退到全停止操作。
+</p>
+<p>在不间断模式下，所有执行命令默认仅应用于当前线程。也就是说，<code class="code">continue</code>仅继续一个线程。要继续所有线程，请发出<code class="code">continue -a</code>或<code class="code">c -a</code>。
+</p>

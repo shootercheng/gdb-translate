@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。" -->
+<title>指针值（使用GDB调试）</title>
+
+<meta name="description" content="指针值（使用GDB调试）">
+<meta name="keywords" content="指针值（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="特定协议的数据类型表示">
+<link href="Memory-Transfer.html" rel="next" title="内存传输">
+<link href="Integral-Datatypes.html" rel="prev" title="整数数据类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="指针值">
+<div class="nav-panel">
+<p>
+下一页：<a href="Memory-Transfer.html" accesskey="n" rel="next">内存传输</a>，上一页：<a href="Integral-Datatypes.html" accesskey="p" rel="prev">整数数据类型</a>，向上：<a href="Protocol_002dspecific-Representation-of-Datatypes.html" accesskey="u" rel="up">特定协议的数据类型表示</a> &nbsp; [<a href="index.html#!/SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="指针值-1"><span>指针值<a class="copiable-link" href="#指针值-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-指针值_002c-in-file_002di_002fo-protocol"></a>
+
+<p>指向目标数据的指针按原样传输。对于指向缓冲区的指针有一个例外，其长度不作为函数调用的一部分进行传输，即字符串。字符串作为指针/长度对传输，两者均为十六进制值，例如
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">1aaf/12</code>
+</pre></div>
+
+<p>这是指向位于0x1aaf位置的18字节数据的指针。长度定义为字符串的完整字节长度，包括尾随的空字节。例如，位于地址0x123456的字符串<code class="code">&quot;hello world&quot;</code>按以下方式传输
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">123456/d</code>
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html> 

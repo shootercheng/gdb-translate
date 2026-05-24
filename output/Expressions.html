@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>表达式（使用GDB调试）</title>
+
+<meta name="description" content="表达式（使用GDB调试）">
+<meta name="keywords" content="表达式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Ambiguous-Expressions.html" rel="next" title="模糊表达式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="表达式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Ambiguous-Expressions.html" accesskey="n" rel="next">模糊表达式</a>，上一级：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="表达式-1"><span>10.1 表达式<a class="copiable-link" href="#表达式-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-表达式"></a>
+<p><code class="code">print</code>以及许多其他GDB命令都接受一个表达式并计算其值。你正在使用的编程语言定义的任何常量、变量或运算符在GDB的表达式中都是有效的。这包括条件表达式、函数调用、强制类型转换和字符串常量。如果你编译程序时包含了预处理器宏信息，它也包括预处理器宏；请参阅<a class="ref" href="Compilation.html">为调试而编译</a>。
+</p>
+<a class="index-entry-id" id="index-表达式中的数组"></a>
+<p>GDB支持用户在表达式中输入数组常量。语法是{<var class="var">元素</var>, <var class="var">元素</var>&hellip;}。例如，你可以使用命令<code class="code">print {1, 2, 3}</code>创建一个包含三个整数的数组。如果你将一个数组传递给一个函数或将其赋给一个程序变量，GDB会将该数组复制到目标程序中通过<code class="code">malloc</code>分配的内存中。
+</p>
+<p>因为C语言非常普及，本手册中的大多数示例表达式都是用C语言编写的。有关如何在其他语言中使用表达式的信息，请参阅<a class="xref" href="Languages.html">使用GDB与不同语言</a>。
+</p>
+<p>在本节中，我们将讨论除了编程语言本身的运算符之外，GDB表达式中可能可用的运算符。但是，它们不一定在所有支持的语言中都可用。
+</p>
+<a class="index-entry-id" id="index-强制类型转换，在表达式中"></a>
+<p>所有语言都支持强制类型转换，不仅仅是C语言，因为将一个数字转换为指针以便在内存中的那个地址检查一个结构体非常有用。
+</p>
+<p>除了编程语言共有的运算符之外，GDB还支持以下运算符：
+</p>
+<dl class="table">
+<dt><code class="code">@</code></dt>
+<dd><p>&lsquo;<samp class="samp">@</samp>&rsquo;是一个二元运算符，用于将内存的一部分视为数组。有关更多信息，请参阅<a class="xref" href="Arrays.html">人造数组</a>。
+</p>
+</dd>
+<dt><code class="code">::</code></dt>
+<dd><p>&lsquo;<samp class="samp">::</samp>&rsquo;允许你根据变量定义所在的文件或函数来指定变量。请参阅<a class="xref" href="Variables.html">程序变量</a>。目前Ada、Rust、Pascal、Modula - 2和D语言不支持此功能。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-类型转换-内存"></a>
+<a class="index-entry-id" id="index-内存，视为带类型的对象查看"></a>
+<a class="index-entry-id" id="index-强制类型转换，查看内存"></a>
+<a id="index-_007btype_007d"></a><span><code class="code">{<var class="var">类型</var>} <var class="var">地址</var></code><a class="copiable-link" href="#index-_007btype_007d"> &para;</a></span></dt>
+<dd><p>指存储在内存地址<var class="var">地址</var>处的类型为<var class="var">类型</var>的对象。地址<var class="var">地址</var>可以是任何值为整数或指针的表达式（但二元运算符周围需要括号，就像在强制类型转换中一样）。无论通常应该驻留在<var class="var">地址</var>处的数据类型是什么，都允许使用此结构。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Ambiguous-Expressions.html">模糊表达式</a>，上一级：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

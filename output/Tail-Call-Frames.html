@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>尾调用帧（使用GDB调试）</title>
+
+<meta name="description" content="尾调用帧（使用GDB调试）">
+<meta name="keywords" content="尾调用帧（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Optimized-Code.html" rel="up" title="优化代码">
+<link href="Inline-Functions.html" rel="prev" title="内联函数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: -0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="尾调用帧">
+<div class="nav-panel">
+<p>
+上一个：<a href="Inline-Functions.html" accesskey="p" rel="prev">内联函数</a>，向上：<a href="Optimized-Code.html" accesskey="u" rel="up">调试优化代码</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="尾调用帧-1"><span>11.2 尾调用帧<a class="copiable-link" href="#尾调用帧-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-尾调用帧_002c-调试"></a>
+
+<p>函数<code>B</code>可以在其最后一条语句中调用函数<code>C</code>。在未优化的编译中，对<code>C</code>的调用紧接着在<code>B</code>代码末尾的返回指令。优化编译器可能会将函数<code>B</code>中的调用和返回替换为直接跳转到函数<code>C</code>。这种跳转指令的使用被称为<em>尾调用</em>。
+</p>
+<p>在函数<code>C</code>执行期间，函数调用栈帧中不会有任何迹象表明它是从<code>B</code>进行尾调用的。如果函数<code>A</code>经常调用函数<code>B</code>，而函数<code>B</code>又尾调用函数<code>C</code>，那么GDB会将<code>A</code>视为<code>C</code>的调用者。然而，在某些情况下，GDB可以确定<code>C</code>是从<code>B</code>进行尾调用的，并会为此创建一个虚拟调用帧，其返回地址的设置就好像<code>B</code>正常调用<code>C</code>一样。
+</p>
+<p>目前只有DWARF 2调试格式支持此功能，并且编译器必须生成“<samp class="samp">DW_TAG_call_site</samp>”标签。使用GCC时，你需要在编译期间指定<samp class="option">-O -g</samp>以获取此信息。
+</p>
+<p><kbd class="kbd">info frame</kbd>命令（见<a class="pxref" href="Frame-Info.html">关于一个帧的信息</a>）会通过“<code>tail call frame</code>”文本指示尾调用帧类型，如下例GDB输出所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) x/i $pc - 2
+   0x40066b &lt;b(int, double)+11&gt;: jmp 0x400640 &lt;c(int, double)&gt;
+(gdb) info frame
+栈层1，帧位于0x7fffffffda30：
+ rip = 0x40066d在b (amd64-entry-value.cc:59)；保存的rip为0x4004c5
+ 尾调用帧，0x7fffffffda30处帧的调用者
+ 源语言c++。
+ 未知地址的参数列表。
+ 未知地址的局部变量，前一帧的sp为0x7fffffffda30
+</pre></div>
+
+<p>检测所有可能的代码路径执行可能会发现它们不明确。没有存储执行历史（可能永远不会为此目的使用<a class="ref" href="Reverse-Execution.html">反向执行程序</a>），并且最后已知的调用者可能通过多个不同的跳转序列到达已知的被调用者。在这种情况下，GDB仍然会尝试显示至少所有明确的顶级尾调用者和所有明确的底层尾被调用者（如果有的话）。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="设置-调试-入口_002d值"></a></dd>
+<dt><a id="索引-设置-调试-入口_002d值"></a><span><code>set debug entry-values</code><a class="copiable-link" href="#索引-设置-调试-入口_002d值"> &para;</a></span></dt>
+<dd><p>设置为on时，启用在函数入口和尾调用时打印帧参数值的分析消息。它将显示它考虑的所有可能有效的尾调用代码路径。它还将打印它们与最终明确的（可能是部分甚至为空的）代码路径结果的交集。
+</p>
+</dd>
+<dt><a id="索引-显示-调试-入口_002d值"></a><span><code>show debug entry-values</code><a class="copiable-link" href="#索引-显示-调试-入口_002d值"> &para;</a></span></dt>
+<dd><p>显示在函数入口和尾调用时打印帧参数值的分析消息的当前状态。
+</p></dd>
+</dl>
+
+<p>例如，尾调用的分析消息可以显示为什么未识别函数<code>c</code>的虚拟尾调用帧（由于变量<code>x</code>的间接引用）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">static void __attribute__((noinline, noclone)) c (void);
+void (*x) (void) = c;
+static void __attribute__((noinline, noclone)) a (void) { x++; }
+static void __attribute__((noinline, noclone)) c (void) { a (); }
+int main (void) { x (); return 0; }
+
+断点1，DW_OP_entry_value解析无法找到
+main中0x40039a处的DW_TAG_call_site
+a () 在t.c:3
+3	static void __attribute__((noinline, noclone)) a (void) { x++; }
+(gdb) bt
+#0  a () 在t.c:3
+#1  0x000000000040039a在main () 在t.c:5
+</pre></div>
+
+<p>另一种可能性是不明确的虚拟尾调用帧解析：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int i;
+static void __attribute__((noinline, noclone)) f (void) { i++; }
+static void __attribute__((noinline, noclone)) e (void) { f (); }
+static void __attribute__((noinline, noclone)) d (void) { f (); }
+static void __attribute__((noinline, noclone)) c (void) { d (); }
+static void __attribute__((noinline, noclone)) b (void)
+{ if (i) c (); else e (); }
+static void __attribute__((noinline, noclone)) a (void) { b (); }
+int main (void) { a (); return 0; }
+
+tailcall: initial: 0x4004d2(a) 0x4004ce(b) 0x4004b2(c) 0x4004a2(d)
+tailcall: compare: 0x4004d2(a) 0x4004cc(b) 0x400492(e)
+tailcall: reduced: 0x40

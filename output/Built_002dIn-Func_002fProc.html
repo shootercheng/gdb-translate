@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>内置函数/过程（使用GDB调试）</title>
+
+<meta name="description" content="内置函数/过程（使用GDB调试）">
+<meta name="keywords" content="内置函数/过程（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">
+<link href="M2-Constants.html" rel="next" title="M2常量">
+<link href="M2-Operators.html" rel="prev" title="M2运算符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Built_002dIn-Func_002fProc">
+<div class="nav-panel">
+<p>
+下一个：<a href="M2-Constants.html" accesskey="n" rel="next">常量</a>，上一个：<a href="M2-Operators.html" accesskey="p" rel="prev">运算符</a>，向上：<a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Built_002din-Functions-and-Procedures"><span>15.4.9.2内置函数和过程<a class="copiable-link" href="#Built_002din-Functions-and-Procedures"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Modula_002d2-built_002dins"></a>
+
+<p>Modula-2还提供了几个内置过程和函数。
+在描述这些时，使用了以下元变量：
+</p>
+<dl class="table">
+<dt><var class="var">a</var></dt>
+<dd><p>表示一个<code class="code">ARRAY</code>变量。
+</p>
+</dd>
+<dt><var class="var">c</var></dt>
+<dd><p>表示一个<code class="code">CHAR</code>常量或变量。
+</p>
+</dd>
+<dt><var class="var">i</var></dt>
+<dd><p>表示整数类型的变量或常量。
+</p>
+</dd>
+<dt><var class="var">m</var></dt>
+<dd><p>表示属于一个集合的标识符。通常与元变量<var class="var">s</var>在同一个函数中使用。<var class="var">s</var>的类型应该是<code class="code">SET OF <var class="var">mtype</var></code>（其中<var class="var">mtype</var>是<var class="var">m</var>的类型）。
+</p>
+</dd>
+<dt><var class="var">n</var></dt>
+<dd><p>表示整数或浮点类型的变量或常量。
+</p>
+</dd>
+<dt><var class="var">r</var></dt>
+<dd><p>表示浮点类型的变量或常量。
+</p>
+</dd>
+<dt><var class="var">t</var></dt>
+<dd><p>表示一种类型。
+</p>
+</dd>
+<dt><var class="var">v</var></dt>
+<dd><p>表示一个变量。
+</p>
+</dd>
+<dt><var class="var">x</var></dt>
+<dd><p>表示多种类型之一的变量或常量。有关详细信息，请参阅函数的说明。
+</p></dd>
+</dl>
+
+<p>所有Modula-2内置过程也返回一个结果，如下所述。
+</p>
+<dl class="table">
+<dt><code class="code">ABS(<var class="var">n</var>)</code></dt>
+<dd><p>返回<var class="var">n</var>的绝对值。
+</p>
+</dd>
+<dt><code class="code">ADR(<var class="var">n</var>)</code></dt>
+<dd><p>返回<var class="var">n</var>的内存地址。
+</p>
+</dd>
+<dt><code class="code">CAP(<var class="var">c</var>)</code></dt>
+<dd><p>如果<var class="var">c</var>是一个小写字母，则返回其大写等效形式，否则返回其参数。
+</p>
+</dd>
+<dt><code class="code">CHR(<var class="var">i</var>)</code></dt>
+<dd><p>返回序数为<var class="var">i</var>的字符。
+</p>
+</dd>
+<dt><code class="code">DEC(<var class="var">v</var>)</code></dt>
+<dd><p>将变量<var class="var">v</var>中的值减1。返回新值。
+</p>
+</dd>
+<dt><code class="code">DEC(<var class="var">v</var>,<var class="var">i</var>)</code></dt>
+<dd><p>将变量<var class="var">v</var>中的值减<var class="var">i</var>。返回新值。
+</p>
+</dd>
+<dt><code class="code">EXCL(<var class="var">m</var>,<var class="var">s</var>)</code></dt>
+<dd><p>从集合<var class="var">s</var>中移除元素<var class="var">m</var>。返回新集合。
+</p>
+</dd>
+<dt><code class="code">FLOAT(<var class="var">i</var>)</code></dt>
+<dd><p>返回整数<var class="var">i</var>的浮点等效值。
+</p>
+</dd>
+<dt><code class="code">HIGH(<var class="var">a</var>)</code></dt>
+<dd><p>返回<var class="var">a</var>的最后一个成员的索引。
+</p>
+</dd>
+<dt><code class="code">INC(<var class="var">v</var>)</code></dt>
+<dd><p>将变量<var class="var">v</var>中的值加1。返回新值。
+</p>
+</dd>
+<dt><code class="code">INC(<var class="var">v</var>,<var class="var">i</var>)</code></dt>
+<dd><p>将变量<var class="var">v</var>中的值加<var class="var">i</var>。返回新值。
+</p>
+</dd>
+<dt><code class="code">INCL(<var class="var">m</var>,<var class="var">s</var>)</code></dt>
+<dd><p>如果元素<var class="var">m</var>不在集合<var class="var">s</var>中，则将其添加到集合<var class="var">s</var>中。返回新集合。
+</p>
+</dd>
+<dt><code class="code">MAX(<var class="var">t</var>)</code></dt>
+<dd><p>返回类型<var class="var">t</var>的最大值。
+</p>
+</dd>
+<dt><code class="code">MIN(<var class="var">t</var>)</code></dt>
+<dd><p>返回类型<var class="var">t</var>的最小值。
+</p>
+</dd>
+<dt><code class="code">ODD(<var class="var">i</var>)</code></dt>
+<dd><p>如果<var class="var">i</var>是奇数，则返回布尔值TRUE。
+</p>
+</dd>
+<dt><code class="code">ORD(<var class="var">x</var>)</code></dt>
+<dd><p>返回其参数的序数。例如，字符的序数是其<small class="sc">ASCII</small>值（在支持<small class="sc">ASCII</small>字符集的机器上）。参数<var class="var">x</var>必须是有序类型，包括整数、字符和枚举类型。
+</p>
+</dd>
+<dt><code class="code">SIZE(<var class="var">x</var>)</code></dt>
+<dd><p>返回其参数的大小。参数<var class="var">x</var>可以是变量或类型。
+</p>
+</dd>
+<dt><code class="code">TRUNC(<var class="var">r</var>)</code></dt>
+<dd><p>返回<var class="var">r</var>的整数部分。
+</p>
+</dd>
+<dt><code class="code">TSIZE(<var class="var">x</var>)</code></dt>
+<dd><p>返回其参数的大小

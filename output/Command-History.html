@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>命令历史记录（使用GDB调试）</title>
+
+<meta name="description" content="命令历史记录（使用GDB调试）">
+<meta name="keywords" content="命令历史记录（使用GDB调试）"> 
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Screen-Size.html" rel="next" title="屏幕大小">
+<link href="Editing.html" rel="prev" title="编辑">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="命令历史记录">
+<div class="nav-panel">
+<p>
+下一页：<a href="Screen-Size.html" accesskey="n" rel="next">屏幕大小</a>，上一页：<a href="Editing.html" accesskey="p" rel="prev">命令编辑</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令历史记录-1"><span>22.3 命令历史记录<a class="copiable-link" href="#命令历史记录-1"> &para;</a></span></h><a class="index-entry-id" id="index-命令历史记录"></a>
+
+<p><small class="sc">GDB</small> 可以跟踪你在调试会话期间输入的命令，这样你就可以确切知道发生了什么。使用这些命令来管理 <small class="sc">GDB</small> 命令历史记录功能。
+</p>
+<p><small class="sc">GDB</small> 使用 <small class="sc">GNU</small> 历史库（Readline包的一部分）来提供历史记录功能。
+有关历史库的详细描述，请参阅 <a class="xref" href="Using-History-Interactively.html">交互式使用历史记录</a>。
+</p>
+<p>要向 <small class="sc">GDB</small> 发出命令而不影响用户看到的某些状态方面，在命令前加上 &lsquo;<samp class="samp">server </samp>&rsquo;（请参阅 <a class="pxref" href="Server-Prefix.html">服务器前缀</a>）。
+这意味着此命令不会影响命令历史记录，也不会影响在一行上单独按下 <kbd class="key">RET</kbd> 时 <small class="sc">GDB</small> 重复哪个命令的概念。
+</p>
+<a class="index-entry-id" id="index-server_002c-命令前缀"></a>
+<p>服务器前缀不会影响将值记录到值历史记录中；要打印一个值而不将其记录到值历史记录中，请使用 <code class="code">output</code> 命令而不是 <code class="code">print</code> 命令。
+</p>
+<p>以下是与命令历史记录相关的 <small class="sc">GDB</small> 命令的描述。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-历史文件"></a>
+<a class="index-entry-id" id="index-set-历史文件名"></a>
+<a class="index-entry-id" id="index-GDBHISTFILE_002c-环境变量"></a>
+<a id="index-历史替换"></a><span><code class="code">set history filename <span class="r">[</span><var class="var">fname</var><span class="r">]</span></code><a class="copiable-link" href="#index-历史替换"> &para;</a></span></dt>
+<dd><p>将 <small class="sc">GDB</small> 命令历史记录文件的名称设置为 <var class="var">fname</var>。
+这是 <small class="sc">GDB</small> 读取初始命令历史记录列表的文件，也是它在退出时写入本次会话命令历史记录的文件。你可以通过历史替换或通过下面列出的命令历史编辑字符来访问此列表。此文件默认为环境变量 <code class="env">GDBHISTFILE</code> 的值，如果未设置此变量，则默认为 <samp class="file">./.gdb_history</samp>（MS-DOS 上为 <samp class="file">./_gdb_history</samp>）。
+</p>
+
+<p><code class="env">GDBHISTFILE</code> 环境变量在处理任何 <small class="sc">GDB</small> 初始化文件（请参阅 <a class="pxref" href="Startup.html">GDB启动时的操作</a>）以及处理使用命令行选项（例如 <code class="code">-ex</code>）传递的任何命令之后读取。
+</p>
+
+<p>如果未给出 <var class="var">fname</var> 参数，或者 <code class="env">GDBHISTFILE</code> 为空字符串，则 <small class="sc">GDB</small> 既不会尝试加载现有的历史记录文件，也不会在退出时尝试保存历史记录。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-历史保存"></a>
+<a id="index-保存命令历史记录"></a><span><code class="code">set history save</code><a class="copiable-link" href="#index-保存命令历史记录"> &para;</a></span></dt>
+<dt><code class="code">set history save on</code></dt>
+<dd><p>将命令历史记录记录到一个文件中，该文件的名称可以使用 <code class="code">set history filename</code> 命令指定。默认情况下，此选项处于禁用状态。命令历史记录将在 <small class="sc">GDB</small> 退出时记录下来。如果 <code class="code">set history filename</code> 设置为空字符串，则即使 <code class="code">set history save</code> 设置为 <code class="code">on</code>，历史记录保存也会被禁用。
+</p>
+</dd>
+<dt><code class="code">set history save off</code></dt>
+<dd><p>当 <small class="sc">GDB</small> 退出时不要将命令历史记录记录到由 <code class="code">set history filename</code> 指定的文件中。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-历史大小"></a>
+<a class="index-entry-id" id="index-GDBHISTSIZE_002c-环境变量"></a>
+<a id="index-历史大小"></a><span><code class="code">set history size <var class="var">size</var></code><a class="copiable-link" href="#index-历史大小"> &para;</a></span></dt>
+<dt><code class="code">set history size unlimited</code></dt>
+<dd><p>设置 <small class="sc">GDB</small> 在其历史记录列表中保留的命令数量。
+这默认为环境变量 <code class="env">GDBHISTSIZE</code> 的值，如果未设置此变量，则默认为256。<code class="env">GDBHISTSIZE</code> 的非数值将被忽略。如果 <var class="var">size</var> 为 <code class="code">unlimited</code>，或者 <code class="env">GDBHISTSIZE</code> 为负数或空字符串，则 <small class="sc">GDB</small> 在历史记录列表中保留的命令数量是无限的。
+</p>
+
+<p><code class="env">GDBHISTSIZE</code> 环境变量在处理任何 <small class="sc">GDB</small> 初始化文件（请参阅 <a class="pxref" href="Startup.html">GDB启动时的操作</a>）以及处理使用命令行选项（例如 <code class="code">-ex</code>）传递的任何命令之后读取。
+</p>
+</dd>
+
+<dt><a class="index-entry-id" id="index-set-历史移除_002d重复项"></a>
+<a id="index-移除重复历史记录"></a><span><code class="code">set history remove-duplicates <var class="var">count</var></code><a class="copiable-link" href="#index-移除重复历史记录"> &para;</a></span></dt>
+<dt><code class="code">set history remove-duplicates unlimited</code></dt>
+<dd><p>控制在命令历史记录列表中移除重复历史记录项。
+如果 <var class="var">count</var> 不为零，<small class="sc">GDB</small> 将查看最后 <var class="var">count</var> 条历史记录项，并移除与当前要添加到命令历史记录列表中的项重复的第一个项。如果 <var class="var">count</var> 为 <code class="code">unlimited</code>，则此回溯是无界的。如果 <var class="var">count</var> 为0，则禁用移除重复历史记录项。
+</p>
+
+<p>仅考虑在当前会话期间添加的历史记录项进行移除。此选项默认设置为0。 
+</p>
+</dd>
+</dl>
+
+<p>历史替换为字符 <kbd class="kbd">!</kbd> 指定了特殊含义。
+有关更多详细信息，请参阅 <a class="xref" href="Event-Designators.html">事件指示符</a>。
+</p>
+
+<a class="index-entry-id" id="index-历史替换_002c-打开_002f关闭"></a>
+<p>由于 <kbd class="kbd">!</kbd> 也是C语言中的逻辑非运算符，历史替换默认处于关闭状态。如果你决定使用 <code class="code">set history expansion on</code> 命令启用历史替换，有时你可能需要在 <kbd class="kbd">!</kbd>（当它在表达式中用作逻辑非时）后面跟一个空格或制表符，以防止它被替换。即使启用了历史替换，readline历史记录功能也不会对字符串 <kbd class="kbd">!=</kbd> 和 <kbd class="kbd">!(</kbd> 进行替换尝试。 
+</p>
+
+<p>控制历史替换开关的命令如下：
+</p>
+<dl class="table">
+<dt><a id="index-set-历史替换"></a><span><code class="code">set history expansion on</code><a class="copiable-link" href="#index-set-历史替换"> &para;</a></span></dt>
+<dt><code class="code">set history expansion</code></dt>
+<dd><p>启用历史替换。历史替换默认处于关闭状态。
+</p>
+</dd>
+<dt><code class="code">set history expansion off</code></dt>
+<dd><p>禁用历史替换。
+</p>
+</dd>
+<dt><a id="index-show-历史记录"></a><span><code class="code">show history</code><a class="copiable-link" href="#index-show-历史记录"> &para;</a></span></dt>
+<dt><code class="code">show history filename</code></dt>
+<dt><code class="code">show history save</code></dt>
+<dt><code class="code">show history size</code></dt>
+<dt><code class="code">show history expansion</code></dt>
+<dd><p>这些命令显示 <small class="sc">GDB</small> 历史记录参数的状态。
+单独使用 <code class="code">show history</code> 会显示所有四个状态。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-最后命令"></a>
+<a class="index-entry-id" id="index-显示命令历史记录"></a>
+<a id="index-show-命令"></a><span><code class="code">show commands</code><a class="copiable-link" href="#index-show-命令"> &para;</a></span></dt>
+<dd><p>显示命令历史记录中的最后十条命令。
+</p>
+</dd>
+<dt><code class="code">show commands <var class="var">n</var></code></dt>
+<dd><p>打印以命令编号 <var class="var">n</var> 为中心的十条命令。
+</p>
+</dd>
+<dt><code class="code">show commands +</code></dt>
+<dd><p>在最后打印的命令之后打印十条命令。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Screen-Size.html">屏幕大小</a>，上一页：<a href="Editing.html">命令编辑</a>，向上：<a href="Controlling-GDB.html">控制<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

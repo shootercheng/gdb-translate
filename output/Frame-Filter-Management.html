@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>帧过滤器管理（使用GDB调试）</title>
+
+<meta name="description" content="帧过滤器管理（使用GDB调试）">
+<meta name="keywords" content="帧过滤器管理（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stack.html" rel="up" title="栈">
+<link href="Frame-Apply.html" rel="prev" title="应用于多个帧的命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="帧过滤器管理">
+<div class="nav-panel">
+<p>
+上一个：<a href="Frame-Apply.html" accesskey="p" rel="prev">将命令应用于多个帧。</a>，向上：<a href="Stack.html" accesskey="u" rel="up">检查栈</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="帧过滤器的管理"><span>8.6 帧过滤器的管理。<a class="copiable-link" href="#帧过滤器的管理"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-管理帧过滤器"></a>
+
+<p>帧过滤器是基于Python的实用工具，用于管理和修饰帧的输出。有关更多信息，请参阅 <a class="xref" href="Frame-Filter-API.html">过滤帧</a>。
+</p>
+<p>管理帧过滤器由GDB中可用的几个命令执行，在此详细介绍。
+</p>
+<dl class="table">
+<dt><a id="索引-info-frame_002dfilter"></a><span><code class="code">info frame-filter</code><a class="copiable-link" href="#索引-info-frame_002dfilter"> &para;</a></span></dt>
+<dd><p>打印所有字典中已安装的帧过滤器列表，显示它们的名称、优先级和启用状态。
+</p>
+<a class="index-entry-id" id="索引-disable-frame_002dfilter"></a>
+<a class="anchor" id="disable-frame_002dfilter-all"></a></dd>
+<dt><code class="code">disable frame-filter <var class="var">filter-dictionary</var> <var class="var">filter-name</var></code></dt>
+<dd><p>禁用与<var class="var">filter-dictionary</var>和<var class="var">filter-name</var>匹配的字典中的帧过滤器。<var class="var">filter-dictionary</var>可以是<code class="code">all</code>、<code class="code">global</code>、<code class="code">progspace</code>，或者是帧过滤器字典所在的目标文件名。当指定为<code class="code">all</code>时，所有字典中的所有帧过滤器都将被禁用。<var class="var">filter-name</var>是帧过滤器的名称，当<var class="var">filter-dictionary</var>不是<code class="code">all</code>选项时使用。禁用的帧过滤器不会被删除，以后可以再次启用。
+</p>
+</dd>
+<dt><a id="索引-enable-frame_002dfilter"></a><span><code class="code">enable frame-filter <var class="var">filter-dictionary</var> <var class="var">filter-name</var></code><a class="copiable-link" href="#索引-enable-frame_002dfilter"> &para;</a></span></dt>
+<dd><p>启用与<var class="var">filter-dictionary</var>和帧过滤器名称<var class="var">filter-name</var>匹配的字典中的帧过滤器。<var class="var">filter-dictionary</var>可以是<code class="code">all</code>、<code class="code">global</code>、<code class="code">progspace</code>或帧过滤器字典所在的目标文件名。当指定为<code class="code">all</code>时，所有字典中的所有帧过滤器都将被启用。<var class="var">filter-name</var>是帧过滤器的名称，当<var class="var">filter-dictionary</var>不是<code class="code">all</code>选项时使用。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info frame-filter
+
+全局帧过滤器：
+  优先级  启用状态  名称
+  1000      否       主函数过滤器
+  100       是       反向
+
+程序空间 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  100       是       程序空间过滤器
+
+目标文件 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  999       是       构建程序过滤器
+
+(gdb) disable frame-filter /build/test 构建程序过滤器
+(gdb)?info frame-filter
+
+全局帧过滤器：
+  优先级  启用状态  名称
+  1000      否       主函数过滤器
+  100       是       反向
+
+程序空间 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  100       是       程序空间过滤器
+
+目标文件 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  999       否       构建程序过滤器
+
+(gdb) enable frame-filter global 主函数过滤器
+(gdb) info frame-filter
+
+全局帧过滤器：
+  优先级  启用状态  名称
+  1000      是       主函数过滤器
+  100       是       反向
+
+程序空间 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  100       是       程序空间过滤器
+
+目标文件 /build/test 帧过滤器：
+  优先级  启用状态  名称
+  999       否       构建程序过滤器
+</pre></div>
+
+</dd>

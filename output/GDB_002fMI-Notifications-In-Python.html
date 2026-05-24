@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的GDB/MI通知（使用GDB调试）</title>
+
+<meta name="description" content="Python中的GDB/MI通知（使用GDB调试）">
+<meta name="keywords" content="Python中的GDB/MI通知（使用GDB调试）">  
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Parameters-In-Python.html" rel="next" title="Python中的参数">
+<link href="GDB_002fMI-Commands-In-Python.html" rel="prev" title="Python中的GDB/MI命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="GDB_002fMI-Notifications-In-Python">
+<div class="nav-panel">  
+<p>
+下一页：<a href="Parameters-In-Python.html" accesskey="n" rel="next">Python中的参数</a>，上一页：<a href="GDB_002fMI-Commands-In-Python.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> Python中的命令</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb_002fmi-Notifications-In-Python"><span>23.3.2.23 Python中的<small class="sc">GDB/MI</small>通知<a class="copiable-link" href="#gdb_002fmi-Notifications-In-Python"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-MI-notifications-in-python"></a>
+<a class="index-entry-id" id="index-notifications-in-python_002c-GDB_002fMI"></a>
+<a class="index-entry-id" id="index-python-notifications_002c-GDB_002fMI"></a>
+
+<p>可以从Python发出<small class="sc">GDB/MI</small>通知。使用<code class="code">gdb.notify_mi</code>函数来实现。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002enotify_005fmi"><span class="category-def">函数：</span><span><strong class="def-name">gdb.notify_mi</strong> <var class="def-var-arguments">(name <span class="r">[</span>, data<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002enotify_005fmi"> &para;</a></span></dt>
+<dd><p>发出一个<small class="sc">GDB/MI</small>异步通知。<var class="var">name</var>是通知名称，由字母数字字符和连字符（<code class="code">-</code>）组成。<var class="var">data</var>是与通知一起发出的任何附加数据，作为Python字典传递。此参数是可选的。该字典将以与Python MI命令的结果相同的方式转换为<small class="sc">GDB/MI</small> <var class="var">result</var>记录（见 <a class="pxref" href="GDB_002fMI-Output-Syntax.html"><small class="sc">GDB/MI</small>输出语法</a>）（见 <a class="pxref" href="GDB_002fMI-Commands-In-Python.html"><small class="sc">GDB/MI</small> Python中的命令</a>）。
+</p>
+<p>如果 <var class="var">data</var> 为 <code class="code">None</code>，则不发出其他值。
+</p></dd></dl>
+
+<p>虽然允许使用现有的通知名称（见 <a class="pxref" href="GDB_002fMI-Async-Records.html"><small class="sc">GDB/MI</small>异步记录</a>）与 <code class="code">gdb.notify_mi</code> 一起使用，但建议用户在自定义通知前加上连字符（<code class="code">-</code>）以避免可能的冲突。<small class="sc">GDB</small> 永远不会引入以连字符开头的通知。
+</p>
+<p>以下是每当与远程GDB服务器的连接关闭时如何发出 <code class="code">=-connection-removed</code> 通知的方法（见 <a class="pxref" href="Connections-In-Python.html">Python中的连接</a>）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def notify_connection_removed(event):
+    data = {&quot;id&quot;: event.connection.num, &quot;type&quot;: event.connection.type}
+    gdb.notify_mi(&quot;-connection-removed&quot;, data)
+
+
+gdb.events.connection_removed.connect(notify_connection_removed)
+</pre></div>
+
+<p>然后，每次连接关闭时，MI通道上都会有一个通知：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">=-connection-removed,id=&quot;1&quot;,type=&quot;remote&quot;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html> 

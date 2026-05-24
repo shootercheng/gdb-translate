@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Shell命令（使用GDB调试）</title>
+
+<meta name="description" content="Shell命令（使用GDB调试）">
+<meta name="keywords" content="Shell命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invocation.html" rel="up" title="调用">
+<link href="Logging-Output.html" rel="next" title="日志输出">
+<link href="Quitting-GDB.html" rel="prev" title="退出GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Shell命令">
+<div class="nav-panel">
+<p>
+下一页：<a href="Logging-Output.html" accesskey="n" rel="next">日志输出</a>，上一页：<a href="Quitting-GDB.html" accesskey="p" rel="prev">退出 <small class="sc">GDB</small></a>，向上：<a href="Invocation.html" accesskey="u" rel="up">进入和退出 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Shell命令-1"><span>2.3 Shell命令<a class="copiable-link" href="#Shell命令-1"> &para;</a></span></h3>
+
+<p>如果在调试会话期间需要偶尔执行一些shell命令，无需离开或暂停 <small class="sc">GDB</small>；可以直接使用 <code class="code">shell</code> 命令。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-_0021"></a>
+<a class="index-entry-id" id="index-shell转义"></a>
+<a id="index-shell"></a><span><code class="code">shell <var class="var">命令字符串</var></code><a class="copiable-link" href="#index-shell"> &para;</a></span></dt>
+<dt><code class="code">!<var class="var">命令字符串</var></code></dt>
+<dd><p>调用一个shell来执行 <var class="var">命令字符串</var>。
+请注意，在 <code class="code">!</code> 和 <var class="var">命令字符串</var> 之间不需要空格。
+在GNU和Unix系统上，如果环境变量 <code class="env">SHELL</code> 存在，则它决定运行哪个shell。否则，<small class="sc">GDB</small> 使用默认的shell（在GNU和Unix系统上是 <samp class="file">/bin/sh</samp>，在MS-Windows上是 <samp class="file">cmd.exe</samp>，在MS-DOS上是 <samp class="file">COMMAND.COM</samp> 等）。
+</p></dd>
+</dl>
+
+<p>也可以使用 <code class="code">$_shell</code> 便利函数从表达式中调用shell命令。请参阅 <a class="xref" href="Convenience-Funs.html#g_t_0024_005fshell便利函数">$_shell便利函数</a>。
+</p>
+<p>在开发环境中通常需要使用 <code class="code">make</code> 实用程序。在 <small class="sc">GDB</small> 中为此目的不必使用 <code class="code">shell</code> 命令：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-调用make"></a>
+<a id="index-make"></a><span><code class="code">make <var class="var">make参数</var></code><a class="copiable-link" href="#index-make"> &para;</a></span></dt>
+<dd><p>使用指定的参数执行 <code class="code">make</code> 程序。这等同于 &lsquo;<samp class="samp">shell make <var class="var">make参数</var></samp>&rsquo;。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dd><a class="index-entry-id" id="index-管道"></a>
+<a class="index-entry-id" id="index-_007c"></a>
+<a class="index-entry-id" id="index-将GDB命令的输出发送到shell命令"></a>
+<a class="anchor" id="pipe"></a></dd>
+<dt><code class="code">pipe [<var class="var">命令</var>] | <var class="var">shell命令</var></code></dt>
+<dt><code class="code">| [<var class="var">命令</var>] | <var class="var">shell命令</var></code></dt>
+<dt><code class="code">pipe -d <var class="var">分隔符</var> <var class="var">命令</var> <var class="var">分隔符</var> <var class="var">shell命令</var></code></dt>
+<dt><code class="code">| -d <var class="var">分隔符</var> <var class="var">命令</var> <var class="var">分隔符</var> <var class="var">shell命令</var></code></dt>
+<dd><p>执行 <var class="var">命令</var> 并将其输出发送到 <var class="var">shell命令</var>。
+请注意，在 <code class="code">|</code> 周围不需要空格。
+如果未提供 <var class="var">命令</var>，则重复执行最后执行的命令。
+</p>
+<p>如果 <var class="var">命令</var> 中包含 <code class="code">|</code>，可以使用选项 <code class="code">-d <var class="var">分隔符</var></code> 指定一个替代的分隔符字符串 <var class="var">分隔符</var>，用于分隔 <var class="var">命令</var> 和 <var class="var">shell命令</var>。
+</p>
+<p>示例：
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) p var
+$1 = {
+  black = 144,
+  red = 233,
+  green = 377,
+  blue = 610,
+  white = 987
+}
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) pipe p var|wc
+      7      19      80
+(gdb) |p var|wc -l
+7
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) p /x var
+$4 = {
+  black = 0x90,
+  red = 0xe9,
+  green =

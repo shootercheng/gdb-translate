@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>删除断点（使用GDB调试）</title>
+
+<meta name="description" content="删除断点（使用GDB调试）">
+<meta name="keywords" content="删除断点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Disabling.html" rel="next" title="禁用">
+<link href="Set-Catchpoints.html" rel="prev" title="设置捕获点">
+<style type="text/css">
+<!-- 
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Delete-Breaks">
+<div class="nav-panel">
+<p>
+下一页：<a href="Disabling.html" accesskey="n" rel="next">禁用断点</a>，上一页：<a href="Set-Catchpoints.html" accesskey="p" rel="prev">设置捕获点</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Deleting-Breakpoints"><span>5.1.4 删除断点<a class="copiable-link" href="#Deleting-Breakpoints"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-clearing-breakpoints_002c-watchpoints_002c-catchpoints"></a>
+<a class="index-entry-id" id="index-deleting-breakpoints_002c-watchpoints_002c-catchpoints"></a>
+<p>一旦断点、观察点或捕获点完成了它的任务，并且你不再希望程序在那里停止，通常就需要将其消除。这被称为<em class="dfn">删除</em>断点。已删除的断点不再存在；它被遗忘了。
+</p>
+<p>使用<code class="code">clear</code>命令，你可以根据断点在程序中的位置来删除它们。使用<code class="code">delete</code>命令，你可以通过指定断点编号来删除单个断点、观察点或捕获点。
+</p>
+<p>不删除断点也可以继续执行。当你在不改变执行地址继续执行时，<small class="sc">GDB</small>会自动忽略要执行的第一条指令上的断点。
+</p>
+<dl class="table">
+<dt><a id="index-clear"></a><span><code class="code">clear</code><a class="copiable-link" href="#index-clear"> &para;</a></span></dt>
+<dd><p>删除选定堆栈帧中（见<a class="pxref" href="Selection.html">选择帧</a>）下一条要执行的指令处的任何断点。当选择最内层帧时，这是删除程序刚刚停止处断点的好方法。
+</p>
+</dd>
+<dt><code class="code">clear <var class="var">locspec</var></code></dt>
+<dd><p>删除代码位置与<var class="var">locspec</var>对应的任何断点。有关<var class="var">locspec</var>的各种形式，请参阅<a class="xref" href="Location-Specifications.html">位置规范</a>。哪些代码位置与<var class="var">locspec</var>对应取决于位置规范<var class="var">locspec</var>中使用的形式：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">linenum</var></code></dt>
+<dt><code class="code"><var class="var">filename</var>:<var class="var">linenum</var></code></dt>
+<dt><code class="code">-line <var class="var">linenum</var></code></dt>
+<dt><code class="code">-source <var class="var">filename</var> -line <var class="var">linenum</var></code></dt>
+<dd><p>如果<var class="var">locspec</var>指定了行号，无论有无文件名，该命令都会删除与指定行号<var class="var">linenum</var>匹配的文件中位于或在指定行<var class="var">linenum</var>内的代码位置处的任何断点。如果省略<var class="var">filename</var>，则默认为当前源文件。
+</p>
+</dd>
+<dt><code class="code">*<var class="var">address</var></code></dt>
+<dd><p>如果<var class="var">locspec</var>指定了一个地址，该命令会删除代码位置在给定地址<var class="var">address</var>处的任何断点。
+</p>
+</dd>
+<dt><code class="code"><var class="var">function</var></code></dt>
+<dt><code class="code">-function <var class="var">function</var></code></dt>
+<dd><p>如果<var class="var">locspec</var>指定了一个函数，该命令会删除代码位置在任何名称与<var class="var">function</var>匹配的函数入口处的任何断点。
+</p></dd>
+</dl>
+
+<p>文件和函数名称中的歧义可以按照<a class="ref" href="Location-Specifications.html">位置规范</a>中所述进行解决。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-delete"></a>
+<a class="index-entry-id" id="index-d-_0028delete_0029"></a>
+<a id="index-delete-breakpoints"></a><span><code class="code">delete <span class="r">[</span>breakpoints<span class="r">]</span> <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-delete-breakpoints"> &para;</a></span></dt>
+<dd><p>删除作为参数指定的断点列表中的断点、观察点、跟踪点或捕获点。如果未指定参数，则删除所有断点、观察点、跟踪点和捕获点（<small class="sc">GDB</small>会要求确认，除非你已设置<code class="code">set confirm off</code>）。你可以将此命令缩写为<code class="code">d</code>。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Disabling.html">禁用断点</a>，上一页：<a href="Set-Catchpoints.html">设置捕获点</a>，向上：<a href="Breakpoints.html">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

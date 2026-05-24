@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Guile打印模块（使用GDB调试）</title>
+
+<meta name="description" content="Guile打印模块（使用GDB调试）">
+<meta name="keywords" content="Guile打印模块（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-Modules.html" rel="up" title="Guile模块">
+<link href="Guile-Types-Module.html" rel="next" title="Guile类型模块">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-Printing-Module">
+<div class="nav-panel">
+<p>下一个：<a href="Guile-Types-Module.html" accesskey="n" rel="next">Guile类型模块</a>，上一级：<a href="Guile-Modules.html" accesskey="u" rel="up">Guile模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile-Printing-Module-1"><span>23.4.5.1 Guile打印模块<a class="copiable-link" href="#Guile-Printing-Module-1"> &para;</a></span></h4>
+
+<p>此模块提供了一组用于处理漂亮打印机的实用工具。
+</p>
+<p>用法：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(使用模块 (gdb打印))
+</pre></div>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-prepend_002dpretty_002dprinter_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">prepend-pretty-printer!</strong> <var class="def-var-arguments">对象 打印机</var><a class="copiable-link" href="#index-prepend_002dpretty_002dprinter_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">打印机</var>添加到<var class="var">对象</var>的漂亮打印机列表的开头。<var class="var">对象</var>必须是一个<code class="code">&lt;gdb:objfile&gt;</code>对象，或者是<code class="code">#f</code>，在这种情况下，<var class="var">打印机</var>将被添加到全局打印机列表中。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-append_002dpretty_002dprinter_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">append-pretty-printer!</strong> <var class="def-var-arguments">对象 打印机</var><a class="copiable-link" href="#index-append_002dpretty_002dprinter_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">打印机</var>添加到<var class="var">对象</var>的漂亮打印机列表的末尾。<var class="var">对象</var>必须是一个<code class="code">&lt;gdb:objfile&gt;</code>对象，或者是<code class="code">#f</code>，在这种情况下，<var class="var">打印机</var>将被添加到全局打印机列表中。
+</p></dd></dl>
+
+</div>
+
+
+
+</body>
+</html>

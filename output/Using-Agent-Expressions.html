@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>使用代理表达式（使用GDB调试）</title>
+
+<meta name="description" content="使用代理表达式（使用GDB调试）">
+<meta name="keywords" content="使用代理表达式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Agent-Expressions.html" rel="up" title="代理表达式">
+<link href="Varying-Target-Capabilities.html" rel="next" title="不同的目标功能">
+<link href="Bytecode-Descriptions.html" rel="prev" title="字节码描述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="使用代理表达式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Varying-Target-Capabilities.html" accesskey="n" rel="next">不同的目标功能</a>，上一页：<a href="Bytecode-Descriptions.html" accesskey="p" rel="prev">字节码描述</a>，向上：<a href="Agent-Expressions.html" accesskey="u" rel="up">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="使用代理表达式-1"><span>F.3 使用代理表达式<a class="copiable-link" href="#使用代理表达式-1"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small> 可以通过几种不同的方式使用代理表达式，调试器可以根据需要生成不同的字节码序列。
+</p>
+<p>一种可能性是在目标上而不是在主机上进行表达式求值，例如用于条件跟踪点的条件。在这种情况下，<small class="sc">GDB</small> 将源表达式编译成一个字节码序列，该序列只需从寄存器或内存中获取值，进行算术运算，然后返回结果。
+</p>
+<p>使用代理表达式的另一种方式是用于跟踪点数据收集。<small class="sc">GDB</small> 为收集生成不同的字节码序列；除了进行计算的字节码外，<small class="sc">GDB</small> 还添加 <code class="code">trace</code> 字节码以保存所使用的内存片段。
+</p>
+<ul class="itemize mark-bullet">
+<li>用户在程序代码中选择GDB应收集数据的跟踪点。
+
+</li><li>用户指定在每个跟踪点要求值的表达式。这些表达式可能表示内存中的对象，在这种情况下，这些对象的内容在程序运行时被记录下来，或者表示计算值，在这种情况下，值本身被记录下来。
+
+</li><li><small class="sc">GDB</small> 将跟踪点及其相关表达式传输到在调试目标上运行的 <small class="sc">GDB</small> 代理。
+
+</li><li>代理安排在命中跟踪点时得到通知。
+
+</li><li>当目标上的执行到达跟踪点时，代理对与该跟踪点相关的表达式进行求值，并记录结果值和内存范围。
+
+</li><li>稍后，当用户选择给定的跟踪事件并检查记录的对象和表达式值时，<small class="sc">GDB</small> 与代理进行通信，以根据需要检索记录的数据以满足用户的请求。如果用户要求查看其内容未被记录的对象，<small class="sc">GDB</small> 将报告错误。
+
+</li></ul>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Varying-Target-Capabilities.html">不同的目标功能</a>，上一页：<a href="Bytecode-Descriptions.html">字节码描述</a>，向上：<a href="Agent-Expressions.html">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

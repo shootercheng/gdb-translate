@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>达尔文（使用GDB调试）</title>
+
+<meta name="description" content="达尔文（使用GDB调试）">
+<meta name="keywords" content="达尔文（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Native.html" rel="up" title="本地">
+<link href="FreeBSD.html" rel="next" title="FreeBSD">
+<link href="Hurd-Native.html" rel="prev" title="Hurd本地">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="达尔文">
+<div class="nav-panel">
+<p>
+下一页：<a href="FreeBSD.html" accesskey="n" rel="next">FreeBSD</a>，上一页：<a href="Hurd-Native.html" accesskey="p" rel="prev">特定于GNU Hurd系统的命令</a>，向上：<a href="Native.html" accesskey="u" rel="up">本地</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="达尔文-1"><span>21.1.6达尔文<a class="copiable-link" href="#达尔文-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-达尔文"></a>
+
+<p>GDB提供了以下特定于达尔文目标的命令：
+</p>
+<dl class="table">
+<dt><a id="索引-set-debug-darwin"></a><span><code class="code">set debug darwin <var class="var">num</var></code><a class="copiable-link" href="#索引-set-debug-darwin"> &para;</a></span></dt>
+<dd><p>当设置为非零值时，启用特定于达尔文支持的调试消息。值越高，输出越详细。
+</p>
+</dd>
+<dt><a id="索引-show-debug-darwin"></a><span><code class="code">show debug darwin</code><a class="copiable-link" href="#索引-show-debug-darwin"> &para;</a></span></dt>
+<dd><p>显示达尔文消息的当前状态。
+</p>
+</dd>
+<dt><a id="索引-set-debug-mach_002do"></a><span><code class="code">set debug mach-o <var class="var">num</var></code><a class="copiable-link" href="#索引-set-debug-mach_002do"> &para;</a></span></dt>
+<dd><p>当设置为非零值时，在GDB读取达尔文目标文件时启用调试消息。（<em class="dfn">Mach-O</em>是达尔文上用于目标和可执行文件的文件格式。）值越高，输出越详细。这是一个用于诊断GDB内部问题的命令，正常使用时不需要。
+</p>
+</dd>
+<dt><a id="索引-show-debug-mach_002do"></a><span><code class="code">show debug mach-o</code><a class="copiable-link" href="#索引-show-debug-mach_002do"> &para;</a></span></dt>
+<dd><p>显示Mach-O文件消息的当前状态。
+</p>
+</dd>
+<dt><a id="索引-set-mach_002dexceptions"></a><span><code class="code">set mach-exceptions on</code><a class="copiable-link" href="#索引-set-mach_002dexceptions"> &para;</a></span></dt>
+<dt><code class="code">set mach-exceptions off</code></dt>
+<dd><p>在达尔文上，可以将故障首先报告为Mach异常，然后映射到Posix信号。使用此命令在下级进程中开启对Mach异常的捕获。这有时可能有助于更好地理解故障原因。默认是关闭的。
+</p>
+</dd>
+<dt><a id="索引-show-mach_002dexceptions"></a><span><code class="code">show mach-exceptions</code><a class="copiable-link" href="#索引-show-mach_002dexceptions"> &para;</a></span></dt>
+<dd><p>显示异常捕获的当前状态。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>输出（使用GDB进行调试）</title>
+
+<meta name="description" content="输出（使用GDB进行调试）">
+<meta name="keywords" content="输出（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Sequences.html" rel="up" title="序列">
+<link href="Auto_002dloading-sequences.html" rel="next" title="自动加载序列">
+<link href="Command-Files.html" rel="prev" title="命令文件">
+<style type="text/css">
+<!--a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}div.example {margin-left: 3.2em}kbd.kbd {font-style: oblique}span:hover a.copiable-link {visibility: visible}ul.mark-bullet {list-style-type: disc}-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="输出">
+<div class="nav-panel">
+<p>
+下一页：<a href="Auto_002dloading-sequences.html" accesskey="n" rel="next">控制自动加载原生GDB脚本</a>，上一页：<a href="Command-Files.html" accesskey="p" rel="prev">命令文件</a>，向上：<a href="Sequences.html" accesskey="u" rel="up">预定义命令序列</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr />
+<h4 class="subsection" id="用于控制输出的命令"><span>23.1.4用于控制输出的命令<a class="copiable-link" href="#用于控制输出的命令"> &para;</a></span></h4>
+
+<p>在执行命令文件或用户定义的命令期间，GDB的正常输出会被抑制；唯一出现的输出是定义中的命令明确打印的内容。本节介绍三个有助于生成所需输出的命令。
+</p>
+<dl class="table">
+<dt><a id="index-echo"><span><code class="code">echo <var class="var">文本</var></code><a class="copiable-link" href="#index-echo"> &para;</a></span></dt>
+<dd><p>打印<var class="var">文本</var>。可以使用C转义序列在<var class="var">文本</var>中包含非打印字符，例如使用&rsquo;<samp class="samp">\n</samp>&rsquo;打印换行符。<strong class="strong">除非指定，否则不会打印换行符。</strong>除了标准的C转义序列外，反斜杠后跟一个空格表示一个空格。这对于显示开头或结尾带有空格的字符串很有用，因为否则所有参数的前导和尾随空格都会被修剪掉。
+要打印&rsquo;<samp class="samp">&nbsp;<!-- /@w -->和foo =&nbsp;<!-- /@w --></samp>&rsquo;，使用命令&rsquo;<samp class="samp">echo \&nbsp;<!-- /@w -->和foo = \&nbsp;<!-- /@w --></samp>&rsquo;。
+</p>
+<p><var class="var">文本</var>末尾的反斜杠可以像在C中一样用于将命令延续到后续行。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">echo This is some text\n\
+which is continued\n\
+onto several lines.\n
+</pre></div>
+
+<p>产生的输出与
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">echo This is some text\n
+echo which is continued\n
+echo onto several lines.\n
+</pre></div>
+
+</dd>
+<dt><a id="index-output"><span><code class="code">output <var class="var">表达式</var></code><a class="copiable-link" href="#index-output"> &para;</a></span></dt>
+<dd><p>打印<var class="var">表达式</var>的值，仅此值：不打印换行符，不打印&rsquo;<samp class="samp">$<var class="var">nn</var> = </samp>&rsquo;。该值也不会被记录到值历史中。有关表达式的更多信息，请参见 <a class="xref" href="Expressions.html">表达式</a>。
+</p>
+</dd>
+<dt><code class="code">output/<var class="var">格式</var> <var class="var">表达式</var></code></dt>
+<dd><p>以<var class="var">格式</var>打印<var class="var">表达式</var>的值。可以使用与<code class="code">print</code>相同的格式。有关更多信息，请参见 <a class="xref" href="Output-Formats.html">输出格式</a>。
+</p>
+</dd>
+<dt><a id="index-printf"><span><code class="code">printf <var class="var">模板</var>, <var class="var">表达式</var>&hellip;</code><a class="copiable-link" href="#index-printf"> &para;</a></span></dt>
+<dd><p>在字符串<var class="var">模板</var>的控制下打印一个或多个<var class="var">表达式</var>的值。要打印多个值，使<var class="var">表达式</var>为用逗号分隔的单个表达式列表，这些表达式可以是数字或指针。它们的值将按照<var class="var">模板</var>指定的方式打印，就像C程序执行以下代码一样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">printf (<var class="var">模板</var>, <var class="var">表达式</var>...);
+</pre></div>
+
+<p>与C中的<code class="code">printf</code>一样，<var class="var">模板</var>中的普通字符将按原样打印，而由&rsquo;<samp class="samp">%</samp>&rsquo;字符引入的<em class="dfn">转换说明符</em>会导致后续的<var class="var">表达式</var>被求值，其值根据转换说明符中编码的类型和样式信息进行转换和格式化，然后打印。
+</p>
+<p>例如，可以像这样以十六进制打印两个值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">printf &quot;foo, bar-foo = 0x%x, 0x%x\n&quot;, foo, bar-foo
+</pre></div>
+
+<p><code class="code">printf</code>支持所有标准的C转换说明符，包括在&rsquo;<samp class="samp">%</samp>&rsquo;字符和转换字母之间的标志和修饰符，但有以下例外：
+</p>
+<ul class="itemize mark-bullet">
+<li>不支持参数排序修饰符，如&rsquo;<samp class="samp">2$</samp>&rsquo;。
+
+</li><li>不支持用于指定精度或宽度的修饰符&rsquo;<samp class="samp">*</samp>&rsquo;。
+
+</li><li>不支持&rsquo;<samp class="samp">'</samp>&rsquo;标志（用于根据<code class="code">LC_NUMERIC'</code>将数字分组）。
+
+</li><li>不支持类型修饰符&rsquo;<samp class="samp">hh</samp>&rsquo;、&rsquo;<samp class="samp">j</samp>&rsquo;、&rsquo;<samp class="samp">t</samp>&rsquo;和&rsquo;<samp class="samp">z</samp>&rsquo;。
+
+</li><li>不支持转换字母&rsquo;<samp class="samp">n</samp>&rsquo;（如&rsquo;<samp class="samp">%n</samp>&rsquo;）。
+
+</li><li>不支持转换字母&rsquo;<samp class="samp">a</samp>&rsquo;和&rsquo;<samp class="samp">A</samp>&rsquo;。
+</li></ul>
+
+<p>请注意，只有在用于构建GDB的底层C实现支持<code class="code">long long int</code>类型时，才支持&rsquo;<samp class="samp">ll</samp>&rsquo;类型修饰符；只有在有<code class="code">long double</code>类型时，才支持&rsquo;<samp class="samp">L</samp>&rsquo;类型修饰符。
+</p>
+<p>与C一样，<code class="code">printf</code>支持简单的反斜杠转义序列，如<code class="code">\n</code>、&rsquo;<samp class="samp">\t</samp>&rsquo;、&rsquo;<samp class="samp">\\</samp>&rsquo;、&rsquo;<samp class="samp">\&quot;</samp>&rsquo;、&rsquo;<samp class="samp">\a</samp>&rsquo;和&rsquo;<samp class="samp">\f</samp>&rsquo;——由反斜杠后跟一个字符组成。不支持八进制和十六进制转义序列。
+</p>
+<p>此外，<code class="code">printf</code>支持使用以下长度修饰符和浮点说明符对DFP（<em class="dfn">十进制浮点</em>）类型的转换说明符。
+字母：
+</p>
+<ul class="itemize mark-bullet">
+<li>&rsquo;<samp class="samp">H</samp>&rsquo;用于打印<code class="code">Decimal32</code>类型。
+
+</li><li>&rsquo;<samp class="samp">D</samp>&rsquo;用于打印<code class="code">Decimal64</code>类型。
+
+</li><li>&rsquo;<samp class="samp">DD</samp>&rsquo;用于打印<code class="code">Decimal128</code>类型。
+</li></ul>
+
+<p>如果用于构建GDB的底层C实现支持DFP类型的这三个长度修饰符，GDB也可以使用其他修饰符，如宽度和精度。
+</p>

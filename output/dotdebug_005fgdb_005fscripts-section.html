@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>dotdebug_gdb_scripts部分（使用GDB调试）</title>
+
+<meta name="description" content="dotdebug_gdb_scripts部分（使用GDB调试）">
+<meta name="keywords" content="dotdebug_gdb_scripts部分（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading-extensions.html" rel="up" title="自动加载扩展">
+<link href="Which-flavor-to-choose_003f.html" rel="next" title="选择哪种风格？">
+<link href="objfile_002dgdbdotext-file.html" rel="prev" title="objfile-gdbdotext文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: - 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="dotdebug_005fgdb_005fscripts-section">
+<div class="nav-panel">
+<p>
+下一页：<a href="Which-flavor-to-choose_003f.html" accesskey="n" rel="next">选择哪种风格？</a>，上一页：<a href="objfile_002dgdbdotext-file.html" accesskey="p" rel="prev">objfile-gdb.ext文件</a>，向上：<a href="Auto_002dloading-extensions.html" accesskey="u" rel="up">自动加载扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+<hr>
+<h4 class="subsection" id="The-_002edebug_005fgdb_005fscripts-section"><span>23.5.2 <code>.debug_gdb_scripts</code>部分<a class="copiable-link" href="#The-_002edebug_005fgdb_005fscripts-section"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-_002edebug_005fgdb_005fscripts-section"></a>
+
+<p>对于使用ELF和COFF等文件格式的系统，当GDB加载一个新的目标文件时，它会寻找一个名为<code>.debug_gdb_scripts</code>的特殊部分。如果这个部分存在，其内容是一个以空字符结尾的条目列表，指定要加载的脚本。每个条目以一个非空的前缀字节开头，该字节指定条目的类型，通常是扩展语言以及脚本是在文件中还是内联在<code>.debug_gdb_scripts</code>中。
+</p>
+<p>支持以下条目：
+</p>
+<dl class="table">
+<dt><code>SECTION_SCRIPT_ID_PYTHON_FILE = 1</code></dt>
+<dt><code>SECTION_SCRIPT_ID_SCHEME_FILE = 3</code></dt>
+<dt><code>SECTION_SCRIPT_ID_PYTHON_TEXT = 4</code></dt>
+<dt><code>SECTION_SCRIPT_ID_SCHEME_TEXT = 6</code></dt>
+</dl>
+
+<ul class="mini-toc">
+<li><a href="#Script-File-Entries" accesskey="1">脚本文件条目</a></li>
+<li><a href="#Script-Text-Entries" accesskey="2">脚本文本条目</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Script-File-Entries">
+<h4 class="subsubsection"><span>23.5.2.1脚本文件条目<a class="copiable-link" href="#Script-File-Entries"> ¶</a></span></h4>
+
+<p>如果条目指定了一个文件，GDB会首先在当前目录中查找该文件，然后沿着源搜索路径查找（见<a class="pxref" href="Source-Path.html">指定源目录</a>），但不会搜索<code>$cdir</code>，因为编译目录与脚本无关。
+</p>
+<p>文件条目可以放在<code>.debug_gdb_scripts</code>部分，例如，对于Python脚本，可以使用这个GCC宏。
+</p>
+<div class="example">
+<pre class="example-preformatted">/* 注意：“MS”部分标志用于去除重复项。 */
+#define DEFINE_GDB_PY_SCRIPT(script_name) \
+  asm(&quot;\
+.pushsection \&quot;.debug_gdb_scripts\&quot;, \&quot;MS\&quot;,@progbits,1\n\
+.byte 1 /* Python */\n\
+.asciz \&quot;&quot; script_name &quot;\&quot;\n\
+.popsection \n\
+&quot;);
+</pre></div>
+
+<p>对于Guile脚本，将<code>.byte 1</code>替换为<code>.byte 3</code>。然后可以在头文件或源文件中像这样引用该宏：
+</p>
+<div class="example">
+<pre class="example-preformatted">DEFINE_GDB_PY_SCRIPT (&quot;my-app-scripts.py&quot;)
+</pre></div>
+
+<p>如果需要，脚本名称可以包含目录。
+</p>
+<p>请注意，加载此脚本文件还需要相应配置的<code>auto-load safe-path</code>（见<a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）。
+</p>
+<p>如果宏调用放在头文件中，任何使用此头文件的应用程序或库都将引用指定的脚本，并且通过在部分上使用“MS”属性，链接器将去除重复项。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="Script-Text-Entries">
+<h4 class="subsubsection"><span>23.5.2.

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的内存端口（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的内存端口（使用GDB调试）">
+<meta name="keywords" content="Guile中的内存端口（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Iterators-In-Guile.html" rel="next" title="Guile中的迭代器">
+<link href="I_002fO-Ports-in-Guile.html" rel="prev" title="Guile中的I/O端口">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的内存端口">
+<div class="nav-panel">
+<p>
+下一页：<a href="Iterators-In-Guile.html" accesskey="n" rel="next">Guile中的迭代器</a>，上一页：<a href="I_002fO-Ports-in-Guile.html" accesskey="p" rel="prev">Guile中的I/O端口</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中的内存端口-1"><span>23.4.3.24 Guile中的内存端口<a class="copiable-link" href="#Guile中的内存端口-1"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small>提供了一个用于访问目标内存的<code class="code">端口</code>接口。
+这使得Guile代码能够使用Guile的端口和字节向量功能来读取/写入目标内存。主要例程是<code class="code">open-memory</code>，它返回一个端口对象。然后可以使用该对象来读取/写入内存。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-open_002dmemory"><span class="category-def">Scheme过程： </span><span><strong class="def-name">open-memory</strong> <var class="def-var-arguments"><span class="r">[</span>#:mode&nbsp;模式<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:start&nbsp;地址<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:size&nbsp;大小<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-open_002dmemory"> &para;</a></span></dt>
+<dd><p>返回一个可用于读取和写入内存的端口对象。
+该端口将根据<var class="var">模式</var>打开，<var class="var">模式</var>是Guile端口打开例程常用的模式参数，但不支持&lsquo;<samp class="samp">&quot;a&quot;</samp>&rsquo;和&lsquo;<samp class="samp">&quot;l&quot;</samp>&rsquo;模式。
+请参阅<cite class="cite">GNU Guile参考手册</cite>中的<a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/File-Ports.html#File-Ports">文件端口</a>。
+&lsquo;<samp class="samp">&quot;b&quot;</samp>&rsquo;（二进制）字符可能会出现，但会被忽略：内存端口仅为二进制。如果附加了&lsquo;<samp class="samp">&quot;0&quot;</samp>&rsquo;，则端口被标记为无缓冲。
+默认值为&lsquo;<samp class="samp">&quot;r&quot;</samp>&rsquo;，只读且有缓冲。
+</p>
+<p>可访问的内存块可以有边界。
+如果未指定<var class="var">start</var>和<var class="var">size</var>两者，则可以访问所有内存。如果仅指定了<var class="var">start</var>，则从该点开始的所有内存都可以访问。如果仅指定了<var class="var">size</var>，则可以访问范围[0，<var class="var">size</var>)内的所有内存。如果两者都指定了，则可以访问范围[<var class="var">start</var>，<var class="var">start</var>+<var class="var">size</var>)内的所有内存。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">memory-port?</strong><a class="copiable-link" href="#index-memory_002dport_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是类型为<code class="code">&lt;gdb:memory-port&gt;</code> 的对象，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_002drange"><span class="category-def">Scheme过程： </span><span><strong class="def-name">memory-port-range</strong> <var class="def-var-arguments">内存端口</var><a class="copiable-link" href="#index-memory_002dport_002drange"> &para;</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:memory-port&gt;</code> <var class="var">内存端口</var> 的范围，作为一个包含两个元素的列表：<code class="code">(开始 结束)</code>。范围是从 <var class="var">开始</var> 到 <var class="var">结束</var>，包括两端。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-memory_002dport_002dread_002dbuffer_002dsize"><span class="category-def">Scheme过程： </span><span><strong class="def-name">memory-port-read-buffer-size</strong> <var class="def-var-arguments">内存端口</var><a class="copiable-link" href="#index-memory_002dport_002dread_002dbuffer_002dsize"> &para;</a></span></dt>

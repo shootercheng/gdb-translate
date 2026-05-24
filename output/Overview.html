@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>概述（使用GDB调试）</title>
+
+<meta name="description" content="概述（使用GDB调试）">
+<meta name="keywords" content="概述（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Standard-Replies.html" rel="next" title="标准回复">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="概述">
+<div class="nav-panel">
+<p>
+下一页：<a href="Standard-Replies.html" accesskey="n" rel="next">标准回复</a>，上一级：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>    
+</div>
+<hr>    
+<h3 class="section" id="概述-1"><span>E.1概述<a class="copiable-link" href="#概述-1"> &para;</a></span></h3>
+
+<p>可能会有需要了解一些协议相关内容的情况&mdash;例如，如果到目标机器只有一个串行端口，当程序识别到一个发往<small class="sc">GDB</small>的数据包时，你可能希望它做一些特殊操作。
+</p>    
+<p>在下面的示例中，&lsquo;<samp class="samp">-&gt;</samp>&rsquo;和&lsquo;<samp class="samp">&lt;-</samp>&rsquo;分别用于表示发送和接收的数据。
+</p>    
+<a class="index-entry-id" id="索引-协议_对002c-gdb-远程-串行"></a>
+<a class="index-entry-id" id="索引-串行-协议_对002c-gdb-远程"></a>
+<a class="index-entry-id" id="索引-远程串行协议"></a>
+<p>所有<small class="sc">GDB</small>命令和响应（除了确认和通知，见<a class="ref" href="Notification-Packets.html">通知数据包</a>）都作为一个<var class="var">数据包</var>发送。一个<var class="var">数据包</var>由字符&lsquo;<samp class="samp">$</samp>&rsquo;开头，接着是实际的<var class="var">数据包数据</var>，以及结尾字符&lsquo;<samp class="samp">#</samp>&rsquo;，后面跟着一个两位的<var class="var">校验和</var>：
+</p>    
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">$</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+</pre></div>    
+
+<a class="index-entry-id" id="索引-校验和_对002c-用于-gdb-远程"></a>
+<p>两位的<var class="var">校验和</var>是前导&lsquo;<samp class="samp">$</samp>&rsquo;和尾随&lsquo;<samp class="samp">#</samp>&rsquo;之间所有字符的模256和（一个8位无符号校验和）。
+</p>    
+<p>实现者应注意，在<small class="sc">GDB</small> 5.0之前，协议规范还包括一个可选的两位<var class="var">序列号</var>：
+</p>    
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">$</code><var class="var">序列号</var><code class="code">:</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+</pre></div>    
+
+<a class="index-entry-id" id="索引-序列_对002did_对002c-用于-gdb-远程"></a>
+<p>那个<var class="var">序列号</var>会附加到确认信息中。<small class="sc">GDB</small>从未输出过<var class="var">序列号</var>。自<small class="sc">GDB</small> 5.0以来添加的处理数据包的存根程序不能接受<var class="var">序列号</var>。
+</p>    
+<p>当主机或目标机器接收到一个数据包时，预期的第一个响应是一个确认：要么是&lsquo;<samp class="samp">+</samp>&rsquo;（表示数据包已正确接收），要么是&lsquo;<samp class="samp">-</samp>&rsquo;（请求重新传输）：
+</p>    
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; <code class="code">$</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+&lt;- <code class="code">+</code>
+</pre></div>    
+
+<p>一旦建立连接，&lsquo;<samp class="samp">+</samp>&rsquo;/&lsquo;<samp class="samp">-</samp>&rsquo;确认可以禁用。
+有关详细信息，请参阅<a class="xref" href="Packet-Acknowledgment.html">数据包确认</a>。
+</p>    
+<p>主机（<small class="sc">GDB</small>）发送<var class="var">命令</var>，目标（程序中包含的调试存根程序）发送<var class="var">响应</var>。在单步执行和继续执行<var class="var">命令</var>的情况下，只有当操作完成且目标再次停止所有附加进程中的所有线程时，才会发送响应。这是默认的全停止模式行为，但远程协议也支持<small class="sc">GDB</small>的非停止执行模式；有关详细信息，请参阅<a class="ref" href="Remote-Non_002dStop.html">远程协议对非停止模式的支持</a>。
+</p>    
+<p><var class="var">数据包数据</var>由一系列字符组成，但不包括&lsquo;<samp class="samp">#</samp>&rsquo;和&lsquo;<samp class="samp">$</samp>&rsquo;（有关其他例外情况，请参阅&lsquo;<samp class="samp">X</samp>&rsquo;数据包）。
+</p>    
+<a class="index-entry-id" id="索引-远程协议_对002c-字段分隔符"></a>
+<p>数据包中的字段应使用&lsquo;<samp class="samp">,</samp>&rsquo;&lsquo;<samp class="samp">;</samp>&rsquo;或&lsquo;<samp class="samp">:</samp>&rsquo;分隔。除非另有说明，所有数字均以<small class="sc">HEX</small>表示，省略前导零。
+</p>    
+<p>实现者应注意，在<small class="sc">GDB</small> 5.0之前，字符&lsquo;<samp class="samp">:</samp>&rsquo;不能作为数据包中的第三个字符出现（因为它可能与<var class="var">序列号</var>冲突）。
+</p>    
+<a class="index-entry-id" id="索引-远程协议_对002c-binary-数据"></a>
+<a class="anchor" id="二进制数据"></a><p>大多数数据包中的二进制数据按每字节二进制数据编码为两个十六进制数字。这使得传统的远程协议能够在仅七位干净的连接上工作。最近设计的一些数据包假设是八位干净的连接，并使用更有效的编码来发送和接收二进制数据。
+</p>    
+<p>二进制数据表示使用<code class="code">7d</code>（<small class="sc">ASCII</small> &lsquo;<samp class="samp">}</samp>&rsquo;）作为转义字符。任何转义字节都作为转义字符后跟与<code class="code">0x20</code>异或的原始字符进行传输。例如，字节<code class="code">0x7d</code>将作为两个字节<code class="code">0x7d 0x5d</code>传输。字节<code class="code">0x23</code>（<small class="sc">ASCII</small> &lsquo;<samp class="samp">#</samp>&rsquo;）、<code class="code">0x24</code>（<small class="sc">ASCII</small> &lsquo;<samp class="samp">$</samp>&rsquo;）和<code class="code">0x7d</code>（<small class="sc">ASCII</small> &lsquo;<samp class="samp">}</samp>&rsquo;）必须始终转义。存根程序发送的响应也必须转义<code class="code">0x2a</code>（<small class="sc">ASCII</small> &lsquo;<samp class="samp">*</samp>&rsquo;），以免它被解释为游程编码序列的开始（接下来描述）。
+</p>    
+<p>响应<var class="var">数据</var>可以进行游程编码以节省空间。游程编码将相同字符的连续序列替换为重复字符的一个实例，后跟一个&lsquo;<samp class="samp">*</samp>&rsquo;和一个重复计数。重复计数本身也进行编码，以避免<var class="var">数据</var>中出现二进制字符：值<var class="var">n</var>作为<code class="code"><var class="var">n</var>+29</code>发送。对于大于或等于3的重复计数，这会产生一个可打印的<small class="sc">ASCII</small>字符，例如重复计数为3时的空格（<small class="sc">ASCII</small>码32）。（这是因为游程编码对于计数3或更多时开始更有效。）因此，例如，&lsquo;<samp class="samp">0* </samp>&rsquo;是&ldquo;0000&rdquo;的游程编码：&lsquo;<samp class="samp">*</samp>&rsquo;后的空格字符表示将前导<code class="code">0</code>再重复<code class="code">32 - 29 = 3</code><!-- /@w -->次。
+</p>    
+<p>不得使用可打印字符&lsquo;<samp class="samp">#</samp>&rsquo;和&lsquo;<samp class="samp">$</samp>&rsquo;或数值大于126的字符。六个重复（&lsquo;<samp class="samp">#</samp>&rsquo;）或七个重复（&lsquo;<samp class="samp">$</samp>&rsquo;）的序列可以仅使用五个（&lsquo;<samp class="samp">&quot;</samp>&rsquo;）的重复计数进行扩展。例如，&lsquo;<samp class="samp">00000000</samp>&rsquo;可以编码为&lsquo;<samp class="samp">0*&quot;00</samp>&rsquo;。
+</p>    
+<p>有关标准错误响应以及如何响应表示命令不支持的情况，请参阅<a class="xref" href="Standard-Replies.html">标准回复</a>。
+</p>    
+<p>在描述数据包（命令和响应）时，每个描述都有一个显示总体语法的模板，后跟对数据包含义的解释。为了清晰起见，我们在一些模板中包含了空格；这些不是数据包语法的一部分。没有任何一个<small class="sc">GDB</small>数据包使用空格来分隔其组件。例如，像&lsquo;<samp class="samp">foo <var class="var">bar</var> <var class="var">baz</var></samp>&rsquo;这样的模板描述了一个以三个<small class="sc">ASCII</small>字节&lsquo;<samp class="samp">foo</samp>&rsquo;开头的数据包，接着是一个<var class="var">bar</var>，然后直接是一个<var class="var">baz</var>。<small class="sc">GDB</small>&nbsp;在&lsquo;<samp class="samp">foo</samp>&rsquo;和<var class="var">bar</var>之间，或者在<var class="var">bar</var>和<var class="var">baz</var>之间不会传输空格字符。
+</p>    
+<p>我们将数据包的可选部分放在方括号中；例如，像&lsquo;<samp class="samp">c <span class="r">[</span><var class="var">地址</var><span class="r">]</span></samp>&rsquo;这样的模板描述了一个以单个<small class="sc">ASCII</small>字符&lsquo;<samp class="samp">c</samp>&rsquo;开头的数据包，可能后跟一个<var class="var">地址</var>。
+</p>    
+<p>至少，存根程序需要支持&lsquo;<samp class="samp">?</samp>&rsquo;命令以告知<small class="sc">GDB</small>停止的原因，支持&lsquo;<samp class="samp">g</samp>&rsquo;和&lsquo;<samp class="samp">G</samp>&rsquo;命令用于寄存器访问，以及&lsquo;<samp class="samp">m</samp>&rsquo;和&lsquo;<samp class="samp">M</samp>&rsquo;命令用于内存访问。仅控制单线程目标的存根程序可以使用&lsquo;<samp class="samp">c</samp>&rsquo;（继续）命令实现运行控制，如果目标架构支持硬件辅助单步执行，则支持&lsquo;<samp class="samp">s</samp>&rsquo;（单步）命令。支持多线程目标的存根程序应支持&lsquo;<samp class="samp">vCont</samp>&rsquo;命令。所有其他命令都是可选的。
+</p>    
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Standard-Replies.html">标准回复</a>，上一级：<a href="Remote-Protocol.html"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下（a）。
+
+（a）FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>调用（使用GDB调试）</title>
+
+<meta name="description" content="调用（使用GDB调试）">
+<meta name="keywords" content="调用（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Altering.html" rel="up" title="改变">
+<link href="Patching.html" rel="next" title="修补">
+<link href="Returning.html" rel="prev" title="返回">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="调用">
+<div class="nav-panel">
+<p>
+下一个： <a href="Patching.html" accesskey="n" rel="next">修补程序</a>， 上一个： <a href="Returning.html" accesskey="p" rel="prev">从函数返回</a>， 向上： <a href="Altering.html" accesskey="u" rel="up">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="调用程序函数"><span>17.5调用程序函数<a class="copiable-link" href="#调用程序函数"> &para;</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-下级函数_002c调用"></a>
+<a id="index-调用函数"></a><span><code class="code">print <var class="var">表达式</var></code><a class="copiable-link" href="#index-调用函数"> &para;</a></span></dt>
+<dd><p>计算表达式<var class="var">表达式</var>并显示结果值。
+该表达式可能包括对正在调试的程序中的函数的调用。
+</p>
+</dd>
+<dt><a id="index-调用"></a><span><code class="code">call <var class="var">表达式</var></code><a class="copiable-link" href="#index-调用"> &para;</a></span></dt>
+<dd><p>计算表达式<var class="var">表达式</var>，不显示返回值为<code class="code">void</code>的值。
+</p>
+<p>如果你想从程序中执行一个不返回任何值的函数（也称为<em class="dfn">无返回值函数</em>），但又不想让<small class="sc">GDB</small>打印返回值为<code class="code">void</code>的结果而使输出混乱，那么你可以使用这个变体的<code class="code">print</code>命令。如果结果不是void，则会被打印并保存在值历史中。
+</p></dd>
+</dl>
+
+<p>通过<code class="code">print</code>或<code class="code">call</code>命令调用的函数有可能会产生一个信号（例如，如果函数中有错误，或者你传递给它的参数不正确）。在这种情况下发生的事情由<code class="code">set unwind-on-signal</code>命令控制。
+</p>
+<p>类似地，对于一个C<code class="t">++</code>程序，通过<code class="code">print</code>或<code class="code">call</code>命令调用的函数有可能会产生一个由于虚拟帧的限制而未被处理的异常。在这种情况下，在帧中抛出但有帧外异常处理程序的任何异常将不会被找到。GDB为下级函数调用构建一个虚拟帧，并且展开器无法在这个虚拟帧之外寻找异常处理程序。在这种情况下发生的事情由<code class="code">set unwind-on-terminating-exception</code>命令控制。
+</p>
+<a class="anchor" id="堆栈展开设置"></a><dl class="table">
+<dt><a class="index-entry-id" id="index-set-unwindonsignal"></a>
+<a class="index-entry-id" id="index-在被调用函数中展开堆栈"></a>
+<a class="index-entry-id" id="index-调用虚拟堆栈展开"></a>
+<a id="index-set-unwind_002don_002dsignal"></a><span><code class="code">set unwind-on-signal</code><a class="copiable-link" href="#index-set-unwind_002don_002dsignal"> &para;</a></span></dt>
+<dd><p>如果在GDB在正在调试的程序中调用的函数中接收到信号，则设置堆栈展开。如果设置为on，GDB会展开它为调用创建的堆栈，并将上下文恢复到调用前的状态。如果设置为off（默认），GDB会在接收到信号的帧中停止。
+</p>
+<p>命令<code class="code">set unwindonsignal</code>是这个命令的别名，为了向后兼容而保留。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-unwindonsignal"></a>
+<a id="index-show-unwind_002don_002dsignal"></a><span><code class="code">show unwind-on-signal</code><a class="copiable-link" href="#index-show-unwind_002don_002dsignal"> &para;</a></span></dt>
+<dd><p>显示GDB调用的函数中堆栈展开的当前设置。
+</p>
+<p>命令<code class="code">show unwindonsignal</code>是这个命令的别名，为了向后兼容而保留。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-在被调用函数中展开堆栈并处理未处理的异常"></a>
+<a class="index-entry-id" id="index-调用虚拟堆栈展开并处理未处理的异常_002e"></a>
+<a id="index-set-unwind_002don_002dterminating_002dexception"></a><span><code class="code">set unwind-on-terminating-exception</code><a class="copiable-link" href="#index-set-unwind_002don_002dterminating_002dexception"> &para;</a></span></dt>
+<dd><p>如果在GDB在正在调试的程序中调用的函数中抛出了一个C<code class="t">++</code>异常，但没有被处理，则设置堆栈展开。如果设置为on（默认），GDB会展开它为调用创建的堆栈，并将上下文恢复到调用前的状态。如果设置为off，该异常会被传递给默认的C<code class="t">++</code>异常处理程序，并且下级进程会终止。
+</p>
+</dd>
+<dt><a id="index-show-unwind_002don_002dterminating_002dexception"></a><span><code class="code">show unwind-on-terminating-exception</code><a class="copiable-link" href="#index-show-unwind_002don_002dterminating_002dexception"> &para;</a></span></dt>
+<dd><p>显示GDB调用的函数中堆栈展开的当前设置。</p>
+<a class="anchor" id="set-unwind_002don_002dtimeout"></a></dd>
+<dt><a class="index-entry-id" id="index-在被调用函数中展开堆栈并处理超时"></a>
+<a class="index-entry-id" id="index-调用虚拟堆栈展开并处理超时_002e"></a>
+<a id="index-set-unwind_002don_002dtimeout"></a><span><code class="code">set unwind-on-timeout</code><a class="copiable-link" href="#index-set-unwind_002don_002dtimeout"> &para;</a></span></dt>
+<dd><p>如果从GDB调用的函数超时，则设置堆栈展开。如果设置为<code class="code">off</code>（默认值），GDB会在超时发生的帧中停止。如果设置为<code class="code">on</code>，GDB会展开它为调用创建的堆栈，并将上下文恢复到调用前的状态。
+</p>
+</dd>
+<dt><a id="index-show-unwind_002don_002dtimeout"></a><span><code class="code">show unwind-on-timeout</code><a class="copiable-link" href="#index-show-unwind_002don_002dtimeout"> &para;</a></span></dt>
+<dd><p>显示如果从GDB调用的函数超时，GDB是否会展开堆栈。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-禁用在程序中调用函数"></a>
+<a class="index-entry-id" id="index-在程序中调用函数_右_002c禁用"></a>
+<a id="index-set-may_002dcall_002dfunctions"></a><span><code class="code">set may-call-functions</code><a class="copiable-link" href="#index-set-may_002dcall_002dfunctions"> &para;</a></span></dt>
+<dd><p>设置在程序中调用函数的权限。
+这控制着GDB是否会尝试在程序中调用函数，例如使用<code class="code">print</code>命令中的表达式。它的默认值是<code class="code">on</code>。
+</p>
+<p>为了在程序中调用函数，GDB必须临时修改下级进程的状态。这可能会有潜在的不良副作用。此外，让GDB调用嵌套函数很可能是错误的，甚至可能导致正在调试的程序崩溃

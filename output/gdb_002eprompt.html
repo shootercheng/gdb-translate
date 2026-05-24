@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>gdb.prompt (使用GDB调试)</title>
+
+<meta name="description" content="gdb.prompt (使用GDB调试)">
+<meta name="keywords" content="gdb.prompt (使用GDB调试)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-modules.html" rel="up" title="Python模块">
+<link href="gdb_002eptwrite.html" rel="next" title="gdb.ptwrite">
+<link href="gdb_002etypes.html" rel="prev" title="gdb.types">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="gdb_002eprompt">
+<div class="nav-panel">
+<p>
+下一个：<a href="gdb_002eptwrite.html" accesskey="n" rel="next">gdb.ptwrite</a>，上一个：<a href="gdb_002etypes.html" accesskey="p" rel="prev">gdb.types</a>，向上：<a href="Python-modules.html" accesskey="u" rel="up">Python模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb_002eprompt-1"><span>23.3.4.3 gdb.prompt<a class="copiable-link" href="#gdb_002eprompt-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdb_002eprompt"></a>
+
+<p>本模块提供了一种用于提示符值替换的方法。
+</p>
+<dl class="table">
+<dt><code class="code">substitute_prompt (<var class="var">string</var>)</code></dt> 
+<dd><p>返回用值替换了转义序列的<var class="var">string</var>。一些转义序列需要参数。你可以在紧跟转义序列的“{}”内指定参数。
+</p>
+<p>你可以传递给此函数的转义序列有：
+</p>
+<dl class="table">
+<dt><code class="code">\\</code></dt> 
+<dd><p>替换一个反斜杠。
+</p></dd>
+<dt><code class="code">\e</code></dt> 
+<dd><p>替换一个ESC字符。
+</p></dd>
+<dt><code class="code">\f</code></dt> 
+<dd><p>替换选定的帧；参数指定一个帧参数。
+</p></dd>
+<dt><code class="code">\n</code></dt> 
+<dd><p>替换一个换行符。
+</p></dd>
+<dt><code class="code">\p</code></dt> 
+<dd><p>替换一个参数的值；参数指定参数。
+</p></dd>
+<dt><code class="code">\r</code></dt> 
+<dd><p>替换一个回车符。
+</p></dd>
+<dt><code class="code">\t</code></dt> 
+<dd><p>替换选定的线程；参数指定一个线程参数。
+</p></dd>
+<dt><code class="code">\v</code></dt> 
+<dd><p>替换GDB的版本。
+</p></dd>
+<dt><code class="code">\w</code></dt> 
+<dd><p>替换当前工作目录。
+</p></dd>
+<dt><code class="code">\[</code></dt> 
+<dd><p>开始一系列非打印字符。这些序列通常与ESC字符一起使用，并且不计入字符串长度。例如：“\[\e[0;34m\](gdb)\[\e[0m\]”将返回一个蓝色的“(gdb)”提示符，其长度为五个字符。
+</p></dd>
+<dt><code class="code">\]</code></dt> 
+<dd><p>结束一系列非打印字符。
+</p></dd>
+</dl>
+
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">substitute_prompt (&quot;frame: \f, args: \p{print frame-arguments}&quot;)
+</pre></div>
+
+<p class="exdent">将返回字符串：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&quot;frame: main, args: scalars&quot;
+</pre></div>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

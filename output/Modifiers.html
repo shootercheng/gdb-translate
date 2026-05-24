@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>修饰符（使用GDB调试）</title>
+
+<meta name="description" content="修饰符（使用GDB调试）">
+<meta name="keywords" content="修饰符（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="History-Interaction.html" rel="up" title="历史交互">
+<link href="Word-Designators.html" rel="prev" title="单词指示符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Modifiers">
+<div class="nav-panel">
+<p>
+上一个：<a href="Word-Designators.html" accesskey="p" rel="prev">单词指示符</a>，向上：<a href="History-Interaction.html" accesskey="u" rel="up">历史扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Modifiers-1"><span>34.1.3修饰符<a class="copiable-link" href="#Modifiers-1"> &para;</a></span></h4>
+
+<p>在可选的单词指示符之后，你可以添加一个或多个以下修饰符序列，每个修饰符前都有一个“<samp class="samp">:</samp>”。
+这些修饰符用于修改或编辑从历史事件中选择的单词。
+</p>
+<dl class="table">
+<dt><code class="code">h</code></dt>
+<dd><p>删除尾随的路径名组件，只保留头部。
+</p>
+</dd>
+<dt><code class="code">t</code></dt>
+<dd><p>删除所有领先的路径名组件，只保留尾部。
+</p>
+</dd>
+<dt><code class="code">r</code></dt>
+<dd><p>删除形式为“<samp class="samp">.<var class="var">后缀</var></samp>”的尾随后缀，只保留basename。
+</p>
+</dd>
+<dt><code class="code">e</code></dt>
+<dd><p>只保留尾随后缀，删除其他所有内容。
+</p>
+</dd>
+<dt><code class="code">p</code></dt>
+<dd><p>打印新命令但不执行它。
+</p>
+
+</dd>
+<dt><code class="code">s/<var class="var">旧内容</var>/<var class="var">新内容</var>/</code></dt>
+<dd><p>在事件行中，将第一个出现的<var class="var">旧内容</var>替换为<var class="var">新内容</var>。
+任何字符都可以用作分隔符来代替“<samp class="samp">/</samp>”。
+分隔符可以在<var class="var">旧内容</var>和<var class="var">新内容</var>中用单个反斜杠进行转义。
+如果“<samp class="samp">&amp;</samp>”出现在<var class="var">新内容</var>中，它将被<var class="var">旧内容</var>替换。
+单个反斜杠将转义“<samp class="samp">&amp;</samp>”。
+如果<var class="var">旧内容</var>为空，它将被设置为上一次替换的<var class="var">旧内容</var>，或者，如果之前没有进行过历史替换，则设置为!?<var class="var">字符串</var><code class="code">[?]</code>搜索中的最后一个<var class="var">字符串</var>。
+如果 <var class="var">新内容</var> 为空，则删除每个匹配的 <var class="var">旧内容</var>。
+如果最后一个分隔符是输入行上的最后一个字符，则它是可选的。
+</p>
+</dd>
+<dt><code class="code">&amp;</code></dt>
+<dd><p>重复上一次替换。
+</p>
+</dd>
+<dt><code class="code">g</code></dt>
+<dt><code class="code">a</code></dt>
+<dd><p>使更改应用于整个事件行。与“<samp class="samp">s</samp>”一起使用，如“<code class="code">gs/<var class="var">旧内容</var>/<var class="var">新内容</var>/</code>”，或与“<samp class="samp">&amp;</samp>”一起使用。
+</p>
+</dd>
+<dt><code class="code">G</code></dt>
+<dd><p>对事件中的每个单词应用一次以下的“<samp class="samp">s</samp>”或“<samp class="samp">&amp;</samp>”修饰符。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Word-Designators.html">单词指示符</a>，向上：<a href="History-Interaction.html">历史扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

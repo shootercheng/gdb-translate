@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>编写X方法（使用GDB调试）</title>
+
+<meta name="description" content="编写X方法（使用GDB调试）">
+<meta name="keywords" content="编写X方法（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Inferiors-In-Python.html" rel="next" title="Python中的下级对象">
+<link href="Xmethod-API.html" rel="prev" title="X方法API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="编写-X方法">
+<div class="nav-panel">
+<p>
+下一页：<a href="Inferiors-In-Python.html" accesskey="n" rel="next">Python中的下级对象</a>，上一页：<a href="Xmethod-API.html" accesskey="p" rel="prev">X方法API</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>    
+<hr>
+<h4 class="subsubsection" id="编写-X方法-1"><span>23.3.2.16编写X方法<a class="copiable-link" href="#编写-X方法-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-在Python中编写X方法"></a>
+
+<p>在Python中实现X方法需要实现X方法匹配器和X方法工作器（见<a class="pxref" href="Xmethods-In-Python.html">Python中的X方法</a>）。考虑以下C++类：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyClass
+{
+public:
+  MyClass (int a) : a_(a) { }
+
+  int geta (void) { return a_; }
+    int operator+ (int b);
+
+private:
+  int a_;
+};
+
+int
+MyClass::operator+ (int b)
+{
+  return a_ + b;
+}
+</pre></div>
+
+<p>让我们为类<code class="code">MyClass</code>定义两个X方法，一个替换方法<code class="code">geta</code>，另一个添加一个重载的<code class="code">operator+</code>版本，它接受一个<code class="code">MyClass</code>参数（上面的C++代码已经有一个接受<code class="code">int</code>参数的重载<code class="code">operator+</code>）。X方法匹配器可以如下定义：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyClass_geta(gdb.xmethod.XMethod):
+    def __init__(self):
+        gdb.xmethod.XMethod.__init__(self, 'geta')
+ 
+    def get_worker(self, method_name):
+        if method_name == 'geta':
+            return MyClassWorker_geta()
+ 
+ 
+class MyClass_sum(gdb.xmethod.XMethod):
+    def __init__(self):
+        gdb.xmethod.XMethod.__init__(self,'sum')
+ 
+    def get_worker(self, method_name):
+        if method_name == 'operator+':
+            return MyClassWorker_plus()
+ 
+ 
+class MyClassMatcher(gdb.xmethod.XMethodMatcher):
+    def __init__(self):
+        gdb.xmethod.XMethodMatcher.__init__(self, 'MyClassMatcher')
+        # 此匹配器“管理”的方法列表
+        self.methods = [MyClass_geta(), MyClass_sum()]
+ 
+    def match(self, class_type, method_name):
+        if class_type.tag != 'MyClass':
+            return None
+        workers = []
+        for method in self.methods:
+            if method.enabled:
+                worker = method.get_worker(method_name)
+                if worker:
+                    workers.append(worker)
+ 
+        return workers
+</pre></div>
+
+<p>注意，<code class="code">MyClassMatcher</code>的<code class="code">match</code>方法为<code class="code">geta</code>方法返回一个类型为<code class="code">MyClassWorker_geta</code>的工作器对象，为<code class="code">operator+</code>方法返回一个类型为<code class="code">MyClassWorker_plus</code>的工作器对象。这是通过从<code class="code">gdb.xmethod.XMethod</code>派生的辅助类间接完成的。在匹配器中不需要使用<code class="code">methods</code>属性，因为它是可选的。但是，如果一个匹配器管理多个X方法，在匹配器的<code class="code">methods</code>属性中列出X方法是一个好习惯。这样可以通过<code class="code">enable/disable</code>命令方便地启用和禁用单个X方法。还要注意，只有当匹配器的<code class="code">methods</code>属性中的相应条目启用时，才会返回工作器对象。
+</p>
+<p>上述匹配器设置返回的工作器类的实现如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyClassWorker_geta(gdb.xmethod.XMethodWorker):
+    def get_arg_types(self):
+        return None
+
+    def get_result_type(self, obj):
+        return gdb.lookup_type('int')
+ 
+    def __call__(self, obj):
+        return obj['a_']
+ 
+ 
+class MyClassWorker_plus(gdb.xmethod.XMethodWorker):
+    def get_arg_types(self):
+        return gdb.lookup_type('MyClass')
+
+    def get_result_type(self, obj):
+        return gdb.lookup_type('int')
+ 
+    def __call__(self, obj, other):
+        return obj['a_'] + other['a_']
+</pre></div>
+
+<p>为了让GDB实际查找X方法，必须向其注册。上面定义的匹配器如下全局注册到GDB：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb.xmethod.register_xmethod_matcher(None, MyClassMatcher())
+</pre></div>
+
+<p>如果在C++代码中如下初始化一个类型为<code class="code">MyClass</code>的对象<code class="code">obj</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">MyClass obj(5);
+</pre></div>
+
+<p>那么，在将定义X方法匹配器和工作器的Python脚本加载到GDB中之后，对<code class="code">obj</code>调用方法<code class="code">geta</code>或使用运算符<code class="code">+</code>将调用上面定义的X方法：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p obj.geta()
+$1 = 5
+
+(gdb) p obj + obj
+$2 = 10
+</pre></div>
+
+<p>考虑另一个使用C++模板类的例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">template &lt;class T&gt;
+class MyTemplate
+{
+public:
+  MyTemplate () : dsize_(10), data_ (new T [10]) { }
+  ~MyTemplate () { delete [] data_; }
+ 
+  int footprint (void)
+  {
+    return sizeof (T) * dsize_ + sizeof (MyTemplate&lt;T&gt;);
+  }
+ 
+private:
+  int dsize_;
+  T *data_;
+};
+</pre></div>
+
+<p>让我们为上述类实现一个X方法，作为<code class="code">footprint</code>方法的替代。X方法工作器和X方法匹配器的完整代码清单如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyTemplateWorker_footprint(gdb.xmethod.XMethodWorker):
+    def __init__(self, class_type):
+        self.class_type = class_type
+
+    def get_arg_types(self):
+        return None
+
+    def get_result_type(self):
+        return gdb.lookup_type('int')
+
+    def __call__(self, obj):
+        return (self.class_type.sizeof +
+                obj['dsize_'] *
+                self.class_type.template_argument(0).sizeof)
+ 
+ 
+class MyTemplateMatcher_footprint(gdb.xmethod.XMethodMatcher):
+    def __init__(self):
+        gdb.xmethod.XMethodMatcher.__init__(self, 'MyTemplateMatcher')
+ 
+    def match(self, class_type, method_name):
+        if (re.match('MyTemplate&lt;[ \t\n]*[_a-zA-Z][ _a-zA-Z0-9]*&gt;',
+                     class_type.tag) and
+            method_name == 'footprint'): 
+            return MyTemplateWorker_footprint(class_type)
+</pre></div>
+
+<p>注意，在这个例子中，我们没有使用匹配器的<code class="code">methods</code>属性，因为匹配器只管理一个X方法。用户可以通过启用/禁用匹配器本身来启用/禁用这个X方法。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Inferiors-In-Python.html">Python中的下级对象</a>，上一页：<a href="Xmethod-API.html">X方法API</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

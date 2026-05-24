@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>定义（使用GDB调试）</title>
+
+<meta name="description" content="定义（使用GDB调试）">
+<meta name="keywords" content="定义（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Sequences.html" rel="up" title="命令序列">
+<link href="Hooks.html" rel="next" title="钩子">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="定义">
+<div class="nav-panel">
+<p>
+下一个：<a href="Hooks.html" accesskey="n" rel="next">用户定义的命令钩子</a>，上一个：<a href="Sequences.html" accesskey="u" rel="up">预定义的命令序列</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="用户定义的命令"><span>23.1.1 用户定义的命令<a class="copiable-link" href="#用户定义的命令"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-用户定义的命令"></a>
+<a class="index-entry-id" id="索引-用户定义命令的参数"></a>
+<p>一个<em class="dfn">用户定义的命令</em>是一组GDB命令序列，你可以为其指定一个新名称作为命令。这是通过<code class="code">define</code>命令完成的。
+</p>
+<p>用户命令可以接受无限数量的由空格分隔的参数。在用户命令中，可以通过<code class="code">$arg0&hellip;$argN</code>来访问参数。这些参数是文本替换，因此它们可以引用变量、使用复杂表达式，甚至执行低级函数调用。然而，请注意，这种文本替换意味着处理某些参数会很困难。例如，如果用户要传递一个包含空格的参数，则无法实现；虽然可以使用像<code class="code">&quot;$arg1&quot;</code>这样的表达式将参数转换为字符串，但如果参数包含引号，将会失败。对于更复杂和健壮的命令，我们建议用Python编写；请参阅 <a class="ref" href="CLI-Commands-In-Python.html">Python中的CLI命令</a>。
+</p>
+<p>一个简单的例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">define adder
+  print $arg0 + $arg1 + $arg2
+end
+</pre></div>
+
+<p>要执行该命令，请使用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">adder 1 2 3
+</pre></div>
+
+<p>这定义了命令<code class="code">adder</code>，它会打印其三个参数的和。
+</p>
+<a class="index-entry-id" id="索引-用户定义命令中的参数数量"></a>
+<a class="index-entry-id" id="索引-（用户定义命令）有多少个参数"></a>
+<p>此外，<code class="code">$argc</code>可用于查明传递了多少个参数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">define adder
+  if $argc == 2
+    print $arg0 + $arg1
+  end
+  if $argc == 3
+    print $arg0 + $arg1 + $arg2
+  end
+end
+</pre></div>
+
+<p>与<code class="code">eval</code>命令（请参阅 <a class="pxref" href="Output.html#eval">eval</a>）结合使用，可以更轻松地处理数量可变的参数： 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">define adder
+  set $i = 0
+  set $sum = 0
+  while $i &lt; $argc
+    eval &quot;set $sum = $sum + $arg%d&quot;, $i
+    set $i = $i + 1
+  end
+  print $sum
+end
+</pre></div>
+
+<dl class="table">
+<dt><a id="索引-define"></a><span><code class="code">define <var class="var">commandname</var></code><a class="copiable-link" href="#索引-define"> &para;</a></span></dt>
+<dd><p>定义一个名为<var class="var">commandname</var>的命令。如果已经存在同名的命令，系统会要求你确认是否要重新定义它。参数<var class="var">commandname</var>可以是由字母、数字、破折号、点和下划线组成的简单命令名。它也可以以任何预定义或用户定义的前缀命令开头。
+例如，&lsquo;<samp class="samp">define target my-target</samp>&rsquo; 创建一个用户定义的&lsquo;<samp class="samp">target my-target</samp>&rsquo; 命令。
+</p>
+<p>命令的定义由其他GDB命令行组成，这些命令行在<code class="code">define</code>命令之后给出。这些命令的结尾由包含<code class="code">end</code>的行标记。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-end-（用户定义的命令）"></a>
+<a id="索引-document"></a><span><code class="code">document <var class="var">commandname</var></code><a class="copiable-link" href="#索引-document"> &para;</a></span></dt>
+<dd><p>记录用户定义的命令<var class="var">commandname</var>，以便可以通过<code class="code">help</code>访问。命令<var class="var">commandname</var>必须已经定义。此命令读取文档行的方式与<code class="code">define</code>读取命令定义行的方式相同，以<code class="code">end</code>结尾。在<code class="code">document</code>命令完成后，对命令<var class="var">commandname</var>执行<code class="code">help</code>将显示你编写的文档。
+</p>
+<p>你可以再次使用<code class="code">document</code>命令来更改命令的文档。使用<code class="code">define</code>重新定义命令不会更改文档。
+</p>
+<p>也可以记录用户定义的别名。然后，<code class="code">help</code>和<code class="code">apropos</code>命令将使用别名文档，而不是被别名命令的文档。当将别名定义为一组嵌套<code class="code">with</code>命令时（请参阅 <a class="pxref" href="Command-aliases-default-args.html">默认参数</a>），记录用户定义的别名特别有用并且。
+</p>
+</dd>
+<dt><a id="索引-define-prefix"></a><span><code class="code">define-prefix <var class="var">commandname</var></code><a class="copiable-link" href="#索引-define-prefix"> &para;</a></span></dt>
+<dd><p>将命令<var class="var">commandname</var>定义或标记为用户定义的前缀命令。一旦标记，<var class="var">commandname</var>就可以被<code class="code">define</code>命令用作前缀命令。
+请注意，<code class="code">define-prefix</code>可以与尚未定义的<var class="var">commandname</var>一起使用。在这种情况下，<var class="var">commandname</var>被定义为空的用户定义命令。
+如果你重新定义一个被标记为用户定义前缀命令的命令，重新定义的命令的子命令将被保留（并且GDB会向用户表明这一点）。
+</p>
+<p>示例：
+</p><div class="example">
+<pre class="example-preformatted">(gdb) define-prefix abc
+(gdb) define-prefix abc def
+(gdb) define abc def
+输入“abc def”的定义命令。
+以仅包含“end”的行结束。
+&gt;echo command initial def\n
+&gt;end
+(gdb) define abc def ghi
+输入“abc def ghi”的定义命令。
+以仅包含“end”的行结束。
+&gt;echo command ghi\n
+&gt;end
+(gdb) define abc def
+保留前缀命令“def”的子命令。
+重新定义命令“def”？（y或n）y
+输入“abc def”的定义命令。
+以仅包含“end”的行结束。
+&gt;echo command def\n
+&gt;end
+(gdb) abc def ghi
+command ghi
+(gdb) abc def
+command def
+(gdb)</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="索引-don_0027t-repeat-command"></a>
+<a id="索引-dont_002drepeat-1"></a><span><code class="code">dont-repeat</code><a class="copiable-link" href="#索引-dont_002drepeat-1"> &para;</a></span></dt>

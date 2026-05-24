@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>Readline初始化文件语法（使用GDB调试）</title>
+
+<meta name="description" content="Readline初始化文件语法（使用GDB调试）">
+<meta name="keywords" content="Readline初始化文件语法（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Init-File.html" rel="up" title="Readline初始化文件">
+<link href="Conditional-Init-Constructs.html" rel="next" title="条件初始化结构">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Readline-Init-File-Syntax">
+<div class="nav-panel">
+<p>
+下一个：<a href="Conditional-Init-Constructs.html" accesskey="n" rel="next">条件初始化结构</a>，上一个：<a href="Readline-Init-File.html" accesskey="u" rel="up">Readline初始化文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Readline-Init-File-Syntax-1"><span>33.3.1 Readline初始化文件语法<a class="copiable-link" href="#Readline-Init-File-Syntax-1"> &para;</a></span></h4>
+
+<p>Readline初始化文件中只允许使用一些基本结构。空行将被忽略。
+以“#”开头的行是注释。
+以“$”开头的行表示条件结构（见<a class="pxref" href="Conditional-Init-Constructs.html">条件初始化结构</a>）。其他行表示变量设置和键绑定。
+</p>
+<dl class="table">
+<dt>变量设置</dt>
+<dd><p>你可以通过在初始化文件中使用<code class="code">set</code>命令来改变Readline中的变量值，从而修改Readline的运行时行为。
+语法很简单：
+</p>
+<div class="example">
+<pre class="example-preformatted">set <var class="var">变量</var> <var class="var">值</var>
+</pre></div>
+
+<p>例如，以下是如何从默认的类似Emacs的键绑定改为使用<code class="code">vi</code>行编辑命令：
+</p>
+<div class="example">
+<pre class="example-preformatted">set editing-mode vi
+</pre></div>
+
+<p>变量名和值在适当的时候不区分大小写。未识别的变量名将被忽略。
+</p>
+<p>布尔变量（那些可以设置为开或关的变量）如果值为空或空字符串、<var class="var">on</var>（不区分大小写）或1，则设置为开。任何其他值都会导致变量被设置为关。
+</p>
+
+<p>许多运行时行为可以通过以下变量来改变。
+</p>
+<a class="index-entry-id" id="index-variables_002c-readline"></a>
+<dl class="table">
+<dt><a id="index-active_0

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI Ada任务命令（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI Ada任务命令（使用GDB调试）">
+<meta name="keywords" content="GDB/MI Ada任务命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Program-Execution.html" rel="next" title="GDB/MI程序执行">
+<link href="GDB_002fMI-Thread-Commands.html" rel="prev" title="GDB/MI线程命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Ada任务命令">
+<div class="nav-panel">
+<p>
+下一页： <a href="GDB_002fMI-Program-Execution.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>程序执行</a>， 上一页： <a href="GDB_002fMI-Thread-Commands.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>线程命令</a>， 向上： <a href="GDB_002fMI.html" accesskey="u" rel="up">The <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Ada任务命令"><span>27.12 <small class="sc">GDB/MI</small> Ada任务命令<a class="copiable-link" href="#gdb_002fmi-Ada任务命令"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-_002dada_002dtask_002dinfo"></a>
+<h4 class="subheading" id="The-_002dada_002dtask_002dinfo命令"><span>The <code class="code">-ada-task-info</code>命令<a class="copiable-link" href="#The-_002dada_002dtask_002dinfo命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-29"><span>概要<a class="copiable-link" href="#概要-29"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -ada-task-info [ <var class="var">任务ID</var> ]
+</pre></div>
+
+<p>如果存在<var class="var">任务ID</var>参数，则报告有关特定Ada任务的信息，否则报告有关所有Ada任务的信息。
+</p>
+<h4 class="subsubheading" id="gdb命令-28"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-28"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">info tasks</samp>&rsquo;命令打印有关所有Ada任务的相同信息（见 <a class="pxref" href="Ada-Tasks.html">Ada任务扩展</a>）。
+</p>
+<h4 class="subsubheading" id="结果-4"><span>结果<a class="copiable-link" href="#结果-4"> &para;</a></span></h4>
+
+<p>结果是一个Ada任务表。为每个Ada任务定义了以下列：
+</p>
+
+<dl class="table">
+<dt>&lsquo;<samp class="samp">current</samp>&rsquo;</dt>
+<dd><p>此字段仅存在于当前线程中。它的值为&lsquo;<samp class="samp">*</samp>&rsquo;。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">id</samp>&rsquo;</dt>
+<dd><p><small class="sc">GDB</small>用于引用Ada任务的标识符。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">task-id</samp>&rsquo;</dt>
+<dd><p>目标用于引用Ada任务的标识符。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">thread-id</samp>&rsquo;</dt>
+<dd><p>与Ada任务对应的线程的全局线程标识符。
+</p>
+<p>此字段应始终存在，因为Ada任务总是在一个线程之上实现。但如果<small class="sc">GDB</small>由于任何原因找不到这个对应的线程，则该字段将被省略。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">parent-id</samp>&rsquo;</dt>
+<dd><p>此字段仅在任务由另一个任务创建时存在。在这种情况下，它提供父任务的ID。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">priority</samp>&rsquo;</dt>
+<dd><p>任务的基本优先级。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">state</samp>&rsquo;</dt>
+<dd><p>任务的当前状态。有关可能状态的详细描述，请参阅 <a class="ref" href="Ada-Tasks.html">Ada任务扩展</a>。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">name</samp>&rsquo;</dt>
+<dd><p>任务的名称。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="示例-28"><span>示例<a class="copiable-link" href="#示例-28"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-ada-task-info
+^done,tasks={nr_rows=&quot;3&quot;,nr_cols=&quot;8&quot;,
+hdr=[{width=&quot;1&quot;,alignment=&quot;-1&quot;,col_name=&quot;current&quot;,colhdr=&quot;&quot;},
+{width=&quot;3&quot;,alignment=&quot;1&quot;,col_name=&quot;id&quot;,colhdr=&quot;ID&quot;},
+{width=&quot;9&quot;,alignment=&quot;1&quot;,col_name=&quot;task-id&quot;,colhdr=&quot;TID&quot;},
+{width=&quot;4&quot;,alignment=&quot;1&quot;,col_name=&quot;thread-id&quot;,colhdr=&quot;&quot;},
+{width=&quot;4&quot;,alignment=&quot;1&quot;,col_name=&quot;parent-id&quot;,colhdr=&quot;P-ID&quot;},
+{width=&quot;3&quot;,alignment=&quot;1&quot;,col_name=&quot;priority&quot;,colhdr=&quot;Pri&quot;},
+{width=&quot;22&quot;,alignment=&quot;-1&quot;,col_name=&quot;state&quot;,colhdr=&quot;State&quot;},
+{width=&quot;1&quot;,alignment=&quot;2&quot;,col_name=&quot;name&quot;,colhdr=&quot;Name&quot;}],
+body=[{current=&quot;*&quot;,id=&quot;1&quot;,task-id=&quot;   644010&quot;,thread-id=&quot;1&quot;,priority=&quot;48&quot;,
+state=&quot;Child Termination Wait&quot;,name=&quot;main_task&quot;}]}
+(gdb)
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页： <a href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small>程序执行</a>， 上一页： <a href="GDB_0会自动加载所有的动态链接库（DLL），并将它们映射到进程的地址空间中。这意味着你不需要在程序启动时手动加载每个DLL，系统会为你处理这一切。
+
+当你在调试器中设置断点并开始调试时，调试器会在断点处停止程序的执行。此时，你可以检查程序的状态，包括变量的值、寄存器的内容等。调试器还提供了一些命令，允许你单步执行程序、查看堆栈跟踪、修改变量的值等。
+
+调试器的另一个重要功能是能够处理异常。当程序发生异常时，调试器会捕获异常并提供有关异常的详细信息，例如异常类型、发生异常的位置等。这有助于你定位和解决程序中的错误。
+
+调试器还支持多线程调试。如果你正在调试一个多线程程序，调试器可以让你同时查看多个线程的状态，并在不同线程之间切换。你可以设置每个线程的断点，并分别调试每个线程。
+
+在调试过程中，你可以使用调试器的日志功能来记录调试会话的详细信息。这对于重现问题和与他人分享调试过程非常有帮助。
+
+调试器还提供了一些高级功能，例如内存调试、性能分析等。这些功能可以帮助你进一步优化程序的性能和稳定性。
+
+总之，调试器是开发过程中不可或缺的工具，它可以帮助你快速定位和解决程序中的错误，提高开发效率和程序的质量。
+
+</body>
+</html>

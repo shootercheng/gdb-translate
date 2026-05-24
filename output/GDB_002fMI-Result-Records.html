@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI结果记录（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI结果记录（使用GDB调试）">
+<meta name="keywords" content="GDB/MI结果记录（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Stream-Records.html" rel="next" title="GDB/MI流记录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Result-Records">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Stream-Records.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>流记录</a>，上一级：<a href="GDB_002fMI-Output-Records.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>输出记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_002fmi-Result-Records"><span>27.5.1 <small class="sc">GDB/MI</small>结果记录<a class="copiable-link" href="#gdb_002fmi-Result-Records"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-result-records-in-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-result-records"></a>
+<p>除了一些带外通知外，对<small class="sc">GDB/MI</small>命令的响应还包括以下结果指示之一：
+</p>
+<dl class="table">
+<dt><a id="index-_005edone"></a><span><code class="code">&quot;^done&quot; [ &quot;,&quot; <var class="var">结果</var> ]</code><a class="copiable-link" href="#index-_005edone"> &para;</a></span></dt>
+<dd><p>同步操作成功，<code class="code"><var class="var">结果</var></code>是返回值。
+</p>
+</dd>
+<dt><a id="index-_005erunning"></a><span><code class="code">&quot;^running&quot;</code><a class="copiable-link" href="#index-_005erunning"> &para;</a></span></dt>
+<dd><p>此结果记录等同于“^done”。从历史上看，如果命令已恢复目标，则输出此记录而不是“^done”。为了向后兼容，保留了此行为，但所有前端都应将“^done”和“^running”视为相同，并依赖“*running”输出记录来确定哪些线程已恢复。
+</p>
+</dd>
+<dt><a id="index-_005econnected"></a><span><code class="code">&quot;^connected&quot;</code><a class="copiable-link" href="#index-_005econnected"> &para;</a></span></dt>
+<dd><p><small class="sc">GDB</small>已连接到远程目标。
+</p>
+</dd>
+<dt><a id="index-_005eerror"></a><span><code class="code">&quot;^error&quot; &quot;,&quot; &quot;msg=&quot; <var class="var">C字符串</var> [ &quot;,&quot; &quot;code=&quot; <var class="var">C字符串</var> ]</code><a class="copiable-link" href="#index-_005eerror"> &para;</a></span></dt>
+<dd><p>操作失败。“msg=<var class="var">C字符串</var>”变量包含相应的错误消息。
+</p>
+<p>如果存在，“code=<var class="var">C字符串</var>”变量提供一个错误代码，消费者可以依赖该代码来检测相应的错误情况

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的程序空间（使用GDB调试）</title>
+
+<meta name="description" content="Python中的程序空间（使用GDB调试）">
+<meta name="keywords" content="Python中的程序空间（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Objfiles-In-Python.html" rel="next" title="Python中的目标文件">
+<link href="Functions-In-Python.html" rel="prev" title="Python中的函数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Progspaces-In-Python">
+<div class="nav-panel">
+<p>
+下一个：<a href="Objfiles-In-Python.html" accesskey="n" rel="next">Python中的目标文件</a>，上一个：<a href="Functions-In-Python.html" accesskey="p" rel="prev">编写新的便利函数</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Program-Spaces-In-Python"><span>23.3.2.26 Python中的程序空间<a class="copiable-link" href="#Program-Spaces-In-Python"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-progspaces-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eProgspace"></a>
+<a class="index-entry-id" id="index-Progspace"></a>
+<p>一个程序空间，或称为<em class="dfn">progspace</em>，表示一个地址空间的符号视图。
+它由程序的所有目标文件组成。
+请参阅 <a class="xref" href="Objfiles-In-Python.html">Python中的目标文件</a>。
+有关程序空间的更多详细信息，请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">程序空间</a>。
+</p>
+<p>在<code class="code">gdb</code>模块中可以使用以下与程序空间相关函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005fprogspace"><span class="category-def">函数：</span><span><strong class="def-name">gdb.current_progspace</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005fprogspace"> &para;</a></span></dt>
+<dd><p>此函数返回当前选定的进程的程序空间。
+请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个进程连接和程序</a>。 这与 <code class="code">gdb.selected_inferior().progspace</code> 相同（请参阅 <a class="pxref" href="Inferiors-In-Python.html">Python中的进程</a>），包含它是为了保持历史兼容性。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eprogspaces"><span class="category-def">函数：</span><span><strong class="def-name">gdb.progspaces</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eprogspaces"> &para;</a></span></dt>
+<dd><p>返回<small class="sc">GDB</small>当前已知的所有程序空间的序列。
+</p></dd></dl>
+
+<p>每个程序空间由 <code class="code">gdb.Progspace</code> 类的一个实例表示。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002efilename"><span class="category-def">变量：</span><span><strong class="def-name">Progspace.filename</strong><a class="copiable-link" href="#index-Progspace_002efilename"> &para;</a></span></dt>
+<dd><p>程序空间的主符号文件（已从中加载调试符号）的文件名，作为字符串，例如 <kbd class="kbd">symbol-file</kbd> 或 <kbd class="kbd">file</kbd> 命令的参数。
+</p>
+<p>如果当前没有加载主符号表，那么这个属性将是 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002esymbol_005ffile"><span class="category-def">变量：</span><span><strong class="def-name">Progspace.symbol_file</strong><a class="copiable-link" href="#index-Progspace_002esymbol_005ffile"> &para;</a></span></dt>
+<dd><p>表示 <code class="code">gdb.Progspace</code> 的主符号文件（已从中加载调试符号）的 <code class="code">gdb.Objfile</code>。 这是由 <kbd class="kbd">symbol-file</kbd> 或 <kbd class="kbd">file</kbd> 命令设置的符号文件。
+</p>
+<p>当 <code class="code">Progspace.filename</code> 不为 <code class="code">None</code> 时，这将是表示 <code class="code">Progspace.filename</code> 的 <code class="code">gdb.Objfile</code>。
+</p>
+<p>如果当前没有加载主符号表，那么这个属性将是 <code class="code">None</code>。
+</p>
+<p>如果 <code class="code">Progspace</code> 无效，即当 <code class="code">Progspace.is_valid()</code> 返回 <code class="code">False</code> 时，那么尝试访问这个属性将引发 <code class="code">RuntimeError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_0

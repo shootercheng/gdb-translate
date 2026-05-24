@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>线程列表格式（使用GDB调试）</title>
+
+<meta name="description" content="线程列表格式（使用GDB调试）">
+<meta name="keywords" content="线程列表格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Traceframe-Info-Format.html" rel="next" title="跟踪帧信息格式">
+<link href="Memory-Map-Format.html" rel="prev" title="内存映射格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="线程列表格式">
+<div class="nav-panel">
+<p>
+下一个：<a href="Traceframe-Info-Format.html" accesskey="n" rel="next">跟踪帧信息格式</a>，上一个：<a href="Memory-Map-Format.html" accesskey="p" rel="prev">内存映射格式</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="线程列表格式-1"><span>E.18线程列表格式<a class="copiable-link" href="#线程列表格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-线程列表格式"></a>
+
+<p>为了高效地更新线程列表及其属性，<small class="sc">GDB</small>会发出 &lsquo;<samp class="samp">qXfer:threads:read</samp>&rsquo; 数据包（见 <a class="pxref" href="General-Query-Packets.html#qXfer-threads-read">qXfer threads read</a>），并获取具有以下结构的XML文档：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;threads&gt;
+    &lt;thread id=&quot;id&quot; core=&quot;0&quot; name=&quot;name&quot; id_str=&quot;Thread 12.34&quot; handle=&quot;1a2b3c&quot;&gt;
+    ...描述...
+    &lt;/thread&gt;
+&lt;/threads&gt;
+</pre></div>
+
+<p>每个 &lsquo;<samp class="samp">thread</samp>&rsquo; 元素必须具有用于标识线程的 &lsquo;<samp class="samp">id</samp>&rsquo; 属性（见 <a class="pxref" href="Packets.html#thread_002did-syntax">thread-id语法</a>）。如果存在 &lsquo;<samp class="samp">core</samp>&rsquo; 属性，则指定线程最后执行所在的处理器核心。如果存在 &lsquo;<samp class="samp">name</samp>&rsquo; 属性，则指定线程的人类可读名称。&lsquo;<samp class="samp">thread</samp>&rsquo; 元素的内容被解释为人类可读的辅助信息。如果存在 &lsquo;<samp class="samp">id_str</samp>&rsquo; 属性，则指定 <small class="sc">GDB</small> 作为线程的目标ID应打印的内容（例如在 &lsquo;<samp class="samp">info threads</samp>&rsquo; 命令中或切换到线程时）。如果存在 &lsquo;<samp class="samp">handle</samp>&rsquo; 属性，则是线程句柄的十六进制编码表示。
+</p>
+
+</div>
+
+
+
+</body>
+</html>

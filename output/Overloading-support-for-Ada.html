@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Ada的重载支持（使用GDB调试）</title>
+
+<meta name="description" content="Ada的重载支持（使用GDB调试）">
+<meta name="keywords" content="Ada的重载支持（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Stopping-Before-Main-Program.html" rel="next" title="在主程序之前停止">
+<link href="Additions-to-Ada.html" rel="prev" title="对Ada的补充">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada的重载支持">
+<div class="nav-panel">
+<p>
+下一个：<a href="Stopping-Before-Main-Program.html" accesskey="n" rel="next">在最开始停止</a>，上一个：<a href="Additions-to-Ada.html" accesskey="p" rel="prev">对Ada的补充</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Ada的重载支持-1"><span>15.4.10.4 Ada的重载支持<a class="copiable-link" href="#Ada的重载支持-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-重载，Ada"></a>
+
+<p>调试器支持有限的重载。对于一个子程序调用，其中函数符号有多个定义，它将使用实际参数的数量以及关于它们类型的一些信息来尝试缩小定义集。它也非常有限地使用上下文，在<code class="code">call</code>命令的上下文中更喜欢过程而不是函数，在其他地方则更喜欢函数而不是过程。
+</p>
+<p>如果在缩小范围之后，匹配定义集仍然包含多个定义，<small class="sc">GDB</small>将显示一个菜单来询问它应该使用哪一个，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print f(1)
+f有多个匹配项
+[0] 取消
+[1] foo.f (整数) 返回布尔值，位于foo.adb:23
+[2] foo.f (foo.new_integer) 返回布尔值，位于foo.adb:28
+&gt; 
+</pre></div>
+
+<p>在这种情况下，只需选择一个菜单项，要么取消表达式求值（输入<kbd class="kbd">0</kbd>并按<kbd class="key">RET</kbd>），要么使用特定实例继续求值（输入相应数字并按<kbd class="key">RET</kbd>）。
+</p>
+<p>这里有几个命令可以在这种情况下自定义<small class="sc">GDB</small>的行为：
+</p> 
+<dl class="table">
+<dt><a id="index-set-ada-print_002dsignatures"></a><span><code class="code">set ada print-signatures</code><a class="copiable-link" href="#index-set-ada-print_002dsignatures"> &para;</a></span></dt>
+<dd><p>控制在重载选择菜单中是否显示参数类型和返回类型。默认情况下是<code class="code">on</code>。
+见 <a class="xref" href="#Ada的重载支持">Ada的重载支持</a>。
+</p>
+</dd>
+<dt><a id="index-show-ada-print_002dsignatures"></a><span><code class="code">show ada print-signatures</code><a class="copiable-link" href="#index-show-ada-print_002dsignatures"> &para;</a></span></dt>
+<dd><p>显示在重载选择菜单中显示参数类型和返回类型的当前设置。
+见 <a class="xref" href="#Ada的重载支持">Ada的重载支持</a>。
+</p>
+</dd> 
+</dl>
+
+</div>
+
+
+
+</body>
+</html> 

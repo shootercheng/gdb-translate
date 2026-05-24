@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>杂项命令（使用GDB调试）</title>
+
+<meta name="description" content="杂项命令（使用GDB调试）">
+<meta name="keywords" content="杂项命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Keyboard-Macros.html" rel="prev" title="键盘宏">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="杂项命令">
+<div class="nav-panel">
+<p>
+上一个：<a href="Keyboard-Macros.html" accesskey="p" rel="prev">键盘宏</a>，向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="一些杂项命令"><span>33.4.8一些杂项命令<a class="copiable-link" href="#一些杂项命令"> &para;</a></span></h4>
+<dl class="ftable">
+<dt><a id="index-re_002dread_002dinit_002dfile-_00非标准字符_0028C_002dx-C_002dr_0029"></a><span><code class="code">re-read-init-file (C-x C-r)</code><a class="copiable-link" href="#index-re_002dread_002dinit_002dfile-_00非标准字符_0028C_002dx-C_002dr_0029"> &para;</a></span></dt>
+<dd><p>读取<var class="var">inputrc</var>文件的内容，并合并在其中找到的任何绑定或变量赋值。
+</p>
+</dd>
+<dt><a id="index-abort-_0028C_002dg_0029"></a><span><code class="code">abort (C-g)</code><a class="copiable-link" href="#index-abort-_00非标准字符_0028C_002dg_0029"> &para;</a></span></dt>
+<dd><p>中止当前的编辑命令并
+敲响终端的响铃（取决于<code class="code">bell-style</code>的设置）。
+</p>
+</dd>
+<dt><a id="index-do_002dlowercase_002dversion-_0028M_002dA_002c-M_002dB_002c-M_002dx_002c-_2026_0029"></a><span><code class="code">do-lowercase-version (M-A, M-B, M-<var class="var">x</var>, &hellip;)</code><a class="copiable-link" href="#index-do_002dlowercase_002dversion-_0028M_002dA_002c-M_002dB_002c-M_002dx_002c-_2026_0029"> &para;</a></span></dt>
+<dd><p>如果元字符<var class="var">x</var>是大写的，则运行绑定到相应元小写字符的命令。
+如果<var class="var">x</var>已经是小写，则行为未定义。
+</p>
+</dd>

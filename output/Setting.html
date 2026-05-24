@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>设置（使用GDB调试）</title>
+
+<meta name="description" content="设置（使用GDB调试）">
+<meta name="keywords" content="设置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Languages.html" rel="up" title="语言">
+<link href="Show.html" rel="next" title="显示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="设置">
+<div class="nav-panel">
+<p>
+下一页：<a href="Show.html" accesskey="n" rel="next">显示语言</a>，上一级：<a href="Languages.html" accesskey="u" rel="up">使用GDB与不同语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="在源语言之间切换"><span>15.1在源语言之间切换<a class="copiable-link" href="#在源语言之间切换"> &para;</a></span></h3>
+
+<p>有两种方法可以控制工作语言&mdash;要么让GDB自动设置，要么自己手动选择。你可以使用<code class="code">set language</code>命令来实现这两个目的。在启动时GDB默认自动设置语言。工作语言用于确定你输入的表达式如何被解释、值如何被打印等。
+</p>
+<p>除了工作语言外，GDB所知道的每个源文件都有其自己的工作语言。对于某些目标文件格式，编译器可能会指明某个特定源文件使用的是哪种语言。然而，大多数时候GDB是从文件名推断语言的。源文件的语言控制C++名称是否被解 mangled&mdash;这样<code class="code">backtrace</code>就能为每种语言的每个栈帧正确显示。在GDB内部无法设置源文件的语言，但你可以设置与文件名扩展名相关联的语言。见 <a class="xref" href="Show.html">显示语言</a>。
+</p>
+<p>当你使用如<code class="code">cfront</code>或<code class="code">f2c</code>这样生成C代码但用另一种语言编写的程序时，这通常会成为一个问题。在这种情况下，让程序在其C输出中使用<code class="code">#line</code>指令；这样GDB就能知道原始程序源代码的正确语言，并显示该源代码，而不是生成的C代码。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Filenames.html" accesskey="1">文件名扩展名和语言列表</a></li>
+<li><a href="Manually.html" accesskey="2">设置工作语言</a></li>
+<li><a href="Automatically.html" accesskey="3">让GDB推断源语言</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Show.html">显示语言</a>；上一级：<a href="Languages.html">使用GDB与不同语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>
+
+请注意，“mangled”这个词在计算机领域有特定含义，这里直接保留英文未翻译，因为它在技术语境中有特定的专业概念，翻译成中文可能会影响对原文技术含义的理解。如果需要更准确地解释，可以在文档中适当位置添加注释说明其在技术上的意思。 

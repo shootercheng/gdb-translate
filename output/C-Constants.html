@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>C常量（使用GDB调试）</title>
+
+<meta name="description" content="C常量（使用GDB调试）">
+<meta name="keywords" content="C常量（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="C.html" rel="up" title="C">
+<link href="C-Plus-Plus-Expressions.html" rel="next" title="C++ 表达式">
+<link href="C-Operators.html" rel="prev" title="C运算符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-常量">
+<div class="nav-panel">
+<p>
+下一页：<a href="C-Plus-Plus-Expressions.html" accesskey="n" rel="next">C++ 表达式</a>，上一页：<a href="C-Operators.html" accesskey="p" rel="prev">C和C++ 运算符</a>，向上：<a href="C.html" accesskey="u" rel="up">C和C++</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="C和C_002b_002b常量"><span>15.4.1.2 C和C++ 常量<a class="copiable-link" href="#C和C_002b_002b常量"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-C和C_002b_002b常量"></a>
+
+<p><small class="sc">GDB</small> 允许你用以下方式表示C和C++ 的常量：
+</p>
+<ul class="itemize mark-bullet">
+<li>整数常量是一串数字。八进制常量由前导 &lsquo;<samp class="samp">0</samp>&rsquo;（即零）指定，十六进制常量由前导 &lsquo;<samp class="samp">0x</samp>&rsquo; 或 &lsquo;<samp class="samp">0X</samp>&rsquo; 指定。常量也可以以字母 &lsquo;<samp class="samp">l</samp>&rsquo; 结尾，表示该常量应被视为 <code class="code">long</code> 值类型。
+
+</li><li>浮点常量是一串数字，后面跟着一个小数点，再后面跟着一串数字，并且可以选择跟着一个指数。指数的形式为：
+&lsquo;<samp class="samp">e<span class="r">[[</span>+<span class="r">]|<span class="r">-</span>]<var class="var">nnn</var><!-- /@w --></samp>&rsquo;，其中 <var class="var">nnn</var> 是另一串数字。对于正指数，&lsquo;<samp class="samp">+</samp>&rsquo; 是可选的。浮点常量也可以以字母 &lsquo;<samp class="samp">f</samp>&rsquo; 或 &lsquo;<samp class="samp">F</samp>&rsquo; 结尾，表示该常量应被视为 <code class="code">float</code>（与默认的 <code class="code">double</code> 相对）类型；或者以字母 &lsquo;<samp class="samp">l</samp>&rsquo; 或 &lsquo;<samp class="samp">L</samp>&rsquo; 结尾，表示一个 <code class="code">long double</code> 常量。
+
+</li><li>枚举常量由枚举标识符或其整数值等效物组成。
+
+</li><li>字符常量是由单引号（<code class="code">'</code>）包围的单个字符，或者是一个数字 —— 对应字符的序号值（通常是其 <small class="sc">ASCII</small> 值）。在引号内，单个字符可以由一个字母或由 <em class="dfn">转义序列</em> 表示，转义序列的形式为 &lsquo;<samp class="samp">\<var class="var">nnn</var></samp>&rsquo;，其中 <var class="var">nnn</var> 是字符序号值的八进制表示；或者是 &lsquo;<samp class="samp">\<var class="var">x</var></samp>&rsquo; 的形式，其中 &lsquo;<samp class="samp"><var class="var">x</var></samp>&rsquo; 是预定义的特殊字符 —— 例如，&lsquo;<samp class="samp">\n</samp>&rsquo; 表示换行符。
+
+<p>宽字符常量可以像在C中一样，通过在字符常量前加上 &lsquo;<samp class="samp">L</samp>&rsquo; 来编写。例如，&lsquo;<samp class="samp">L'x'</samp>&rsquo; 是 &lsquo;<samp class="samp">x</samp>&rsquo; 的宽形式。在计算这个常量的值时使用目标宽字符集（见 <a class="pxref" href="字符集.html">字符集</a>）。
+</p>
+</li><li>字符串常量是由双引号（<code class="code">&quot;</code>）包围的一串字符常量。任何有效的字符常量（如上所述）都可能出现。字符串中的双引号必须在前面加上反斜杠，例如 &lsquo;<samp class="samp">&quot;a\&quot;b'c&quot;</samp>&rsquo; 是一个由五个字符组成的字符串。
+
+<p>宽字符串常量可以像在C中一样，通过在字符串常量前加上 &lsquo;<samp class="samp">L</samp>&rsquo; 来编写。在计算这个常量的值时使用目标宽字符集（见 <a class="pxref" href="字符集.html">字符集</a>）。
+</p>
+</li><li>指针常量是一个整数值。你也可以使用C运算符 &lsquo;<samp class="samp">&amp;</samp>&rsquo; 来编写指向常量的指针。
+
+</li><li>数组常量是由花括号 &lsquo;<samp class="samp">{</samp>&rsquo; 和 &lsquo;<samp class="samp">}</samp>&rsquo; 包围的逗号分隔列表；例如，&lsquo;<samp class="samp">{1,2,3}</samp>&rsquo; 是一个包含三个整数的数组，&lsquo;<samp class="samp">{{1,2}, {3,4}, {5,6}}</samp>&rsquo; 是一个三行两列的数组，&lsquo;<samp class="samp">{&amp;&quot;hi&quot;, &amp;&quot;there&quot;, &amp;&quot;fred&quot;}</samp>&rsquo; 是一个包含三个指针的数组。
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="C-Plus-Plus-Expressions.html">C++ 表达式</a>，上一页：<a href="C-Operators.html">C和C++ 运算符</a>，向上：<a href="C.html">C和C++</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

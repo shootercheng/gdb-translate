@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字为：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点操作（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点操作（使用GDB调试）">
+<meta name="keywords" content="跟踪点操作（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Listing-Tracepoints.html" rel="next" title="列出跟踪点">
+<link href="Trace-State-Variables.html" rel="prev" title="跟踪状态变量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="跟踪点操作">
+<div class="nav-panel">
+<p>
+下一页：<a href="Listing-Tracepoints.html" accesskey="n" rel="next">列出跟踪点</a>，上一页：<a href="Trace-State-Variables.html" accesskey="p" rel="prev">跟踪状态变量</a>，向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="跟踪点操作列表"><span>13.1.6跟踪点操作列表<a class="copiable-link" href="#跟踪点操作列表"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-跟踪点操作"></a>
+<a id="index-操作"></a><span><code class="code">actions <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-操作"> &para;</a></span></dt>
+<dd><p>此命令将提示输入当跟踪点被命中时要执行的操作列表。如果未指定跟踪点编号<var class="var">num</var>，则此命令为最近定义的跟踪点设置操作（这样您可以定义一个跟踪点，然后直接说<code class="code">actions</code>，而不必担心其编号）。您在接下来的行中逐个指定操作，每行一个操作，并以仅包含<code class="code">end</code>的行结束操作列表。到目前为止，唯一定义的操作是<code class="code">collect</code>、<code class="code">teval</code>和<code class="code">while-stepping</code>。
+</p>
+<p><code class="code">actions</code>实际上等同于<code class="code">commands</code>（见<a class="pxref" href="Break-Commands.html">断点命令列表</a>），不同之处在于只允许使用定义的操作；任何其他GDB命令都会被拒绝。
+</p>
+<a class="index-entry-id" id="index-从跟踪点移除操作"></a>
+<p>要从跟踪点移除所有操作，请输入&lsquo;<samp class="samp">actions <var class="var">num</var></samp>&rsquo;，并立即在其后跟上&lsquo;<samp class="samp">end</samp>&rsquo;。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">collect <var class="var">data</var></b> // 收集一些数据
+
+(gdb) <b class="b">while-stepping 5</b> // 单步执行5次，收集数据
+
+(gdb) <b class="b">end</b>              // 表示操作结束。
+</pre></div>
+
+<p>在以下示例中，操作列表以<code class="code">collect</code>命令开始，指示跟踪点命中时要收集的内容。然后，为了在跟踪点之后单步执行并收集更多数据，使用了<code class="code">while-stepping</code>命令，后面跟着在一系列单步执行的每一步之后要收集的内容列表。<code class="code">while-stepping</code>命令由其自己单独的<code class="code">end</code>命令终止。最后，操作列表由一个<code class="code">end</code>命令终止。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">trace foo</b>
+(gdb) <b class="b">actions</b>
+Enter actions for tracepoint 1, one per line:
+&gt; collect bar,baz
+&gt; collect $regs
+&gt; while-stepping 12
+  &gt; collect $pc, arr[i]
+  &gt; end
+end
+</pre></div>
+
+</dd>
+<dt><a id="index-collect-_0028跟踪点_0029"></a><span><code class="code">collect<span class="r">[</span>/<var class="var">mods</var><span class="r">]</span> <var class="var">expr</var>1, <var class="var">expr</var>2, &hellip;</code><a class="copiable-link" href="#index-collect-_0028跟踪点_0029"> &para;</a></span></dt>
+<dd><p>当跟踪点被命中时，收集给定表达式的值。此命令接受任何有效表达式的逗号分隔列表。除了全局、静态或局部变量外，还支持以下特殊参数：
+</p>
+<dl class="table">
+<dt><code class="code">$regs</code></dt>
+<dd><p>收集所有寄存器。
+</p>
+</dd>
+<dt><code class="code">$args</code></dt>
+<dd><p>收集所有函数参数。
+</p>
+</dd>
+<dt><code class="code">$locals</code></dt>
+<dd><p>收集所有局部变量。
+</p>
+</dd>
+<dt><code class="code">$_ret</code></dt>
+<dd><p>收集返回地址。如果您想查看更多的回溯信息，这会很有帮助。
+</p>
+<p><em class="emph">注意：</em>返回地址的位置并不总是能预先可靠地确定，可能最终会收集到错误的地址/寄存器。在某些架构上，函数入口处的跟踪点可靠性更高，而在其他架构上则相反。当发生这种情况时，回溯将停止，因为返回地址不可用（除非另一个收集规则恰好匹配它）。
+</p>
+</dd>
+<dt><code class="code">$_probe_argc</code></dt>
+<dd><p>收集跟踪点所在静态探测点的参数数量。
+见 <a class="xref" href="Static-Probe-Points.html">静态探测点</a>。
+</p>
+</dd>
+<dt><code class="code">$_probe_arg<var class="var">n</var></code></dt>
+<dd><p><var class="var">n</var>是一个介于0和11之间的整数。收集跟踪点所在静态探测点的第<var class="var">n</var>个参数。
+见 <a class="xref" href="Static-Probe-Points.html">静态探测点</a>。
+</p>
+</dd>
+<dt><a id="index-_0024_005fsdata_002c-collect"></a><span><code class="code">$_sdata</code><a class="copiable-link" href="#index-_0024_005fsdata_002c-collect"> &para;</a></span></dt>
+<dd><p>收集静态跟踪点标记特定的数据。仅适用于静态跟踪点。见 <a class="xref" href="#跟踪点操作">跟踪点操作列表</a>。在UST静态跟踪点库后端，一个检测点类似于一个<code class="code">printf</code>函数调用。跟踪库能够使用程序员为程序添加检测功能时提供的格式，将用户指定的数据收集为一个字符串。其他后端有类似的机制。这是一个UST标记调用的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"> const char master_name[] = &quot;$your_name&quot;;
+ trace_mark(channel1, marker1, &quot;hello %s&quot;, master_name)
+</pre></div>
+
+<p>在这种情况下，收集<code class="code">$_sdata</code>会收集字符串&lsquo;<samp class="samp">hello $yourname</samp>&rsquo;。在分析跟踪缓冲区时，您可以像检查GDB可用的任何其他变量一样检查&lsquo;<samp class="samp">$_sdata</samp>&rsquo;。
+</p></dd>
+</dl>
+
+<p>您可以给出几个连续的<code class="code">collect</code>命令，每个命令一个参数，或者一个带有多个以逗号分隔的参数的<code class="code">collect</code>命令；效果是一样的。
+</p>
+<p>可选的<var class="var">mods</var>会改变参数的通常处理方式。<code class="code">s</code>请求将指向字符的指针作为字符串处理，特别是收集指向的内存内容，直到第一个零。默认上限是<code class="code">print characters</code>变量的值；如果<code class="code">s</code>后面跟着一个十进制数，则该数为上限。例如，&lsquo;<samp class="samp">collect/s25 mystr</samp>&rsquo;会在&lsquo;<samp class="samp">mystr</samp>&rsquo;处收集多达25个字符。
+</p>
+<p><code class="code">info scope</code>命令（见 <a class="pxref" href="Symbols.html">info scope</a>）对于确定要收集哪些数据特别有用。
+</p>
+</dd>
+<dt><a id="index-teval-_0028跟踪点_0029"></a><span><code class="code">teval <var class="var">expr</var>1, <var class="var">expr</var>2, &hellip;</code><a class="copiable-link" href="#index-teval-_0028跟踪点_0029"> &para;</a></span></dt>
+<dd><p>当跟踪点被命中时，评估给定的表达式。此命令接受表达式的逗号分隔列表。结果会被丢弃，所以这主要用于在不将这些值添加到跟踪缓冲区的情况下为跟踪状态变量赋值（见 <a class="pxref" href="Trace-State-Variables.html">跟踪状态变量</a>），如果使用<code class="code">collect</code>操作则会将值添加到跟踪缓冲区。
+</p>
+</dd>
+<dt><a id="index-while_002dstepping-_0028跟踪点_0029"></a><span><code class="code">while-stepping <var class="var">n</var></code><a class="copiable-link" href="#index-while_002dstepping-_0028跟踪点_0029"> &para;</a></span></dt>
+<dd><p>在跟踪点之后执行<var class="var">n</var>次单步指令跟踪，每次单步后收集新数据。<code class="code">while-stepping</code>命令后面跟着单步执行时要收集的内容列表（后面跟着它自己的<code class="code">end</code>命令）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&gt; while-stepping 12
+  &gt; collect $regs, myglobal
+  &gt; end
+&gt;
+</pre></div>
+
+<p>请注意，<code class="code">while-stepping</code>不会自动收集<code class="code">$pc</code>；如果需要，您需要显式收集该寄存器。您可以将<code class="code">while-stepping</code>缩写为<code class="code">ws</code>或<code class="code">stepping</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-默认收集操作"></a>
+<a id="index-set-default_002dcollect"></a><span><code class="code">set default-collect <var class="var">expr</var>1, <var class="var">expr</var>2, &hellip;</code><a class="copiable-link" href="#index-set-default_002dcollect"> &para;</a></span></dt>
+<dd><p>此变量是在每次跟踪点命中时要收集的表达式列表。它实际上是一个附加到每个跟踪点操作列表开头的<code class="code">collect</code>操作。每个跟踪点会单独解析这些表达式，例如，名为<code class="code">xyz</code>的变量可能根据跟踪点的位置被解释为一个跟踪点的全局变量，而另一个跟踪点的局部变量。
+</p>
+</dd>
+<dt><a id="index-show-default_002dcollect"></a><span><code class="code">show default-collect</code><a class="copiable-link" href="#index-show-default_002dcollect"> &para;</a></span></dt>
+<dd><p>显示每次跟踪点命中时默认收集的表达式列表。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Listing-Tracepoints.html">列出跟踪点</a>，上一页：<a href="Trace-State-Variables.html">跟踪状态变量</a>，向上：<a href="Set-Tracepoints.html">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

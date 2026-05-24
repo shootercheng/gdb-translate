@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>The Ctrl-C Message (Debugging with GDB)</title>
+
+<meta name="description" content="The Ctrl-C Message (Debugging with GDB)">
+<meta name="keywords" content="The Ctrl-C Message (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="File-I/O Remote Protocol Extension">
+<link href="Console-I_002fO.html" rel="next" title="Console I/O">
+<link href="The-F-Reply-Packet.html" rel="prev" title="The F Reply Packet">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="The-Ctrl_002dC-Message">
+<div class="nav-panel">
+<p>
+下一页：<a href="Console-I_002fO.html" accesskey="n" rel="next">Console I/O</a>，上一页：<a href="The-F-Reply-Packet.html" accesskey="p" rel="prev">The <code class="code">F</code> Reply Packet</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">File-I/O Remote Protocol Extension</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">目录</a>][<a href="Concept-Index.html" title="Index" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-Ctrl_002dC-Message-1"><span>E.14.5 The &lsquo;<samp class="samp">Ctrl-C</samp>&rsquo; Message<a class="copiable-link" href="#The-Ctrl_002dC-Message-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-ctrl_002dc-message_002c-in-file_002di_002fo-protocol"></a>
+
+<p>如果在GDB回复数据包中设置了‘<samp class="samp">Ctrl-C</samp>’标志（见<a class="pxref" href="The-F-Reply-Packet.html">The <code class="code">F</code> Reply Packet</a>），目标应该表现得就像它收到了一个断点消息一样。对目标来说，其含义是“系统调用被SIGINT中断”。因此，目标实际上应该停止（就像收到断点消息一样），并通过一个‘T02’数据包返回给GDB。
+</p>
+<p>目标知道系统调用是在哪个状态被中断是很重要的。有两种可能的情况：
+</p>
+<ul class="itemize mark-bullet">
+<li>系统调用尚未在主机上执行。
+
+</li><li>主机上的系统调用已经完成。
+
+</li></ul>
+
+<p>目标可以通过返回的‘errno’值来区分这两种状态。如果它是‘EINTR’的协议表示形式，那么系统调用尚未执行。这与POSIX系统上的‘EINTR’处理是等效的。在任何其他情况下，目标可以假定系统调用已经完成——无论成功与否——并且应该表现得就像断点消息恰好在系统调用之后到达一样。
+</p>
+<p>GDB必须可靠地运行。如果系统调用尚未被调用，GDB可以立即发送‘F’回复，在数据包中将‘EINTR’设置为‘errno’。如果在用户请求断点之前主机上的系统调用已经完成，GDB必须完成整个操作。这需要根据需要发送‘M’或‘X’数据包。只有在没有任何事情发生或者整个操作已经完成时，才可以发送‘F’数据包。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Console-I_002fO.html">Console I/O</a>，上一页：<a href="The-F-Reply-Packet.html">The <code class="code">F</code> Reply Packet</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html">File-I/O Remote Protocol Extension</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">目录</a>][<a href="Concept-Index.html" title="Index" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

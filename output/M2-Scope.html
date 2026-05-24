@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>M2作用域（使用GDB调试）</title>
+
+<meta name="description" content="M2作用域（使用GDB调试）">
+<meta name="keywords" content="M2作用域（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">  
+<link href="GDB_002fM2.html" rel="next" title="GDB/M2">
+<link href="M2-Checks.html" rel="prev" title="M2检查">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-Scope">
+<div class="nav-panel">
+<p>
+下一页： <a href="GDB_002fM2.html" accesskey="n" rel="next"><small class="sc">GDB</small>与Modula-2</a>，上一页： <a href="M2-Checks.html" accesskey="p" rel="prev">Modula-2类型和范围检查</a>，向上： <a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="The-Scope-Operators-_003a_003a-and-_002e"><span>15.4.9.8 作用域运算符<code class="code">::</code>和<code class="code">.</code><a class="copiable-link" href="#The-Scope-Operators-_003a_003a-and-_002e"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-scope"></a>
+<a class="index-entry-id" id="index-_002e_002c-Modula_002d2-scope-operator"></a>
+<a class="index-entry-id" id="index-colon_002c-doubled-as-scope-operator"></a>
+<a class="index-entry-id" id="index-_003a_003a_002c-in-Modula_002d2"></a>
+
+<p>Modula-2作用域运算符（<code class="code">.</code>）和<small class="sc">GDB</small>作用域运算符（<code class="code">::</code>）之间存在一些细微差别。两者语法相似：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+<var class="var">模块</var> . <var class="var">标识符</var>
+<var class="var">作用域</var> :: <var class="var">标识符</var>
+</pre></div>
+
+<p>其中 <var class="var">作用域</var> 是模块或过程的名称，<var class="var">模块</var> 是模块的名称，<var class="var">标识符</var> 是程序中除另一个模块外的任何已声明标识符。
+</p>
+<p>使用 <code class="code">::</code> 运算符会使<small class="sc">GDB</small>在由 <var class="var">作用域</var> 指定的作用域中搜索标识符 <var class="var">标识符</var>。如果在指定作用域中未找到，则<small class="sc">GDB</small>会搜索包含由 <var class="var">作用域</var> 指定的作用域的所有作用域。
+</p>
+<p>使用 <code class="code">.</code> 运算符会使<small class="sc">GDB</small>在当前作用域中搜索从由 <var class="var">模块</var> 指定的定义模块导入的由 <var class="var">标识符</var> 指定的标识符。使用此运算符时，如果标识符 <var class="var">标识符</var> 不是从定义模块 <var class="var">模块</var> 导入的，或者 <var class="var">标识符</var> 不是 <var class="var">模块</var> 中的标识符，则会出错。
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>自定义调试信息（使用GDB进行调试）</title>
+
+<meta name="description" content="自定义调试信息（使用GDB进行调试）">
+<meta name="keywords" content="自定义调试信息（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="JIT-Interface.html" rel="up" title="JIT接口">
+<link href="Unregistering-Code.html" rel="prev" title="注销代码">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Custom-Debug-Info">
+<div class="nav-panel">
+<p>
+上一个：<a href="Unregistering-Code.html" accesskey="p" rel="prev">注销代码</a>，向上：<a href="JIT-Interface.html" accesskey="u" rel="up">JIT编译接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Custom-Debug-Info-1"><span>30.4 自定义调试信息<a class="copiable-link" href="#Custom-Debug-Info-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-custom-JIT-debug-info"></a>
+<a class="index-entry-id" id="index-JIT-debug-info-reader"></a>
+
+<p>以平台原生文件格式（如ELF或COFF）生成调试信息对于JIT编译器来说可能有些大材小用；特别是如果所有调试信息仅用于显示有意义的回溯。通过让JIT编写者决定调试信息格式并提供一个解析JIT编译器生成的调试信息的读取器，可以解决这个问题。本节简要概述编写这样一个解析器。更具体的细节可以在源文件<samp class="file">gdb/jit-reader.in</samp>中找到，它也作为头文件安装在<samp class="file"><var class="var">includedir</var>/gdb/jit-reader.h</samp>中，以便于包含。
+</p>
+<p>读取器被实现为一个共享对象（因此在不允许在运行时加载共享对象的平台上此功能不可用）。提供了两个<small class="sc">GDB</small>命令，<code class="code">jit-reader-load</code>和<code class="code">jit-reader-unload</code>，用于从预配置的目录加载和卸载读取器。加载后，共享对象用于解析JIT编译器发出的调试信息。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Using-JIT-Debug-Info-Readers.html" accesskey="1">使用JIT调试信息读取器</a></li>
+<li><a href="Writing-JIT-Debug-Info-Readers.html" accesskey="2">编写JIT调试信息读取器</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

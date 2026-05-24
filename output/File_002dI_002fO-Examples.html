@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文件I/O示例（使用GDB调试）</title>
+
+<meta name="description" content="文件I/O示例（使用GDB调试）">
+<meta name="keywords" content="文件I/O示例（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="Constants.html" rel="prev" title="常量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="File_002dI_002fO-Examples">
+<div class="nav-panel">
+<p>
+上一个：<a href="Constants.html" accesskey="p" rel="prev">常量</a>，向上：<a href="File_002dI_00dfO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="File_002dI_002fO-Examples-1"><span>E.14.10 文件I/O示例<a class="copiable-link" href="#File_002dI_002fO-Examples-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-file_002di_002fo-examples"></a>
+
+<p>写调用的示例序列，文件描述符3，缓冲区位于目标地址0x1234，应写入6个字节：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;- <code class="code">Fwrite,3,1234,6</code>
+<em class="emph">请求从目标读取内存</em>
+-&gt; <code class="code">m1234,6</code>
+&lt;- XXXXXX
+<em class="emph">返回“已写入6个字节”</em>
+-&gt; <code class="code">F6</code>
+</pre></div>
+
+<p>读调用的示例序列，文件描述符3，缓冲区位于目标地址0x1234，应读取6个字节：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;- <code class="code">Fread,3,1234,6</code>
+<em class="emph">请求向目标写入内存</em>
+-&gt; <code class="code">X1234,6:XXXXXX</code>
+<em class="emph">返回“已读取6个字节”</em>
+-&gt; <code class="code">F6</code>
+</pre></div>
+
+<p>读调用的示例序列，由于文件描述符无效（<code class="code">EBADF</code>），主机上的调用失败：
+</p>
+<div class="example smallexample">
+
+<pre class="example-preformatted">&lt;- <code class="code">Fread,3,1234,6</code>
+-&gt; <code class="code">F-1,9</code>
+</pre></div>
+
+<p>读调用的示例序列，在主机上调用系统调用之前用户按下<kbd class="kbd">Ctrl-c</kbd>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;- <code class="code">Fread,3,1234,6</code>
+-&gt; <code class="code">F-1,4,C</code>
+&lt;- <code class="code">T02</code>
+</pre></div>
+
+<p>读调用的示例序列，在主机上调用系统调用之后用户按下<kbd class="kbd">Ctrl-c</kbd>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;- <code class="code">Fread,3,1234,6</code>
+-&gt; <code class="code">X1234,6:XXXXXX</code>
+&lt;- <code class="code">T02</code>
+</pre></div>
+
+</div>
+
+
+
+</body>
+
+</html> 

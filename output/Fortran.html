@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Fortran（使用GDB调试）</title>
+
+<meta name="description" content="Fortran（使用GDB调试）">
+<meta name="keywords" content="Fortran（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Supported-Languages.html" rel="up" title="支持的语言">
+<link href="Pascal.html" rel="next" title="Pascal">
+<link href="OpenCL-C.html" rel="prev" title="OpenCL C">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Fortran">
+<div class="nav-panel">
+<p>
+下一页：<a href="Pascal.html" accesskey="n" rel="next">Pascal</a>，上一页：<a href="OpenCL-C.html" accesskey="p" rel="prev">OpenCL C</a>，向上：<a href="Supported-Languages.html" accesskey="u" rel="up">支持的语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Fortran-1"><span>15.4.6 Fortran<a class="copiable-link" href="#Fortran-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Fortran_002dspecific-support-in-gdb"></a>
+
+<p>GDB可用于调试用Fortran编写的程序。请注意，并非所有Fortran语言特性都已可用。
+</p>
+<a class="index-entry-id" id="index-trailing-underscore_002c-in-Fortran-symbols"></a>
+<p>一些Fortran编译器（包括GNU Fortran 77和Fortran 95编译器）会在变量和函数名称后附加一个下划线。当你调试由这些编译器编译的程序时，需要引用带有尾随下划线的变量和函数。
+</p>
+<a class="index-entry-id" id="index-Fortran-Defaults"></a>
+<p>Fortran符号通常不区分大小写，因此GDB默认对Fortran符号使用不区分大小写的匹配。你可以使用&lsquo;<samp class="samp">set case-insensitive</samp>&rsquo;命令更改此设置，有关详细信息，请参阅<a class="ref" href="Symbols.html">检查符号表</a>。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Fortran-Types.html" accesskey="1">Fortran类型</a></li>
+<li><a href="Fortran-Operators.html" accesskey="2">Fortran运算符和表达式</a></li>
+<li><a href="Fortran-Intrinsics.html" accesskey="3">Fortran内部函数</a></li>
+<li><a href="Special-Fortran-Commands.html" accesskey="4">特殊Fortran命令</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

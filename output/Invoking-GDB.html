@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>调用GDB（使用GDB进行调试）</title>
+
+<meta name="description" content="调用GDB（使用GDB进行调试）">
+<meta name="keywords" content="调用GDB（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invocation.html" rel="up" title="调用">
+<link href="Quitting-GDB.html" rel="next" title="退出GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="调用GDB">
+<div class="nav-panel">
+<p>
+下一页：<a href="Quitting-GDB.html" accesskey="n" rel="next">退出 <small class="sc">GDB</small></a>，上一级：<a href="Invocation.html" accesskey="u" rel="up">进入和退出 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="调用gdb"><span>2.1调用 <small class="sc">GDB</small><a class="copiable-link" href="#调用gdb"> &para;</a></span></h3>
+
+<p>通过运行程序<code class="code">gdb</code>来调用<small class="sc"> GDB</small>。一旦启动，<small class="sc"> GDB</small>会从终端读取命令，直到你告诉它退出。
+</p>
+<p>你也可以使用各种参数和选项来运行<code class="code">gdb</code>，以便在一开始就指定更多的调试环境。
+</p>
+<p>这里描述的命令行选项旨在涵盖各种情况；在某些环境中，其中一些选项可能实际上不可用。
+</p>
+<p>启动<small class="sc"> GDB</small>最常见的方法是使用一个参数，指定一个可执行程序：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb <var class="var">程序</var>
+</pre></div>
+
+<p>你也可以同时指定一个可执行程序和一个核心文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb <var class="var">程序</var> <var class="var">核心</var>
+</pre></div>
+
+<p>如果你想调试一个正在运行的进程，你可以改为将进程ID作为第二个参数指定，或者使用选项<code class="code">-p</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb <var class="var">程序</var> 1234
+gdb -p 1234
+</pre></div>
+
+<p>这将把<small class="sc"> GDB</small>附加到进程<code class="code">1234</code>上。使用选项<code class="option">-p</code>时，你可以省略<var class="var">程序</var>文件名。
+</p>
+<p>利用第二个命令行参数需要一个相当完整的操作系统；当你将<small class="sc"> GDB</small>用作连接到裸板的远程调试器时，可能不存在“进程”的概念，而且通常也无法获取核心转储。如果<small class="sc"> GDB</small>无法附加或读取核心转储，它会发出警告。
+</p>
+<p>你可以选择让<code class="code">gdb</code>使用<code class="code">--args</code>将可执行文件之后的任何参数传递给被调试程序。此选项会停止选项处理。
+</p><div class="example smallexample">
+<pre class="example-preformatted">gdb --args gcc -O2 -c foo.c
+</pre></div>
+<p>这将使<code class="code">gdb</code>调试<code class="code">gcc</code>，并将<code class="code">gcc</code>的命令行参数（见 <a class="pxref" href="Arguments.html">你的程序的参数</a>) 设置为‘<samp class="samp">-O2 -c foo.c</samp>’。
+</p>
+<p>你可以通过指定<code class="code">--silent</code>（或<code class="code">-q</code>/<code class="code">--quiet</code>）来运行<code class="code">gdb</code>而不打印描述<small class="sc"> GDB</small>无保修声明的开头材料：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb --silent
+</pre></div>
+
+<p>你可以使用命令行选项进一步控制<small class="sc"> GDB</small>的启动方式。<small class="sc"> GDB</small>本身可以提醒你可用的选项。
+</p>
+<p>输入
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb -help
+</pre></div>
+
+<p>以显示所有可用选项并简要描述其用法（‘<samp class="samp">gdb -h</samp>’是等效的简短形式）。
+</p>
+<p>你给出的所有选项和命令行参数都会按顺序处理。当使用‘<samp class="samp">-x</samp>’选项时，顺序很重要。
+</p>
+
+
+<ul class="mini-toc">
+<li><a href="File-Options.html" accesskey="1">选择文件</a></li>
+<li><a href="Mode-Options.html" accesskey="2">选择模式</a></li>
+<li><a href="Startup.html" accesskey="3">GDB启动时的操作</a></li>
+<li><a href="Initialization-Files.html" accesskey="4">初始化文件</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+
+
+<p>
+下一页：<a href="Quitting-GDB.html">退出 <small class="sc">GDB</small></a>，上一级：<a href="Invocation.html">进入和退出 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

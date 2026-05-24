@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>内存（使用GDB调试）</title>
+
+<meta name="description" content="内存（使用GDB调试）">
+<meta name="keywords" content="内存（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Memory-Tagging.html" rel="next" title="内存标记">
+<link href="Output-Formats.html" rel="prev" title="输出格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="内存">
+<div class="nav-panel">
+<p>
+下一页：<a href="Memory-Tagging.html" accesskey="n" rel="next">内存标记</a>，上一页：<a href="Output-Formats.html" accesskey="p" rel="prev">输出格式</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="检查内存"><span>10.6检查内存<a class="copiable-link" href="#检查内存"> &para;</a></span></h3>
+
+<p>您可以使用命令<code>x</code>（用于“检查”）以多种格式中的任何一种来检查内存，而无需考虑程序的数据类型。
+</p>
+<a class="index-entry-id" id="index-检查内存"></a>
+<dl class="table">
+<dt><a id="index-x-_0028检查内存_0029"></a><span><code>x/<var>nfu</var> <var>addr</var></code><a class="copiable-link" href="#index-x-_0028检查内存_0029"> &para;</a></span></dt>
+<dt><code>x <var>addr</var></code></dt>
+<dt><code>x</code></dt>
+<dd><p>使用<code>x</code>命令检查内存。
+</p></dd>
+</dl>
+
+<p><var>n</var>、<var>f</var>和<var>u</var>都是可选参数，用于指定要显示多少内存以及如何格式化它；<var>addr</var>是一个表达式，给出您想要开始显示内存的地址。如果您使用<var>nfu</var>的默认值，则无需键入斜杠“/”。有几个命令会为<var>addr</var>设置方便的默认值。
+</p>
+<dl class="table">
+<dt><span class="r"><var>n</var>，重复计数</span></dt>
+<dd><p>重复计数是一个十进制整数；默认值为1。它指定要显示多少内存（按<var>u</var>单位计数）。如果指定负数，则从<var>addr</var>向后检查内存。
+</p>
+</dd>
+<dt><span class="r"><var>f</var>，显示格式</span></dt>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪文件格式（使用GDB调试）</title>
+
+<meta name="description" content="跟踪文件格式（使用GDB调试）">
+<meta name="keywords" content="跟踪文件格式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Index-Section-Format.html" rel="next" title="索引节格式">
+<link href="Operating-System-Information.html" rel="prev" title="操作系统信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="跟踪文件格式">
+<div class="nav-panel">
+<p>
+下一个：<a href="Index-Section-Format.html" accesskey="n" rel="next"><code class="code">.gdb_index</code>节格式</a>，上一个：<a href="Operating-System-Information.html" accesskey="p" rel="prev">操作系统信息</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="跟踪文件格式-1"><span>附录I跟踪文件格式<a class="copiable-link" href="#跟踪文件格式-1"> &para;</a></span></h2>
+<a class="index-entry-id" id="索引-跟踪文件格式"></a>
+
+<p>跟踪文件分为三个部分：一个头部、一个文本描述部分和一个带有二进制数据的跟踪帧部分。
+</p>
+<p>头部的形式为 <code class="code">\x7fTRACE0\n</code>。第一个字节是 <code class="code">0x7f</code>，用于表示文件包含二进制数据，而 <code class="code">0</code> 是一个版本号，未来可能会有不同的值。
+</p>
+<p>描述部分由多行ASCII文本组成，用换行符（<code class="code">0xa</code>）分隔。这些行可能包括各种可选的描述性或上下文设置信息，例如跟踪点定义或寄存器集大小。<small class="sc">GDB</small> 将忽略它不识别的任何行。空行标记此部分的结束。
+</p>
+<dl class="table">
+<dt><code class="code">R <var class="var">大小</var></code></dt>
+<dd><p>指定以字节为单位的寄存器块的大小。这等于远程协议中 <code class="code">g</code> 数据包有效负载的大小。<var class="var">大小</var> 是一个ASCII十进制数。在单个跟踪文件中应该只有一行这样的内容。
+</p>
+</dd>
+<dt><code class="code">状态 <var class="var">状态</var></code></dt>
+<dd><p>跟踪状态。<var class="var">状态</var> 与 <code class="code">qTStatus</code> 远程数据包回复的格式相同。在单个跟踪文件中应该只有一行这样的内容。
+</p>
+</dd>
+<dt><code class="code">tp <var class="var">有效负载</var></code></dt>
+<dd><p>跟踪点定义。<var class="var">有效负载</var> 与 <code class="code">qTfP</code>/<code class="code">qTsP</code> 远程数据包回复有效负载格式相同。单个跟踪点可能需要多行定义，对应多个回复数据包。
+</p>
+</dd>
+<dt><code class="code">tsv <var class="var">有效负载</var></code></dt>
+<dd><p>跟踪状态变量定义。<var class="var">有效负载</var> 与 <code class="code">qTfV</code>/<code class="code">qTsV</code> 远程数据包回复有效负载格式相同。单个变量可能需要多行定义，对应多个回复数据包。
+</p>
+</dd>
+<dt><code class="code">tdesc <var class="var">有效负载</var></code></dt> 
+<dd><p>XML格式的目标描述。<var class="var">有效负载</var> 是XML文件的一行。所有这些行应连接在一起以获取原始XML文件。此文件与 <code class="code">qXfer</code> <code class="code">features</code> 有效负载格式相同，并且对应于主 <code class="code">target.xml</code> 文件。不允许包含。
+</p>
+</dd>
+</dl>
+
+<p>跟踪帧部分由多个连续的帧组成。每个帧以一个两字节的跟踪点编号开头，后跟一个四字节大小，表示帧中的数据量。帧中的数据由多个块组成，每个块由一个字符引入，指示其类型（至少有寄存器、内存和跟踪状态变量）。此部分中的数据是原始二进制数据，不是十六进制或其他编码；其字节序与目标的字节序匹配。
+</p>
+
+<dl class="table">
+<dt><code class="code">R <var class="var">字节数</var></code></dt>
+<dd><p>寄存器块。字节的数量和顺序与远程协议中 <code class="code">g</code> 数据包的字节数和顺序匹配。请注意，这些是实际字节，按目标顺序排列，而不是十六进制编码。
+</p>
+</dd>
+<dt><code class="code">M <var class="var">地址</var> <var class="var">长度</var> <var class="var">字节数</var>...</code></dt>
+<dd><p>内存块。这是一个连续的内存块，位于8字节地址 <var class="var">地址</var> 处，长度为2字节 <var class="var">长度</var>，后跟 <var class="var">长度</var> 个字节。
+</p>
+</dd>
+<dt><code class="code">V <var class="var">编号</var> <var class="var">值</var></code></dt>
+<dd><p>跟踪状态变量块。这记录了编号为 <var class="var">编号</var> 的跟踪状态变量的8字节有符号值 <var class="var">值</var>。
+</p>
+</dd>
+</dl>
+
+<p>跟踪文件格式的未来增强功能可能包括其他类型的块。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Index-Section-Format.html"><code class="code">.gdb_index</code>节格式</a>，上一个：<a href="Operating-System-Information.html">操作系统信息</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

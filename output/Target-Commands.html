@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>目标命令（使用GDB调试）</title>
+
+<meta name="description" content="目标命令（使用GDB调试）">
+<meta name="keywords" content="目标命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Targets.html" rel="up" title="目标">
+<link href="Byte-Order.html" rel="next" title="字节序">
+<link href="Active-Targets.html" rel="prev" title="活动目标">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="目标命令">
+<div class="nav-panel">
+<p>
+下一个：<a href="Byte-Order.html" accesskey="n" rel="next">选择目标字节序</a>，上一个：<a href="Active-Targets.html" accesskey="p" rel="prev">活动目标</a>，向上：<a href="Targets.html" accesskey="u" rel="up">指定调试目标</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="管理目标的命令"><span>19.2管理目标的命令<a class="copiable-link" href="#管理目标的命令"> &para;</a></span></h3>
+
+<dl class="table">
+<dt><code class="code">target <var class="var">类型</var> <var class="var">参数</var></code></dt>
+<dd><p>将GDB主机环境连接到目标机器或进程。目标通常是用于与调试工具通信的协议。使用参数<var class="var">类型</var>指定目标机器 的类型或协议。
+</p>
+<p>目标协议会解释进一步的<var class="var">参数</var>，但通常包括要连接的设备名称或主机名、进程号和波特率等内容。
+</p>
+
+<p>执行命令后，如果再次按下<kbd class="key">RET</kbd>，<code class="code">target</code>命令不会重复。
+</p>
+</dd>
+<dt><a id="index-help-target"></a><span><code class="code">help target</code><a class="copiable-link" href="#index-help-target"> &para;</a></span></dt>
+<dd><p>显示所有可用目标的名称。要显示当前选择的目标，可使用<code class="code">info target</code>或<code class="code">info files</code>（见<a class="pxref" href="Files.html">指定文件的命令</a>）。
+</p>
+</dd>
+<dt><code class="code">help target <var class="var">名称</var></code></dt>
+<dd><p>描述特定目标，包括选择它所需的任何参数。</p>
+</dd>
+<dt><a id="index-set-gnutarget"></a><span><code class="code">set gnutarget <var class="var">参数</var></code><a class="copiable-link" href="#index-set-gnutarget"> &para;</a></span></dt>
+<dd><p>GDB使用自己的库BFD来读取文件。GDB知道它正在读取的是可执行文件、核心文件还是.o文件；但是，可以使用<code class="code">set gnutarget</code>命令指定文件格式。与大多数<code class="code">target</code>命令不同，对于<code class="code">gnutarget</code>，<code class="code">target</code>指的是程序，而不是机器。
+</p>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em>要使用<code class="code">set gnutarget</code>指定文件格式，必须知道实际的BFD名称。
+</p></blockquote>
+
+<p>见<a class="xref" href="Files.html">指定文件 的命令</a>。
+</p>
+</dd>
+<dt><a id="index-show-gnutarget"></a><span><code class="code">show gnutarget</code><a class="copiable-link" href="#index-show-gnutarget"> &para;</a></span></dt>
+<dd><p>使用<code class="code">show gnutarget</code>命令显示<code class="code">gnutarget</code>设置为读取的文件格式。如果尚未设置<code class="code">gnutarget</code>，GDB将自动确定每个文件的文件格式，<code class="code">show gnutarget</code>显示“当前BFD目标是“auto””。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-常见目标"></a>
+<p>以下是一些常见目标（根据GDB配置是否可用）：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-target"></a>
+<a id="index-可执行文件目标"></a><span><code class="code">target exec <var class="var">程序</var></code><a class="copiable-link" href="#index-可执行文件目标"> &para;</a></span></dt>
+<dd><p>一个可执行文件。“target exec <var class="var">程序</var>”与“exec-file <var class="var">程序</var>”相同。
+</p>
+<p><var class="var">程序</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+</dd>
+<dt><a id="index-核心转储文件目标"></a><span><code class="code">target core <var class="var">文件名</var></code><a class="copiable-link" href="#index-核心转储文件目标"> &para;</a></span></dt>
+<dd><p>一个核心转储文件。“target core <var class="var">文件名</var>”与“core-file <var class="var">文件名</var>”相同。
+</p>
+<p><var class="var">文件名</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+</dd>
+<dt><a id="index-远程目标"></a><span><code class="code">target remote <var class="var">介质</var></code><a class="copiable-link" href="#index-远程目标"> &para;</a></span></dt>
+<dd><p>通过串行线路或网络连接连接到GDB的远程系统。此命令告诉GDB通过<var class="var">介质</var>使用其自己的远程协议进行调试。见<a class="xref" href="Remote-Debugging.html">调试远程程序</a>。
+</p>
+<p>例如，如果在运行GDB的机器上有一个连接到<samp class="file">/dev/ttya</samp>的开发板，可以这样说：</p>
+<div class="example smallexample">
+<pre class="example-preformatted">target remote /dev/ttya
+</pre></div>
+
+<p><code class="code">target remote</code>支持<code class="code">load</code>命令。只有在有其他方法将存根程序传输到目标系统，并且可以将其放置在内存中不会被下载覆盖的位置时，此命令才有用。
+</p>
+</dd>
+<dt><a id="index-内置模拟器目标"></a><span><code class="code">target sim <span class="r">[</span><var class="var">模拟参数</var><span class="r">]</span> &hellip;</code><a class="copiable-link" href="#index-内置模拟器目标"> &para;</a></span></dt>
+<dd><p>内置CPU模拟器。GDB包括大多数架构的模拟器。一般来说，</p>
+<div class="example smallexample">
+<pre class="example-preformatted">        target sim
+        load
+        run
+</pre></div>
+<p>这样可以工作；但是，不能假定有特定的内存映射、设备驱动程序，甚至基本I/O可用，尽管有些模拟器提供了这些。有关任何特定处理器模拟器细节的信息，请参阅<a class="ref" href="Embedded-Processors.html">嵌入式处理器</a>中的相应部分。
+</p>
+</dd>
+<dt><a id="index-本地目标"></a><span><code class="code">target native</code><a class="copiable-link" href="#index-本地目标"> &para;</a></span></dt>
+<dd><p>设置用于本地/原生进程调试。即使“set auto-connect-native-target”为“off”（见<a class="pxref" href="Starting.html#set-auto_002dconnect_002dnative_002dtarget">设置自动连接本地目标</a>），使“run”命令生成原生进程（同样适用于“attach”等）也很有用。
+</p>
+</dd>
+</dl>
+
+<p>不同配置的GDB有不同的可用目标；你的配置可能有更多或更少的目标。
+</p>
+<p>许多远程目标要求在成功建立连接后下载可执行文件 的代码。你可能希望控制此过程的各个方面。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-hash-mark-while-downloading"></a>
+<a id="index-set-hash_002c-for-remote-monitors"></a><span><code class="code">set hash</code><a class="copiable-link" href="#index-set-hash_002c-for-remote-monitors"> &para;</a></span></dt>
+<dd><p>此命令控制在将文件下载到远程监视器时是否显示哈希标记“#”。如果启用，在每个S记录成功下载到监视器后会显示一个哈希标记。
+</p>
+</dd>
+<dt><a id="index-show-hash_002c-for-remote-monitors"></a><span><code class="code">show hash</code><a class="copiable-link" href="#index-show-hash_002c-for-remote-monitors"> &para;</a></span></dt>
+<dd><p>显示显示哈希标记的当前状态。
+</p> 
+</dd>
+<dt><a class="index-entry-id" id="index-display-remote-monitor-communications"></a>
+<a id="index-set-debug-monitor"></a><span><code class="code">set debug monitor</code><a class="copiable-link" href="#index-set-debug-monitor"> &para;</a></span></dt>
+<dd><p>启用或禁用显示GDB与远程监视器之间的通信消息</p>
+</dd>
+<dt><a id="index-show-debug-monitor"></a><span><code class="code">show debug monitor</code><a class="copiable-link" href="#index-show-debug-monitor"> &para;</a></span></dt>
+<dd><p>显示显示GDB与远程监视器之间通信的当前状态。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="index-load-filename-offset"></a><span><code class="code">load <var class="var">文件名</var> <var class="var">偏移量</var></code><a class="copiable-link" href="#index-load-filename-offset"> &para;</a></span></dt>
+<dd><a class="anchor" id="load"></a><p>根据GDB中配置的远程调试工具，“load”命令可能可用。如果存在，它旨在使<var class="var">文件名</var>（一个可执行文件）在远程系统上可用于调试——例如通过下载或动态链接。“load”还会像“add-symbol-file”命令一样在GDB中记录<var class="var">文件名</var>符号表。
+如果你的GDB没有“load”命令，尝试执行它会得到错误消息“当你的目标是……时，你不能这样做”。
+文件在可执行文件中指定的任何地址加载。对于某些目标文件格式，可以在链接程序时指定加载地址；对于其他格式，如a.out，目标文件格式指定一个固定地址。
+也可以告诉GDB在由可选参数<var class="var">偏移量</var>描述的特定偏移量处加载可执行文件。当提供<var class="var">偏移量</var>时，也必须提供<var class="var">文件名</var>。
+根据远程端的功能GDB可能能够将程序加载到闪存中。
+使用“load”后，如果再次按下<kbd class="key">RET</kbd>，“load”命令不会重复。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="index-flash_002derase"></a><span><code class="code">flash-erase</code><a class="copiable-link" href="#index-flash_002derase"> &para;</a></span></dt>
+<dd><a class="anchor" id="flash_002derase"></a>
+<p>擦除目标上所有已知的闪存区域。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Byte-Order.html">选择目标字节序</a>，上一个：<a href="Active-Targets.html">活动目标</a>，向上：<a href="Targets.html">指定调试目标</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

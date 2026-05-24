@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Debuginfod设置（使用GDB调试）</title>
+
+<meta name="description" content="Debuginfod设置（使用GDB调试）">
+<meta name="keywords" content="Debuginfod设置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Debuginfod.html" rel="up" title="Debuginfod">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Debuginfod设置">
+<div class="nav-panel">
+<p>
+上一级：<a href="Debuginfod.html" accesskey="u" rel="up">使用Debuginfod下载调试资源</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Debuginfod设置-1"><span>K .1 Debuginfod设置<a class="copiable-link" href="#Debuginfod设置-1"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small>提供了以下用于配置<code class="code">debuginfod</code>的命令。
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="index-set-debuginfod-enabled"></a>
+<a class="anchor" id="set-debuginfod-enabled"></a></dd>
+<dt><a id="index-enable-debuginfod"></a><span><code class="code">set debuginfod enabled</code><a class="copiable-link" href="#index-enable-debuginfod"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod enabled on</code></dt>
+<dd><p><small class="sc">GDB</small>可以向<code class="code">debuginfod</code>服务器查询缺失的调试信息和源文件。<small class="sc">GDB</small>还可以下载单个ELF/DWARF段，如<code class="code">.gdb_index</code>，以帮助减少从<code class="code">debuginfod</code>服务器下载的数据总量；这可以通过<code class="code">maint set debuginfod download-sections</code>来控制（见 <a class="pxref" href="Maintenance-Commands.html">maint set debuginfod download-sections</a>）。
+</p>
+</dd>
+<dt><code class="code">set debuginfod enabled off</code></dt>
+<dd><p>当缺少调试信息或源文件时，<small class="sc">GDB</small>不会尝试向<code class="code">debuginfod</code>服务器查询。默认情况下，对于非交互式会话，<code class="code">debuginfod enabled</code>设置为<code class="code">off</code>。
+</p>
+</dd>
+<dt><code class="code">set debuginfod enabled ask</code></dt>
+<dd><p><small class="sc">GDB</small>会在尝试执行下一次查询之前提示用户启用或禁用<code class="code">debuginfod</code>。默认情况下，对于交互式会话<code class="code">debuginfod enabled</code>设置为<code class="code">ask</code>。
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-enabled"></a><span><code class="code">show debuginfod enabled</code><a class="copiable-link" href="#index-show-debuginfod-enabled"> &para;</a></span></dt>
+<dd><p>显示<code class="code">debuginfod enabled</code>是否设置为<code class="code">on</code>、<code class="code">off</code>或<code class="code">ask</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-configure-debuginfod-URLs"></a>
+<a id="index-set-debuginfod-urls"></a><span><code class="code">set debuginfod urls</code><a class="copiable-link" href="#index-set-debuginfod-urls"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod urls <var class="var">urls</var></code></dt>
+<dd><p>设置<code class="code">debuginfod</code>将尝试查询的以空格分隔的URL列表。仅应使用<code class="code">http://</code>、<code class="code">https://</code>和<code class="code">file://</code>协议。<code class="code">debuginfod urls</code>的默认值是从<var class="var">DEBUGINFOD_URLS</var>环境变量复制而来的。
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-urls"></a><span><code class="code">show debuginfod urls</code><a class="copiable-link" href="#index-show-debuginfod-urls"> &para;</a></span></dt>
+<dd><p>显示<code class="code">debuginfod</code>将尝试查询的URL列表。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-debuginfod-verbosity"></a>
+<a id="index-set-debuginfod-verbose"></a><span><code class="code">set debuginfod verbose</code><a class="copiable-link" href="#index-set-debuginfod-verbose"> &para;</a></span></dt>
+<dt><code class="code">set debuginfod verbose <var class="var">n</var></code></dt>
+<dd><p>启用或禁用与<code class="code">debuginfod</code>相关的输出。使用非零值启用，<code class="code">0</code>禁用。默认情况下显示<code class="code">debuginfod</code>输出。
+</p>
+</dd>
+<dt><a id="index-show-debuginfod-verbose"></a><span><code class="code">show debuginfod verbose</code><a class="copiable-link" href="#index-show-debuginfod-verbose"> &para;</a></span></dt>
+<dd><p>显示当前的详细程度设置。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一级：<a href="Debuginfod.html">使用Debuginfod下载调试资源</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

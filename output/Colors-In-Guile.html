@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的颜色（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的颜色（使用GDB调试）">
+<meta name="keywords" content="Guile中的颜色（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Iterators-In-Guile.html" rel="prev" title="Guile中的迭代器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的颜色">
+<div class="nav-panel">
+<p>
+上一个：<a href="Iterators-In-Guile.html" accesskey="p" rel="prev">Guile中的迭代器</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中的颜色-1"><span>23.4.3.26 Guile中的颜色<a class="copiable-link" href="#Guile中的颜色-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile颜色"></a> 
+<a class="index-entry-id" id="index-_003cgdb_003acolor_003e"></a>
+<p>你可以将<code class="code">&lt;gdb:color&gt;</code>的实例赋值给使用<code class="code">PARAM_COLOR</code>创建的<code class="code">&lt;gdb:parameter&gt;</code>对象的值。
+</p>
+<p><code class="code">&lt;gdb:color&gt;</code>可以引用调色板中的索引，或者包含来自某个颜色空间的颜色组件。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dcolor"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-color</strong> <var class="def-var-arguments"><span class="r">[</span>值 <!-- /@w -->     <span class="r">[</span>#:color-space&nbsp;颜色空间<span class="r">]</span><span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dcolor"> &para;</a></span></dt>
+<dd>
+<p><var class="var">值</var>是调色板中颜色的整数索引、包含颜色组件的元组或字符串。字符串可以是十六进制RGB三元组，格式为&lsquo;<samp class="samp">#RRGGBB</samp>&rsquo;，或者是以下颜色名称之一：
+&lsquo;<samp class="samp">none</samp>&rsquo;（表示终端的默认颜色）、&lsquo;<samp class="samp">black</samp>&rsquo;、&lsquo;<samp class="samp">red</samp>&rsquo;、
+&lsquo;<samp class="samp">green</samp>&rsquo;、&lsquo;<samp class="samp">yellow</samp>&rsquo;、&lsquo;<samp class="samp">blue</samp>&rsquo;、&lsquo;<samp class="samp">magenta</samp>&rsquo;、&lsquo;<samp class="samp">cyan</samp>&rsquo;，
+或&lsquo;<samp class="samp">white</samp>&rsquo;。
+</p>
+<p><var class="var">颜色空间</var>应该是&lsquo;<samp class="samp">COLORSPACE_</samp>&rsquo;常量之一。此参数告诉<small class="sc">GDB</small><var class="var">值</var>所属的颜色空间。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-color_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是<code class="code">&lt;gdb:color&gt;</code>对象，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dnone_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-none?</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dnone_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">颜色</var>是终端的默认颜色，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dindexed_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-indexed?</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dindexed_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">颜色</var>是索引颜色，即属于某个调色板，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002ddirect_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-direct?</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002ddirect_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">颜色</var>在ISO/IEC 8613-6的意义上是直接颜色，则返回<code class="code">#t</code>。
+否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dstring"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-string</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dstring"> &para;</a></span></dt>
+<dd><p>返回<code class="code">&lt;gdb:color&gt;</code>对象的文本表示形式。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dcolorspace"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-colorspace</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dcolorspace"> &para;</a></span></dt>
+<dd><p>返回<code class="code">&lt;gdb:color&gt;</code>对象的颜色空间。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dindex"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-index</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dindex"> &para;</a></span></dt> 
+<dd><p>返回<code class="code">&lt;gdb:color&gt;</code>对象在调色板中的颜色索引。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_002dcomponents"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-components</strong> <var class="def-var-arguments">颜色</var><a class="copiable-link" href="#index-color_002dcomponents"> &para;</a></span></dt>
+<dd><p>返回直接<code class="code">&lt;gdb:color&gt;</code>对象的组件。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-color_00�scape_002dsequence"><span class="category-def">Scheme过程： </span><span><strong class="def-name">color-escape-sequence</strong> <var class="def-var-arguments">颜色 前景色</var><a class="copiable-link" href="#index-color_002descape_002dsequence"> &para;</a></span></dt>
+<dd><p>返回将终端颜色更改为该颜色的字符串。
+</p>
+<p>如果<var class="var">前景色</var>为<code class="code">#t</code>，则返回的序列将更改前景色。否则，返回的序列将更改背景色。
+</p>
+<p>如果当前禁用了样式（请参阅 <a class="pxref" href="Output-Styling.html"><kbd class="kbd">set style enabled</kbd></a>），则此过程将返回一个空字符串。
+</p></dd></dl>
+
+<p>初始化颜色时，必须指定其颜色空间。可用的颜色空间由<code class="code">gdb</code>模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a id="index-COLORSPACE_005fMONOCHROME-1"></a><span><code class="code">COLORSPACE_MONOCHROME</code><a class="copiable-link" href="#index-COLORSPACE_005fMONOCHROME-1"> &para;</a></span></dt>
+<dd><p>仅包含终端默认颜色的调色板。
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fANSI_005f8COLOR-1"></a><span><code class="code">COLORSPACE_ANSI_8COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fANSI_005f8COLOR-1"> &para;</a></span></dt>
+<dd><p>包含ISO/IEC 6429的八种标准颜色“黑色”、“红色”、“绿色”等的调色板。
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fAIXTERM_005f16COLOR-1"></a><span><code class="code">COLORSPACE_AIXTERM_16COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fAIXTERM_005f16COLOR-1"> &para;</a></span></dt>
+<dd><p>包含16种颜色的调色板。前八种是ISO/IEC 6429的标准颜色“黑色”、“红色”、“绿色”等。接下来的八种是它们的明亮版本。
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fXTERM_005f256COLOR-1"></a><span><code class="code">COLORSPACE_XTERM_256COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fXTERM_005f256COLOR-1"> &para;</a></span></dt>
+<dd><p>包含256种颜色的调色板。前16种来自COLORSPACE_AIXTERM_16COLOR。接下来的216种颜色是6x6x6 RGB立方体。最后24种颜色形成灰度渐变。
+</p>
+</dd>
+<dt><a id="index-COLORSPACE_005fRGB_005f24BIT-1"></a><span><code class="code">COLORSPACE_RGB_24BIT</code><a class="copiable-link" href="#index-COLORSPACE_005fRGB_005f24BIT-1"> &para;</a></span></dt>
+<dd><p>直接24位RGB颜色。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Iterators-In-Guile.html">Guile中的迭代器</a>，向上： <a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>M2运算符（使用GDB调试）</title>
+
+<meta name="description" content="M2运算符（使用GDB调试）">
+<meta name="keywords" content="M2运算符（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">
+<link href="Built_002dIn-Func_002fProc.html" rel="next" title="内置函数/过程">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-运算符">
+<div class="nav-panel">
+<p>
+下一页：<a href="Built_002dIn-Func_002fProc.html" accesskey="n" rel="next">内置函数和过程</a>，上一级：<a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="运算符"><span>15.4.9.1 运算符<a class="copiable-link" href="#运算符"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-Modula_002d2-运算符"></a>
+
+<p>运算符必须在特定类型的值上定义。例如，<code class="code">+</code> 在数字上定义，但不在结构体上定义。运算符通常在一组类型上定义。对于Modula-2而言，以下定义成立：
+</p>
+<ul class="itemize mark-bullet">
+<li><em class="emph">整型类型</em> 由 <code class="code">INTEGER</code>、<code class="code">CARDINAL</code> 及其子范围组成。
+
+</li><li><em class="emph">字符类型</em> 由 <code class="code">CHAR</code> 及其子范围组成。
+
+</li><li><em class="emph">浮点类型</em> 由 <code class="code">REAL</code> 组成。
+
+</li><li><em class="emph">指针类型</em> 由声明为 <code class="code">POINTER TO <var class="var">type</var></code> 的任何类型组成。
+
+</li><li><em class="emph">标量类型</em> 由上述所有类型组成。
+
+</li><li><em class="emph">集合类型</em> 由 <code class="code">SET</code> 和 <code class="code">BITSET</code> 类型组成。
+
+</li><li><em class="emph">布尔类型</em> 由 <code class="code">BOOLEAN</code> 组成。
+</li></ul>
+
+<p>支持以下运算符，并按优先级递增顺序列出：
+</p>
+<dl class="table">
+<dt><code class="code">,</code></dt>
+<dd><p>函数参数或数组索引分隔符。
+</p>
+</dd>
+<dt><code class="code">:=</code></dt>
+<dd><p>赋值。<var class="var">var</var> <code class="code">:=</code> <var class="var">value</var> 的值为 <var class="var">value</var>。
+</p>
+</dd>
+<dt><code class="code">&lt;<span class="r">, </span>&gt;</code></dt>
+<dd><p>小于、大于，用于整型、浮点型或枚举类型。
+</p>
+</dd>
+<dt><code class="code">&lt;=<span class="r">, </span>&gt;=</code></dt>
+<dd><p>小于或等于、大于或等于，用于整型、浮点型和枚举类型，或用于集合类型的集合包含。与 <code class="code">&lt;</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">=<span class="r">, </span>&lt;&gt;<span class="r">, </span>#</code></dt>
+<dd><p>相等和两种表示不相等的方式，对标量类型有效。与 <code class="code">&lt;</code>具有相同的优先级。在GDB脚本中，只有 <code class="code">&lt;&gt;</code> 可用于表示不相等，因为 <code class="code">#</code> 与脚本注释字符冲突。
+</p>
+</dd>
+<dt><code class="code">IN</code></dt>
+<dd><p>集合成员关系。在集合类型及其成员类型上定义。与 <code class="code">&lt;</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">OR</code></dt>
+<dd><p>布尔析取。在布尔类型上定义。
+</p>
+</dd>
+<dt><code class="code">AND<span class="r">, </span>&amp;</code></dt>
+<dd><p>布尔合取。在布尔类型上定义。
+</p>
+</dd>
+<dt><code class="code">@</code></dt>
+<dd><p>GDB的“人工数组”运算符（见 <a class="pxref" href="Expressions.html">表达式</a>）。
+</p>
+</dd>
+<dt><code class="code">+<span class="r">, </span>-</code></dt>
+<dd><p>加法和减法，用于整型和浮点型，或集合的并集和差集，用于集合类型。
+</p>
+</dd>
+<dt><code class="code">*</code></dt>
+<dd><p>乘法用于整型和浮点型，或集合的交集用于集合类型。
+</p></dd>
+<dt><code class="code">/</code></dt>
+<dd><p>除法用于浮点型，或对称集合差用于集合类型。与 <code class="code">*</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">DIV<span class="r">, </span>MOD</code></dt>
+<dd><p>整数除法和余数。在整型类型上定义。与 <code class="code">*</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">-</code></dt>
+<dd><p>取负。在 <code class="code">INTEGER</code> 和 <code class="code">REAL</code> 数据上定义。
+</p>
+</dd>
+<dt><code class="code">^</code></dt>
+<dd><p>指针解引用。在指针类型上定义。
+</p>  
+</dd>
+<dt><code class="code">NOT</code></dt>
+<dd><p>布尔否定。在布尔类型上定义。与 <code class="code">^</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">.</code></dt>
+<dd><p><code class="code">RECORD</code> 字段选择器。在 <code class="code">RECORD</code> 数据上定义。与 <code class="code">^</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">[]</code></dt>
+<dd><p>数组索引。在 <code class="code">ARRAY</code> 数据上定义。与 <code class="code">^</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">()</code></dt>
+<dd><p>过程参数列表。在 <code class="code">PROCEDURE</code> 对象上定义。与 <code class="code">^</code> 具有相同的优先级。
+</p>
+</dd>
+<dt><code class="code">::<span class="r">, </span>.</code></dt>
+<dd><p>GDB和Modula-2作用域运算符。
+</p></dd>
+</dl>
+
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> 集合表达式及其操作尚未得到支持，因此GDB将对集合使用运算符 <code class="code">IN</code>，或对集合使用运算符 <code class="code">+</code>、<code class="code">-</code>、<code class="code">*</code>、<code class="code">/</code>、<code class="code">=</code>、、<code class="code">&lt;&gt;</code>、<code class="code">#</code>、<code class="code">&lt;=</code> 和 <code class="code">&gt;=</code> 视为错误。
+</p></blockquote>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Built_002dIn-Func_002fProc.html">内置函数和过程</a>，上一级：<a href="Modula_002d2.html">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

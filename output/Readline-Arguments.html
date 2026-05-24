@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Readline参数（使用GDB调试）</title>
+
+<meta name="description" content="Readline参数（使用GDB调试）">
+<meta name="keywords" content="Readline参数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Interaction.html" rel="up" title="Readline交互">
+<link href="Searching.html" rel="next" title="在历史记录中搜索命令">
+<link href="Readline-Killing-Commands.html" rel="prev" title="Readline删除命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Readline-Arguments">
+<div class="nav-panel">
+<p>
+下一页：<a href="Searching.html" accesskey="n" rel="next">在历史记录中搜索命令</a>，上一页：<a href="Readline-Killing-Commands.html" accesskey="p" rel="prev">Readline删除命令</a>，向上：<a href="Readline-Interaction.html" accesskey="u" rel="up">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Readline-Arguments-1"><span>33.2.4 Readline参数<a class="copiable-link" href="#Readline-Arguments-1"> &para;</a></span></h4>
+
+<p>你可以将数字参数传递给Readline命令。有时该参数充当重复计数，其他时候参数的 <i class="i">符号</i> 才是重要的。如果你将一个负参数传递给一个通常向前执行的命令，该命令将向后执行。例如，要将文本删除到行首，你可以输入 &lsquo;<samp class="samp">M-- C-k</samp>&rsquo;。
+</p>
+<p>将数字参数传递给命令的一般方法是在命令之前输入元数字。如果输入的第一个“数字”是减号（&lsquo;<samp class="samp">-</samp>&rsquo;），那么参数的符号将为负。一旦你输入了一个元数字来开始参数输入，你可以输入其余的数字，然后是命令。例如，要给 <kbd class="kbd">C-d</kbd> 命令一个参数10，你可以输入 &lsquo;<samp class="samp">M-1 0 C-d</samp>&rsquo;，这将删除输入行上的接下来十个字符。
+</p>
+</div>
+
+
+
+</body>
+</html>

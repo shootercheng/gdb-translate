@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>MIPS嵌入式（使用GDB调试）</title>
+
+<meta name="description" content="MIPS嵌入式（使用GDB调试）">
+<meta name="keywords" content="MIPS嵌入式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="OpenRISC-1000.html" rel="next" title="OpenRISC 1000">
+<link href="MicroBlaze.html" rel="prev" title="MicroBlaze">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="MIPS-嵌入式">
+<div class="nav-panel">
+<p>
+下一页：<a href="OpenRISC-1000.html" accesskey="n" rel="next">OpenRISC 1000</a>，上一页：<a href="MicroBlaze.html" accesskey="p" rel="prev">MicroBlaze</a>，向上：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="MIPS-嵌入式-1"><span>21.3.6 MIPS嵌入式<a class="copiable-link" href="#MIPS-嵌入式-1"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small>支持针对MIPS目标的这些特殊命令：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-mipsfpu"></a>  
+<a class="index-entry-id" id="index-MIPS-远程-浮点"></a>  
+<a class="index-entry-id" id="index-浮点_002c-MIPS-远程"></a>  
+<a id="index-set-mipsfpu"></a><span><code class="code">set mipsfpu double</code><a class="copiable-link" href="#index-set-mipsfpu"> &para;</a></span></dt>  
+<dt><code class="code">set mipsfpu single</code></dt>  
+<dt><code class="code">set mipsfpu none</code></dt>  
+<dt><code class="code">set mipsfpu auto</code></dt>  
+<dt><code class="code">show mipsfpu</code></dt>  
+<dd><p>如果你的目标板不支持MIPS浮点协处理器，你应该使用命令‘<samp class="samp">set mipsfpu none</samp>’（如果你需要这样做，你可能希望将该命令放入你的<small class="sc">GDB</small>初始化文件中）。这会告诉<small class="sc">GDB</small>如何找到返回浮点值的函数的返回值。它还允许<small class="sc">GDB</small>在调用板上的函数时避免保存浮点寄存器。如果你正在使用仅支持单精度浮点的浮点协处理器，如在<small class="sc">R4650</small>处理器上，使用命令‘<samp class="samp">set mipsfpu single</samp>’。可以使用‘<samp class="samp">set mipsfpu double</samp>’选择默认的双精度浮点协处理器。
+</p>
+<p>在以前的版本中，唯一的选择是双精度或无浮点，所以‘<samp class="samp">set mipsfpu on</samp>’将选择双精度，‘<samp class="samp">set mipsfpu off</samp>’将选择无浮点。
+</p>
+<p>像往常一样，你可以使用‘<samp class="samp">show mipsfpu</samp>’查询‘<code class="code">mipsfpu</code>’变量。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

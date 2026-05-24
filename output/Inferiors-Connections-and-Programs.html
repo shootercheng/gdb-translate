@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>子进程连接与程序（使用GDB调试）</title>
+
+<meta name="description" content="子进程连接与程序（使用GDB调试）">
+<meta name="keywords" content="子进程连接与程序（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Threads.html" rel="next" title="线程">
+<link href="Kill-Process.html" rel="prev" title="终止进程">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="子进程连接与程序">
+<div class="nav-panel">
+<p>
+下一页：<a href="Threads.html" accesskey="n" rel="next">调试多线程程序</a>，上一页：<a href="Kill-Process.html" accesskey="p" rel="prev">终止子进程</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="调试多个子进程连接与程序"><span>4.9调试多个子进程连接与程序<a class="copiable-link" href="#调试多个子进程连接与程序"> &para;</a></span></h3>
+
+<p>GDB允许你在单个会话中运行和调试多个程序。此外，某些系统上的GDB可能允许你同时运行多个程序（否则你必须在启动另一个程序之前退出当前程序）。在某些系统上，GDB甚至可能允许你在不同的远程系统上同时调试多个程序。在最一般的情况下，你可以在多个进程中的每个进程中拥有多个执行线程，这些进程从多个可执行文件启动，在不同的机器上运行。
+</p>
+<a class="index-entry-id" id="index-inferior"></a>
+<p>GDB使用一个称为“子进程”的对象来表示每个程序执行的状态。一个子进程通常对应一个进程，但更通用，也适用于没有进程的目标。子进程可以在进程运行之前创建，并且可以在进程退出后保留。子进程有唯一的标识符，与进程ID不同。通常每个子进程也将有自己独立的地址空间，尽管一些嵌入式目标可能有几个子进程在单个地址空间的不同部分运行。每个子进程反过来可能有多个线程在其中运行。
+</p>
+<a class="index-entry-id" id="index-ID列表"></a>
+<p>下面将介绍的命令<code>info inferiors</code>和<code>info connections</code>接受一个以空格分隔的“ID列表”作为其参数，指定一个或多个要操作的元素。列表元素可以是单个非负数字，如‘<samp>5</samp>’，也可以是这样的数字的升序范围，如‘<samp>5-7</samp>’。列表可以由这些元素的任何组合组成，甚至重复或重叠的范围也是有效的。例如‘<samp>1 4-6 5 4-4</samp>’或‘<samp>1 2 4-7</samp>’。
+</p>
+<p>要随时了解存在哪些子进程，使用<code>info&nbsp;inferiors</code><!-- /@w -->：
+</p>
+<dl class="table">
+<dt><a id="index-info-inferiors-_005b-id_2026-_005d"></a><span><code>info inferiors</code><a class="copiable-link" href="#index-info-inferiors-_005b-id_2026-_005d"> &para;</a></span></dt>
+<dd><p>打印GDB当前管理的所有子进程的列表。默认情况下，打印所有子进程，但ID列表<var>id</var>&hellip;可用于将显示限制为仅请求的子进程。
+</p>
+<p>GDB为每个子进程显示（按此顺序）：
+</p>
+<ol class="enumerate">
+<li> GDB分配的子进程编号
+
+</li><li> 目标系统的子进程标识符
+
+</li><li> 子进程绑定到的目标连接，包括GDB分配的唯一连接编号以及连接使用的协议。
+
+</li><li> 子进程正在运行的可执行文件的名称。
+
+</li></ol>
+
+<p>GDB子进程编号前面的星号‘<samp>*</samp>’表示当前子进程。
+</p>
+<p>例如，
+</p></dd>
+</dl>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info inferiors
+  Num  描述       连接                      可执行文件
+* 1    进程3401      1 (本地)                      goodbye
+  2    进程2307      2 (扩展远程主机:10000)  hello
+</pre></div>
+
+<p>要获取有关当前子进程 的信息，使用<code>inferior</code>：
+</p>
+<dl class="table">
+<dt><a id="index-inferior-1"></a><span><code>inferior</code><a class="copiable-link" href="#index-inferior-1"> &para;</a></span></dt>
+<dd><p>显示有关当前子进程的信息。
+</p>
+<p>例如，
+</p></dd>
+</dl>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) inferior
+[当前子进程是1 [进程3401] (helloworld)]
+</pre></div>
+
+<p>要随时了解存在哪些打开的目标连接，使用<code>info&nbsp;connections</code><!-- /@w -->：
+</p>
+<dl class="table">
+<dt><a id="index-info-connections-_005b-id_2026-_005d"></a><span><code>info connections</code><a class="copiable-link" href="#index-info-connections-_005b-id_

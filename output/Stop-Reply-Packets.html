@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>停止回复数据包（使用GDB调试）</title>
+
+<meta name="description" content="停止回复数据包（使用GDB调试）">
+<meta name="keywords" content="停止回复数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="General-Query-Packets.html" rel="next" title="通用查询数据包">
+<link href="Packets.html" rel="prev" title="数据包">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="停止回复数据包">
+<div class="nav-panel">
+<p>
+下一页：<a href="General-Query-Packets.html" accesskey="n" rel="next">通用查询数据包</a>，上一页：<a href="Packets.html" accesskey="p" rel="prev">数据包</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="停止回复数据包-1"><span>E.4停止回复数据包<a class="copiable-link" href="#停止回复数据包-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-停止回复数据包"></a>
+
+<p>&lsquo;<samp class="samp">C</samp>&rsquo;、&lsquo;<samp class="samp">c</samp>&rsquo;、&lsquo;<samp class="samp">S</samp>&rsquo;、&lsquo;<samp class="samp">s</samp>&rsquo;、&lsquo;<samp class="samp">vCont</samp>&rsquo;、&lsquo;<samp class="samp">vAttach</samp>&rsquo;、&lsquo;<samp class="samp">vRun</samp>&rsquo;、&lsquo;<samp class="samp">vStopped</samp>&rsquo;和&lsquo;<samp class="samp">?</samp>&rsquo;数据包可以接收以下任何一种作为回复。除了&lsquo;<samp class="samp">?</samp>&rsquo;和&lsquo;<samp class="samp">vStopped</samp>&rsquo;，只有在目标暂停时才会返回该回复。在下面，<em class="dfn">信号编号</em>的确切含义由<small class="sc">GDB</small>源代码中的<samp class="file">include/gdb/signals.h</samp>头文件定义。
+</p>
+<p>在非停止模式下，服务器将简单地回复&lsquo;<samp class="samp">OK</samp>&rsquo;给诸如&lsquo;<samp class="samp">vCont</samp>&rsquo;这样的命令；任何停止都将是未来通知的主题。请参阅<a class="xref" href="Remote-Non_002dStop.html">非停止模式的远程协议支持</a>。
+</p>
+<p>正如在请求数据包的描述中一样，为了清晰起见，我们在回复模板中包含了空格；这些不是回复数据包语法的一部分。没有<small class="sc">GDB</small>停止回复数据包使用空格来分隔其组件。
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">S <var class="var">AA</var></samp>&rsquo;</dt>
+<dd><p>程序接收到信号编号<var class="var">AA</var>（一个两位十六进制数）。这等同于没有<var class="var">n</var>:<var class="var">r</var>对的&lsquo;<samp class="samp">T</samp>&rsquo;响应。
+</p>
+</dd>
+<dt><a id="索引-T数据包回复"></a><span>&lsquo;<samp class="samp">T <var class="var">AA</var> <var class="var">n1</var>:<var class="var">r1</var>;<var class="var">n2</var>:<var class="var">r2</var>;&hellip;</samp>&rsquo;<a class="copiable-link" href="#索引-T数据包回复"> &para;</a></span></dt>
+<dd><p>程序接收到信号编号<var class="var">AA</var>（一个两位十六进制数）。这等同于&lsquo;<samp class="samp">S</samp>&rsquo;响应，不同之处在于&lsquo;<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>&rsquo;对可以在停止回复数据包中直接携带重要寄存器的值和其他信息，从而减少往返延迟。单步和断点陷阱就是这样报告的。每个&lsquo;<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>&rsquo;对的解释如下：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果<var class="var">n</var>是一个十六进制数，它就是一个寄存器编号，相应的<var class="var">r</var>给出该寄存器的值。数据<var class="var">r</var>是一系列按目标字节顺序排列的字节，每个字节由一个两位十六进制数给出。
+
+</li><li>如果<var class="var">n</var>是&lsquo;<samp class="samp">thread</samp>&rsquo;，那么<var class="var">r</var>是被停止线程的线程ID，如在<a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定的。
+
+</li><li>如果<var class="var">n</var>是&lsquo;<samp class="samp">core</samp>&rsquo;，那么<var class="var">r</var>是检测到停止事件的核心的十六进制数。
+
+</li><li>如果<var class="var">n</var>是一个公认的<em class="dfn">停止原因</em>，它描述了一个更具体的使目标停止的事件。当前定义的停止原因如下所列。<var class="var">aa</var>应该是&lsquo;<samp class="samp">05</samp>&rsquo;，即陷阱信号。最多只能有一个停止原因。
+
+</li><li>否则，<small class="sc">GDB</small>应该忽略这个&lsquo;<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>&rsquo;对并继续处理下一个；这使我们能够在未来扩展协议。
+</li></ul>
+
+<p>当前定义的停止原因如下：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">watch</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">rwatch</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">awatch</samp>&rsquo;</dt>
+<dd><p>该数据包表示一个观察点命中，<var class="var">r</var>是以十六进制表示的数据地址。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">syscall_entry</samp>&rsquo;</dt>
+<dt>&lsquo;<samp class="samp">syscall_return</samp>&rsquo;</dt>
+<dd><p>该数据包表示一个系统调用进入或返回，<var class="var">r</var>是以十六进制表示的系统调用编号。
+</p>
+</dd>
+<dt><a id="索引-共享库事件_002c-远程回复"></a><span>&lsquo;<samp class="samp">library</samp>&rsquo;<a class="copiable-link" href="#索引-共享库事件_002c-远程回复"> &para;</a></span></dt>
+<dd><p>该数据包表示已加载的库发生了变化。<small class="sc">GDB</small>应该使用&lsquo;<samp class="samp">qXfer:libraries:read</samp>&rsquo;来获取新的已加载库列表。<var class="var">r</var>部分被忽略。
+</p>
+</dd>
+<dt><a id="索引-重放日志事件_002c-远程回复"></a><span>&lsquo;<samp class="samp">replaylog</samp>&rsquo;<a class="copiable-link" href="#索引-重放日志事件_002c-远程回复"> &para;</a></span></dt>
+<dd><p>该数据包表示目标无法继续重放记录的执行事件，因为它已经到达日志的末尾（或者在向后执行时到达开头）。<var class="var">r</var>的值将是&lsquo;<samp class="samp">begin</samp>&rsquo;或&lsquo;<samp class="samp">end</samp>&rsquo;。有关更多信息，请参阅<a class="xref" href="Reverse-Execution.html">向后运行程序</a>。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">swbreak</samp>&rsquo;</dt>
+<dd><a class="anchor" id="swbreak停止原因"></a><p>该数据包表示执行了一条软件断点指令，无论该断点是由<small class="sc">GDB</small>设置的还是程序中硬编码的。<var class="var">r</var>部分必须留空。
+</p>
+<p>在某些架构上，如x86，在架构级别，当执行一条断点指令时，程序计数器指向断点地址加上一个偏移量。在这样的目标上，存根负责将PC调整回指向断点地址。
+</p>
+<p>默认情况下不应发送此数据包；较旧版本的<small class="sc">GDB</small>不支持它。<small class="sc">GDB</small>通过提供适当的&lsquo;<samp class="samp">qSupported</samp>&rsquo;功能来请求它（请参阅<a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）。远程存根也必须提供适当的&lsquo;<samp class="samp">qSupported</samp>&rsquo;功能以表明支持。
+</p>
+<p>此数据包对于正确的非停止模式操作是必需的。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">hwbreak</samp>&rsquo;</dt>
+<dd><p>该数据包表示目标因硬件断点而停止。<var class="var">r</var>部分必须留空。
+</p>
+<p>上述关于&lsquo;<samp class="samp">qSupported</samp>&rsquo;和非停止模式的说明同样适用。
+</p>
+</dd>
+<dt><a id="索引-fork事件_002c-远程回复"></a><span>&lsquo;<samp class="samp">fork</samp>&rsquo;<a class="copiable-link" href="#索引-fork事件_002c-远程回复"> &para;</a></span></dt>
+<dd><p>该数据包表示调用了<code class="code">fork</code>，<var class="var">r</var>是新子进程的线程ID，如在<a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定的。此数据包仅适用于支持fork事件的目标。
+</p>
+<p>默认情况下不应发送此数据包；较旧版本的<small class="sc">GDB</small>不支持它

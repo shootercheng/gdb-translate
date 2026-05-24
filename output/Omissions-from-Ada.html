@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Ada中的遗漏（使用GDB调试）</title>
+
+<meta name="description" content="Ada中的遗漏（使用GDB调试）">
+<meta name="keywords" content="Ada中的遗漏（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Additions-to-Ada.html" rel="next" title="Ada的新增内容">
+<link href="Ada-Mode-Intro.html" rel="prev" title="Ada模式介绍">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Omissions-from-Ada">
+<div class="nav-panel">
+<p>
+下一页：<a href="Additions-to-Ada.html" accesskey="n" rel="next">Ada的新增内容</a>，上一页：<a href="Ada-Mode-Intro.html" accesskey="p" rel="prev">介绍</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Omissions-from-Ada-1"><span>15 - 4 - 10 - 2 Ada中的遗漏<a class="copiable-link" href="#Omissions-from-Ada-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-omissions-from"></a>
+
+<p>以下是该子集中值得注意的遗漏：
+</p>
+<ul class="itemize mark-bullet">
+<li>仅支持部分属性：
+
+<ul class="itemize mark-minus">
+<li>数组对象上的 <code class="t">'First</code>、<code class="t">'Last</code> 和 <code class="t">'Length</code>（不适用于类型和子类型）。
+
+</li><li><code class="t">'Min</code> 和 <code class="t">'Max</code>。
+
+</li><li><code class="t">'Pos</code> 和 <code class="t">'Val</code>。
+
+</li><li><code class="t">'Tag</code>。
+
+</li><li>数组对象上的 <code class="t">'Range</code>（不适用于子类型），但仅作为成员资格（<code class="code">in</code>）运算符右边的操作数。
+
+</li><li><code class="t">'Access</code>、<code class="t">'Unchecked_Access</code> 和 <code class="t">'Unrestricted_Access</code>（GNAT扩展）。
+
+</li><li><code class="t">'Address</code>。
+
+</li><li><code class="t">'Size</code> 可用于对象，但不适用于类型。
+
+</li><li><code class="t">'Object_Size</code> 可用，但不适用于不定类型。
+</li></ul>
+
+</li><li><code class="code">Characters.Latin_1</code> 中的名称不可用。
+
+</li><li>数组上的相等性测试（&lsquo;<samp class="samp">=</samp>&rsquo; 和 &lsquo;<samp class="samp">/=</samp>&rsquo;）测试表示的按位相等性。对于元素具有整数或枚举类型的字符串和数组，它们通常能正确工作。对于元素类型具有用户定义相等性的数组、实值数组（特别是符合IEEE标准的浮点型，因为存在负零和NaN）以及元素包含具有不确定值的未使用位的数组，它们可能无法正确工作。
+
+</li><li>其他逐个组件的数组操作（<code class="code">and</code>、<code class="code">or</code>、<code class="code">xor</code>、<code class="code">not</code> 以及除相等性之外的关系测试）未实现。
+
+</li><li><a class="index-entry-id" id="index-array-aggregates-_0028Ada_0029"></a>
+<a class="index-entry-id" id="index-record-aggregates-_0028Ada_0029"></a>
+<a class="index-entry-id" id="index-aggregates-_0028Ada_0029"></a>
+对数组和记录聚合的支持有限。它们仅允许在赋值的右侧使用，如下例所示：
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set An_Array := (1, 2, 3, 4, 5, 6)
+(gdb) set An_Array := (1, others =&gt; 0)
+(gdb) set An_Array := (0|4 =&gt; 1, 1..3 =&gt; &nbsp;2, 5 =&gt; 6)
+(gdb) set A_2D_Array := ((1, 2, 3), (4, 5, 6), (7, 8, 9))
+(gdb) set A_Record := (1, &quot;Peter&quot;, True);
+(gdb) set A_Record := (Name =&gt; &quot;Peter&quot;, Id =&gt; 1, Alive =&gt; True)
+</pre></div>
+
+<p>如果在记录中使用判别式，通过赋值聚合来更改判别式的值会产生未定义的效果。但是，你可以先通过直接赋值来修改判别式（这在Ada中通常是不允许的），然后进行聚合赋值。例如，给定一个声明为如下类型的变量 <code class="code">A_Rec</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">type Rec (Len : Small_Integer := 0) is record
+    Id : Integer;
+    Vals : IntArray (1 .. Len);
+end record;
+</pre></div>
+
+<p>你可以通过两次赋值来为 <code class="code">Vals</code> 赋不同大小的值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set A_Rec.Len := &nbsp;4
+(gdb) set A_Rec := (Id =&gt; 42, Vals =&gt; (1, 2, 3, 4))
+</pre></div>
+
+<p>正如这个例子所示，<small class="sc">GDB</small> 对聚合的通常规则非常宽松。你可以省略数组或记录聚合的一些组件（例如上面给 <code class="code">A_Rec</code> 赋值时的 <code class="code">Len</code> 组件）；它们在赋值时将保留其原始值。你可以自由地使用动态值作为组件关联中的索引。你甚至可以使用重叠或冗余的组件关联，尽管在这种情况下分配哪些组件值是未定义的。
+</p>
+</li><li>对调度子程序的调用未实现。
+
+</li><li>重载算法比实际的Ada要有限得多（即选择性较差）。它在解析子表达式的含义时，仅有限地利用子表达式出现的上下文，并且在允许类型匹配的规则上更加宽松。因此，一些函数调用将是模糊的，用户将被要求选择合适的解析。
+
+</li><li><code class="code">new</code> 运算符未实现。
+
+</li><li>入口调用未实现。
+
+</li><li>除了打印之外，不支持对原生VAX浮点格式进行算术运算。
+
+</li><li>无法对压缩数组进行切片。
+
+</li><li>当 <code class="code">True</code> 和 <code class="code">False</code> 不是限定名称的一部分时，无论上下文如何，它们都被解释为好像隐式地以 <code class="code">Standard</code> 为前缀。如果你的程序在包或过程中重新定义了这些名称（这充其量是一种可疑的做法），你将不得不使用完全限定名称来访问它们的新定义。
+
+</li><li>基于基数的字面量未实现。
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Additions-to-Ada.html">Ada的新增内容</a>，上一页：<a href="Ada-Mode-Intro.html">介绍</a>，向上：<a href="Ada.html">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

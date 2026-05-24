@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>创建和删除跟踪点（使用GDB调试）</title>
+
+<meta name="description" content="创建和删除跟踪点（使用GDB调试）">
+<meta name="keywords" content="创建和删除跟踪点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Enable-and-Disable-Tracepoints.html" rel="next" title="启用和禁用跟踪点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="创建和删除跟踪点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Enable-and-Disable-Tracepoints.html" accesskey="n" rel="next">启用和禁用跟踪点</a>，上一个：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="创建和删除跟踪点-1"><span>13.1.1 创建和删除跟踪点<a class="copiable-link" href="#创建和删除跟踪点-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-trace"></a>
+<a id="index-set-tracepoint"></a><span><code class="code">trace <var class="var">locspec</var></code><a class="copiable-link" href="#index-set-tracepoint"> &para;</a></span></dt>
+<dd><p><code class="code">trace</code>命令与<code class="code">break</code>命令非常相似。
+其参数<var class="var">locspec</var>可以是任何有效的位置规范。
+请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>。<code class="code">trace</code>命令定义一个跟踪点，
+这是目标程序中的一个点，调试器将在此短暂停止，
+收集一些数据，然后允许程序继续。如果远程存根
+支持“<samp class="samp">InstallInTrace</samp>”功能（请参阅 <a class="pxref" href="General-Query-Packets.html#install-tracepoint-in-tracing">在跟踪中安装跟踪点</a>），则设置跟踪点
+或更改其操作将立即生效。
+如果远程存根不支持“<samp class="samp">InstallInTrace</samp>”功能，所有
+这些更改直到下一个<code class="code">tstart</code>
+命令才会生效，并且一旦跟踪实验正在运行，进一步的更改将
+直到下一个跟踪实验开始才会有任何效果。此外，
+<small class="sc">GDB</small>支持<em class="dfn">待决跟踪点</em> —— 其
+地址尚未解析的跟踪点。（这类似于待决断点。）  
+待决跟踪点不会下载到目标，并且在解析之前不会安装。
+待决跟踪点的解析需要<small class="sc">GDB</small>支持 —— 当使用远程目标进行调试时，并且
+<small class="sc">GDB</small>与远程存根断开连接（请参阅 <a class="pxref" href="Starting-and-Stopping-Trace-Experiments.html#disconnected-tracing">断开连接的跟踪</a>），在<small class="sc">GDB</small>断开连接时，待决跟踪点无法解析（并下载到
+远程存根）。
+</p>
+<p>以下是使用<code class="code">trace</code>命令的一些示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">trace foo.c:121</b>    // 一个源文件和行号
+
+(gdb) <b class="b">trace +2</b>           // 向前2行
+
+(gdb) <b class="b">trace my_function</b>  // 函数的第一行源代码
+
+(gdb) <b class="b">trace *my_function</b> // 函数的确切起始地址
+
+(gdb) <b class="b">trace *0x2117c4</b>    // 一个地址
+</pre></div>
+
+<p>你可以将<code class="code">trace</code>缩写为<code class="code">tr</code>。
+</p>
+</dd>
+<dt><code class="code">trace <var class="var">locspec</var> if <var class="var">cond</var></code></dt>
+<dd><p>设置一个带有条件<var class="var">cond</var>的跟踪点；每次到达跟踪点时评估表达式
+<var class="var">cond</var>，并且仅当值非零时才收集数据 —— 也就是说，如果<var class="var">cond</var>求值为真。
+有关跟踪点条件的更多信息，请参阅 <a class="xref" href="Tracepoint-Conditions.html">跟踪点条件</a>。
+</p>
+</dd>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的事件（使用GDB调试）</title>
+
+<meta name="description" content="Python中的事件（使用GDB调试）">
+<meta name="keywords" content="Python中的事件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Threads-In-Python.html" rel="next" title="Python中的线程">
+<link href="Inferiors-In-Python.html" rel="prev" title="Python中的下级">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: -0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的事件">
+<div class="nav-panel">
+<p>
+下一页：<a href="Threads-In-Python.html" accesskey="n" rel="next">Python中的线程</a>，上一页：<a href="Inferiors-In-Python.html" accesskey="p" rel="prev">Python中的下级</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的事件-1"><span>23.3.2.18 Python中的事件<a class="copiable-link" href="#Python中的事件-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python中下级的事件"></a>
+
+<p><small class="sc">GDB</small>提供了一个通用的事件机制，以便Python代码能够接收到各种状态变化的通知，特别是下级中发生的变化。
+</p>
+<p>一个<em class="dfn">事件</em>就是一个描述某种状态变化的对象。对象的类型及其属性会根据变化的细节而有所不同。下面将描述所有现有的事件。
+</p>
+<p>为了接收到事件通知，你必须向一个<em class="dfn">事件注册表</em>注册一个事件处理程序。事件注册表是<code class="code">gdb.events</code>模块中的一个对象，用于分发特定的事件。注册表提供了注册和注销事件处理程序的方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-EventRegistry_002econnect"><span class="category-def">函数： </span><span><strong class="def-name">EventRegistry.connect</strong> <var class="def-var-arguments">(对象)</var><a class="copiable-link" href="#index-EventRegistry_002econnect"> &para;</a></span></dt>
+<dd><p>将给定的可调用对象<var class="var">对象</var>添加到注册表中。当与该注册表对应的事件发生时，这个对象将会被调用。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-EventRegistry_002edisconnect"><span class="category-def">函数： </span><span><strong class="def-name">EventRegistry.disconnect</strong> <var class="def-var-arguments">(对象)</var><a class="copiable-link" href="#index-EventRegistry_002edisconnect"> &para;</a></span></dt>
+<dd><p>从注册表中移除给定的对象<var class="var">对象</var>。一旦移除，该对象将不再接收事件通知。
+</p></dd></dl>
+
+<p>下面是一个示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def exit_handler (event):
+    print (&quot;事件类型：exit&quot;)
+    if hasattr (event, 'exit_code'):
+        print (&quot;退出代码：%d&quot; % (event.exit_code))
+    else:
+        print (&quot;退出代码不可用&quot;)
+
+gdb.events.exited.connect (exit_handler)
+</pre></div>
+
+<p>在上面的示例中，我们将处理程序<code class="code">exit_handler</code>连接到注册表<code class="code">events.exited</code>。连接后，当下级退出时，<code class="code">exit_handler</code>就会被调用。此示例中的参数<em class="dfn">事件</em>是<code class="code">gdb.ExitedEvent</code>类型。正如你在示例中看到的，<code class="code">ExitedEvent</code>对象有一个属性，用于指示下级的退出代码。
+</p>
+<p>当<small class="sc">GDB</small>以非停止模式运行时，某些事件可能是特定于线程的。在Python中表示时，这些事件都扩展了<code class="code">gdb.ThreadEvent</code>。这个事件是一个基类，从不直接发出；相反，由这个或其他模块发出的事件可能会扩展这个事件。这些事件的示例包括<code class="code">gdb.BreakpointEvent</code>和<code class="code">gdb.ContinueEvent</code>。<code class="code">gdb.ThreadEvent</code>具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ThreadEvent_002einferior_005fthread"><span class="category-def">变量： </span><span><strong class="def-name">ThreadEvent.inferior_thread</strong><a class="copiable-link" href="#index-ThreadEvent_002einferior_005fthread"> &para;</a></span></dt>
+<dd><p>在非停止模式下，如果事件涉及特定线程，则此属性将设置为该线程。否则，它将设置为<code class="code">None</code>。
+</p></dd></dl>
+
+<p>以下是可用的事件注册表及其发出的事件的详细信息列表：
+</p>
+<dl class="table">
+<dt><code class="code">events.cont</code></dt>
+<dd><p>发出<code class="code">gdb.ContinueEvent</code>，它扩展了<code class="code">gdb.ThreadEvent</code>。
+此事件表示下级在停止后已继续运行。有关继承属性，请参考上面的<code class="code">gdb.ThreadEvent</code>。
+</p>
+</dd>
+<dt><code class="code">events.exited</code></dt>
+<dd><p>发出<code class="code">events.ExitedEvent</code>，表示下级已退出。<code class="code">events.ExitedEvent</code>有两个属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExitedEvent_002eexit_005fcode"><span class="category-def">变量： </span><span><strong class="def-name">ExitedEvent.exit_code</strong><a class="copiable-link" href="#index-ExitedEvent_002eexit_005fcode"> &para;</a></span></dt>
+<dd><p>一个整数，表示下级返回的退出代码（如果可用）。（例如，如果<small class="sc">GDB</small>与下级分离，退出代码可能不可用。）如果退出代码不可用，则该属性不存在。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-ExitedEvent_002einferior"><span class="category-def">变量： </span><span><strong class="def-name">ExitedEvent.inferior</strong><a class="copiable-link" href="#index-ExitedEvent_002einferior"> &para;</a></span></dt>
+<dd><p>对触发<code class="code">exited</code>事件的下级的引用。
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.stop</code></dt>
+<dd><p>发出<code class="code">gdb.StopEvent</code>，它扩展了<code class="code">gdb.ThreadEvent</code>。
+</p>
+<p>表示下级已停止。此注册表发出的所有事件都扩展了<code class="code">gdb.StopEvent</code>。作为<code class="code">gdb.ThreadEvent</code>的子类，当<small class="sc">GDB</small>以非停止模式运行时，<code class="code">gdb.StopEvent</code>将指示被停止的线程。有关更多详细信息，请参考上面的<code class="code">gdb.ThreadEvent</code>。
+</p>
+<p><code class="code">gdb.StopEvent</code>具有以下附加属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-StopEvent_002edetails"><span class="category-def">变量： </span><span><strong class="def-name">StopEvent.details</strong><a class="copiable-link" href="#index-StopEvent_002edetails"> &para;</a></span></dt>
+<dd><p>一个字典，包含与停止相关的任何详细信息。确切的键和值取决于停止的类型，但与相应的MI输出相同（请参阅 <a class="pxref" href="GDB_002fMI-Async-Records.html"><small class="sc">GDB/MI</small> 异步记录</a>）。
+</p>
+<p>使用字典是为了（而不是直接向事件对象添加属性），以便可以不变地使用MI键。
+</p>
+<p>当<code class="code">StopEvent</code>是由<code class="code">finish</code>命令产生时，如果可用，它还将包含函数的返回值。这将是<code class="code">details</code>字典中名为&lsquo;<samp class="samp">return-value</samp>&rsquo;的条目。该条目的值将是一个<code class="code">gdb.Value</code>对象。
+</p></dd></dl>
+
+<p>发出<code class="code">gdb.SignalEvent</code>，它扩展了<code class="code">gdb.StopEvent</code>。
+</p>
+<p>此事件表示下级或其某个线程已收到信号。<code class="code">gdb.SignalEvent</code>具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-SignalEvent_002estop_005fsignal"><span class="category-def">变量： </span><span><strong class="def-name">SignalEvent.stop_signal</strong><a class="copiable-link" href="#index-SignalEvent_002estop_005fsignal"> &para;</a></span></dt>
+<dd><p>一个字符串，表示下级收到的信号。通过在<small class="sc">GDB</small>命令提示符中运行<code class="code">info signals</code>命令，可以获取可能的信号值列表。
+</p></dd></dl>
+
+<p>还发出<code class="code">gdb.BreakpointEvent</code>，它扩展了<code class="code">gdb.StopEvent</code>。
+</p>
+<p><code class="code">gdb.BreakpointEvent</code>事件表示一个或多个断点已被命中，并具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointEvent_002ebreakpoints"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointEvent.breakpoints</strong><a class="copiable-link" href="#index-BreakpointEvent_002ebreakpoints"> &para;</a></span></dt>
+<dd><p>一个序列，包含对所有被命中的断点（类型为<code class="code">gdb.Breakpoint</code>）的引用。
+有关<code class="code">gdb.Breakpoint</code>对象 的详细信息，请参阅 <a class="xref" href="Breakpoints-In-Python.html">使用Python操作断点</a>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointEvent_002ebreakpoint"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointEvent.breakpoint</strong><a class="copiable-link" href="#index-BreakpointEvent_002ebreakpoint"> &para;</a></span></dt>
+<dd><p>对第一个被命中的断点的引用。此属性是为了向后兼容而保留的，现在已被弃用，建议使用<code class="code">gdb.BreakpointEvent.breakpoints</code>属性。
+</p></dd></dl>
+
+</dd>
+<dt><code class="code">events.new_objfile</code></dt>

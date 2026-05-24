@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>选择漂亮打印机（使用GDB调试）</title>
+
+<meta name="description" content="选择漂亮打印机（使用GDB调试）">
+<meta name="keywords" content="选择漂亮打印机（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Writing-a-Pretty_002dPrinter.html" rel="next" title="编写漂亮打印机">
+<link href="Pretty-Printing-API.html" rel="prev" title="漂亮打印API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="选择漂亮打印机">
+<div class="nav-panel">
+<p>
+下一页：<a href="Writing-a-Pretty_002dPrinter.html" accesskey="n" rel="next">编写漂亮打印机</a>，上一页：<a href="Pretty-Printing-API.html" accesskey="p" rel="prev">漂亮打印API</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="选择漂亮打印机-1"><span>23.3.2.7选择漂亮打印机<a class="copiable-link" href="#选择漂亮打印机-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-选择-python-漂亮打印机"></a>
+
+<p><small class="sc">GDB</small>提供了几种注册漂亮打印机的方法：全局注册、按程序空间注册和按目标文件注册。在选择如何注册漂亮打印机时，一个好的规则是尽可能在最小的范围内注册它：也就是说，首先优先选择特定的目标文件，然后是程序空间，只有在万不得已的情况下才全局注册打印机。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-gdb_002epretty_005fprinters"><span class="category-def">变量：</span><span><strong class="def-name">gdb.pretty_printers</strong><a class="copiable-link" href="#index-gdb_002epretty_005fprinters"> &para;</a></span></dt>
+<dd><p>Python列表<code class="code">gdb.pretty_printers</code>包含一个函数或可调用对象的数组，这些函数或对象已通过添加操作注册为漂亮打印机。此列表中的打印机称为<code class="code">全局</code>打印机，在调试所有进程时都可用。
+</p></dd></dl>
+
+<p>每个<code class="code">gdb.Progspace</code>都包含一个<code class="code">pretty_printers</code>属性。
+每个<code class="code">gdb.Objfile</code>也包含一个<code class="code">pretty_printers</code>属性。
+</p>
+<p>这些列表上的每个函数都被传递一个单一的<code class="code">gdb.Value</code>参数，并且应该返回一个符合上述接口定义的漂亮打印机对象（请参阅 <a class="pxref" href="Pretty-Printing-API.html">漂亮打印API</a>）。如果一个函数不能为该值创建一个漂亮打印机，它应该返回<code class="code">None</code>。
+</p>
+<p><small class="sc">GDB</small>首先检查当前程序空间中每个<code class="code">gdb.Objfile</code>的<code class="code">pretty_printers</code>属性，并迭代调用该<code class="code">gdb.Objfile</code>列表中的每个启用的查找例程，直到它收到一个漂亮打印机对象。
+如果在目标文件列表中没有找到漂亮打印机，<small class="sc">GDB</small>然后搜索当前程序空间的漂亮打印机列表，调用每个启用的函数，直到返回一个对象。
+在这些列表用尽之后，它会尝试全局的<code class="code">gdb.pretty_printers</code>列表，再次调用每个启用的函数，直到返回一个对象。
+</p>
+<p>搜索目标文件的顺序未指定。对于给定的列表，函数总是从列表的头部开始调用，并按顺序迭代，直到列表末尾，或者返回一个打印机对象。
+</p>
+<p>由于各种原因，漂亮打印机可能无法正常工作。
+例如，底层数据结构可能已经改变，而漂亮打印机已经过时。
+</p>
+<p>损坏的漂亮打印机的后果足够严重，以至于<small class="sc">GDB</small>提供了启用和禁用单个打印机的支持。例如，如果<code class="code">打印帧参数</code>打开，并且任何参数使用损坏的打印机进行打印，那么回溯可能会变得非常难以阅读。
+</p>
+<p>通过将<code class="code">enabled</code>属性附加到注册的函数或可调用对象来启用和禁用漂亮打印机。如果此属性存在且其值为<code class="code">False</code>，则打印机被禁用，否则打印机被启用。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Writing-a-Pretty_002dPrinter.html">编写漂亮打印机</a>，上一页：<a href="Pretty-Printing-API.html">漂亮打印API</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

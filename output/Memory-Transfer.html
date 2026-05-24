@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>内存传输（使用GDB调试）</title>
+
+<meta name="description" content="内存传输（使用GDB调试）">
+<meta name="keywords" content="内存传输（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="特定协议的数据类型表示">
+<link href="struct-stat.html" rel="next" title="struct stat">
+<link href="Pointer-Values.html" rel="prev" title="指针值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="Memory-Transfer">
+<div class="nav-panel">
+<p>
+下一个：<a href="struct-stat.html" accesskey="n" rel="next">struct stat</a>，上一个：<a href="Pointer-Values.html" accesskey="p" rel="prev">指针值</a>，向上：<a href="Protocol_002dspecific-Representation-of-Datatypes.html" accesskey="u" rel="up">特定协议的数据类型表示</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="Memory-Transfer-1"><span>内存传输<a class="copiable-link" href="#Memory-Transfer-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-memory-transfer_002c-in-file_002di_002fo-protocol"></a>
+
+<p>使用内存读或写传输的结构化数据（例如，一个<code class="code">struct stat</code>）预期采用特定协议的格式，所有标量多字节数据类型均为大端序。在发送<code class="code">F</code>数据包之前，目标需要进行转换以达到这种表示形式，并且在<small class="sc">GDB</small>将内存传输到目标之前也需要进行转换操作。指向结构化数据的传输指针应随时指向已经进行过强制转换的数据。
+</p>
+
+</div>
+
+
+
+</body>
+</html>

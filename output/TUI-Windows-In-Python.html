@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的TUI窗口（使用GDB调试）</title>
+
+<meta name="description" content="Python中的TUI窗口（使用GDB调试）">
+<meta name="keywords" content="Python中的TUI窗口（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Disassembly-In-Python.html" rel="next" title="Python中的反汇编">
+<link href="Connections-In-Python.html" rel="prev" title="Python中的连接">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的TUI窗口">
+<div class="nav-panel">
+<p>
+下一页：<a href="Disassembly-In-Python.html" accesskey="n" rel="next">Python中的指令反汇编</a>，上一页：<a href="Connections-In-Python.html" accesskey="p" rel="prev">Python中的连接</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="实现新的TUI窗口"><span>23.3.2.40实现新的TUI窗口<a class="copiable-link" href="#实现新的TUI窗口"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python-TUI窗口"></a>
+
+<p>可以用Python实现新的TUI（参见 <a class="pxref" href="TUI.html"><small class="sc">GDB</small>文本用户界面</a>）窗口。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eregister_005fwindow_005ftype"><span class="category-def">函数： </span><span><strong class="def-name">gdb.register_window_type</strong> <var class="def-var-arguments">(name, factory)</var><a class="copiable-link" href="#index-gdb_002eregister_005fwindow_005ftype"> &para;</a></span></dt>
+<dd><p>因为TUI窗口是根据用户选择的布局创建和销毁的，所以通过向<small class="sc">GDB</small>注册一个工厂函数来实现新的窗口类型。
+</p>
+<p><var class="var">name</var>是新窗口的名称。尝试替换内置窗口之一是错误的，但其他窗口类型可以被替换。<var class="var">name</var>应该与正则表达式<code class="code">[a-zA-Z][-_.a-zA-Z0-9]*</code>匹配，尝试使用无效名称创建窗口是错误的。
+</p>
+<p><var class="var">function</var>是一个工厂函数，用于创建TUI窗口。它被调用时带有一个类型为<code class="code">gdb.TuiWindow</code>的参数，如下所述。它应该返回一个实现TUI窗口协议的对象，也如下所述。
+</p></dd></dl>
+
+<p>如上所述，当调用工厂函数时，会传递一个类型为<code class="code">gdb.TuiWindow</code>的对象。这个对象有这些方法和属性：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-TuiWindow_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">TuiWindow.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-TuiWindow_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>当这个窗口有效时，这个方法返回<code class="code">True</code>。当用户更改TUI布局时，在新布局中不再可见的窗口将被销毁。此时，<code class="code">gdb.TuiWindow</code>将不再有效，除了<code class="code">is_valid</code>之外的方法（和属性）将抛出异常。
+</p>
+<p>当使用<code class="code">tui disable</code>禁用TUI时（参见 <a class="pxref" href="TUI-Commands.html">tui disable</a>），窗口会被隐藏而不是销毁，但<code class="code">is_valid</code>仍然会返回<code class="code">False</code>，其他方法（和属性）仍然会抛出异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TuiWindow_002ewidth"><span class="category-def">变量： </span><span><strong class="def-name">TuiWindow.width</strong><a class="copiable-link" href="#index-TuiWindow_002ewidth"> &para;</a></span></dt>
+<dd><p>这个属性保存窗口的宽度。它是不可写的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TuiWindow_002eheight"><span class="category-def">变量： </span><span><strong class="def-name">TuiWindow.height</strong><a class="copiable-link" href="#index-TuiWindow_002eheight"> &para;</a></span></dt>
+<dd><p>这个属性保存窗口的高度。它是不可写的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TuiWindow_002etitle"><span class="category-def">变量： </span><span><strong class="def-name">TuiWindow.title</strong><a class="copiable-link" href="#index-TuiWindow_002etitle"> &para;</a></span></dt>
+<dd><p>这个属性保存窗口的标题，一个字符串。它通常显示在窗口上方。这个属性可以被修改。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-TuiWindow_002eerase"><span class="category-def">函数： </span><span><strong class="def-name">TuiWindow.erase</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-TuiWindow_002eerase"> &para;</a></span></dt>
+<dd><p>清除窗口的所有内容。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-TuiWindow_002ewrite"><span class="category-def">函数： </span><span><strong class="def-name">TuiWindow.write</strong> <var class="def-var-arguments">(string <span class="r">[</span>, full_window<span class="r">]</span>)</var><a class="copiable-link" href="#index-TuiWindow_002ewrite"> &para;</a></span></dt>
+<dd><p>将<var class="var">string</var>写入窗口。<var class="var">string</var>可以包含ANSI终端转义样式序列；<small class="sc">GDB</small>将根据终端情况进行适当转换。
+</p>
+<p>如果<var class="var">full_window</var>参数为<code class="code">True</code>，那么<var class="var">string</var>包含窗口的全部内容。这类似于在调用<code class="code">write</code>之前调用<code class="code">erase</code>，但避免了闪烁。
+</p></dd></dl>
+
+<p>你提供的工厂函数应该返回一个符合TUI窗口协议的对象。这些是可以在这个对象上调用的方法，下面将其称为“窗口对象”。下面记录的方法是可选的；如果对象没有实现这些方法之一，<small class="sc">GDB</small>不会尝试调用它。未来可能会向窗口协议中添加其他新方法。<small class="sc">GDB</small>保证它们将以小写字母开头，所以你可以用大写字母或下划线开始实现方法，以避免未来的冲突。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Window_002eclose"><span class="category-def">函数： </span><span><strong class="def-name">Window.close</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Window_002eclose"> &para;</a></span></dt>
+<dd><p>当TUI窗口关闭时，<code class="code">gdb.TuiWindow</code>对象将进入无效状态。此时，<small class="sc">GDB</small>将在窗口对象上调用<code class="code">close</code>方法。
+</p>
+<p>在调用这个方法之后，<small class="sc">GDB</small>将丢弃它对这个窗口对象的任何引用，并且不再在这个对象上调用方法。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Window_002erender"><span class="category-def">函数： </span><span><strong class="def-name">Window.render</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Window_002erender"> &para;</a></span></dt>
+<dd><p>在某些情况下，TUI窗口可能会改变大小。例如，如果用户调整终端大小或更改布局，就会发生这种情况。此时，表示将调用窗口对象上的<code class="code">render</code>方法。
+</p>
+<p>如果你的窗口旨在响应下级的变化而更新，你可能还需要注册事件监听器并将输出发送到<code class="code">gdb.TuiWindow</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Window_002ehscroll"><span class="category-def">函数： </span><span><strong class="def-name">Window.hscroll</strong> <var class="def-var-arguments">(num)</var><a class="copiable-link" href="#index-Window_002ehscroll"> &para;</a></span></dt>
+<dd><p>这是一个水平滚动窗口的请求。<var class="var">num</var>是滚动的量，负数表示向右滚动。在TUI模型中，是视口移动，而不是内容。正参数应该使视口向右移动，因此内容应该看起来向左移动。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Window_002evscroll"><span class="category-def">函数： </span><span><strong class="def-name">Window.vscroll</strong> <var class="def-var-arguments">(num)</var><a class="copiable-link" href="#index-Window_002evscroll"> &para;</a></span></dt>
+<dd><p>这是一个垂直滚动窗口的请求。<var class="var">num</var>是滚动的量，负数表示向后滚动。在TUI模型中，是视口移动，而不是内容。正参数应该使视口向下移动，因此内容应该看起来向上移动。
+</p></dd></dl>
+
+<a class="anchor" id="python_002dwindow_002dclick"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Window_002eclick"><span class="category-def">函数： </span><span><strong class="def-name">Window.click</strong> <var class="def-var-arguments">(x, y, button)</var><a class="copiable-link" href="#index-Window_002eclick"> &para;</a></span></dt>
+<dd><p>在这个窗口中鼠标点击时会调用这个函数。<var class="var">x</var>和<var class="var">y</var>是窗口内的鼠标坐标（基于0，从左上角开始），<var class="var">button</var>指定使用的鼠标按钮，其值可以是1（左键）、2（中键）或3（右键）。
+</p>
+<p>当通过关闭<code class="code">tui mouse-events</code>设置禁用TUI鼠标事件时（参见 <a class="pxref" href="TUI-Configuration.html#tui_002dmouse_002devents">设置tui mouse-events</a>），则不会调用<code class="code">click</code>。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Disassembly-In-Python.html">Python中的指令反汇编</a>，上一页：<a href="Connections-In-Python.html">Python中的连接</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

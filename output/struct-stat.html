@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>struct stat（使用GDB调试）</title>
+
+<meta name="description" content="struct stat（使用GDB调试）">
+<meta name="keywords" content="struct stat（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="特定协议的数据类型表示">
+<link href="struct-timeval.html" rel="next" title="struct timeval">
+<link href="Memory-Transfer.html" rel="prev" title="内存传输">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="struct-stat">
+<div class="nav-panel">
+<p>
+下一个：<a href="struct-timeval.html" accesskey="n" rel="next">struct timeval</a>，上一个：<a href="Memory-Transfer.html" accesskey="p" rel="prev">内存传输</a>，向上：<a href="Protocol_002dspecific-Representation-of-Datatypes.html" accesskey="u" rel="up">特定协议的数据类型表示</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+
+<h4 class="unnumberedsubsubsec" id="struct-stat-1"><span>struct stat<a class="copiable-link" href="#struct-stat-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-struct-stat_002c-in-file_002di_002fo-protocol"></a>
+
+<p>目标和GDB使用的类型为<code class="code">struct stat</code>的缓冲区定义如下：
+</p>
+<div class="example smallexample">
+
+<pre class="example-preformatted">struct stat {
+    unsigned int  st_dev;      /* 设备 */
+    unsigned int  st_ino;      /* inode */
+    mode_t        st_mode;     /* 保护 */ 
+    unsigned int st_nlink;    /* 硬链接数 */
+    unsigned int st_uid;      /* 所有者的用户ID */
+    unsigned int st_gid;      /* 所有者的组ID */
+    unsigned int st_rdev;     /* 设备类型（如果是inode设备） */
+    unsigned long st_size;     /* 总大小，以字节为单位 */
+    unsigned long st_blksize;  /* 文件系统I/O的块大小 */
+    unsigned long st_blocks;   /* 已分配的块数 */
+    time_t        st_atime;    /* 最后访问时间 */
+    time_t        st_mtime;    /* 最后修改时间 */
+    time_t        st_ctime;    /* 最后更改时间 */
+};
+</pre>
+
+</div>
+
+<p>整数数据类型符合相应章节中给出的定义（有关详细信息，请参阅 <a class="ref" href="Integral-Datatypes.html">整数数据类型</a>），因此这个结构的大小为64字节。
+</p>
+<p>几个字段的值具有受限的含义和/或值范围。
+</p>
+<dl class="table">
+<dt><code class="code">st_dev</code></dt>
+<dd><p>值0表示文件，1表示控制台。
+</p>
+</dd>
+<dt><code class="code">st_ino</code></dt>
+<dd><p>对目标没有有效意义。原样传输。
+</p>
+</dd>
+<dt><code class="code">st_mode</code></dt>
+<dd><p>有效的模式位在 <a class="ref" href="Constants.html">常量</a> 中描述。任何其他位目前对目标没有意义。
+</p>
+</dd>
+<dt><code class="code">st_uid</code></dt>
+<dt><code class="code">st_gid</code></dt>
+<dt><code class="code">st_rdev</code></dt>
+<dd><p>对目标没有有效意义。原样传输。
+</p>
+</dd>
+<dt><code class="code">st_atime</code></dt>
+<dt><code class="code">st_mtime</code></dt>
+<dt><code class="code">st_ctime</code></dt>
+<dd><p>这些值的精度取决于主机和文件系统。特别是在Windows主机上，文件系统可能不支持精确的时间值。
+</p></dd>
+</dl>
+
+<p>目标获取上述表示形式的 <code class="code">struct stat</code>，并负责在继续之前将其强制转换为目标表示形式。
+</p>
+<p>请注意，由于主机、目标和协议对 <code class="code">struct stat</code> 成员的表示形式之间存在大小差异，这些成员最终可能会在目标上被截断。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="struct-timeval.html">struct timeval</a>，上一个：<a href="Memory-Transfer.html">内存传输</a>，向上：<a href="Protocol_002dspecific-Representation-of-Datatypes.html">特定协议的数据类型表示</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

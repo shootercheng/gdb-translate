@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>行规范位置（使用GDB调试）</title>
+
+<meta name="description" content="行规范位置（使用GDB调试）">
+<meta name="keywords" content="行规范位置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Location-Specifications.html" rel="up" title="位置规范">
+<link href="Explicit-Locations.html" rel="next" title="显式位置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Linespec-Locations">
+<div class="nav-panel">
+<p>
+下一个：<a href="Explicit-Locations.html" accesskey="n" rel="next">显式位置</a>，上一个：<a href="Location-Specifications.html" accesskey="u" rel="up">位置规范</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Linespec-Locations-1"><span>9.2.1行规范位置<a class="copiable-link" href="#Linespec-Locations-removable"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-linespec-locations"></a>
+
+<p>一个<em class="dfn">行规范</em>是一个由冒号分隔的源位置参数列表，如文件名、函数名等。以下是指定行规范的所有不同方式：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">linenum</var></code></dt>
+<dd><p>指定当前源文件的行号<var class="var">linenum</var>。
+</p>
+</dd>
+<dt><code class="code">-<var class="var">offset</var></code></dt>
+<dt><code class="code">+<var class="var">offset</var></code></dt>
+<dd><p>指定在<em class="dfn">当前行</em>之前或之后<var class="var">offset</var>行的位置。对于<code class="code">list</code>命令，当前行是最后打印的那一行；对于断点命令，这是在当前选定的<em class="dfn">栈帧</em>中执行停止的行（有关栈帧的描述，请参见 <a class="pxref" href="Frames.html">帧</a>）。当用作<code class="code">list</code>命令中两个行规范中的第二个时，表示从第一个行规范向上或向下<var class="var">offset</var>行的位置。
+</p>
+</dd>
+<dt><code class="code"><var class="var">filename</var>:<var class="var">linenum</var></code></dt>
+<dd><p>指定源文件<var class="var">filename</var>中的行号<var class="var">linenum</var>。如果<var class="var">filename</var>是相对文件名，那么它将匹配任何具有相同尾部组件的源文件名。例如，如果<var class="var">filename</var>是‘<samp class="samp">gcc/expr.c</samp>’，那么它将匹配源文件名<samp class="file">/build/trunk/gcc/expr.c</samp>，但不匹配<samp class="file">/build/trunk/libcpp/expr.c</samp>或<samp class="file">/build/trunk/gcc/x-expr.c</samp>。
+</p>
+</dd>
+<dt><code class="code"><var class="var">function</var></code></dt>
+<dd><p>指定函数<var class="var">function</var>主体开始的行。例如，在C语言中，这是包含左花括号的行。
+</p>
+<p>默认情况下，在C++和Ada中，<var class="var">function</var>被解释为指定所有作用域中名为<var class="var">function</var>的所有函数。对于C++，这意味着在所有命名空间和类中。对于Ada，这意味着在所有包中。
+</p>
+<p>例如，假设有一个带有C++符号‘<code class="code">A::B::func</code>’和‘<code class="code">B::func</code>’的程序，命令<kbd class="kbd">break func</kbd><!-- /@w -->和<kbd class="kbd">break B::func</kbd><!-- /@w -->都会在这两个符号处设置断点。
+</p>
+<p>接受行规范的命令允许你使用<code class="code">-qualified</code>选项覆盖此行为。例如，<kbd class="kbd">break -qualified func</kbd><!-- /@w -->会在名为‘<code class="code">func</code>’且忽略任何名为‘<code class="code">func</code>’的C++类方法和命名空间函数的自由函数上设置断点。
+</p>
+<p>请参见 <a class="xref" href="Explicit-Locations.html">显式位置</a>。
+</p>
+</dd>
+<dt><code class="code"><var class="var">function</var>:<var class="var">label</var></code></dt>
+<dd><p>指定<var class="var">label</var>在<var class="var">function</var>中出现的行。
+</p>
+</dd>
+<dt><code class="code"><var class="var">filename</var>:<var class="var">function</var></code></dt>
+<dd><p>指定文件<var class="var">filename</var>中函数<var class="var">function</var>主体开始的行。当不同源文件中有同名函数时，你只需要文件名和函数名来避免歧义。
+</p>
+</dd>
+<dt><code class="code"><var class="var">label</var></code></dt>
+<dd><p>指定在与当前选定栈帧对应的函数中名为<var class="var">label</var>的标签出现的行。如果没有当前选定的栈帧（例如，如果下级程序未运行），则GDB不会搜索标签。
+</p>
+</dd>
+<dt><a id="index-breakpoint-at-static-probe-point"></a><span><code class="code">-pstap|-probe-stap <span class="r">[</span><var class="var">objfile</var>:<span class="r">[</span><var class="var">provider</var>:<span class="r">]</span><span class="r">]</span><var class="var">name</var></code><a class="copiable-link" href="#index-breakpoint-at-static-probe-point"> &para;</a></span></dt>
+<dd><p>GNU/Linux工具<code class="code">SystemTap</code>为应用程序提供了一种嵌入静态探测点的方法。有关查找和使用静态探测点的更多信息，请参见 <a class="xref" href="Static-Probe-Points.html">静态探测点</a>。这种形式的行规范指定了这样一个静态探测点的位置。
+</p>
+<p>如果给出了<var class="var">objfile</var>，则只考虑来自与<var class="var">objfile</var>作为正则表达式匹配的共享库或可执行文件的探测点。如果给出了<var class="var">provider</var>，则只考虑来自该提供者（provider）的探测点。如果有多个探测点与规范匹配，GDB将在每个匹配的探测点处插入一个断点。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Explicit-Locations.html">显式位置</a>，上一个：<a href="Location-Specifications.html">位置规范</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

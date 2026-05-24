@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。” -->
+<title>Guile中的符号（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的符号（使用GDB调试）">
+<meta name="keywords" content="Guile中的符号（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Symbol-Tables-In-Guile.html" rel="next" title="Guile中的符号表表示">
+<link href="Blocks-In-Guile.html" rel="prev" title="Guile中的块">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的符号">
+<div class="nav-panel">
+<p>
+下一页：<a href="Symbol-Tables-In-Guile.html" accesskey="n" rel="next">Guile中符号表的表示。</a>，上一页：<a href="Blocks-In-Guile.html" accesskey="p" rel="prev">从Guile访问块。</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="符号在Guile中的表示"><span>23.4.3.17 符号在Guile中的表示。<a class="copiable-link" href="#符号在Guile中的表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的符号"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asymbol_003e"></a>
+
+<p><small class="sc">GDB</small> 将每个变量、函数和类型表示为符号表中的一个条目。 请参阅 <a class="xref" href="Symbols.html">检查符号表</a>。
+Guile 使用 <code class="code">&lt;gdb:symbol&gt;</code> 对象在 <small class="sc">GDB</small> 中表示这些符号。
+</p>
+<p><code class="code">(gdb)</code> 模块提供了以下与符号相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-symbol_003f"> &para;</a></span></dt>
+<dd><p>如果 <var class="var">对象</var> 是 <code class="code">&lt;gdb:symbol&gt;</code> 类型的对象，则返回 <code class="code">#t</code>。
+否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dvalid_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-valid?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dvalid_003f"> &para;</a></span></dt> 
+<dd><p>如果 <code class="code">&lt;gdb:symbol&gt;</code> 对象有效，则返回 <code class="code">#t</code>，
+否则返回 <code class="code">#f</code>。 如果它所引用的符号在 <small class="sc">GDB</small> 中不再存在，则 <code class="code">&lt;gdb:symbol&gt;</code> 对象可能会变得无效。
+如果在调用过程时 <code class="code">&lt;gdb:symbol&gt;</code> 对象无效，所有其他 <code class="code">&lt;gdb:symbol&gt;</code> 过程将抛出异常</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-type</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dtype"> &para;</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 的类型，如果没有记录类型，则返回 <code class="code">#f</code>。
+结果是一个 <code class="code">&lt;gdb:type&gt;</code> 类型的对象。
+请参阅 <a class="xref" href="Types-In-Guile.html">Guile中的类型</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dsymtab"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-symtab</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dsymtab"> &para;</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 所在的符号表。
+结果是一个 <code class="code">&lt;gdb:symtab&gt;</code> 类型的对象。
+请参阅 <a class="xref" href="Symbol-Tables-In-Guile.html">Guile中符号表的表示。</a>。
+</p></dd></dl>
+
+<dl class="first-deffn"> 
+<dt class="deffn" id="index-symbol_002dline"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-line</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dline"> &para;</a></span></dt>
+<dd><p>返回定义 <var class="var">符号</var> 的源代码中的行号。
+这是一个整数。
+</p></dd></dl>
+
+<dl class="first-deffn"> 
+<dt class="deffn" id="index-symbol_002dname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dname"> &para;</a></span></dt>
+<dd><p>以字符串形式返回 <var class="var">符号</var> 的名称。
+</p></dd></dl>
+
+<dl class="first-deffn"> 
+<dt class="deffn" id="index-symbol_002dlinkage_002dname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-linkage-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dlinkage_002dname"> &para;</a></span></dt>
+<dd><p>返回链接器使用的 <var class="var">符号</var> 的名称（即，可能是经过编码的）。
+</p></dd></dl>
+
+<dl class="first-deffn"> 
+<dt class="deffn" id="index-symbol_002dprint_002dname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">symbol-print-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_00

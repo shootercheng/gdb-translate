@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>编辑（使用GDB调试）</title>
+
+<meta name="description" content="编辑（使用GDB调试）">
+<meta name="keywords" content="编辑（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Command-History.html" rel="next" title="命令历史">
+<link href="Prompt.html" rel="prev" title="提示符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="编辑">
+<div class="nav-panel">
+<p>
+下一页：<a href="Command-History.html" accesskey="n" rel="next">命令历史</a>，上一页：<a href="Prompt.html" accesskey="p" rel="prev">提示符</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令编辑"><span>22.2 命令编辑<a class="copiable-link" href="#命令编辑"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-readline"></a>
+<a class="index-entry-id" id="index-命令行编辑"></a>
+
+<p><small class="sc">GDB</small> 通过<em class="dfn">Readline</em> 接口读取其输入命令。 这个<small class="sc">GNU</small> 库为向用户提供命令行界面的程序提供了一致的行为。 优点包括<small class="sc">GNU</small> Emacs风格或<em class="dfn">vi</em> 风格的命令内联编辑、类似<code class="code">csh</code> 的历史替换，以及跨调试会话存储和调用命令历史。
+</p>
+<p>你可以使用<code class="code">set</code> 命令控制<small class="sc">GDB</small> 中命令行编辑的行为。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-编辑"></a>
+
+<a id="index-set-editing"></a><span><code class="code">set editing</code><a class="copiable-link" href="#index-set-editing"> &para;</a></span></dt>
+<dt><code class="code">set editing on</code></dt>
+<dd><p>启用命令行编辑（默认启用）。
+</p>
+</dd>
+<dt><code class="code">set editing off</code></dt>
+<dd><p>禁用命令行编辑。
+</p>
+</dd>
+<dt><a id="index-show-editing"></a><span><code class="code">show editing</code><a class="copiable-link" href="#index-show-editing"> &para;</a></span></dt>
+<dd><p>显示是否启用了命令行编辑。
+</p></dd>
+</dl>
+
+<p>有关Readline接口的更多详细信息，请参阅 <a class="xref" href="Command-Line-Editing.html">命令行编辑</a>。 鼓励不熟悉<small class="sc">GNU</small> Emacs或<code class="code">vi</code> 的用户阅读该章节。
+</p>
+<a class="index-entry-id" id="index-readline-应用程序名称"></a>
+<p><small class="sc">GDB</small> 将Readline应用程序名称设置为 &lsquo;<samp class="samp">gdb</samp>&rsquo;。 这对于 <samp class="file">.inputrc</samp> 中的条件很有用。
+</p>
+<a class="index-entry-id" id="index-operate_002dand_002dget_002dnext"></a>
+<p><small class="sc">GDB</small> 定义了一个可绑定的Readline命令，<code class="code">operate-and-get-next</code>。 默认情况下，它绑定到 <kbd class="kbd">C-o</kbd>。 此命令接受当前行进行执行，并从历史记录中获取相对于当前行的下一行进行编辑。 任何参数都将被忽略。
+</p>
+<p>使用 <kbd class="kbd">show configuration</kbd> 命令可以发现<small class="sc">GDB</small> 使用的是哪个版本的Readline（请参阅 <a class="pxref" href="Help.html#show-configuration">显示配置</a>）。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Command-History.html">命令历史</a>，上一页：<a href="Prompt.html">提示符</a>，向上：<a href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

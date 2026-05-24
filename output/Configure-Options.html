@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>配置选项（使用GDB调试）</title>
+
+<meta name="description" content="配置选项（使用GDB调试）">
+<meta name="keywords" content="配置选项（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">  
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Installing-GDB.html" rel="up" title="安装GDB">
+<link href="System_002dwide-configuration.html" rel="next" title="系统范围配置">
+<link href="Config-Names.html" rel="prev" title="配置名称">
+<style type="text/css">
+<!--  
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}  
+div.example {margin-left: 3.2em}  
+span.r {font-family: initial; font-weight: normal; font-style: normal}  
+span:hover a.copiable-link {visibility: visible}  
+-->  
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Configure-Options">
+<div class="nav-panel">
+<p>
+下一页：<a href="System_002dwide-configuration.html" accesskey="n" rel="next">系统范围配置和设置</a>，上一页：<a href="Config-Names.html" accesskey="p" rel="prev">为主机和目标指定名称</a>，向上：<a href="Installing-GDB.html" accesskey="u" rel="up">安装GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="configure-Options"><span>C.5 configure选项<a class="copiable-link" href="#configure-Options"> ¶</a></span></h3>
+
+<p>以下是configure选项和参数的总结，这些对于构建GDB最为常用。configure还有其他一些未在此列出的选项。有关configure的完整解释，请参阅 <a data-manual="autoconf" href="https://www.gnu.org/software/autoconf/manual/html_node/Running-configure-Scripts.html#Running-configure-Scripts">(autoconf)运行configure脚本</a>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">configure <span class="r">[</span>--help<span class="r">]</span>
+          <span class="r">[</span>--prefix=<var class="var">dir</var><span class="r">]</span>
+          <span class="r">[</span>--exec-prefix=<var class="var">dir</var><span class="r">]</span>
+          <span class="r">[</span>--srcdir=<var class="var">dirname</var><span class="r">]</span>
+          <span class="r">[</span>--target=<var class="var">target</var><span class="r">]</span>
+</pre></div>
+
+<p>如果您愿意，可以使用单个“<samp class="samp">-</samp>”而不是“<samp class="samp">--</samp>”来引入选项；但是如果使用“<samp class="samp">--</samp>”，则可以缩写选项名称。
+</p>
+<dl class="table">  
+<dt><code class="code">--help</code></dt>
+<dd><p>显示如何调用configure的快速摘要。
+</p>
+</dd>
+<dt><code class="code">--prefix=<var class="var">dir</var></code></dt>
+<dd><p>配置源文件，以便将程序和文件安装到目录<samp class="file"><var class="var">dir</var></samp>下。
+</p>
+</dd>
+<dt><code class="code">--exec-prefix=<var class="var">dir</var></code></dt>
+<dd><p>配置源文件，以便将程序安装到目录<samp class="file"><var class="var">dir</var></samp>下。
+</p>
+</dd>
+<dt><code class="code">--srcdir=<var class="var">dirname</var></code></dt>
+<dd><p>使用此选项在与GDB源目录分开的目录中进行配置。除其他事项外，您可以使用此选项在单独的目录中同时构建（或维护）多个配置。configure会在当前目录中写入特定于配置的文件，但会安排它们使用<var class="var">dirname</var>目录中的源文件。configure会在工作目录下创建与<var class="var">dirname</var>下的源目录并行的目录。
+</p>
+</dd>  
+<dt><code class="code">--target=<var class="var">target</var></code></dt>
+<dd><p>配置GDB以交叉调试在指定<var class="var">target</var>上运行的程序。如果没有此选项，GDB将被配置为调试在与GDB本身相同的机器（<var class="var">host</var>）上运行的程序。
+</p>
+<p>没有方便的方法来生成所有可用目标的列表。另请参阅下面的<code class="code">--enable-targets</code>选项。
+</p></dd>  
+</dl>
+
+<p>还有许多其他特定于GDB的选项。这里只列出了最常见的选项；还有一些非常特殊的选项未在此描述。
+</p>
+<dl class="table">  
+<dt><code class="code">--enable-targets=<span class="r">[</span><var class="var">target</var><span class="r">]</span>&hellip;</code></dt>
+<dt><code class="code">--enable-targets=all</code></dt>
+<dd><p>配置GDB以交叉调试在指定目标列表上运行的程序。特殊值“<samp class="samp">all</samp>”配置GDB以调试在其支持的任何目标上运行的程序。
+</p>
+</dd>  
+<dt><code class="code">--enable-binary-file-formats=<span class="r">[</span><var class="var">format</var><span class="r">]</span>&hellip;</code></dt>
+<dt><code class="code">--enable-binary-file-formats=all</code></dt>
+<dd><p>配置GDB以支持某些二进制文件格式。如果一种格式是给定目标的主要（或唯一）文件格式，configure脚本可能无论如何都会添加对它的支持，并警告用户。如果未给出，则编译GDB支持的所有文件格式。
+</p>
+</dd>  
+<dt><code class="code">--with-gdb-datadir=<var class="var">path</var></code></dt>
+<dd><p>设置特定于GDB的数据目录。GDB将在此处查找某些支持文件或脚本。这默认为“<samp class="samp">datadir</samp>”的“<samp class="file">gdb</samp>”子目录（可以使用<code class="code">--datadir</code>设置）。
+</p>
+</dd>  
+<dt><code class="code">--with-relocated-sources=<var class="var">dir</var></code></dt>  
+<dd><p>设置默认的源路径替换规则，以便调试信息中记录的目录名称将针对<var class="var">dir</var>下的任何目录自动调整。<var class="var">dir</var>应该是GDB配置前缀的子目录，即configure的<code class="code">--prefix</code>或<code class="code">--exec-prefix</code>选项中提到的前缀。如果GDB在构建后要移动到不同的位置，此选项很有用。
+</p>
+</dd>  
+<dt><code class="code">--enable-64-bit-bfd</code></dt>
+<dd><p>在32位主机上启用BFD中的64位支持。
+</p>
+</dd>  
+<dt><code class="code">--disable-gdbmi</code></dt>
+<dd><p>构建没有GDB/MI机器接口的GDB（请参阅 <a class="pxref" href="GDB_002fMI.html">GDB/MI接口</a>）。
+</p>
+</dd>  
+<dt><code class="code">--enable-tui</code></dt>
+<dd><p>构建具有文本模式全屏用户界面（TUI）的GDB。需要curses库（也支持ncurses和cursesX）。
+</p>
+</dd>  
+<dt><code class="code">--with-curses</code></dt>
+<dd><p>使用curses库而不是termcap库进行文本模式终端操作。
+</p>
+</dd>  
+<dt><code class="code">--with-debuginfod</code></dt>
+<dd><p>使用libdebuginfod（debuginfod客户端库）构建GDB。用于使用与任何缺失文件相关联的构建ID从debuginfod服务器自动获取ELF、DWARF和源文件。如果在配置时安装并找到libdebuginfod，则默认启用。有关debuginfod的更多信息，请参阅 <a class="ref" href="Debuginfod.html">使用Debuginfod下载调试资源</a>。
+</p>
+</dd>  
+<dt><code class="code">--with-libunwind-ia64</code></dt>
+<dd><p>在ia64目标平台上使用libunwind库展开函数调用堆栈。有关详细信息，请参阅 <a class="url" href="http://www.nongnu.org/libunwind/index.html">http://www.nongnu.org/libunwind/index.html</a>。
+</p>
+</dd>  
+<dt><code class="code">--with-system-readline</code></dt>
+<dd><p>使用主机上安装的readline库，而不是GDB提供的库。需要Readline 7或更高版本；构建系统会强制执行此要求。
+</p>
+</dd>  
+<dt><code class="code">--with-system-zlib</code></dt>
+<dd><p>使用主机上安装的zlib库，而不是GDB提供的库。
+</p>
+</dd>  
+<dt><code class="code">--with-expat</code></dt>
+<dd><p>使用Expat（一个用于XML解析的库）构建GDB。（如果在配置时安装并找到libexpat，则默认执行此操作。）此库用于读取GDB提供的XML文件。如果不可用，一些基于XML文件的功能，如远程协议内存映射、目标描述和共享库列表，在GDB中将不可用。如果您的主机没有安装libexpat，可以从 <a class="url" href="http://expat.sourceforge.net">http://expat.sourceforge.net</a> 获取最新版本。
+</p>
+</dd>  
+<dt><code class="code">--with-libiconv-prefix<span class="r">[</span>=<var class="var">dir</var><span class="r">]</span></code></dt>
+<dd><p>使用GNU libiconv（一个字符集编码转换库）构建GDB。默认情况下不这样做，因为在GNU系统上，C库中内置的<code class="code">iconv</code>就足够了。如果您的主机没有可用的<code class="code">iconv</code>，可以从 <a class="url" href="https://www.gnu.org/software/libiconv/">https://www.gnu.org/software/libiconv/</a> 获取最新版本的GNU iconv。
+</p>
+<p>GDB的构建系统还支持在整体构建中构建GNU libiconv。请参阅 <a class="xref" href="Requirements.html">构建GDB的要求</a>。
+</p>
+</dd>  
+<dt><code class="code">--with-lzma</code></dt>
+<dd><p>使用LZMA（一个压缩库）构建GDB。（如果在配置时安装并找到liblzma，则默认执行此操作。）LZMA用于GDB的“迷你调试信息”功能，该功能仅在使用ELF对象文件格式的平台上有用。如果您的主机没有安装liblzma，可以从 <a class="url" href="https://tukaani.org/xz/">https://tukaani.org/xz/</a> 获取最新版本。
+</p>
+</dd>  
+<dt><code class="code">--with-python<span class="r">[</span>=<var class="var">python</var><span class="r">]</span></code></dt>
+<dd><p>构建具有Python脚本支持的GDB。（如果在配置时存在并找到libpython，则默认执行此操作。）Python使GDB脚本比受限的CLI脚本语言强大得多。如果您的主机没有安装Python，可以在 <a class="url" href="http://www.python.org/download/">http://www.python.org/download/</a> 上找到它。GDB支持的最早版本的Python是3.4。可选参数<var class="var">python</var>用于查找Python头文件和库。它可以是Python可执行文件的名称，也可以是安装Python 的目录名称。
+</p>
+</dd>  
+<dt><code class="code">--with-guile[=<var class="var">guile</var>]</code></dt>
+<dd><p>构建具有GNU Guile脚本支持的GDB

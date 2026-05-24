@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>源文件（使用GDB调试）</title>
+
+<meta name="description" content="源文件（使用GDB调试）">
+<meta name="keywords" content="源文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Data.html" rel="next" title="数据">
+<link href="Stack.html" rel="prev" title="栈">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Source">
+<div class="nav-panel">
+<p>
+下一页：<a href="Data.html" accesskey="n" rel="next">检查数据</a>，上一页：<a href="Stack.html" accesskey="p" rel="prev">检查栈</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Examining-Source-Files"><span>9 检查源文件<a class="copiable-link" href="#Examining-Source-Files"> &para;</a></span></h2>
+
+<p><small class="sc">GDB</small>可以打印程序源文件的部分内容，因为程序中记录的调试信息会告诉<small class="sc">GDB</small>构建它时使用了哪些源文件。当你的程序停止时，<small class="sc">GDB</small>会自动打印它停止的那一行。同样，当你选择一个栈帧时（见<a class="pxref" href="Selection.html">选择一个帧</a>），<small class="sc">GDB</small>会打印该帧中执行停止的那一行。你可以通过显式命令打印源文件的其他部分。
+</p>
+<p>如果你通过其<small class="sc">GNU</small> Emacs界面使用<small class="sc">GDB</small>，你可能更喜欢使用Emacs工具来查看源文件；见<a class="ref" href="Emacs.html">在<small class="sc">GNU</small> Emacs下使用<small class="sc">GDB</small></a>。
+</p>
+
+<ul class="mini-toc">
+<li><a href="List.html" accesskey="1">打印源行</a></li>
+<li><a href="Location-Specifications.html" accesskey="2">位置规范</a></li>
+<li><a href="Edit.html" accesskey="3">编辑源文件</a></li>
+<li><a href="Search.html" accesskey="4">搜索源文件</a></li>
+<li><a href="Source-Path.html" accesskey="5">指定源目录</a></li>
+<li><a href="Machine-Code.html" accesskey="6">源文件和机器代码</a></li>
+<li><a href="Disable-Reading-Source.html" accesskey="7">禁用读取源代码</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

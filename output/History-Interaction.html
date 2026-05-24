@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>历史交互（使用GDB调试）</title>
+
+<meta name="description" content="历史交互（使用GDB调试）">
+<meta name="keywords" content="历史交互（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Using-History-Interactively.html" rel="up" title="交互式使用历史记录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="历史交互">
+<div class="nav-panel">
+<p>
+上一级：<a href="Using-History-Interactively.html" accesskey="u" rel="up">交互式使用历史记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][ <a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="历史扩展"><span>34.1历史扩展 <a class="copiable-link" href="#历史扩展"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-历史扩展"></a>
+
+<p>历史库提供了一个历史扩展功能，类似于<code class="code">csh</code>提供的历史扩展。本节描述用于操作历史信息的语法。
+</p>
+<p>历史扩展将历史列表中的单词引入输入流，从而便于重复命令、将前一个命令的参数插入到当前输入行中，或者快速修正前一个命令中的错误。
+</p>
+
+<p>历史扩展分两部分进行。第一部分是确定在替换时应使用历史列表中的哪一行。第二部分是选择该行的部分内容以包含到当前行中。从历史中选择的行称为<em class="dfn">事件</em>，对该行进行操作的部分称为<em class="dfn">单词</em>。有各种<em class="dfn">修饰符</em>可用于操作所选单词。该行以与Bash相同的方式拆分为单词，因此用引号括起来的几个单词被视为一个单词。历史扩展由历史扩展字符的出现引入，默认情况下该字符为&lsquo;<samp class="samp">!</samp>&rsquo;。
+</p>
+<p>历史扩展实现了类似shell的引用约定：反斜杠可用于取消对下一个字符的特殊处理；单引号括住字符的逐字序列，可用于禁止历史扩展；双引号内的字符可能会进行历史扩展，因为反斜杠可以转义历史扩展字符，但单引号不会，因为它们在双引号内不会被特殊处理。
+</p>
+
+
+
+<ul class="mini-toc">
+<li><a href="Event-Designators.html" accesskey="1">事件指示符</a></li>
+<li><a href="Word-Designators.html" accesskey="2">单词指示符</a></li>
+<li><a href="Modifiers.html" accesskey="3">修饰符</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一级：<a href="Using-History-Interactively.html">交互式使用历史记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][ <a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

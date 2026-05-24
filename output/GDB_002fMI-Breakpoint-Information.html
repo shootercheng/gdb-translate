@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI断点信息（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI断点信息（使用GDB调试）">
+<meta name="keywords" content="GDB/MI断点信息（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Frame-Information.html" rel="next" title="GDB/MI帧信息">
+<link href="GDB_002fMI-Async-Records.html" rel="prev" title="GDB/MI异步记录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Breakpoint-Information">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Frame-Information.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>帧信息</a>，上一页：<a href="GDB_002fMI-Async-Records.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>异步记录</a>，向上：<a href="GDB_002fMI-Output-Records.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>输出记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_002fmi-Breakpoint-Information"><span>27.5.4 <small class="sc">GDB/MI</small>断点信息<a class="copiable-link" href="#gdb_002fmi-Breakpoint-Information"> &para;</a></span></h4>
+
+<p>当<small class="sc">GDB</small>报告有关断点、跟踪点、观察点或捕获点的信息时，它使用一个包含以下字段的元组：
+</p>
+<dl class="table">
+<dt><code class="code">number</code></dt>
+<dd><p>断点编号。
+</p>
+</dd>
+<dt><code class="code">type</code></dt>
+<dd><p>断点的类型。对于普通断点，这将是&lsquo;<samp class="samp">breakpoint</samp>&rsquo;，但也可能有许多其他值。
+</p>
+</dd>
+<dt><code class="code">catch-type</code></dt>
+<dd><p>如果断点的类型是&lsquo;<samp class="samp">catchpoint</samp>&rsquo;，那么这个字段表示捕获点的确切类型。
+</p>
+</dd>
+<dt><code class="code">disp</code></dt>
+<dd><p>这是断点的处置方式&mdash;&mdash;要么是&lsquo;<samp class="samp">del</samp>&rsquo;，表示断点将在下一次停止时删除；要么是&lsquo;<samp class="samp">keep</samp>&rsquo;，表示断点不会被删除。
+</p>
+</dd>
+<dt><code class="code">enabled</code></dt>
+<dd><p>这个字段表示断点是否启用，启用时值为&lsquo;<samp class="samp">y</samp>&rsquo;，禁用时值为&lsquo;<samp class="samp">n</samp>&rsquo;。请注意，这与字段<code class="code">enable</code>不同。
+</p>
+</dd>
+<dt><code class="code">addr</code></dt>
+<dd><p>断点的地址。这可能是一个十六进制数，表示地址；或者是字符串&lsquo;<samp class="samp">&lt;PENDING&gt;</samp>&rsquo;，表示一个待决断点；或者是字符串&lsquo;<samp class="samp">&lt;MULTIPLE&gt;</samp>&rsquo;，表示一个具有多个位置的断点。如果无法确定地址，则不会出现此字段。例如，观察点没有地址。
+</p>
+</dd>
+<dt><code class="code">addr_flags</code></dt>
+<dd><p>可选字段，包含与地址相关的任何标志。这些标志依赖于体系结构；有关特定CPU的含义，请参阅<a class="ref" href="Architectures.html">体系结构</a>。
+</p>
+</dd>
+<dt><code class="code">func</code></dt>
+<dd><p>如果已知，断点所在的函数。如果未知，则此字段不存在。
+</p>
+</dd>
+<dt><code class="code">filename</code></dt>
+<dd><p>包含此函数的源文件的名称（如果已知）。如果未知，则此字段不存在。
+</p>
+</dd>
+<dt><code class="code">fullname</code></dt>
+<dd><p>包含此函数的源文件的完整文件名（如果已知）。如果未知，则此字段不存在。
+</p>
+</dd>
+<dt><code class="code">line</code></dt>
+<dd><p>断点出现的行号（如果已知）。如果未知，则此字段不存在。
+</p>
+</dd>
+<dt><code class="code">at</code></dt>
+<dd><p>如果源文件未知，则可能会提供此字段。如果提供了，它将包含断点的地址，后面可能跟着一个符号名称。
+</p>
+</dd>
+<dt><code class="code">pending</code></dt>
+<dd><p>如果此断点是待决的，则此字段存在，并包含用户输入的用于设置断点的文本。
+</p>
+<p><small class="sc">GDB</small>的内部断点（请参阅<a class="pxref" href="Maintenance-Commands.html#maint-info-breakpoints">maint info breakpoints</a>）有时也可能变为待决状态，对于这些断点，<var class="var">pending</var>字段将为空，因为<small class="sc">GDB</small>会在加载共享库时自动创建这些断点。
+</p>
+</dd>
+<dt><code class="code">evaluated-by</code></dt>
+<dd><p>此断点的条件在何处求值，要么是&lsquo;<samp class="samp">host</samp>&rsquo;，要么是&lsquo;<samp class="samp">target</samp>&rsquo;。
+</p>
+</dd>
+<dt><code class="code">thread</code></dt>
+<dd><p>如果这是一个特定于线程的断点，那么这个字段标识断点可以触发的线程。
+</p>
+</dd>
+<dt><code class="code">inferior</code></dt>
+<dd><p>如果这是一个特定于进程的断点，那么这个字段标识断点可以触发的进程。
+</p>
+</dd>
+<dt><code class="code">task</code></dt>
+<dd><p>如果此断点限于特定的Ada任务，则此字段将包含任务标识符。
+</p>
+</dd>
+<dt><code class="code">cond</code></dt>
+<dd><p>如果断点是有条件的，这就是条件表达式。
+</p>
+</dd>
+<dt><code class="code">ignore</code></dt>
+<dd><p>断点的忽略计数。
+</p>
+</dd>

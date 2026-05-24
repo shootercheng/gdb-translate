@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Readline vi模式（使用GDB调试）</title>
+
+<meta name="description" content="Readline vi模式（使用GDB调试）">
+<meta name="keywords" content="Readline vi模式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Command-Line-Editing.html" rel="up" title="命令行编辑">
+<link href="Bindable-Readline-Commands.html" rel="prev" title="可绑定的Readline命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique} 
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Readline-vi模式">
+<div class="nav-panel">
+<p>
+上一个：<a href="Bindable-Readline-Commands.html" accesskey="p" rel="prev">可绑定的Readline命令</a>，向上：<a href="Command-Line-Editing.html" accesskey="u" rel="up">命令行编辑</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]
+</p>
+</div>
+<hr>
+<h3 class="section" id="Readline-vi模式-1"><span>33.5 Readline vi模式<a class="copiable-link" href="#Readline-vi模式-1"> &para;</a></span></h3>
+
+<p>虽然Readline库没有完整的<code class="code">vi</code>编辑功能集，但它包含的功能足以允许对行进行简单编辑。Readline的<code class="code">vi</code>模式的行为符合<small class="sc">POSIX</small>标准的规定。
+</p>
+<p>要在<code class="code">emacs</code>和<code class="code">vi</code>编辑模式之间进行交互式切换，请使用命令<kbd class="kbd">M-C-j</kbd>（在<code class="code">vi</code>模式下绑定到emacs编辑模式，在<code class="code">emacs</code>模式下绑定到vi编辑模式）。Readline的默认模式是<code class="code">emacs</code>模式。
+</p>
+<p>当你在<code class="code">vi</code>模式下输入一行时，你已经处于“插入”模式，就好像你输入了一个“<samp class="samp">i</samp>”。按下<kbd class="key">ESC</kbd>会将你切换到“命令”模式，在该模式下你可以使用标准的<code class="code">vi</code>移动键编辑该行的文本，使用“<samp class="samp">k</samp>”移动到上一个历史行，使用“<samp class="samp">j</samp>”移动到后续行，等等。
+</p>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>PowerPC（使用GDB调试）</title>
+
+<meta name="description" content="PowerPC（使用GDB调试）">
+<meta name="keywords" content="PowerPC（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部"> 
+<link href="Concept-Index.html" rel="index" title="概念索引"> 
+<link href="index.html#SEC_Contents" rel="contents" title="目录"> 
+<link href="Architectures.html" rel="up" title="架构"> 
+<link href="Sparc64.html" rel="next" title="Sparc64"> 
+<link href="HPPA.html" rel="prev" title="HPPA"> 
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="PowerPC">
+<div class="nav-panel">
+<p>
+下一页：<a href="Sparc64.html" accesskey="n" rel="next">Sparc64</a>, 上一页：<a href="HPPA.html" accesskey="p" rel="prev">HPPA</a>, 向上：<a href="Architectures.html" accesskey="u" rel="up">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>   
+<hr>
+<h4 class="subsection" id="PowerPC-1"><span>21.4.6 PowerPC<a class="copiable-link" href="#PowerPC-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-PowerPC-architecture"></a>
+
+<p>当GDB调试PowerPC架构时，它提供了一组伪寄存器，用于检查存储在浮点寄存器中的128位宽十进制浮点数。这些值必须存储在两个连续的寄存器中，并且总是从偶数寄存器开始，如<code class="code">f0</code>或<code class="code">f2</code>。
+</p>
+<p>伪寄存器从<code class="code">$dl0</code>到<code class="code">$dl15</code>，由连接偶数/奇数寄存器对组成，对于<code class="code">$dl0</code>是<code class="code">f0</code>和<code class="code">f1</code>，对于<code class="code">$dl1</code>是<code class="code">f2</code>和<code class="code">f3</code>，依此类推。
+</p>
+<p>对于POWER7处理器，GDB提供了一组伪寄存器，即64位宽的扩展浮点寄存器（从‘<samp class="samp">f32</samp>’到‘<samp class="samp">f63</samp>’）。
+</p>
+</div>
+
+
+
+</body>
+</html>

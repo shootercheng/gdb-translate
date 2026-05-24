@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>工作目录（使用GDB调试）</title>
+
+<meta name="description" content="工作目录（使用GDB调试）">
+<meta name="keywords" content="工作目录（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Input_002fOutput.html" rel="next" title="输入/输出">
+<link href="Environment.html" rel="prev" title="环境">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="工作目录">
+<div class="nav-panel">
+<p>
+下一页：<a href="Input_002fOutput.html" accesskey="n" rel="next">你的程序的输入和输出</a>，上一页：<a href="Environment.html" accesskey="p" rel="prev">你的程序的环境</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="你的程序的工作目录"><span>4.5你的程序的工作目录<a class="copiable-link" href="#你的程序的工作目录"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-工作目录-（你的程序的）"></a>
+<p>每次你使用<code class="code">run</code>启动程序时，调试对象将使用由<kbd class="kbd">set cwd</kbd>命令指定的当前工作目录进行初始化 如果此命令未指定任何目录，那么在本地调试时，调试对象将继承GDB的当前工作目录作为其工作目录；在远程调试时，它将继承远程服务器的当前工作目录。
+</p>
+<dl class="table">
+<dd><a class="index-entry-id" id="索引-set-cwd"></a>
+<a class="index-entry-id" id="索引-更改调试对象的工作目录"></a>
+<a class="anchor" id="set-cwd命令"></a></dd>
+<dt><code class="code">set cwd <span class="r">[</span><var class="var">目录</var><span class="r">]</span></code></dt>
+<dd><p>将调试对象的工作目录设置为<var class="var">目录</var>，该目录将进行路径名展开以解析波浪号（<samp class="file">~</samp>）。如果未指定任何参数，该命令将清除设置并将其重置为空状态。此设置对GDB的工作目录没有影响，并且仅在你下次启动调试对象时生效。<var class="var">目录</var>中的<samp class="file">~</samp>是<em class="dfn">主目录</em>的缩写，通常由<code class="env">HOME</code>环境变量指向。在MS-Windows上，如果未定义<code class="env">HOME</code>，GDB将使用<code class="env">HOMEDRIVE</code>和<code class="env">HOMEPATH</code>的拼接作为备用。
+</p>
+<p>你也可以使用<code class="code">cd</code>命令更改GDB的当前工作目录。
+请参阅 <a class="xref" href="#cd命令">cd命令</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-显示调试对象的工作目录"></a>
+<a id="索引-show-cwd"></a><span><code class="code">show cwd</code><a class="copiable-link" href="#索引-show-cwd"> &para;</a></span></dt>
+<dd><p>显示调试对象的工作目录。如果未通过<kbd class="kbd">set cwd</kbd>指定任何目录，那么默认调试对象的工作目录与GDB的工作目录相同。
+</p>
+<a class="index-entry-id" id="索引-cd"></a>
+<a class="index-entry-id" id="索引-更改GDB_0027s工作目录"></a>
+<a class="anchor" id="cd命令"></a></dd>
+<dt><code class="code">cd <span class="r">[</span><var class="var">目录</var><span class="r">]</span></code></dt>
+<dd><p>将GDB工作目录设置为<var class="var">目录</var>。如果未给出，<var class="var">目录</var>使用<samp class="file">'~'</samp>。
+</p>
+<p>GDB工作目录用作指定GDB操作文件的命令的默认目录。
+请参阅 <a class="xref" href="Files.html">指定文件的命令</a>。
+请参阅 <a class="xref" href="#set-cwd命令">set cwd命令</a>。
+</p>
+</dd>
+<dt><a id="索引-pwd"></a><span><code class="code">pwd</code><a class="copiable-link" href="#索引-pwd"> &para;</a></span></dt>
+<dd><p>打印GDB工作目录。
+</p></dd>
+</dl>
+
+<p>通常无法找到正在调试的进程的当前工作目录（因为程序在运行期间可以更改其目录）。如果你在GDB支持<code class="code">info proc</code>命令的系统上工作（请参阅 <a class="pxref" href="Process-Information.html">进程信息</a>），你可以使用<code class="code">info proc</code>命令找出被调试程序的当前工作目录。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Input_002fOutput.html">你的程序的输入和输出</a>，上一页：<a href="Environment.html">你的程序的环境</a>，向上：<a href="Running.html">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

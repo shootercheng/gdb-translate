@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>提示符（使用GDB调试）</title>
+
+<meta name="description" content="提示符（使用GDB调试）">
+<meta name="keywords" content="提示符（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Editing.html" rel="next" title="编辑">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="提示符">
+<div class="nav-panel">
+<p>
+下一个：<a href="Editing.html" accesskey="n" rel="next">命令编辑</a>，上一个：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="提示符-1"><span>22.1 提示符<a class="copiable-link" href="#提示符-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-提示符"></a>
+
+<p><small class="sc">GDB</small> 通过打印一个称为 <em class="dfn">提示符</em> 的字符串来表明它已准备好读取命令。这个字符串通常是 &lsquo;<samp class="samp">(gdb)</samp>&rsquo;。你可以使用 <code class="code">set prompt</code> 命令更改提示符字符串。例如，当使用 <small class="sc">GDB</small> 调试 <small class="sc">GDB</small> 时，在其中一个 <small class="sc">GDB</small> 会话中更改提示符是很有用的，这样你就可以始终知道你正在与哪个会话进行交互。
+</p>
+<p><em class="emph">注意：</em> <code class="code">set prompt</code> 不会在你设置的提示符后面为你添加一个空格。这使你可以设置以空格结尾或不以空格结尾的提示符。
+</p>
+<dl class="table">
+<dt><a id="索引-set-prompt"></a><span><code class="code">set prompt <var class="var">新提示符</var></code><a class="copiable-link" href="#索引-set-prompt"> &para;</a></span></dt>
+<dd><p>指示 <small class="sc">GDB</small> 从此以后使用 <var class="var">新提示符</var> 作为其提示符字符串。
+</p>
+<p>例如，这将设置一个蓝色的 &ldquo;(gdb)&rdquo; 提示符：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set prompt \001\033[0;34m\002(gdb)\001\033[0m\002
+</pre></div>
+
+<p>它使用 &lsquo;<samp class="samp">\001</samp>&rsquo; 和 &lsquo;<samp class="samp">\002</samp>&rsquo; 来开始和结束一系列非打印字符，以确保它们不会被计入字符串长度。
+</p>
+</dd>
+<dt><a id="索引-show-prompt"></a><span><code class="code">show prompt</code><a class="copiable-link" href="#索引-show-prompt"> &para;</a></span></dt>
+<dd><p>打印如下形式的一行：&lsquo;<samp class="samp">Gdb的提示符是：<var class="var">你的提示符</var></samp>&rsquo;
+</p></dd>
+</dl>
+
+<p>启用了Python脚本的 <small class="sc">GDB</small> 版本有提示符扩展。与这些扩展进行交互的命令是：
+</p>
+<dl class="table">
+<dt><a id="索引-set-extended_002dprompt"></a><span><code class="code">set extended-prompt <var class="var">提示符</var></code><a class="copiable-link" href="#索引-set-extended_002dprompt"> &para;</a></span></dt>
+<dd><p>设置一个允许替换的扩展提示符。有关可用于替换的转义序列列表，请参阅 <a class="xref" href="gdb_002eprompt.html">gdb.prompt</a>。每次显示提示符时，作为提示符字符串一部分指定的任何转义序列都会被替换为相应的字符串。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set extended-prompt 当前工作目录：\w (gdb)
+</pre></div>
+
+<p>请注意，设置扩展提示符时，它会控制 <var class="var">prompt_hook</var> 钩子。有关更多信息，请参阅 <a class="xref" href="Basic-Python.html#prompt_005fhook">prompt_hook</a>。
+</p>
+</dd>
+<dt><a id="索引-show-extended_002dprompt"></a><span><code class="code">show extended-prompt</code><a class="copiable-link" href="#索引-show-extended_0

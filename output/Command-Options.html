@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!--由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>命令选项（使用GDB调试）</title>
+
+<meta name="description" content="命令选项（使用GDB调试）">
+<meta name="keywords" content="命令选项（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Commands.html" rel="up" title="命令">
+<link href="Help.html" rel="next" title="帮助">
+<link href="Filename-Arguments.html" rel="prev" title="文件名参数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="命令选项">
+<div class="nav-panel">
+<p>
+下一个：<a href="Help.html" accesskey="n" rel="next">获取帮助</a>，上一个：<a href="Filename-Arguments.html" accesskey="p" rel="prev">作为命令参数的文件名</a>，向上：<a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令选项"><span>3.5命令选项<a class="copiable-link" href="#命令选项"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-命令选项"></a>
+<p>一些命令接受以破折号开头的选项。例如，<code class="code">print -pretty</code>。与命令名类似，如果缩写明确，你可以将GDB选项缩写为选项名的前几个字母，并且你还可以使用<kbd class="key">TAB</kbd>键让GDB补全选项中单词的其余部分（或者，如果有多种可能性，向你展示可用的替代项）。
+</p>
+<a class="index-entry-id" id="索引-命令选项_002c-原始输入"></a>
+<p>一些命令将原始输入作为参数。例如，print命令处理GDB支持的任何语言中的任意表达式。对于这样的命令，由于原始输入可能以破折号开头，这可能会与选项或其任何缩写混淆，例如<code class="code">print -p</code>（<code class="code">print -pretty</code>的缩写或打印负数<code class="code">p</code>？），如果你指定任何命令选项，那么你必须使用双破折号（<code class="code">--</code>）分隔符来表示选项的结束。
+</p>
+<a class="index-entry-id" id="索引-命令选项_002c-布尔值"></a>
+
+<p>一些选项被描述为接受一个可以是<code class="code">on</code>或<code class="code">off</code>的参数。这些被称为<em class="dfn">布尔选项</em>。与布尔设置命令类似，<code class="code">on</code>和<code class="code">off</code>是典型值，但<code class="code">1</code>、<code class="code">yes</code>和<code class="code">enable</code>中的任何一个也可以用作“真”值，<code class="code">0</code>、<code class="code">no</code>和<code class="code">disable</code>中的任何一个也可以用作“假”值。你也可以省略“真”值，因为它默认隐含。
+</p>
+<p>例如，这些是等效的：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -object on -pretty off -element unlimited -- *myptr<br />(gdb) p -o -p 0 -e u -- *myptr</pre></div>
+
+<p>你可以通过在命令名后输入破折号并按下<kbd class="key">TAB</kbd>键来发现某个命令接受的选项集。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -<kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><br />-address         -max-depth               -object          -static-members<br />-array           -memory-tag-violations   -pretty          -symbol<br />-array-indexes   -nibbles                 -raw-values      -union<br />-elements        -null-stop               -repeats         -vtbl</pre></div>
+
+<p>在某些情况下，补全将用关于选项期望何种类型参数的建议来引导你。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -elements <kbd class="key">TAB</kbd><kbd class="key">TAB</kbd><br />NUMBER     unlimited</pre></div>
+
+<p>这里，选项期望一个数字（例如，<code class="code">100</code>），而不是字面的<code class="code">NUMBER</code>。这样的元语法参数总是以大写形式呈现。
+</p>
+<p>（有关使用print命令的更多信息，请参阅 <a class="ref" href="Data.html">检查数据</a>。）
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Help.html">获取帮助</a>，上一个：<a href="Filename-Arguments.html">作为命令参数的文件名</a>，向上：<a href="Commands.html"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

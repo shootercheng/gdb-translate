@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>优化代码（使用GDB调试）</title>
+
+<meta name="description" content="优化代码（使用GDB调试）">
+<meta name="keywords" content="优化代码（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Macros.html" rel="next" title="宏">
+<link href="Data.html" rel="prev" title="数据">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Optimized-Code">  
+<div class="nav-panel">
+<p>
+下一章：<a href="Macros.html" accesskey="n" rel="next">C预处理器宏</a>，上一章：<a href="Data.html" accesskey="p" rel="prev">检查数据</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Debugging-Optimized-Code"><span>11 调试优化后的代码<a class="copiable-link" href="#Debugging-Optimized-Code"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-optimized-code_002c-debugging"></a>
+<a class="index-entry-id" id="index-debugging-optimized-code"></a>
+
+<p>几乎所有编译器都支持优化。在禁用优化的情况下，编译器会以一种简单的方式生成与你的源代码直接对应的汇编代码。随着编译器应用更强大的优化，生成的汇编代码会与你原来的源代码产生差异。借助编译器生成的调试信息，<small class="sc">GDB</small>可以从正在运行的程序映射回你原来源代码中的结构。
+</p>
+<p><small class="sc">GDB</small>在禁用优化时更准确。如果你可以在不进行优化的情况下重新编译，那么在调试期间跟踪程序的进展会更容易。但是，在很多情况下你可能需要调试优化后的版本。
+</p>
+<p>当你调试使用&lsquo;<samp class="samp">-g -O</samp>&rsquo;编译的程序时，请记住优化器已经重新排列了你的代码；调试器向你展示的是实际存在的数据。当执行路径与你的源文件不完全匹配时，不要太惊讶！一个极端的例子：如果你定义了一个变量，但从未使用它，<small class="sc">GDB</small>根本看不到那个变量&mdash;&mdash;因为编译器将其优化掉了。
+</p>
+<p>有些功能在使用&lsquo;<samp class="samp">-g -O</samp>&rsquo;时不如仅使用&lsquo;<samp class="samp">-g</samp>&rsquo;时好用，特别是在具有指令调度的机器上。如果有疑问，可以仅使用&lsquo;<samp class="samp">-g</samp>&rsquo;重新编译，如果这样能解决问题，请将其作为一个错误报告给我们（包括一个测试用例！）。
+有关调试优化代码的更多信息，请参阅 <a class="xref" href="Variables.html">程序变量</a>。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Inline-Functions.html" accesskey="1">内联函数</a></li>
+<li><a href="Tail-Call-Frames.html" accesskey="2">尾调用帧</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一章：<a href="Macros.html">C预处理器宏</a>，上一章：<a href="Data.html">检查数据</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

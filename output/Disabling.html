@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>禁用（使用GDB调试）</title>
+
+<meta name="description" content="禁用（使用GDB调试）">
+<meta name="keywords" content="禁用（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Conditions.html" rel="next" title="条件">
+<link href="Delete-Breaks.html" rel="prev" title="删除断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="禁用">
+<div class="nav-panel">
+<p>
+下一页：<a href="Conditions.html" accesskey="n" rel="next">断点条件</a>，上一页：<a href="Delete-Breaks.html" accesskey="p" rel="prev">删除断点</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="禁用断点"><span>5.1.5 禁用断点<a class="copiable-link" href="#禁用断点"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-enable_002fdisable-a-breakpoint"></a>
+<p>你可能更倾向于 <em class="dfn">禁用</em> 断点、观察点或捕获点，而不是删除它们。这会使断点失效，就好像它已经被删除了一样，但会记住断点的信息，以便你以后可以再次 <em class="dfn">启用</em> 它。
+</p>
+<p>你可以使用 <code class="code">enable</code> 和 <code class="code">disable</code> 命令来禁用和启用断点、观察点、跟踪点和捕获点，还可以选择指定一个或多个断点编号作为参数。如果你不知道要使用哪些编号，可以使用 <code class="code">info break</code> 来打印所有断点、观察点、跟踪点和捕获点的列表。
+</p>
+<p>禁用和启用具有多个位置的断点会影响其所有位置。
+</p>
+<p>一个断点、观察点或捕获点可以有几种不同的启用状态：
+</p>
+<ul class="itemize mark-bullet">
+<li>已启用。断点会停止你的程序。使用 <code class="code">break</code> 命令设置的断点初始状态为已启用。
+</li><li>已禁用。断点对你的程序没有影响。
+</li><li>仅启用一次。断点会停止你的程序，但之后会变为已禁用状态。
+</li><li>按计数启用。断点会在接下来的N次停止你的程序，然后变为已禁用状态。
+</li><li>启用后删除。断点会停止你的程序，但在停止后会立即被永久删除。使用 <code class="code">tbreak</code> 命令设置的断点初始状态为已启用后删除。
+</li></ul>
+
+<p>你可以使用以下命令来启用或禁用断点、观察点、跟踪点和捕获点：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-dis-_0028disable_0029"></a>
+<a id="index-disable"></a><span><code class="code">disable <span class="r">[</span>breakpoints<span class="r">]</span> <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-disable"> &para;</a></span></dt>
+<dd><p>禁用指定的断点 —— 如果未列出，则禁用所有断点。已禁用的断点没有影响，但不会被遗忘。所有选项，如忽略计数、条件和命令，都会被记住，以防以后再次启用该断点时使用。你可以将 <code class="code">disable</code> 缩写为 <code class="code">dis</code>.
+</p>
+</dd>
+<dt><a id="index-enable"></a><span><code class="code">enable <span class="r">[</span>breakpoints<span class="r">]</span> <span class="r">[</span><var class="var">list</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#index-enable"> &para;</a></span></dt>
+<dd><p>启用指定的断点（或所有已定义的断点）。它们在停止你的程序时会再次生效。
+</p>
+</dd>
+<dt><code class="code">enable <span class="r">[</span>breakpoints<span class="r">]</span> once <var class="var">list</var>&hellip;</code></dt>
+<dd><p>临时启用指定的断点。GDB在停止你的程序后会立即禁用这些断点中的任何一个。
+</p>
+</dd>
+<dt><code class="code">enable <span class="r">[</span>breakpoints<span class="r">]</span> count <var class="var">count</var> <var class="var">list</var>&hellip;</code></dt>
+<dd><p>临时启用指定的断点。GDB会为每个指定的断点记录 <var class="var">count</var>，并在断点被命中时递减其计数。当任何计数达到0时，GDB会禁用该断点。如果一个断点有忽略计数（见 <a class="pxref" href="条件.html">断点条件</a>），在 <var class="var">count</var> 受到影响之前，它会递减到0。
+</p>
+</dd>
+<dt><code class="code">enable <span class="r">[</span>breakpoints<span class="r">]</span> delete <var class="var">list</var>&hellip;</code></dt>
+<dd><p>启用指定的断点使其工作一次，然后删除。一旦你的程序在那里停止，GDB会立即删除这些断点中的任何一个。使用 <code class="code">tbreak</code> 命令设置的断点初始状态为这种状态。
+</p></dd>
+</dl>
+
+<p>除了使用 <code class="code">tbreak</code> 设置的断点（见 <a class="pxref" href="设置断点.html">设置断点</a>），你设置的断点最初是启用的；随后，只有当你使用上述命令之一时，它们才会变为禁用或启用状态。（<code class="code">until</code> 命令可以设置和删除它自己的断点，但它不会改变你其他断点的状态；见 <a class="ref" href="继续和步进.html">继续和步进</a>）。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="条件.html">断点条件</a>，上一页：<a href="删除断点.html">删除断点</a>，向上：<a href="断点.html">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="概念索引.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

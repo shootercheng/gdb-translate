@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB中的线程（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB中的线程（使用GDB进行调试）">
+<meta name="keywords" content="GDB中的线程（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引"> 
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Exception-Handling.html" rel="next" title="异常处理"> 
+<link href="Basic-Python.html" rel="prev" title="基础Python"> 
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: - 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="GDB中的线程">
+<div class="nav-panel">
+<p>
+下一个：<a href="Exception-Handling.html" accesskey="n" rel="next">异常处理</a>，上一个：<a href="Basic-Python.html" accesskey="p" rel="prev">基础Python</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="GDB中的线程-1"><span>23.3.2.2 GDB中的线程<a class="copiable-link" href="#GDB中的线程-1"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small>不是线程安全的。如果你的Python程序使用多个线程，你必须小心，只在<small class="sc">GDB</small>线程中调用特定于<small class="sc">GDB</small>的函数。<small class="sc">GDB</small>提供了一些函数来帮助处理这个问题。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eblocked_005fsignals"><span class="category-def">函数：</span><span><strong class="def-name">gdb.blocked_signals</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eblocked_005fsignals"> &para;</a></span></dt>
+<dd><p>如前所述（见 <a class="pxref" href="基础Python.html">基础Python</a>），某些信号必须传递到<small class="sc">GDB</small>主线程。<code class="code">blocked_signals</code>函数返回一个上下文管理器，它将在进入时阻塞这些信号。这可以在启动新线程时使用，以确保在那里阻塞信号，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">with gdb.blocked_signals():
+   start_new_thread()
+</pre></div>
+</dd></dl>
+
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002eThread"><span class="category-def">类：</span><span><strong class="def-name">gdb.Thread</strong><a class="copiable-link" href="#index-gdb_002eThread"> &para;</a></span></dt>
+<dd><p>这是Python的 <code class="code">threading.Thread</code> 类的子类。它重写了 <code class="code">start</code> 方法以调用 <code class="code">blocked_signals</code>，这使得它成为一个易于使用的直接替代品，用于创建在<small class="sc">GDB</small>中能正常工作的线程。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einterrupt"><span class="category-def">函数：</span><span><strong class="def-name">gdb.interrupt</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002einterrupt"> &para;</a></span></dt>
+<dd><p>这会使<small class="sc">GDB</small>的行为就好像用户在终端输入了一个Control-C字符一样。也就是说，如果底层程序正在运行，它会被中断；如果一个<small class="sc">GDB</small>命令正在执行，则会停止；如果一个Python命令正在运行，将会引发 <code class="code">KeyboardInterrupt</code>。
+</p>
+<p>与<small class="sc">GDB</small>中的大多数Python API不同，<code class="code">interrupt</code>是线程安全的。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002epost_005fevent"><span class="category-def">函数：</span><span><strong class="def-name">gdb.post_event</strong> <var class="def-var-arguments">(event)</var><a class="copiable-link" href="#index-gdb_002epost_005fevent"> &para;</a></span></dt>
+<dd><p>将一个无参数的可调用对象<var class="var">event</var>放入<small class="sc">GDB</small>的内部事件队列中。这个可调用对象将在稍后的某个时间点，在<small class="sc">GDB</small>的事件处理过程中被调用。使用 <code class="code">post_event</code> 发布的事件将按照它们发布的顺序运行；但是，无法知道它们相对于<small class="sc">GDB</small>内部的其他事件何时会被处理。
+</p>
+<p>与<small class="sc">GDB</small>中的大多数Python API不同，<code class="code">post_event</code>是线程安全的。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python
+&gt;import threading
+&gt;
+&gt;class Writer():
+&gt; def __init__(self, message):
+&gt;        self.message = message;
+&gt; def __call__(self):
+&gt;        gdb.write(self.message)
+&gt;
+&gt;class MyThread1 (threading.Thread):
+&gt; def run (self):
+&gt;        gdb.post_event(Writer(&quot;Hello &quot;))
+&gt;
+&gt;class MyThread2 (threading.Thread):
+&gt; def run (self):
+&gt;        gdb.post_event(Writer(&quot;World\n&quot;))
+&gt;
+&gt;MyThread1().start()
+&gt;MyThread2().start()
+&gt;end
+(gdb) Hello World
+</pre></div>
+</dd></dl>
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Exception-Handling.html">异常处理</a>，上一个：<a href="Basic-Python.html">基础Python</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>PowerPC嵌入式（使用GDB调试）</title>
+
+<meta name="description" content="PowerPC嵌入式（使用GDB调试）">  
+<meta name="keywords" content="PowerPC嵌入式（使用GDB调试）"> 
+<meta name="resource-type" content="document"> 
+<meta name="distribution" content="global"> 
+<meta name="Generator" content="makeinfo"> 
+<meta name="viewport" content="width=device-width,initial-scale=1"> 
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="AVR.html" rel="next" title="Atmel AVR">
+<link href="OpenRISC-1000.html" rel="prev" title="OpenRISC 1000">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="PowerPC-嵌入式">
+<div class="nav-panel">
+<p>
+Next: <a href="AVR.html">Atmel AVR</a>, Previous: <a href="OpenRISC-1000.html">OpenRISC 1000</a>, Up: <a href="Embedded-Processors.html">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="PowerPC-嵌入式-1"><span>21.3.8 PowerPC嵌入式<a class="copiable-link" href="#PowerPC-嵌入式-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-DVC-寄存器"></a>
+<p><small class="sc">GDB</small>支持使用DVC（数据值比较）寄存器在硬件中实现以下形式的简单硬件观察点条件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch <var class="var">地址|变量</var> \
+  if  <var class="var">地址|变量</var> == <var class="var">常量表达式</var>
+</pre></div>
+
+<p>当<small class="sc">GDB</small>在条件表达式中检测到这种模式时，DVC寄存器将被自动使用，并且创建的观察点使用一个调试寄存器（要么<code class="code">exact - watchpoints</code>选项开启且变量是标量，要么变量长度为一个字节）。此功能在运行于Linux内核版本2.6.34或更高版本的原生<small class="sc">GDB</small>中可用。
+</p> 
+<p>在PowerPC嵌入式处理器上运行时，<small class="sc">GDB</small>会自动使用范围硬件观察点，除非<code class="code">exact - watchpoints</code>选项开启，在这种情况下，观察标量类型变量时会创建仅使用一个调试寄存器的观察点。
+</p>
+<p>你可以使用以下命令之一创建一个伪数组来观察任意内存区域（见 <a class="pxref" href="表达式.html">表达式</a>）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) watch *((char *) <var class="var">地址</var>)@<var class="var">长度</var>
+(gdb) watch {char[<var class="var">长度</var>]} <var class="var">地址</var>
+</pre></div>
+
+<p>PowerPC嵌入式处理器支持掩码观察点。有关在 <a class="ref" href="设置观察点.html">设置观察点</a> 中关于 <code class="code">mask</code> 参数的讨论。
+</p>
+<a class="index-entry-id" id="index-范围断点"></a>
+<p>PowerPC嵌入式处理器支持硬件加速的<em class="dfn">范围断点</em>。范围断点会在被调试程序在其设置的范围内的任何地址执行指令时停止其执行。要在<small class="sc">GDB</small>中设置范围断点，请使用<code class="code">break - range</code>命令。
+</p>
+<p><small class="sc">GDB</small>提供了以下特定于PowerPC的命令：
+</p>
+<dl class="table">
+<dt><a id="index-break_002drange"></a><span><code class="code">break - range <var class="var">起始位置规范</var>, <var class="var">结束位置规范</var></code><a class="copiable-link" href="#index-break_002drange"> ¶</a></span></dt>
+<dd><p>为给定的由<var class="var">起始位置规范</var>和<var class="var">结束位置规范</var>指定的地址范围设置断点，它们是位置规范。有关所有可能的位置规范形式列表，请参阅 <a class="xref" href="位置规范.html">位置规范</a>。<small class="sc">GDB</small>会解析<var class="var">起始位置规范</var>和<var class="var">结束位置规范</var>，并使用解析后的代码位置的地址作为要中断的范围的起始和结束地址。当被调试程序在起始和结束地址之间（包括两端）的任何地址执行指令时，该断点将停止其执行。如果<var class="var">起始位置规范</var>或<var class="var">结束位置规范</var>解析为程序中的多个代码位置，则该命令将出错并中止，不会创建断点。
+</p>
+</dd>
+<dt><a id="index-set-powerpc"></a><span><code class="code">set powerpc soft - float</code><a class="copiable-link" href="#index-set-powerpc"> ¶</a></span></dt>
+<dt><code class="code">show powerpc soft - float</code></dt>
+<dd><p>强制<small class="sc">GDB</small>使用（或不使用）软件浮点调用约定。默认情况下，<small class="sc">GDB</small>根据所选架构和提供的可执行文件选择调用约定。
+</p>
+</dd>
+<dt><code class="code">set powerpc vector - abi</code></dt>
+<dt><code class="code">show powerpc vector - abi</code></dt>
+<dd><p>强制<small class="sc">GDB</small>对向量参数和返回值使用指定的调用约定。有效的选项是&lsquo;<samp class="samp">auto</samp>&rsquo;；&lsquo;<samp class="samp">generic</samp>&rsquo;，即使存在向量寄存器也避免使用；&lsquo;<samp class="samp">altivec</samp>&rsquo;，使用AltiVec寄存器；以及&lsquo;<samp class="samp">spe</samp>&rsquo;使用SPE寄存器。默认情况下，<small class="sc">GDB</small>根据所选架构和提供的可执行文件选择调用约定。
+</p>
+</dd>
+<dt><code class="code">set powerpc exact - watchpoints</code></dt>
+<dt><code class="code">show powerpc exact - watchpoints</code></dt>
+<dd><p>允许<small class="sc">GDB</small>在观察标量类型变量时仅使用一个调试寄存器，从而假定该变量是通过其第一个字节的地址进行访问的。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="AVR.html">Atmel AVR</a>, Previous: <a href="OpenRISC-1000.html">OpenRISC 1000</a>, Up: <a href="Embedded-Processors.html">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

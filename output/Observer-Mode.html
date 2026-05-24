@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>观察模式（使用GDB调试）</title>
+
+<meta name="description" content="观察模式（使用GDB调试）">
+<meta name="keywords" content="观察模式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Interrupted-System-Calls.html" rel="prev" title="中断的系统调用">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Observer-Mode">
+<div class="nav-panel">
+<p>
+上一个：<a href="Interrupted-System-Calls.html" accesskey="p" rel="prev">中断的系统调用</a>，向上：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Observer-Mode-1"><span>5.5.6观察模式<a class="copiable-link" href="#Observer-Mode-1"> &para;</a></span></h4>
+
+<p>如果你想在不间断模式的基础上观察程序行为，而不让GDB有任何干扰的机会，你可以设置变量来禁用调试器所有修改状态的尝试，无论是通过写入内存、插入断点等。这些操作在底层进行，拦截所有命令的操作。
+</p>
+<p>当所有这些都设置为“off”时，GDB就处于所谓的<em class="dfn">观察模式</em>。为了方便起见，可以设置变量“observer”来禁用这些设置，并启用不间断模式。
+</p>
+<p>请注意，GDB不会阻止你进行这些设置的无意义组合。例如，如果启用了“may-insert-breakpoints”但禁用了“may-write-memory”，那么通过将陷阱指令写入代码流来工作的断点仍然无法设置。
+</p>
+<dl class="table">
+<dt><a id="index-observer"></a><span><code class="code">set observer on</code><a class="copiable-link" href="#index-observer"> &para;</a></span></dt>
+<dt><code class="code">set observer off</code></dt>
+<dd><p>设置为“on”时，这将禁用下面所有的权限变量（除了“insert-fast-tracepoints ”），并启用不间断调试。将其设置为“off”会切换回正常调试，不过仍保持不间断模式。
+</p>
+</dd>
+<dt><code class="code">show observer</code></dt>
+<dd><p>显示观察模式是开启还是关闭。
+</p>
+</dd>
+<dt><a id="index-may_002dwrite_002dregisters"></a><span><code class="code">set may-write-registers on</code><a class="copiable-link" href="#index-may_002dwrite_002dregisters"> &para;</a></span></dt>
+<dt><code class="code">set may-write-registers off</code></dt>
+<dd><p>这控制着GDB是否会尝试改变寄存器的值，比如使用“print”中的赋值表达式或“jump”命令。它默认设置为“on”。
+</p> </dd>
+<dt><code class="code">show may-write-registers</code></dt>
+<dd><p>显示当前写入寄存器的权限。
+</p>
+</dd>
+<dt><a id="index-may_002dwrite_002dmemory"></a><span><code class="code">set may-write-memory on</code><a class="copiable-link" href="#index-may_002dwrite_002dmemory"> &para;</a></span></dt>
+<dt><code class="code">set may-write-memory off</code></dt>
+<dd><p>这控制着GDB是否会尝试改变内存的内容, 比如使用“print”中的赋值表达式。它默认设置为“on”。
+</p>
+</dd>
+<dt><code class="code">show may-write-memory</code></dt>
+<dd><p>显示当前写入内存的权限。
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dbreakpoints"></a><span><code class="code">set may-insert-breakpoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dbreakpoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-breakpoints off</code></dt>
+<dd><p>这控制着GDB是否会尝试插入断点。这会影响所有断点，包括GDB定义的内部断点。它默认设置为“on”。
+</p>
+</dd>
+<dt><code class="code">show may-insert-breakpoints</code></dt>
+<dd><p>显示当前插入断点的权限。
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dtracepoints"></a><span><code class="code">set may-insert-tracepoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dtracepoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-tracepoints off</code></dt>
+<dd><p>这控制着GDB在跟踪实验开始时是否会尝试插入（常规）跟踪点。它只影响非快速跟踪点，快速跟踪点由“may-insert-fast-tracepoints”控制。它默认设置为“on ”。
+</p>
+</dd>
+<dt><code class="code">show may-insert-tracepoints</code></dt>
+<dd><p>显示当前插入跟踪点的权限。
+</p>
+</dd>
+<dt><a id="index-may_002dinsert_002dfast_002dtracepoints"></a><span><code class="code">set may-insert-fast-tracepoints on</code><a class="copiable-link" href="#index-may_002dinsert_002dfast_002dtracepoints"> &para;</a></span></dt>
+<dt><code class="code">set may-insert-fast-tracepoints off</code></dt>
+<dd><p>这控制着GDB在跟踪实验开始时是否会尝试插入快速跟踪点。它只影响快速跟踪点，常规（非快速）跟踪点由“may-insert-tracepoints”控制。它默认设置为“on”。
+</p>
+</dd>
+<dt><code class="code">show may-insert-fast-tracepoints</code></dt>
+<dd><p>显示当前插入快速跟踪点的权限。
+</p>
+</dd>
+<dt><a id="index-may_002dinterrupt"></a><span><code class="code">set may-interrupt on</code><a class="copiable-link" href="#index-may_002dinterrupt"> &para;</a></span></dt>
+<dt><code class="code">set may-interrupt off</code></dt>
+<dd><p>这控制着GDB是否会尝试中断或停止程序执行。当这个变量为“off”时，“interrupt”命令将没有效果，<kbd class="kbd">Ctrl-c</kbd>也一样。它默认设置为“on”。
+</p>
+</dd>
+<dt><code class="code">show may-interrupt</code></dt>
+<dd><p>显示当前中断或停止程序的权限。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Interrupted-System-Calls.html">中断的系统调用</a>，向上：<a href="Thread-Stops.html">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

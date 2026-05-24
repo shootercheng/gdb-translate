@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gdb-add-index手册（使用GDB调试）</title>
+
+<meta name="description" content="gdb-add-index手册（使用GDB调试）">
+<meta name="keywords" content="gdb-add-index手册（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdb_002dadd_002dindex-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gdb_002dadd_002dindex-1"><span>gdb-add-index<a class="copiable-link" href="#gdb_002dadd_002dindex-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-gdb_002dadd_002dindex"></a>
+<a class="anchor" id="gdb_002dadd_002dindex"></a>
+
+<p>gdb-add-index [-h | --help] [-v | --version] [--dwarf-5] <var class="var">文件名</var>
+</p>
+<p>当GDB找到一个符号文件时，它会扫描该文件中的符号，以便构建一个内部符号表。这使得大多数GDB操作能够快速运行，但代价是早期会有延迟。对于大型程序，这种延迟可能会相当长，因此GDB提供了一种构建索引的方法，以加快启动速度。
+</p>
+<p>要确定一个文件是否包含这样的索引，可以使用命令<kbd class="kbd">readelf -S 文件名</kbd>：索引存储在名为<code class="code">.gdb_index</code>的段中（DWARF 5之前），或者存储在<code class="code">.debug_names</code>和<code class="code">.debug_str</code>中（DWARF 5）。索引只能在使用ELF二进制文件和DWARF调试信息的系统上生成（即名为<code class="code">.debug_*</code>的段）。
+</p>
+<p>默认情况下，<code class="command">gdb-add-index</code>会将一个DWARF 5之前的<code class="code">.gdb_index</code>段添加到<var class="var">文件名</var>中。使用<samp class="option">--dwarf-5</samp>时，会添加DWARF 5段<code class="code">.debug_names</code>。
+</p>
+<p><var class="var">文件名</var>必须是可写的。
+</p>
+<p><code class="command">gdb-add-index</code>使用在<code class="env">PATH</code>环境变量中找到的GDB、<code class="command">objcopy</code>和<code class="command">readelf</code>。如果你想使用这些程序的不同版本，可以通过相应的环境变量指定它们（见下文）。
+</p>
+<p>如果<code class="command">gdb-add-index</code>成功为<var class="var">文件名</var>创建索引，它将以状态0退出；如果发生错误，则以大于0的状态退出。
+</p>
+<p>在《索引文件加速GDB》中查看更多内容。
+</p>
+<dl class="table"> 
+<dt><code class="env">--dwarf-5</code></dt>
+<dd><p>添加DWARF 5段而不是之前的<code class="code">.gdb_index</code>段。
+</p>
+</dd>
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项并给出简要解释。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dt><code class="env">-v</code></dt>
+<dd><p>打印版本信息然后退出。
+</p></dd>
+</dl>
+
+<dl class="table"> 
+<dt><code class="env">GDB</code></dt>
+<dd><p>用于生成索引的gdb程序的完整文件名。如果未设置，将在<code class="env">PATH</code>中搜索gdb程序。
+</p>
+</dd>
+<dt><code class="env">OBJCOPY</code></dt>
+<dd><p>用于将段信息复制到给定文件的objcopy程序的完整文件名。如果未设置，将在<code class="env">PATH</code>中搜索objcopy程序。
+</p>
+</dd>
+<dt><code class="env">READELF</code></dt>
+<dd><p>用于检查给定文件属性的readelf程序的完整文件名。如果未设置，将在<code class="env">PATH</code>中搜索readelf程序。
+</p></dd>
+</dl>
+
+
+<hr>
+<div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

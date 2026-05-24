@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>FreeBSD（使用GDB调试）</title>
+
+<meta name="description" content="FreeBSD（使用GDB调试）">
+<meta name="keywords" content="FreeBSD（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Native.html" rel="up" title="本地">
+<link href="Darwin.html" rel="prev" title="Darwin">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="FreeBSD">
+<div class="nav-panel">
+<p>
+上一个：<a href="Darwin.html" accesskey="p" rel="prev">Darwin</a>，向上：<a href="Native.html" accesskey="u" rel="up">本地</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="FreeBSD-"><span>21.1.7 FreeBSD<a class="copiable-link" href="#FreeBSD-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-FreeBSD"></a>
+
+<p>当FreeBSD内核中系统调用的ABI发生变化时，这是通过在现有编号处保留一个使用旧ABI的兼容系统调用，并为使用新ABI的版本分配一个新的系统调用编号来实现的。为了方便起见，当通过名称捕获系统调用时（见 <a class="pxref" href="Set-Catchpoints.html#catch-syscall">catch syscall</a>），兼容系统调用也会被捕获。
+</p>
+<p>例如，FreeBSD 12引入了 <code class="code">kevent</code> 系统调用 的一个新变体，通过名称捕获 <code class="code">kevent</code> 系统调用会捕获两个变体：
+</p>  
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall kevent
+捕获点1（系统调用 'freebsd11_kevent' [363] 'kevent' [560]）
+(gdb)
+</pre></div>
+
+
+</div>
+
+
+
+</body>
+</html>

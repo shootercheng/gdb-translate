@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变部分为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile API（使用GDB调试）</title>
+
+<meta name="description" content="Guile API（使用GDB调试）">
+<meta name="keywords" content="Guile API（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile.html" rel="up" title="Guile">
+<link href="Guile-Auto_002dloading.html" rel="next" title="Guile自动加载">
+<link href="Guile-Commands.html" rel="prev" title="Guile命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Guile-API">
+<div class="nav-panel">
+<p>
+下一页：<a href="Guile-Auto_002dloading.html" accesskey="n" rel="next">Guile自动加载</a>，上一页：<a href="Guile-Commands.html" accesskey="p" rel=".prev">Guile命令</a>，向上：<a href="Guile.html" accesskey="u" rel="up">使用Guile扩展<small class="sc">GDB</small></a>&nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Guile-API-1"><span>23.4.3 Guile API<a class="copiable-link" href="#Guile-API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-guile-api"></a>
+<a class="index-entry-id" id="index-programming-in-guile"></a>
+
+<p>你可以通过发出命令<kbd class="kbd">help guile</kbd><!-- /@w -->，或者在交互式Guile会话中发出命令<kbd class="kbd">,help</kbd>，来获取关于<small class="sc">GDB</small>的Guile API的快速在线帮助。此外，<small class="sc">GDB</small>提供的大多数Guile过程都有文档字符串，可以在Guile交互式提示符下使用<kbd class="kbd">,describe <var class="var">过程名</var></kbd>或<kbd class="kbd">,d <var class="var">过程名</var></kbd>来获取。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Basic-Guile.html" accesskey="1">基本Guile</a></li>
+<li><a href="Guile-Configuration.html" accesskey="2">Guile配置</a></li>
+<li><a href="GDB-Scheme-Data-Types.html" accesskey="3">GDB Scheme数据类型</a></li>
+<li><a href="Guile-Exception-Handling.html" accesskey="4">Guile异常处理</a></li>
+<li><a href="Values-From-Inferior-In-Guile.html" accesskey="5">Guile中来自下级的值</a></li>
+<li><a href="Arithmetic-In-Guile.html" accesskey="6">Guile中的算术运算</a></li>
+<li><a href="Types-In-Guile.html" accesskey="7">Guile中的类型</a></li>
+<li><a href="Guile-Pretty-Printing-API.html" accesskey="8">Guile漂亮打印API</a></li>
+<li><a href="Selecting-Guile-Pretty_002dPrinters.html" accesskey="9">选择Guile漂亮打印机</a></li>
+<li><a href="Writing-a-Guile-Pretty_002dPrinter.html">编写一个Guile漂亮打印机</a></li>
+<li><a href="Commands-In-Guile.html">Guile中的命令</a></li>
+<li><a href="Parameters-In-Guile.html">Guile中的参数</a></li>
+<li><a href="Progspaces-In-Guile.html">Guile中的程序空间</a></li>
+<li><a href="Objfiles-In-Guile.html">Guile中的目标文件</a></li>
+<li><a href="Frames-In-Guile.html">从Guile访问下级堆栈帧。</a></li>
+<li><a href="Blocks-In-Guile.html">从Guile访问块。</a></li>
+<li><a href="Symbols-In-Guile.html">符号的Guile表示。</a></li>
+<li><a href="Symbol-Tables-In-Guile.html">Guile中的符号表表示。</a></li>
+<li><a href="Breakpoints-In-Guile.html">使用Guile操作断点</a></li>
+<li><a href="Lazy-Strings-In-Guile.html">懒字符串的Guile表示。</a></li>
+<li><a href="Architectures-In-Guile.html">架构的Guile表示</a></li>
+<li><a href="Disassembly-In-Guile.html">Guile中的反汇编</a></li>
+<li><a href="I_002fO-Ports-in-Guile.html">Guile中的I/O端口</a></li>
+<li><a href="Memory-Ports-in-Guile.html">Guile中的内存端口</a></li>
+<li><a href="Iterators-In-Guile.html">Guile中的迭代器</a></li>
+<li><a href="Colors-In-Guile.html">Guile中的颜色</a></li> 
+</ul>
+</div>
+
+
+
+</body>
+</html>

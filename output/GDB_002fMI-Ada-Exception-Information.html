@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI Ada异常信息（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI Ada异常信息（使用GDB调试）">
+<meta name="keywords" content="GDB/MI Ada异常信息（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Thread-Information.html" rel="prev" title="GDB/MI线程信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible} 
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Ada-Exception-Information">
+<div class="nav-panel">
+<p>
+上一个：<a href="GDB_002fMI-Thread-Information.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>线程信息</a>，向上：<a href="GDB_Output-Records.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>输出记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_002fmi-Ada-Exception-Information"><span>27.5.7 <small class="sc">GDB/MI</small> Ada异常信息<a class="copiable-link" href="#gdb_002fmi-Ada-Exception-Information"> &para;</a></span></h4>
+
+<p>每当因为程序在遇到异常捕获点后停止而发出一个<code class="code">*stopped</code>记录时（见<a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>），<small class="sc">GDB</small>会通过<code class="code">exception-name</code>字段提供引发的异常的名称。此外，对于带有异常消息引发的异常， <small class="sc">GDB</small>会通过<code class="code">exception-message</code>字段提供该消息。
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python（使用GDB进行调试）</title>
+
+<meta name="description" content="Python（使用GDB进行调试）">
+<meta name="keywords" content="Python（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Extending-GDB.html" rel="up" title="扩展GDB">
+<link href="Guile.html" rel="next" title="Guile">
+<link href="Aliases.html" rel="prev" title="别名">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Python">
+<div class="nav-panel">
+<p>
+下一页：<a href="Guile.html" accesskey="n" rel="next">使用Guile扩展<small class="sc">GDB</small></a>，上一页：<a href="Aliases.html" accesskey="p" rel="prev">命令别名</a>，向上：<a href="Extending-GDB.html" accesskey="u" rel="up">扩展<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Extending-gdb-using-Python"><span>23.3 使用Python扩展<small class="sc">GDB</small><a class="copiable-link" href="#Extending-gdb-using-Python"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-python-scripting"></a>
+<a class="index-entry-id" id="index-scripting-with-python"></a>
+
+<p>你可以使用 <a class="uref" href="http://www.python.org/">Python编程语言</a> 来扩展<small class="sc">GDB</small>。仅当使用<samp class="option">--with-python</samp>配置<small class="sc">GDB</small>时，此功能才可用。
+</p>
+<a class="index-entry-id" id="index-python-directory"></a>
+<p><small class="sc">GDB</small> 使用的Python脚本应安装在<samp class="file"><var class="var">数据目录</var>/python</samp>中，其中<var class="var">数据目录</var>为<small class="sc">GDB</small>启动时确定的数据目录（见 <a class="pxref" href="Data-Files.html">GDB数据文件</a>）。
+这个目录，即所谓的<em class="dfn">python目录</em>，会自动添加到Python搜索路径中，以便Python解释器能够找到安装在该位置的所有脚本。
+</p>
+<p>此外，用Python编写且位于<samp class="file"><var class="var">数据目录</var>/python/gdb/command</samp> 或<samp class="file"><var class="var">数据目录</var>/python/gdb/function</samp> 目录中的<small class="sc">GDB</small>命令和便利函数，在<small class="sc">GDB</small>启动时会自动导入。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Python-Commands.html" accesskey="1">Python命令</a></li>
+<li><a href="Python-API.html" accesskey="2">Python API</a></li>
+<li><a href="Python-Auto_002dloading.html" accesskey="3">Python自动加载</a></li>
+<li><a href="Python-modules.html" accesskey="4">Python模块</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

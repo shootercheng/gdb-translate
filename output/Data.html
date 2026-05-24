@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>数据（使用GDB调试）</title>
+
+<meta name="description" content="数据（使用GDB调试）">
+<meta name="keywords" content="数据（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Optimized-Code.html" rel="next" title="优化代码">
+<link href="Source.html" rel="prev" title="源文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="数据">
+<div class="nav-panel">
+<p>
+下一个：<a href="Optimized-Code.html" accesskey="n" rel="next">调试优化代码</a>，上一个：<a href="Source.html" accesskey="p" rel="prev">检查源文件</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="检查数据"><span>10 检查数据<a class="copiable-link" href="#检查数据"> &para;</a></span></h2>
+
+<a class="index-entry-id" id="索引-打印数据"></a>
+<a class="index-entry-id" id="索引-检查数据"></a>
+<a class="index-entry-id" id="索引-打印"></a>
+<a class="index-entry-id" id="索引-检查"></a>
+<p>检查程序中数据的常用方法是使用<code>print</code>命令（缩写为<code>p</code>）或其同义词<code>inspect</code>。它会计算并打印程序所使用语言的表达式的值（见 <a class="pxref" href="Languages.html">使用<small class="sc">GDB</small>与不同语言</a>）。它也可能使用基于Python的漂亮打印机来打印表达式（见 <a class="pxref" href="Pretty-Printing.html">漂亮打印</a>）。
+</p>
+<dl class="table">
+<dt><code>print [[<var>选项</var>] --] <var>表达式</var></code></dt>
+<dt><code>print [[<var>选项</var>] --] /<var>格式</var> <var>表达式</var></code></dt>
+<dd><p><var>表达式</var>是一个（源语言中的）表达式。默认情况下，<var>表达式</var>的值会以适合其数据类型的格式打印；你可以通过指定&lsquo;<samp class="samp">/<var>格式</var></samp>&rsquo;来选择不同的格式，其中<var>格式</var>&nbsp;是一个指定格式的字母；见 <a class="ref" href="Output-Formats.html">输出格式</a>。
+</p>
+<a class="anchor" id="打印选项"></a><p><code>print</code>命令支持许多选项，这些选项允许覆盖由<code>set print</code>子命令设置的相关全局打印设置：
+</p>
+<dl class="table">
+<dt><code>-address [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置地址的打印。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-address">set print address</a>。
+</p>
+</dd>
+<dt><code>-array [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>数组的漂亮格式化。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-array">set print array</a>。
+</p>
+</dd>
+<dt><code>-array-indexes [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置数组索引的打印。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-array_002dindexes">set print array-indexes</a>。
+</p>
+</dd>
+<dt><code>-characters <var>字符数量</var>|<code>elements</code>|<code>unlimited</code></code></dt>
+<dd><p>设置要打印的字符串字符的限制。值<code>elements</code>会导致使用打印数组元素的限制。值<code>unlimited</code>会导致没有限制。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-characters">set print characters</a>。
+</p>
+</dd>
+<dt><code>-elements <var>元素数量</var>|<code>unlimited</code></code></dt>
+<dd><p>设置要打印的数组元素以及可选的字符串字符的限制。见 <a class="ref" href="Print-Settings.html#set-print-characters">set print characters</a>，以及上面的<code>-characters</code>选项，了解此选项何时适用于字符串。值<code>unlimited</code>会导致没有限制。见 <a class="xref" href="Print-Settings.html#set-print-elements">set print elements</a>，了解相关的CLI命令。
+</p>
+</dd>
+<dt><code>-max-depth <var>深度</var>|<code>unlimited</code></code></dt>
+<dd><p>设置阈值，超过该阈值后，嵌套结构将被替换为省略号。相关设置： <a class="ref" href="Print-Settings.html#set-print-max_002ddepth">set print max-depth</a>。
+</p>
+</dd>
+<dt><code>-nibbles [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置是否以四位一组（称为“半字节”）打印二进制值。见 <a class="xref" href="Print-Settings.html#set-print-nibbles">set print nibbles</a>。
+</p>
+</dd>
+<dt><code>-memory-tag-violations [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印有关内存标签违规的附加信息。见 <a class="xref" href="Print-Settings.html#set-print-memory_002dtag_002dviolations">set print memory-tag-violations</a>。
+</p>
+</dd>
+<dt><code>-null-stop [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印字符数组时在第一个空字符处停止。相关设置： <a class="ref" href="Print-Settings.html#set-print-null_002dstop">set print null-stop</a>。
+</p>
+</dd>
+<dt><code>-object [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印C++虚拟函数表。相关设置： <a class="ref" href="Print-Settings.html#set-print-object">set print object</a>。
+</p>
+</dd>
+<dt><code>-pretty [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置结构的漂亮格式化。相关设置： <a class="ref" href="Print-Settings.html#set-print-pretty">set print pretty</a>。
+</p>
+</dd>
+<dt><code>-raw-values [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置是否以原始形式打印值，绕过该值的任何漂亮打印机。相关设置： <a class="ref" href="Print-Settings.html#set-print-raw_002dvalues">set print raw-values</a>。
+</p>
+</dd>
+<dt><code>-repeats <var>重复次数</var>|<code>unlimited</code></code></dt>
+<dd><p>设置重复打印元素的阈值。<code>unlimited</code>会导致所有元素都单独打印。相关设置： <a class="ref" href="Print-Settings.html#set-print-repeats">set print repeats</a>。
+</p>
+</dd>
+<dt><code>-static-members [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印C++静态成员。相关设置： <a class="ref" href="Print-Settings.html#set-print-static_002dmembers">set print static-members</a>。
+</p>
+</dd>
+<dt><code>-symbol [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印指针时符号名称的打印。相关设置： <a class="ref" href="Print-Settings.html#set-print-symbol">set print symbol</a>。
+</p>
+</dd>
+<dt><code>-union [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印结构内部的联合体。相关设置： <a class="ref" href="Print-Settings.html#set-print-union">set print union</a>。
+</p>
+</dd>
+<dt><code>-vtbl [<code>on</code>|<code>off</code>]</code></dt>
+<dd><p>设置打印C++虚拟函数表。相关设置： <a class="ref" href="Print-Settings.html#set-print-vtbl">set print vtbl</a>。
+</p></dd>
+</dl>
+
+<p>因为<code>print</code>命令接受可能看起来像选项的任意表达式（包括缩写），如果你指定任何命令选项，那么你必须使用双破折号（<code>--</code>）来标记选项处理的结束。
+</p>
+<p>例如，这会打印表达式<code>-p</code>的值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -p
+</pre></div>
+
+<p>而这会在启用<code>-pretty</code>选项的情况下重复值历史记录中的最后一个值（见下文）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -p --
+</pre></div>
+
+<p>这里有一个同时包含选项和表达式的示例：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) print -pretty -- *myptr
+$1 = {
+  next = 0x0,
+  flags = {
+    sweet = 1,
+    sour = 1
+  },
+  meat = 0x54 &quot;Pork&quot;
+}
+</pre></div></div>
+
+</dd>
+<dt><a id="索引-重新打印最后一个值"></a><span><code>print [<var>选项</var>]</code><a class="copiable-link" href="#索引-重新打印最后一个值"> &para;</a></span></dt>
+<dt><code>print [<var>选项</var>] /<var>格式</var></code></dt>
+<dd><p>如果你省略<var>表达式</var>，<small class="sc">GDB</small>会再次显示最后一个值（来自<em class="dfn">值历史记录</em>；见 <a class="pxref" href="Value-History.html">值历史记录</a>）。这使你能够方便地以另一种格式检查相同的值。
+</p></dd>
+</dl>
+
+<p>如果架构支持内存标记，当打印指针或引用类型时，<code>print</code>命令将显示指针/内存标记不匹配。见 <a class="xref" href="Memory-Tagging.html">内存标记</a>。
+</p>
+<p>一种更底层的检查数据的方法是使用<code>x</code>命令。它在指定地址检查内存中的数据，并以指定格式打印。见 <a class="xref" href="Memory.html">检查内存</a>。
+</p>
+<p>如果你对类型信息或结构体或类的字段如何声明感兴趣，使用<code>ptype <var>表达式</var></code>命令而不是<code>print</code>。见 <a class="xref" href="Symbols.html">检查符号表</a>。
+</p>
+<a class="index-entry-id" id="索引-探索分层数据结构"></a>
+<a class="index-entry-id" id="索引-探索"></a>
+<p>另一种检查表达式值和类型信息的方法是通过Python扩展命令<code>explore</code>（仅当<small class="sc">GDB</small>构建配置了<code>--with-python</code>时可用）。它提供了一种交互式方式，从表达式的数据类型的最高级别（或者，最抽象级别）开始，一直探索到嵌入在更高级别数据类型中的叶标量值/字段。
+</p>
+<dl class="table">
+<dt><code>explore <var>参数</var></code></dt>
+<dd><p><var>参数</var>要么是一个（源语言中的）表达式，要么是在正在调试的程序的当前上下文中可见的类型。
+</p></dd>
+</dl>
+
+<p><code>explore</code>命令的工作方式可以用一个例子来说明。如果在你的C程序中定义了一个数据类型<code>struct ComplexStruct</code>如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct SimpleStruct
+{
+  int i;
+  double d;
+};
+
+struct ComplexStruct
+{
+  struct SimpleStruct *ss_p;
+  int arr[10];
+};
+</pre></div>
+
+<p>接着进行变量声明如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct SimpleStruct ss = { 10, 1.11 };
+struct ComplexStruct cs = { &amp;ss, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+</pre></div>
+
+<p>那么，可以使用<code>explore</code>命令按如下方式探索变量<code>cs</code>的值。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) explore cs
+`cs'的值是一个类型为`struct ComplexStruct'的结构体/类，具有以下字段：
+
+  ss_p = &lt;输入0以探索这个类型为`struct SimpleStruct *'的字段&gt;
+   arr = &lt;输入1以探索这个类型为`int [10]'的字段&gt;
+
+输入要选择的字段编号：
+</pre></div>
+
+<p>由于<code>cs</code>的字段不是标量值，系统会提示你选择要探索的字段。假设你通过输入<code>0</code>选择了字段<code>ss_p</code>。然后，由于这个字段是一个指针，系统会问它是否指向单个值。从上面<code>cs</code>的声明来看，它确实指向单个值，因此你输入<code>y</code>。如果你输入<code>n</code>，那么系统会问它是否指向一个值数组，在这种情况下，这个字段将被当作数组来探索。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">`cs.ss_p'是一个指向类型为`struct SimpleStruct'的值的指针
+是否继续将其作为指向单个值的指针进行探索 [y/n]：y
+`*(cs.ss_p)'的值是一个类型为`struct SimpleStruct'的结构体/类，具有以下字段：
+
+  i = 10 .. (类型为`int'的值)
+  d = 1.110000... (类型为`double'的值)
+
+按回车键返回父值：
+</pre></div>
+
+<p>如果之前通过输入<code>1</code>选择了<code>cs</code>的字段<code>arr</code>进行探索，那么由于它是一个数组，系统会提示你输入要探索的数组元素的索引。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">`cs.arr'是一个`int'类型的数组。
+输入你想要在`cs.arr'中探索的元素的索引：5
+
+`(cs.arr)[5]'是一个类型为`int'的标量值。
+
+(cs.arr)[5] = 4
+
+按回车键返回父值： 
+</pre></div>
+
+<p>一般来说，在探索的任何阶段，你可以通过适当地响应提示来更深入地探索叶值，或者按下回车键返回到包含的数据结构（<i class="i">更高</i>级别的数据结构）。
+</p>
+<p>与探索值类似，你可以使用<code>explore</code>命令来探索类型。你不是指定一个值（通常是一个变量名或在正在调试的程序的当前上下文中有效的表达式），而是指定一个类型名。如果你考虑上面相同的例子，你可以通过将参数
+<code>struct ComplexStruct</code>传递给<code>explore</code>命令来探索类型
+<code>struct ComplexStruct</code>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) explore struct ComplexStruct
+</pre></div>
+
+<p>通过在后续的交互式会话中适当地响应提示，你可以以类似于上面例子中探索值<code>cs</code>的方式来探索类型<code>struct ComplexStruct</code>。
+</p>
+<p><code>explore</code>&nbsp;命令还有两个子命令，
+<code>explore value</code>和<code>explore type</code>。前一个子命令是一种明确指定正在调用对参数的值进行探索的方式，而后者是一种明确指定正在调用对参数进行类型探索的方式。
+</p>
+<dl class="table">
+<dt><a id="索引-explore-value"></a><span><code>explore value <var>表达式</var></code><a class="copiable-link" href="#索引-explore-value"> &para;</a></span></dt>
+<dd><p><code>explore</code>的这个子命令探索表达式<var>表达式</var>的值（如果<var>表达式</var>是在正在调试的程序的当前上下文中有效的表达式）。这个命令的行为与将参数<var>表达式</var>传递给<code>explore</code>命令的行为相同。
+</p>
+</dd>
+<dt><a id="索引-explore-type"></a><span><code>explore type <var>参数</var></code><a class="copiable-link" href="#索引-explore-type"> &para;</a></span></dt>
+<dd><p><code>explore</code>的这个子命令探索<var>参数</var>的类型（如果<var>参数</var>是在正在调试的程序的当前上下文中可见的类型），或者<var>参数</var>的值/表达式的类型（如果<var>参数</var>是在正在调试的程序的当前上下文中有效的表达式）。如果<var>参数</var>是一个类型，那么这个命令的行为与将参数<var>参数</var>传递给<code>explore</code>命令的行为相同。如果<var>参数</var>是一个表达式，那么这个命令的行为将与将<var>参数</var>的类型作为参数传递给<code>explore</code>命令的行为相同。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Expressions.html" accesskey="1">表达式</a></li>
+<li><a href="Ambiguous-Expressions.html" accesskey="2">模糊表达式</a></li>
+<li><a href="Variables.html" accesskey="3">程序变量</a></li>
+<li><a href="Arrays.html" accesskey="4">人工数组</a></li>
+<li><a href="Output-Formats.html" accesskey="5">输出格式</a></li>
+<li><a href="Memory.html" accesskey="6">检查内存</a></li>
+<li><a href="Memory-Tagging.html" accesskey="7">内存标记</a></li>
+<li><a href="Auto-Display.html" accesskey="8">自动显示</a></li>
+<li><a href="Print-Settings.html" accesskey="9">打印设置</a></li>
+<li><a href="Pretty-Printing.html">漂亮打印</a></li>
+<li><a href="Value-History.html">值历史记录</a></li>
+<li><a href="Convenience-Vars.html">便利变量</a></li>
+<li><a href="Convenience-Funs.html">便利函数</a></li>
+<li><a href="Registers.html">寄存器</a></li>
+<li><a href="Floating-Point-Hardware.html">浮点硬件</a></li>
+<li><a href="Vector-Unit.html">向量单元</a></li>
+<li><a href="OS-Information.html">操作系统辅助信息</a></li>
+<li><a href="Memory-Region-Attributes.html">内存区域属性</a></li>
+<li><a href="Dump_002fRestore-Files.html">内存与文件之间的复制</a></li>
+<li><a href="Core-File-Generation.html">如何从你的程序生成核心文件)</a></li>
+<li><a href="Character-Sets.html">字符集</a></li>
+<li><a href="Caching-Target-Data.html">缓存目标数据</a></li>
+<li><a href="Searching-Memory.html">搜索内存</a></li>
+<li><a href="Value-Sizes.html">值大小</a></li>
+</ul>

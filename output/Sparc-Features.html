@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Sparc特性（使用GDB调试）</title>
+
+<meta name="description" content="Sparc特性（使用GDB调试）">
+<meta name="keywords" content="Sparc特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="TIC6x-Features.html" rel="next" title="TIC6x特性">
+<link href="S_002f390-and-System-z-Features.html" rel="prev" title="S/390和System z特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Sparc-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="TIC6x-Features.html" accesskey="n" rel="next">TMS320C6x特性</a>，上一页：<a href="S_002f390-and-System-z-Features.html" accesskey="p" rel="prev">S/390和System z特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Sparc-Features-1"><span>G.5.16 Sparc特性<a class="copiable-link" href="#Sparc-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-sparc32-features"></a>
+<a class="index-entry-id" id="index-target-descriptions_002c-sparc64-features"></a>
+<p>对于sparc32/sparc64目标，需要“<samp class="samp">org.gnu.gdb.sparc.cpu</samp>”特性。它应该描述以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>从“<samp class="samp">g0</samp>”到“<samp class="samp">g7</samp>”</li>
+<li>从“<samp class="samp">o0</samp>”到“<samp class="samp">o7</samp>”</li>
+<li>从“<samp class="samp">l0</samp>”到“<samp class="samp">l7</samp>”</li>
+<li>从“<samp class="samp">i0</samp>”到“<samp class="samp">i7</samp>”</li>
+</ul>
+
+<p>根据目标的不同，它们可能是32位或64位。
+</p>
+<p>同样，对于sparc32/sparc64目标，需要“<samp class="samp">org.gnu.gdb.sparc.fpu</samp>”特性。它应该描述以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>从“<samp class="samp">f0</samp>”到“<samp class="samp">f31</samp>”</li>
+<li>对于sparc64，从“<samp class="samp">f32</samp>”到“<samp class="samp">f62</samp>”</li>
+</ul>
+
+<p>对于sparc32/sparc64目标，需要“<samp class="samp">org.gnu.gdb.sparc.cp0</samp>”特性。它应该描述以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>对于sparc32，“<samp class="samp">y</samp>”、“<samp class="samp">psr</samp>”、“<samp class="samp">wim</samp>”、“<samp class="samp">tbr</samp>”、“<samp class="samp">pc</samp>”、“<samp class="samp">npc</samp>”、“<samp class="samp">fsr</samp>”和“<samp class="samp">csr</samp>”</li>
+<li>对于sparc64，“<samp class="samp">pc</samp>”、“<samp class="samp">npc</samp>”、“<samp class="samp">state</samp>”、“<samp class="samp">fsr</samp>”、“<samp class="samp">fprs</samp>”和“<samp class="samp">y</samp>”</li>
+</ul>
+
+</div>
+
+
+
+</body>
+</html>

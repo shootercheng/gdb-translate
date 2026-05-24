@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>内存标记（使用GDB调试）</title>
+
+<meta name="description" content="内存标记（使用GDB调试）">
+<meta name="keywords" content="内存标记（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Auto-Display.html" rel="next" title="自动显示">
+<link href="Memory.html" rel="prev" title="内存">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="内存标记">
+<div class="nav-panel">
+<p>
+下一页：<a href="Auto-Display.html" accesskey="n" rel="next">自动显示</a>，上一页：<a href="Memory.html" accesskey="p" rel="prev">检查内存</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="内存标记-1"><span>10.7内存标记<a class="copiable-link" href="#内存标记-1"> &para;</a></span></h3>
+
+<p>内存标记是一种内存保护技术，它使用一对标签来通过指针验证内存访问。这些标签是整数值，通常由几位组成，具体取决于架构。
+</p>
+<p>在此设置中使用两种类型的标签：逻辑标签和分配标签。逻辑标签存储在指针本身中，通常在指针的高位。分配标签是与物理地址空间中特定内存范围相关联的标签，用于将指针中的逻辑标签与之进行比较。
+</p>
+<p>指针标签（逻辑标签）必须与内存标签（分配标签）匹配，内存访问才有效。如果逻辑标签与分配标签不匹配，将会引发内存违规。
+</p>
+<p>分配标签覆盖多个连续的物理内存字节。这个字节范围称为内存标签颗粒，并且是特定于架构的。例如，AArch64的标签颗粒为16字节，这意味着每个分配标签跨越16字节的内存。
+</p>
+<p>如果底层架构支持内存标记，如AArch64 MTE或SPARC ADI，<small class="sc">GDB</small>可以利用它来针对内存分配标签验证指针。
+</p>
+<p><code class="code">print</code>（见 <a class="pxref" href="Data.html">检查数据</a>）和 <code class="code">x</code>（见 <a class="pxref" href="Memory.html">检查内存</a>）命令将在适当的时候显示标签信息，并且命令前缀 <code class="code">memory-tag</code> 提供对各种内存标记命令的访问。
+</p>
+<p><code class="code">memory-tag</code> 命令如下：
+</p>
+<dl class="table">
+<dt><a id="index-memory_002dtag-print_002dlogical_002dtag"></a><span><code class="code">memory-tag print-logical-tag <var class="var">指针表达式</var></code><a class="copiable-link" href="#index-memory_002dtag-print_002dlogical_002dtag"> &para;</a></span></dt>
+<dd><p>打印存储在 <var class="var">指针表达式</var> 中的逻辑标签。
+<a class="index-entry-id" id="index-memory_002dtag-with_002dlogical_002dtag"></a>
+</p></dd>
+<dt><code class="code">memory-tag with-logical-tag <var class="var">指针表达式</var> <var class="var">标签字节数</var></code></dt>
+<dd><p>打印由 <var class="var">指针表达式</var> 给出的指针，并附加一个 <var class="var">标签字节数</var> 的逻辑标签。
+<a class="index-entry-id" id="index-memory_002dtag-print_002dallocation_002dtag"></a>
+</p></dd>
+<dt><code class="code">memory-tag print-allocation-tag <var class="var">地址表达式</var></code></dt>
+<dd><p>打印与由 <var class="var">地址表达式</var> 给出的内存地址相关联的分配标签。
+<a class="index-entry-id" id="index-memory_002dtag-setatag"></a>
+</p></dd>
+<dt><code class="code">memory-tag setatag <var class="var">起始地址</var> <var class="var">长度</var> <var class="var">标签字节数</var></code></dt>
+<dd><p>将内存范围 <span class="r">[</span><var class="var">起始地址</var>, <var class="var">起始地址</var> + <var class="var">长度</var><span class="r">)</span> 的分配标签设置为 <var class="var">标签字节数</var>。
+<a class="index-entry-id" id="index-memory_002dtag-check"></a>
+</p></dd>
+<dt><code class="code">memory-tag check <var class="var">指针表达式</var></code></dt>
+<dd><p>检查由 <var class="var">指针表达式</var> 的指针中的逻辑标签是否与该指针引用的内存的分配标签匹配。
+</p>
+
+<p>这本质上模拟了通过指针访问带标签内存时所进行的硬件验证，但不会像硬件验证期间那样导致内存故障。
+</p>
+
+<p>它可用于在运行进程中检查潜在的内存标记违规情况，并在触发任何故障之前进行检查。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Auto-Display.html">自动显示</a>，上一页：<a href="Memory.html">检查内存</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

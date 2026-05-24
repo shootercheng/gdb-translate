@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>消息/警告（使用GDB调试）</title>
+
+<meta name="description" content="消息/警告（使用GDB调试）">
+<meta name="keywords" content="消息/警告（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Debugging-Output.html" rel="next" title="调试输出">
+<link href="Auto_002dloading.html" rel="prev" title="自动加载">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="消息_002f警告">
+<div class="nav-panel">
+<p>
+下一页：<a href="Debugging-Output.html" accesskey="n" rel="next">关于内部事件的可选消息</a>，上一页：<a href="Auto_002dloading.html" accesskey="p" rel="prev">自动加载关联文件</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="可选警告和消息"><span>22.9 可选警告和消息<a class="copiable-link" href="#可选警告和消息"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-详细操作"></a>
+<a class="index-entry-id" id="索引-可选警告"></a>
+<p>默认情况下，<small class="sc">GDB</small> 对其内部工作情况保持沉默。如果你在一台慢速机器上运行，你可能想使用 <code class="code">set verbose</code> 命令。这会让 <small class="sc">GDB</small> 在执行冗长的内部操作时告诉你，这样你就不会认为它崩溃了。
+</p>
+<p>目前，由 <code class="code">set verbose</code> 控制的消息是那些宣布正在读取源文件的符号表的消息；请参阅 <a class="ref" href="Files.html">指定文件的命令</a> 中的 <code class="code">symbol-file</code>。
+</p>
+<dl class="table">
+<dt><a id="索引-set-verbose"></a><span><code class="code">set verbose on</code><a class="copiable-link" href="#索引-set-verbose"> &para;</a></span></dt>
+<dd><p>启用 <small class="sc">GDB</small> 输出某些信息性消息。
+</p>
+</dd>
+<dt><code class="code">set verbose off</code></dt>
+<dd><p>禁用 <small class="sc">GDB</small> 输出某些信息性消息。
+</p>
+</dd>
+<dt><a id="索引-show-verbose"></a><span><code class="code">show verbose</code><a class="copiable-link" href="#索引-show-verbose"> &para;</a></span></dt>
+<dd><p>显示 <code class="code">set verbose</code> 是开启还是关闭。
+</p></dd>
+</dl>
+
+<p>默认情况下，如果 <small class="sc">GDB</small> 在目标文件的符号表中遇到错误，它会保持沉默；但如果你正在调试一个编译器，你可能会发现这些信息很有用（请参阅 <a class="pxref" href="Symbol-Errors.html">读取符号文件时的错误</a>）。
+</p>
+<dl class="table">
+<dt><a id="索引-set-complaints"></a><span><code class="code">set complaints <var class="var">limit</var></code><a class="copiable-link" href="#索引-set-complaints"> &para;</a></span></dt>
+<dd><p>允许 <small class="sc">GDB</small> 在对每种异常符号类型输出 <var class="var">limit</var> 条抱怨信息后，才对该问题保持沉默。将 <var class="var">limit</var> 设置为零以抑制所有抱怨；将其设置为一个较大的数字以防止抱怨被抑制。
+</p>
+</dd>
+<dt><a id="索引-show-complaints"></a><span><code class="code">show complaints</code><a class="copiable-link" href="#索引-show-complaints"> &para;</a></span></dt>
+<dd><p>显示 <small class="sc">GDB</small> 被允许产生的符号抱怨数量。
+</p>
+</dd>
+</dl>
+
+<a class="anchor" id="确认请求"></a><p>默认情况下，<small class="sc">GDB</small> 很谨慎，会问一些有时看起来很愚蠢的问题来确认某些命令。例如，如果您尝试运行一个已经在运行的程序：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) run
+正在调试的程序已经启动。
+从开头重新启动它？(y或n)
+</pre></div>
+
+<p>如果您愿意毫不犹豫地面对自己命令的后果，您可以禁用这个“功能”：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-退缩"></a>
+<a class="index-entry-id" id="索引-确认"></a>
+<a class="index-entry-id" id="索引-愚蠢问题"></a>
+<a id="索引-set-confirm"></a><span><code class="code">set confirm off</code><a class="copiable-link" href="#索引-set-confirm"> &para;</a></span></dt>

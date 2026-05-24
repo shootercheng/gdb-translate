@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>线程（使用GDB调试）</title>
+
+<meta name="description" content="线程（使用GDB调试）">
+<meta name="keywords" content="线程（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Forks.html" rel="next" title="Forks">
+<link href="Inferiors-Connections-and-Programs.html" rel="prev" title="下级连接和程序">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="线程">
+<div class="nav-panel">
+<p>
+下一个：<a href="Forks.html" accesskey="n" rel="next">调试Forks</a>，上一个：<a href="Inferiors-Connections-and-Programs.html" accesskey="p" rel="prev">调试多个下级连接和程序</a>，向上：<a href="Running.html" accesskey="u" rel="up">在<small class="sc">GDB</small>下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="使用多线程调试程序"><span>4.10 使用多线程调试程序<a class="copiable-link" href="#使用多线程调试程序"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-执行线程"></a>
+<a class="index-entry-id" id="索引-多线程"></a>
+<a class="index-entry-id" id="索引-切换线程"></a>
+<p>在一些操作系统中，如GNU/Linux和Solaris，一个程序可能有多个执行<em class="dfn">线程</em>。不同操作系统中线程的精确语义有所不同，但一般来说，单个程序的线程类似于多个进程 —— 不同的是它们共享一个地址空间（也就是说，它们都可以检查和修改相同的变量）。另一方面，每个线程都有自己的寄存器和执行栈，可能还有私有内存。
+</p>
+<p><small class="sc">GDB</small>提供了以下用于调试多线程程序的功能：
+</p>
+<ul class="itemize mark-bullet">
+<li>新线程的自动通知
+</li><li>&lsquo;<samp class="samp">thread <var class="var">thread-id</var></samp>&rsquo;，用于在不同线程间切换的命令
+</li><li>&lsquo;<samp class="samp">info threads</samp>&rsquo;，用于查询现有线程的命令
+</li><li>&lsquo;<samp class="samp">thread apply [<var class="var">thread-id-list</var> | all] <var class="var">args</var></samp>&rsquo;，
+用于将一个命令应用于一组线程的命令
+</li><li>特定于线程的断点
+</li><li>&lsquo;<samp class="samp">set print thread-events</samp>&rsquo;，用于控制线程启动和退出时消息的打印。
+</li><li>&lsquo;<samp class="samp">set libthread-db-search-path <var class="var">path</var></samp>&rsquo;，如果默认选择的 <code class="code">libthread_db</code> 与程序不兼容，则允许用户指定使用哪个 <code class="code">libthread_db</code>。
+</li></ul>
+
+<a class="index-entry-id" id="索引-调试重点"></a>
+<a class="index-entry-id" id="索引-当前线程"></a>
+<p><small class="sc">GDB</small>的线程调试功能允许你在程序运行时观察所有线程 —— 但是每当<small class="sc">GDB</small>获得控制权时，总有一个特定的线程是调试的重点。这个线程被称为<em class="dfn">当前线程</em>。调试命令从当前线程的角度显示程序信息。
+</p>
+<a class="index-entry-id" id="索引-新的systag消息"></a>
+<a class="index-entry-id" id="索引-线程标识符（系统）"></a>
+<p>每当<small class="sc">GDB</small>在你的程序中检测到一个新线程时，它会以 &lsquo;<samp class="samp">[New <var class="var">systag</var>]</samp>&rsquo; 的形式显示目标系统对该线程的标识，其中<var class="var">systag</var>是一个线程标识符，其形式因特定系统而异。例如，在<small class="sc">GNU</small>/Linux上，你可能会看到
+</p> 
+<div class="example smallexample">
+<pre class="example-preformatted">[New Thread 0x41e02940 (LWP 25582)]
+</pre></div>
+
+<p>当<small class="sc">GDB</small>注意到一个新线程时。相比之下，在其他系统上，<var class="var">systag</var>可能只是类似 &lsquo;<samp class="samp">process 368</samp>&rsquo; 的形式，没有进一步的限定词。
+</p>
+
+<a class="anchor" id="线程编号"></a><a class="index-entry-id" id="索引-每个下级的线程编号"></a>
+<a class="index-entry-id" id="索引-线程标识符（GDB）"></a>
+<p>出于调试目的，<small class="sc">GDB</small>为一个下级的每个线程关联一个自己的线程编号 —— 始终是一个整数。这个编号在一个下级的所有线程之间是唯一的，但在不同下级的线程之间不是唯一的。
+</p>
+<a class="index-entry-id" id="索引-限定的线程ID"></a>
+<p>你可以使用限定的 <var class="var">inferior-num</var>.<var class="var">thread-num</var> 语法（也称为<em class="dfn">限定线程ID</em>）来引用一个下级中的给定线程，其中<var class="var">inferior-num</var>是下级编号，<var class="var">thread-num</var>是给定下级的线程编号。例如，线程 <code class="code">2.3</code> 指的是下级2中的线程3。如果你省略 <var class="var">inferior-num</var>（例如，<code class="code">thread 3</code>），那么<small class="sc">GDB</small>会推断你指的是当前下级中的一个线程。
+</p>
+<p>在你创建第二个下级之前，<small class="sc">GDB</small>不会显示线程ID的 <var class="var">inferior-num</var> 部分，尽管你始终可以使用完整的 <var class="var">inferior-num</var>.<var class="var">thread-num</var> 形式来引用下级1（初始下级）中的线程。
+</p>
+<a class="anchor" id="线程ID列表"></a><a class="index-entry-id" id="索引-线程ID列表"></a>
+<p>一些命令接受以空格分隔的<em class="dfn">线程ID列表</em>作为参数。列表元素可以是：
+</p>
+<ol class="enumerate">
+<li> &lsquo;<samp class="samp">info threads</samp>&rsquo; 显示中的第一个字段所示形式的线程ID，可以带或不带下级限定符。例如，&lsquo;<samp class="samp">2.1</samp>&rsquo; 或 &lsquo;<samp class="samp">1</samp>&rsquo;。
+
+</li><li> 线程编号范围，同样可以带或不带下级限定符，如 <var class="var">inf</var>.<var class="var">thr1</var>-<var class="var">thr2</var> 或 <var class="var">thr1</var>-<var class="var">thr2</var>。例如，&lsquo;<samp class="samp">1.2-4</samp>&rsquo; 或 &lsquo;<samp class="samp">2-4</samp>&rsquo;。
+
+</li><li> 使用星号通配符指定的一个下级的所有线程，可以带或不带下级限定符，如 <var class="var">inf</var>.<code class="code">*</code>（例如，&lsquo;<samp class="samp">1.*</samp>&rsquo;）或 <code class="code">*</code>。前者指的是给定下级的所有线程，后者不带下级限定符指的是当前下级的所有线程。
+
+</li></ol>
+
+<p>例如，如果当前下级是1，而下级7有一个ID为7.1的线程，那么线程列表 &lsquo;<samp class="samp">1 2-3 4.5 6.7-9 7.*</samp>&rsquo; 包括下级1中的线程1到3、下级4中的线程5、下级6中的线程7到9以及下级7中的所有线程。也就是说，以展开的限定形式，与 &lsquo;<samp class="samp">1.1 1.2 1.3 4.5 6.7 6.8 6.9 7.1</samp>&rsquo; 相同。
+</p>
+
+<a class="anchor" id="全局线程编号"></a><a class="index-entry-id" id="索引-全局线程编号"></a>
+<a class="index-entry-id" id="索引-全局线程标识符（GDB）"></a>
+<p>除了<em class="emph">每个下级</em>的编号外，每个线程还被分配一个唯一的<em class="emph">全局</em>编号，也称为<em class="dfn">全局线程ID</em>，是一个整数。与线程ID中的线程编号部分不同，没有两个线程具有相同的全局ID，即使你正在调试多个下级。
+</p>
+<p>从<small class="sc">GDB</small>的角度来看，一个进程总是至少有一个线程。换句话说，即使程序不是多线程的，<small class="sc">GDB</small>也会为程序的 “主线程” 分配一个线程编号。
+</p>
+<a class="index-entry-id" id="索引-_0024_0_05fthread，便利变量"></a>
+<a class="index-entry-id" id="索引-_0024_0_05fgthread，便利变量"></a>
+<a class="index-entry-id" id="索引-_0024_0_05finferior_0_05fthread_0_05fcount，便利变量"></a>
+<p>调试器便利变量 &lsquo;<samp class="samp">$_thread</samp>&rsquo; 和 &lsquo;<samp class="samp">$_gthread</samp>&rsquo; 分别包含当前线程的每个下级线程编号和全局线程编号。你可能会发现这在编写断点条件表达式、命令脚本等方面很有用。便利变量 &lsquo;<samp class="samp">$_inferior_thread_count</samp>&rsquo; 包含当前下级中活动线程的数量。
+有关便利变量的一般信息，请参阅 <a class="xref" href="Convenience-Vars.html">便利变量</a>。
+</p>
+<p>在非停止模式下运行时（请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>），新线程可以随时创建，现有线程可以随时退出，&lsquo;<samp class="samp">$_inferior_thread_count</samp>&rsquo; 每次求值时可能会返回不同的值。
+</p>
+<p>如果<small class="sc">GDB</small>检测到程序是多线程的，它会在关于在断点处停止的通常消息中增加命中断点的线程的ID和名称。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">线程2 &quot;客户端&quot; 在client.c:68处命中断点1，send_message ()
+</pre></div>
+
+<p>同样，当程序收到信号时：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">线程1 &quot;主&quot; 收到信号SIGINT，中断。
+</pre></div>
+
+<dl class="table">
+<dd><a class="anchor" id="info_005fthreads"></a></dd>
+<dt><a id="索引-info-threads"></a><span><code class="code">info threads <span class="r">[</span>-gid<span class="r">]</span> <span class="r">[</span>-stopped<span class="r">]</span> <span class="r">[</span>-running<span class="r">]</span> <span class="r">[</span><var class="var">thread-id-list</var><span class="r">]</span></code><a class="copiable-link" href="#索引-info-threads"> &para;</a></span></dt>
+<dd>
+<p>显示一个或多个线程的信息。无参数时显示所有线程的信息。你可以使用线程ID列表语法（请参阅 <a class="pxref" href="#线程ID列表">线程ID列表</a>）指定要显示的线程列表。
+</p>
+<p><small class="sc">GDB</small>按以下顺序为每个线程显示：
+</p>
+<ol class="enumerate">
+<li> <small class="sc">GDB</small>分配的每个下级线程编号
+
+</li><li> 如果指定了 &lsquo;<samp class="samp">-gid</samp>&rsquo; 选项，则为<small class="sc">GDB</small>分配的全局线程编号
+
+</li><li> 目标系统的线程标识符（<var class="var">systag</var>）
+
+</li><li> 线程的名称（如果已知）。线程可以由用户命名（请参阅下面的 <code class="code">thread name</code>），或者在某些情况下由程序本身命名。
+
+</li><li> 该线程的当前栈帧摘要
+</li></ol>
+
+<p><small class="sc">GDB</small>线程编号左边的星号 &lsquo;<samp class="samp">*</samp>&rsquo; 表示当前线程。
+</p>
+<p>例如，
+</p></dd>
+</dl>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info threads
+  Id   Target Id             Frame
+* 1    process 35 thread 13  main (argc=1, argv=0x7ffffff8)
+  2    process 35 thread 23  0x34e5 in sigpause ()
+  3    process 35 thread 27  0x34e5 in sigpause ()
+    at threadtest.c:68
+</pre></div>
+
+<p>如果你正在调试多个下级，<small class="sc">GDB</small>将使用限定的 <var class="var">inferior-num</var>.<var class="var">thread-num</var> 格式显示线程ID。否则，只显示 <var class="var">thread-num</var>。
+</p>
+<p>如果你指定 &lsquo;<samp class="samp">-stopped</samp>&rsquo; 选项，<small class="sc">GDB</small>会过滤命令输出，只打印已停止的线程。类似地，如果指定 &lsquo;<samp class="samp">-running</samp>&rsquo; 选项，<small class="sc">GDB</small>会过滤输出，只打印正在运行的线程。如果线程数量很多，这些选项有助于减少输出列表。如果你同时指定这两个选项，<small class="sc">GDB</small>会打印已停止和正在运行的线程。
+</p>
+<p>如果你指定 &lsquo;<samp class="samp">-gid</samp>&rsquo; 选项，<small class="sc">GDB</small>会显示一列，指示每个线程的全局线程ID：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info threads
+  Id   GId  Target Id             Frame
+  1.1  1    process 35 thread 13  main (argc=1, argv=0x7ffffff8)
+  1.2  3    process 35 thread 23  0x34e5 in sigpause ()
+  1.3  4    process 35 thread 27  0x34e5 in sigpause ()
+* 2.1  2    process 65 thread 1   main (argc=1, argv=0x7ffffff8)
+</pre></div>
+
+<p>在Solaris上，你可以使用特定于Solaris的命令显示有关用户线程的更多信息：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-thread-info-（Solaris）"></a>
+<a id="索引-maint-info-sol_002dthreads"></a><span><code class="code">maint info sol-threads</code><a class="copiable-link" href="#索引-maint-info-sol_002dthreads"> &para;</a></span></dt>
+<dd><p>显示Solaris用户线程的信息。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="索引-thread-thread_002did"></a><span><code class="code">thread <var class="var">thread-id</var></code><a class="copiable-link" href="#索引-thread-thread_

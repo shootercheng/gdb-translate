@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>数字（使用GDB调试）</title>
+
+<meta name="description" content="数字（使用GDB调试）">
+<meta name="keywords" content="数字（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="ABI.html" rel="next" title="ABI">
+<link href="Output-Styling.html" rel="prev" title="输出样式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="数字">
+<div class="nav-panel">
+<p>
+下一页：<a href="ABI.html" accesskey="n" rel="next">配置当前ABI</a>，上一页：<a href="Output-Styling.html" accesskey="p" rel="prev">输出样式</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="数字-1"><span>22.6 数字<a class="copiable-link" href="#数字-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-数字表示"></a>
+<a class="index-entry-id" id="索引-输入数字"></a>
+
+<p>在GDB中，你始终可以按照通常的约定以八进制、十进制或十六进制输入数字：八进制数字以‘<samp class="samp">0</samp>’开头，十进制数字以‘<samp class="samp">.</samp>’结尾，十六进制数字以‘<samp class="samp">0x</samp>’开头。既不以‘<samp class="samp">0</samp>’也不以‘<samp class="samp">0x</samp>’开头，且不以‘<samp class="samp">.</samp>’结尾的数字，默认以十进制输入；同样，在未指定特定格式时，数字默认的显示格式也是十进制。你可以使用下面描述的命令更改输入和输出的默认进制。
+</p>
+<dl class="table">
+<dt><a id="索引-set-input_002dradix"></a><span><code class="code">set input-radix <var class="var">基数</var></code><a class="copiable-link" href="#索引-set-input_002dradix"> &para;</a></span></dt>
+<dd><p>设置数字输入的默认进制。<var class="var">基数</var>支持的选择是十进制的8、10或16。基数本身必须明确指定，或者使用当前的输入进制；例如，以下任何一个
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set input-radix 012
+set input-radix 10.
+set input-radix 0xa
+</pre></div>
+
+<p>都将输入进制设置为十进制。另一方面，‘<samp class="samp">set input-radix 10</samp>’无论当前进制是什么，都不会改变输入进制，因为‘<samp class="samp">10</samp>’没有任何表示其进制的前导或尾随符号，它是按照当前进制来解释的。因此，如果当前进制是16，‘<samp class="samp">10</samp>’会被解释为十六进制，即十进制的16，这并不会改变进制。
+</p>
+</dd>
+<dt><a id="索引-set-output_002dradix"></a><span><code class="code">set output-radix <var class="var">基数</var></code><a class="copiable-link" href="#索引-set-output_002dradix"> &para;</a></span></dt>
+<dd><p>设置数字显示的默认进制。<var class="var">基数</var>支持的选择是十进制的8、10或16。基数本身必须明确指定，或者使用当前的输入进制。
+</p>
+</dd>
+<dt><a id="索引-show-input_002dradix"></a><span><code class="code">show input-radix</code><a class="copiable-link" href="#索引-show-input_002dradix"> &para;</a></span></dt>
+<dd><p>显示数字输入的当前默认进制。
+</p>
+</dd>
+<dt><a id="索引-show-output_002dradix"></a><span><code class="code">show output-radix</code><a class="copiable-link" href="#索引-show-output_002dradix"> &para;</a></span></dt>
+<dd><p>显示数字显示的当前默认进制。
+</p>
+</dd>

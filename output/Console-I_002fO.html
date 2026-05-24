@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>控制台I/O（使用GDB调试）</title>
+
+<meta name="description" content="控制台I/O（使用GDB调试）">
+<meta name="keywords" content="控制台I/O（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="List-of-Supported-Calls.html" rel="next" title="支持的调用列表">
+<link href="The-Ctrl_002dC-Message.html" rel="prev" title="Ctrl-C消息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Console-I_002fO">
+<div class="nav-panel">
+<p>
+下一页：<a href="List-of-Supported-Calls.html" accesskey="n" rel="next">支持的调用列表</a>，上一页：<a href="The-Ctrl_002dC-Message.html" accesskey="p" rel="prev">‘<samp class="samp">Ctrl-C</samp>’消息</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Console-I_002fO-1"><span>E.14.6控制台I/O<a class="copiable-link" href="#Console-I_002fO-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-console-i_002fo-as-part-of-file_002di_002fo"></a>
+
+<p>默认情况下，如果目标系统没有显式关闭，则文件描述符0、1和2连接到GDB控制台。GDB控制台上的输出与任何其他文件输出操作（<code class="code">write(1, …)</code>或<code class="code">write(2, …)</code>）一样处理。控制台输入由GDB处理，以便在目标从文件描述符0发出读取请求后，所有后续输入都被缓冲，直到满足以下条件之一：
+</p>
+<ul class="itemize mark-bullet">
+<li>用户按下<kbd class="kbd">Ctrl-c</kbd>。行为如上所述，并且<code class="code">read</code>
+系统调用被视为完成
+
+</li><li>用户按下<kbd class="key">RET</kbd>。这被视为输入结束，并带有尾随换行符。
+
+</li><li>用户按下<kbd class="kbd">Ctrl-d</kbd>。这被视为输入结束。输入中不附加尾随字符（既不是换行符也不是‘<samp class="samp">Ctrl-D</samp>’）。
+
+</li></ul>
+
+<p>如果用户输入的字符超过了给<code class="code">read</code>调用的缓冲区大小，尾随字符将在GDB中缓冲，直到目标请求另一个<code class="code">read(0, …)</code>，或者调试应用户请求停止。
+</p>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>龙芯架构特性（使用GDB调试）</title>
+
+<meta name="description" content="龙芯架构特性（使用GDB调试）">
+<meta name="keywords" content="龙芯架构特性（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="MicroBlaze-Features.html" rel="next" title="MicroBlaze特性">
+<link href="i386-Features.html" rel="prev" title="i386特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="龙芯架构特性">
+<div class="nav-panel">
+<p>
+下一页：<a href="MicroBlaze-Features.html" accesskey="n" rel="next">MicroBlaze特性</a>，上一页：<a href="i386-Features.html" accesskey="p" rel="prev">i386特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="龙芯架构特性-1"><span>G.5.6龙芯架构特性<a class="copiable-link" href="#龙芯架构特性-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-龙芯架构特性"></a>
+
+<p>龙芯架构目标需要 &lsquo;<samp class="samp">org.gnu.gdb.loongarch.base</samp>&rsquo; 特性。它应该包含从 &lsquo;<samp class="samp">r0</samp>&rsquo; 到 &lsquo;<samp class="samp">r31</samp>&rsquo;、&lsquo;<samp class="samp">pc</samp>&rsquo; 和 &lsquo;<samp class="samp">badv</samp>&rsquo; 这些寄存器。既可以使用架构名称（&lsquo;<samp class="samp">r0</samp>&rsquo;、&lsquo;<samp class="samp">r1</samp>&rsquo; 等），也可以使用ABI名称（&lsquo;<samp class="samp">zero</samp>&rsquo;、&lsquo;<samp class="samp">ra</samp>&rsquo; 等）。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.loongarch.fpu</samp>&rsquo; 特性是可选的。如果存在，它应该包含从 &lsquo;<samp class="samp">f0</samp>&rsquo; 到 &lsquo;<samp class="samp">f31</samp>&rsquo;、&lsquo;<samp class="samp">fcc</samp>&rsquo; 和 &lsquo;<samp class="samp">fcsr</samp>&rsquo; 这些寄存器。
+</p>
+</div>
+
+
+
+</body>
+</html>

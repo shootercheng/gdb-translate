@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。” -->
+<title>GDB/MI帧信息（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI帧信息（使用GDB调试）">
+<meta name="keywords" content="GDB/MI帧信息（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Thread-Information.html" rel="next" title="GDB/MI线程信息">
+<link href="GDB_002fMI-Breakpoint-Information.html" rel="prev" title="GDB/MI断点信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Frame-Information">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Thread-Information.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>线程信息</a>，上一页：<a href="GDB_002fMI-Breakpoint-Information.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>断点信息</a>，向上：<a href="GDB_002fMI-Output-Records.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>输出记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_002fmi-Frame-Information"><span>27.5.5 <small class="sc">GDB/MI</small>帧信息<a class="copiable-link" href="#gdb_002fmi-Frame-Information"> &para;</a></span></h4>
+
+<p>许多MI命令的响应中包含有关堆栈帧的信息。此信息是一个元组，可能具有以下字段：
+</p>
+<dl class="table">
+<dt><code class="code">level</code></dt>
+<dd><p>堆栈帧的级别。最内层的帧级别为零。此字段始终存在。
+</p>
+</dd>
+<dt><code class="code">func</code></dt>
+<dd><p>与该帧对应的函数名称。如果GDB无法确定函数名称，则此字段可能不存在。
+</p>
+</dd>
+<dt><code class="code">addr</code></dt>
+<dd><p>该帧对应的代码地址。此字段始终存在。
+</p>
+</dd>
+<dt><code class="code">addr_flags</code></dt>
+<dd><p>包含与地址相关的任何标志的可选字段。这些标志取决于体系结构；有关特定CPU的含义，请参阅 <a class="ref" href="Architectures.html">体系结构</a>。
+</p>
+</dd>
+<dt><code class="code">file</code></dt>
+<dd><p>与帧的代码地址对应的源文件名称。此字段可能不存在。
+</p>
+</dd>
+<dt><code class="code">line</code></dt>
+<dd><p>与帧的代码地址对应的源行。此字段可能不存在。
+</p>
+</dd>
+<dt><code class="code">from</code></dt>
+<dd><p>与帧的代码地址对应的二进制文件（可执行文件或共享库）的名称。此字段可能不存在。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

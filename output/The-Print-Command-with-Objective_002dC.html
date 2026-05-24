@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>使用Objective-C的打印命令（使用GDB调试）</title>
+
+<meta name="description" content="使用Objective-C的打印命令（使用GDB调试）">
+<meta name="keywords" content="使用Objective-C的打印命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Objective_002dC.html" rel="up" title="Objective-C">
+<link href="Method-Names-in-Commands.html" rel="prev" title="命令中的方法名">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="使用Objective-C的打印命令">
+<div class="nav-panel">
+<p>
+上一个：<a href="Method-Names-in-Commands.html" accesskey="p" rel="prev">命令中的方法名</a>，向上：<a href="Objective_002dC.html" accesskey="u" rel="up">Objective-C</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="使用Objective-C的打印命令"><span>15.4.4.2 使用Objective-C的打印命令<a class="copiable-link" href="#使用Objective-C的打印命令"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Objective-C_002c打印对象"></a>
+<a class="index-entry-id" id="index-print-对象"></a>
+<a class="index-entry-id" id="index-po-_0028print-对象_0029"></a>
+
+<p>打印命令也已扩展以接受方法。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">print -[<var class="var">对象</var> hash]
+</pre></div>
+
+<a class="index-entry-id" id="index-打印一个Objective-C对象描述"></a>
+<a class="index-entry-id" id="index-_005fNSPrintForDebugger_002c和打印Objective-C对象"></a>
+<p>这将告诉<small class="sc">GDB</small>向<var class="var">对象</var>发送<code class="code">hash</code>消息并打印结果。此外，还添加了一个额外的命令，<code class="code">print-object</code>或简称为<code class="code">po</code>，用于打印对象的描述。但是，此命令可能仅适用于某些定义了特定钩子函数<code class="code">_NSPrintForDebugger</code>的Objective-C库。
+</p>
+</div>
+
+
+
+</body>
+</html>

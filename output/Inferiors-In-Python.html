@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的进程（使用GDB调试）</title>
+
+<meta name="description" content="Python中的进程（使用GDB调试）">
+<meta name="keywords" content="Python中的进程（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Events-In-Python.html" rel="next" title="Python中的事件">
+<link href="Writing-an-Xmethod.html" rel="prev" title="编写一个X方法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的进程">
+<div class="nav-panel">
+<p>
+下一个：<a href="Events-In-Python.html" accesskey="n" rel="next">Python中的事件</a>，上一个：<a href="Writing-an-Xmethod.html" accesskey="p" rel="prev">编写一个X方法</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的进程-1"><span>23.3.2.17 Python中的进程<a class="copiable-link" href="#Python中的进程-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python中的进程"></a>
+
+<a class="index-entry-id" id="index-gdb_002e进程"></a>
+<p>在<small class="sc">GDB</small>下运行的程序称为进程（见<a class="pxref" href="Inferiors-Connections-and-Programs.html">调试多个进程、连接和程序</a>）。Python脚本可以通过<code class="code">gdb.Inferior</code>类的对象访问由<small class="sc">GDB</small>控制的进程的信息并对其进行操作。
+</p>
+<p><code class="code">gdb</code>模块中提供了以下与进程相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einferiors"><span class="category-def">函数： </span><span><strong class="def-name">gdb.inferiors</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002einferiors"> &para;</a></span></dt>
+<dd><p>返回一个包含所有进程对象的元组。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005finferior"><span class="category-def">函数： </span><span><strong class="def-name">gdb.selected_inferior</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005finferior"> &para;</a></span></dt>
+<dd><p>返回一个表示当前进程的对象。
+</p></dd></dl>
+
+<p>一个<code class="code">gdb.Inferior</code>对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002enum"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.num</strong><a class="copiable-link" href="#index-进程_002enum"> &para;</a></span></dt>
+<dd><p>进程的ID，由<small class="sc">GDB</small>分配。例如，你可以使用这个ID来设置特定于进程的Python断点（见<a class="pxref" href="Breakpoints-In-Python.html#python_005fbreakpoint_005finferior">断点的inferior属性</a>）。
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005finferior_005fconnection"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002econnection"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.connection</strong><a class="copiable-link" href="#index-进程_002econnection"> &para;</a></span></dt>
+<dd><p>这个进程的<code class="code">gdb.TargetConnection</code>（见<a class="pxref" href="Connections-In-Python.html">Python中的连接</a>），如果这个进程没有连接，则为<code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002econnection_005fnum"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.connection_num</strong><a class="copiable-link" href="#index-进程_002econnection_005fnum"> &para;</a></span></dt>
+<dd><p>进程连接的ID，由<small class="sc">GDB</small>分配，如果进程没有连接到目标，则为None。见<a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个进程、连接和程序</a>。在<code class="code">gdb.Inferior.connection</code>不为<code class="code">None</code>的情况下，这等同于<code class="code">gdb.Inferior.connection.num</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002epid"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.pid</strong><a class="copiable-link" href="#index-进程_002epid"> &para;</a></span></dt>
+<dd><p>进程的进程ID，由底层操作系统分配。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002ewas_005fattached"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.was_attached</strong><a class="copiable-link" href="#index-进程_002ewas_005fattached"> &para;</a></span></dt>
+<dd><p>一个布尔值，指示进程是使用“attach”创建的，还是由<small class="sc">GDB</small>本身启动的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002emain_005fname"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.main_name</strong><a class="copiable-link" href="#index-进程_002emain_005fname"> &para;</a></span></dt>
+<dd><p>一个字符串，保存这个进程的“main”函数的名称（如果可以确定的话）。如果不知道main的名称，则为<code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-进程_002eprogspace"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.progspace</strong><a class="copiable-link" href="#index-进程_00

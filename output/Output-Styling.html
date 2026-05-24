@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>输出样式（使用GDB调试）</title>
+
+<meta name="description" content="输出样式（使用GDB调试）">
+<meta name="keywords" content="输出样式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Numbers.html" rel="next" title="数字">
+<link href="Screen-Size.html" rel="prev" title="屏幕大小">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="输出样式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Numbers.html" accesskey="n" rel="next">数字</a>，上一页：<a href="Screen-Size.html" accesskey="p" rel="prev">屏幕大小</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="输出样式-1"><span>22.5 输出样式<a class="copiable-link" href="#输出样式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-样式"></a>
+<a class="index-entry-id" id="index-颜色"></a>
+
+<a class="index-entry-id" id="index-set-style"></a>
+<a class="index-entry-id" id="index-show-style"></a>
+<p><small class="sc">GDB</small> 可以在支持的终端上设置其输出样式。在大多数系统上，这在默认情况下是启用的，但在批处理模式下默认是禁用的（见 <a class="pxref" href="Mode-Options.html">选择模式</a>)。有各种样式设置可用；并且样式也可以完全禁用。
+</p>
+<dl class="table">
+<dt><code class="code">set style enabled &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>启用或禁用所有样式。默认值取决于主机，大多数主机默认设置为 &lsquo;<samp class="samp">on</samp>&rsquo;。
+</p>
+<p>如果 <code class="env">NO_COLOR</code> 环境变量设置为非空值，那么 <small class="sc">GDB</small> 将在启动时将此设置更改为 &lsquo;<samp class="samp">off</samp>&rsquo;。
+</p>
+</dd>
+<dt><code class="code">show style enabled</code></dt>
+<dd><p>显示当前的样式状态。
+</p>
+</dd>
+<dt><code class="code">set style emoji &lsquo;<samp class="samp">auto|on|off</samp>&rsquo;</code></dt>
+<dd><p>启用或禁用emoji的使用。在大多数主机上，默认值是 &lsquo;<samp class="samp">auto</samp>&rsquo;，这意味着只有当主机字符集为 &lsquo;<samp class="samp">UTF-8</samp>&rsquo; 时才会使用emoji；但是，在使用控制台时，Windows上的默认值是 &lsquo;<samp class="samp">off</samp>&rsquo;。请注意，整体禁用样式也会阻止emoji显示。
+</p>
+<p>目前，每当 <small class="sc">GDB</small> 报告错误或警告时，都会打印emoji。
+</p>
+</dd>
+<dt><code class="code">show style emoji</code></dt>
+<dd><p>显示当前的emoji输出状态。
+</p>
+</dd>
+<dt><code class="code">set style sources &lsquo;<samp class="samp">on|off</samp>&rsquo;</code></dt>
+<dd><p>启用或禁用源代码样式。这会影响源代码（如 <code class="code">list</code> 命令的输出）是否有样式。默认值是 &lsquo;<samp class="samp">on</samp>&rsquo;。请注意，只有在总体上启用样式并且 <small class="sc">GDB</small> 有可用的源突出显示库时，源样式才会起作用。
+</p>
+<p>有两种突出显示的方式。首先，如果 <small class="sc">GDB</small> 使用GNU源突出显示库进行链接，那么将使用该库。否则，如果 <small class="sc">GDB</small> 配置了Python脚本支持，并且如果有Python Pygments包可用，那么将使用该包。
+</p>
+</dd>
+<dt><code class="code">show style sources</code></dt>
+<dd><p>显示当前的源代码样式状态。
+</p>
+<a class="anchor" id="warning_002dprefix"></a></dd>
+<dt><code class="code">set style warning-prefix</code></dt>
+<dt><code class="code">show style warning-prefix</code></dt>
+<dt><code class="code">set style error-prefix</code></dt>

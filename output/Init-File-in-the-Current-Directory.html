@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>当前目录中的初始化文件（使用GDB调试）</title>
+
+<meta name="description" content="当前目录中的初始化文件（使用GDB调试）">
+<meta name="keywords" content="当前目录中的初始化文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading.html" rel="up" title="自动加载">
+<link href="libthread_005fdb_002eso_002e1-file.html" rel="next" title="libthread_db.so.1文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="当前目录中的初始化文件">
+<div class="nav-panel">
+<p>
+下一个：<a href="libthread_005fdb_002eso_002e1-file.html" accesskey="n" rel="next">自动加载线程调试库</a>，上一个：<a href="Auto_002dloading.html" accesskey="u" rel="up">自动加载相关文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="自动加载当前目录中的初始化文件"><span>22.8.1自动加载当前目录中的初始化文件<a class="copiable-link" href="#自动加载当前目录中的初始化文件"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-自动加载当前目录中的初始化文件"></a>
+
+<p>默认情况下，GDB会读取并执行当前工作目录中初始化文件（如果有）里预先设置好的命令序列，
+请参阅<a class="ref" href="Initialization-Files.html#Init-File-in-the-Current-Directory-during-Startup">启动期间当前目录中的初始化文件</a>。
+</p>
+<p>请注意，加载此本地的<samp class="file">.gdbinit</samp>文件还需要相应配置好的<code class="code">auto-load safe-path</code>（请参阅<a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-local_002dgdbinit"></a></dd>
+<dt><a id="索引-set-auto_002dload-local_002dgdbinit"></a><span><code class="code">set auto-load local-gdbinit [on|off]</code><a class="copiable-link" href="#索引-set-auto_002dload-local_002dgdbinit"> &para;</a></span></dt>
+<dd><p>启用或禁用在当前目录的初始化文件中查找预先设置好的命令序列（请参阅<a class="pxref" href="Sequences.html">预先设置好的命令序列</a>）的自动加载功能。
+</p>
+<a class="anchor" id="show-auto_002dload-local_002dgdbinit"></a></dd>
+<dt><a id="索引-show-auto_002dload-local_002dgdbinit"></a><span><code class="code">show auto-load local-gdbinit</code><a class="copiable-link" href="#索引-show-auto_002dload-local_002dgdbinit"> &para;</a></span></dt>
+<dd><p>显示是否启用了从当前目录初始化文件中自动加载预先设置好的命令序列功能。
+</p>
+<a class="anchor" id="info-auto_002dload-local_002dgdbinit"></a></dd>
+<dt><a id="索引-info-auto_002dload-local_002dgdbinit"></a><span><code class="code">info auto-load local-gdbinit</code><a class="copiable-link" href="#索引-info-auto_002dload-local_002dgdbinit"> &para;</a></span></dt>
+<dd><p>打印当前目录初始化文件中的预先设置好的命令序列是否已被自动加载。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的结束断点（使用GDB调试）</title>
+
+<meta name="description" content="Python中的结束断点（使用GDB调试）">
+<meta name="keywords" content="Python中的结束断点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Lazy-Strings-In-Python.html" rel="next" title="Python中的惰性字符串">
+<link href="Breakpoints-In-Python.html" rel="prev" title="Python中的断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的结束断点">
+<div class="nav-panel">
+<p>
+下一个：<a href="Lazy-Strings-In-Python.html" accesskey="n" rel="next">Python中惰性字符串的表示</a>，上一个：<a href="Breakpoints-In-Python.html" accesskey="p" rel="prev">使用Python操作断点</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="结束断点"><span>23.3.2.34结束断点<a class="copiable-link" href="#结束断点"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python结束断点"></a>
+<a class="index-entry-id" id="index-gdb_002eFinishBreakpoint"></a>
+
+<p>结束断点是基于<code>finish</code>命令在帧的返回地址处设置的临时断点。<code>gdb.FinishBreakpoint</code>扩展了<code>gdb.Breakpoint</code>。当执行超出断点范围时（即触发<code>Breakpoint.stop</code>或<code>FinishBreakpoint.out_of_scope</code>），底层断点将被禁用并删除。结束断点是特定于线程的，必须在选择正确线程的情况下创建。
+</p> 
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FinishBreakpoint_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">FinishBreakpoint.__init__</strong> <var class="def-var-arguments">(<span class="r">[</span>frame<span class="r">]</span> <span class="r">[</span>, internal<span class="r">]</span>)</var><a class="copiable-link" href="#index-FinishBreakpoint_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>在<code>gdb.Frame</code>对象<code>frame</code>的返回地址处创建一个结束断点。如果未提供<code>frame</code>，则默认使用最新的帧。可选的<code>internal</code>参数使断点对用户不可见。有关此参数的更多详细信息，请参阅 <a class="xref" href="Breakpoints-In-Python.html">使用Python操作断点</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FinishBreakpoint_002eout_005fof_005fscope"><span class="category-def">函数： </span><span><strong class="def-name">FinishBreakpoint.out_of_scope</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FinishBreakpoint_002eout_

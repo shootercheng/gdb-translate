@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>机器码（使用GDB调试）</title>
+
+<meta name="description" content="机器码（使用GDB调试）">
+<meta name="keywords" content="机器码（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Disable-Reading-Source.html" rel="next" title="禁用读取源文件">
+<link href="Source-Path.html" rel="prev" title="源文件路径">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="机器码">
+<div class="nav-panel">
+<p>
+下一页：<a href="Disable-Reading-Source.html" accesskey="n" rel="next">禁用读取源代码</a>，上一页：<a href="Source-Path.html" accesskey="p" rel="prev">指定源目录</a>，向上：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="源文件和机器码"><span>9.6源文件和机器码<a class="copiable-link" href="#源文件和机器码"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-源行及其代码地址"></a>
+
+<p>你可以使用命令<code class="code">info line</code>将源行映射到程序地址（反之亦然），并使用命令<code class="code">disassemble</code>将一系列地址显示为机器指令。你可以使用命令<code class="code">set disassemble-next-line</code>来设置当执行停止时是否反汇编下一行源文件。在GNU Emacs模式下运行时，<code class="code">info line</code>命令会使箭头指向指定的行。此外，<code class="code">info line</code>会以符号形式以及十六进制形式打印地址。
+</p>
+<dl class="table">
+<dt><a id="index-info-line"></a><span><code class="code">info line</code><a class="copiable-link" href="#index-info-line"> &para;</a></span></dt>
+<dt><code class="code">info line <var class="var">locspec</var></code></dt>
+<dd><p>打印通过解析<var class="var">locspec</var>得到的代码位置的源行的编译代码的起始和结束地址。有关<var class="var">locspec</var>的各种形式，请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>。
+如果没有<var class="var">locspec</var>，则打印有关当前源行的信息。
+</p></dd>
+</dl>
+
+<p>例如，我们可以使用<code class="code">info line</code>来发现函数<code class="code">m4_changequote</code>第一行的目标代码的位置：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info line m4_changequote
+“builtin.c”文件的第895行从pc 处开始0x634c &lt;m4_changequote&gt; ，并在0x6350 &lt;m4_changequote+4&gt;处结束。
+</pre></div>
+
+<a class="index-entry-id" id="index-代码地址及其源行"></a>
+<p>我们还可以使用<code class="code">*<var class="var">addr</var></code>作为<var class="var">locspec</var>的形式来询问哪个源行覆盖特定地址<var class="var">addr</var>：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) info line *0x63ff
+“builtin.c”文件的第926行从pc 处开始0x63e4 &lt;m4_changequote+152&gt; ，并在0x6404 &lt;m4_changequote+184&gt;处结束。
+</pre></div>
+
+<a class="index-entry-id" id="index-_0024_005f和info-line"></a>
+<a class="index-entry-id" id="index-x命令_002c默认地址"></a>
+<a class="index-entry-id" id="index-x_0028检查_0029_002c和info-line"></a>
+<p>在执行<code class="code">info line</code>之后，<code class="code">x</code>命令的默认地址会更改为该行的起始地址，因此只需输入“<samp class="samp">x/i</samp>”就可以开始检查机器码（请参阅 <a class="pxref" href="Memory.html">检查内存</a>）。此外，这个地址会被保存为便利变量<code class="code">$_</code>的值（请参阅 <a class="pxref" href="Convenience-Vars.html">便利变量</a>）。
+</p>
+<a class="index-entry-id" id="index-info-line_002c重复调用"></a>
+<p>在执行<code class="code">info line</code>之后，再次使用<code class="code">info line</code>而不指定位置将显示有关下一个源行的信息。
+</p>
+<a class="anchor" id="disassemble"></a><dl class="table">
+<dt><a class="index-entry-id" id="index-汇编指令"></a>
+<a class="index-entry-id" id="index-指令_002c汇编"></a>
+<a class="index-entry-id" id="index-机器指令"></a>
+<a class="index-entry-id" id="index-列出机器指令"></a>
+<a id="index-disassemble"></a><span><code class="code">disassemble</code><a class="copiable-link" href="#index-disassemble"> &para;</a></span></dt>
+<dt><code class="code">disassemble /m</code></dt>
+<dt><code class="code">disassemble /s</code></dt>
+<dt><code class="code">disassemble /r</code></dt>
+<dt><code class="code">disassemble /b</code></dt>
+<dd><p>这个专门的命令将一段内存作为机器指令转储。它还可以通过指定<code class="code">/m</code>或<code class="code">/s</code>修饰符来打印混合的源文件+反汇编内容，并通过指定<code class="code">/r</code>或<code class="code">/b</code>修饰符以十六进制以及符号形式打印原始指令。
+</p>
+<p><code class="code">/m</code>和<code class="code">/s</code>只能使用其中一个，尝试同时使用两个会导致错误。
+</p>
+<p><code class="code">/r</code>和<code class="code">/b</code>只能使用其中一个，尝试同时使用两个会导致错误。
+</p>
+<p>默认的内存范围是所选帧的程序计数器周围的函数。这个命令的单个参数是一个程序计数器值；GDB会转储这个值周围的函数。当给出两个参数时，它们应该用逗号分隔，可能会被空格包围。参数指定要转储的地址范围，有两种形式：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">start</var>,<var class="var">end</var></code></dt>
+<dd><p>从<var class="var">start</var>（包含）到<var class="var">end</var>（不包含）的地址
+</p></dd>
+<dt><code class="code"><var class="var">start</var>,+<var class="var">length</var></code></dt>
+<dd><p>从<var class="var">start</var>（包含）到<code class="code"><var class="var">start</var>+<var class="var">length</var></code>（不包含）的地址。
+</p></dd>
+</dl>
+
+<p>当指定两个参数时，还会打印函数的名称（因为给定范围内可能有多个函数）。
+</p>
+<p>参数可以是任何产生数值的表达式，例如“<samp class='samp'>0x32c4</samp>”、“<samp class='samp'>&amp;main+10</samp>”或“<samp class='samp'>$pc - 8</samp>”。
+</p>
+<p>如果正在反汇编的内存范围包含当前程序计数器，则该位置的指令会用“<code class="code">=&gt;</code>”标记显示。
+</p></dd>
+</dl>
+
+<p>以下示例展示了对HP PA-RISC 2.0代码的一系列地址的反汇编：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) disas 0x32c4, 0x32e4
+从0x32c4到0x32e4的汇编代码转储：
+   0x32c4 &lt;main+204&gt;:      addil 0,dp
+   0x

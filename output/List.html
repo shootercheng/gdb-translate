@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>列表（使用GDB调试）</title>
+
+<meta name="description" content="列表（使用GDB调试）">
+<meta name="keywords" content="列表（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Location-Specifications.html" rel="next" title="位置规范">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="列表">
+<div class="nav-panel">
+<p>
+下一个：<a href="Location-Specifications.html" accesskey="n" rel="next">位置规范</a>，上一个：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="打印源行"><span>9.1 打印源行<a class="copiable-link" href="#打印源行"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-列表"></a>
+<a class="index-entry-id" id="索引-l-（列表）"></a>
+<p>要从源文件中打印行，请使用<code>list</code>命令（缩写为<code>l</code>）。默认情况下，打印十行。有几种方法可以指定要打印文件的哪一部分；有关完整列表，请参阅 <a class="ref" href="Location-Specifications.html">位置规范</a>。
+</p>
+<p>以下是最常用的<code>list</code>命令形式：
+</p>
+<dl class="table">
+<dt><code>list <var>linenum</var></code></dt>
+<dd><p>打印当前源文件中围绕行号<var>linenum</var>居中的行。
+</p>
+</dd>
+<dt><code>list <var>function</var></code></dt>
+<dd><p>打印围绕函数<var>function</var>开头的行。
+</p>
+</dd>
+<dt><code>list</code></dt>
+<dd><p>打印更多行。如果最后打印的行是用<code>list</code>命令打印的，那么这次打印最后打印的行之后的行；但是，如果最后打印的行是作为显示堆栈帧的一部分而单独打印的一行（见 <a class="pxref" href="Stack.html">检查堆栈</a>），那么这次打印围绕该行居中的行。如果没有使用<code>list</code>命令且没有单独打印一行，它将打印围绕函数<code>main</code>的行。
+</p>
+</dd>
+<dt><code>list +</code></dt>
+<dd><p>与不带参数使用时相同。
+</p>
+</dd>
+<dt><code>list -</code></dt>
+<dd><p>打印紧接在最后打印的行之前的行。
+</p>
+</dd>
+<dt><code>list.</code></dt>
+<dd><p>打印当前选定帧内执行点周围的行。如果下级程序没有运行，则改为打印围绕主函数开头的行。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-列表，要显示的行数"></a>
+<p>默认情况下，GDB使用这些形式的<code>list</code>命令中的任何一个打印十行源行。你可以使用<code>set listsize</code>来更改此设置：
+</p>
+<dl class="table">
+<dt><a id="索引-set-listsize"></a><span><code>set listsize <var>count</var></code><a class="copiable-link" href="#索引-set-listsize"> &para;</a></span></dt>
+<dt><code>set listsize unlimited</code></dt>
+<dd><p>使<code>list</code>命令显示<var>count</var>行源行（除非<code>list</code>参数明确指定了其他数字）。将<var>count</var>设置为<code>unlimited</code>或0表示没有限制。
+</p>
+</dd>
+<dt><a id=索引-show-listsize"><span><code>show listsize</code><a class="copiable-link" href="#索引-show-listsize"> &para;</a></span></dt>
+<dd><p>显示<code>list</code>打印的行数。
+</p></dd>
+</dl>
+
+<p>使用<kbd>RET</kbd>重复<code>list</code>命令会丢弃参数，因此它等同于只输入<code>list</code>。这比再次列出相同的行更有用。对于参数为“<samp>-</samp>”的情况是个例外；该参数在重复时会保留，以便每次重复都在源文件中向上移动。
+</p>
+<p>一般来说，<code>list</code>命令期望你提供零个、一个或两个位置规范。这些位置规范被解释为解析为源代码行；有几种编写它们的方法（见 <a class="pxref" href="Location-Specifications.html">位置规范</a>），但效果总是解析为要显示的一些源代码行。
+</p>
+<p>以下是<code>list</code>可能的参数的完整描述：
+</p>
+<dl class="table">
+<dt><code>list <var>locspec</var></code></dt>
+<dd><p>打印围绕通过解析<var>locspec</var>得到的所有代码位置处的行或多行居中的行。
+</p>
+</dd>
+<dt><code>list <var>first</var>,<var>last</var></code></dt>
+<dd><p>打印从<var>first</var>到<var>last</var>的行。两个参数都是位置规范。当一个<code>list</code>命令有两个位置规范，并且第二个位置规范的源文件被省略时，这指的是与第一个位置规范相同的源文件。如果<var>first</var>或<var>last</var>在程序中解析为多个源代码行，那么列表命令将显示解析后的源代码行列表，而不会继续列出源代码。
+</p>
+</dd>
+<dt><code>list,<var>last</var></code></dt>
+<dd><p>打印以<var>last</var>结尾的行。
+</p>
+<p>同样，如果<var>last</var>在程序中解析为多个源代码行，那么列表命令将打印解析后的源代码行列表，而不会继续列出源代码。
+</p>
+</dd>
+<dt><code>list <var>first</var>,</code></dt>
+<dd><p>打印以<var>first</var>开头的行。
+</p>
+</dd>
+<dt><code>list +</code></dt>
+<dd><p>打印紧接在最后打印的行之后的行。
+</p>
+</dd>
+<dt><code>list -</code></dt>
+<dd><p>打印紧接在最后打印的行之前的行。
+</p>
+</dd>
+<dt><code>list</code></dt>
+<dd><p>如前表所述。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Location-Specifications.html">位置规范</a>

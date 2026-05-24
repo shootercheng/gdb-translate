@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>操作系统信息（使用GDB调试）</title>
+
+<meta name="description" content="操作系统信息（使用GDB调试）">
+<meta name="keywords" content="操作系统信息（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Memory-Region-Attributes.html" rel="next" title="内存区域属性">
+<link href="Vector-Unit.html" rel="prev" title="向量单元">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="操作系统信息">
+<div class="nav-panel">
+<p>
+下一页：<a href="Memory-Region-Attributes.html" accesskey="n" rel="next">内存区域属性</a>，上一页：<a href="Vector-Unit.html" accesskey="p" rel="prev">向量单元</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="操作系统辅助信息"><span>10.17操作系统辅助信息<a class="copiable-link" href="#操作系统辅助信息"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-操作系统信息"></a>
+
+<p><small class="sc">GDB</small>提供了与有用的操作系统功能的接口，这些功能可以帮助你调试程序。
+</p>
+<a class="index-entry-id" id="索引-辅助向量"></a>
+<a class="index-entry-id" id="索引-向量_002c辅助"></a>
+<p>一些操作系统在程序启动时向程序提供一个<em class="dfn">辅助向量</em>。这类似于你为程序指定的参数和环境，但包含各种与系统相关的二进制值，这些值告诉系统库有关硬件、操作系统和进程的重要细节。每个值的用途由一个整数标签标识；其含义是众所周知的，但因系统而异。根据配置和操作系统功能，<small class="sc">GDB</small>可能能够向你显示此信息。对于远程目标，此功能可能进一步取决于远程存根对&lsquo;<samp class="samp">qXfer:auxv:read</samp>&rsquo;数据包的支持，请参阅<a class="ref" href="General-Query-Packets.html#qXfer-auxiliary-vector-read">qXfer辅助向量读取</a>。
+</p>
+<dl class="table">
+<dt><a id="索引-info-auxv"></a><span><code class="code">info auxv</code><a class="copiable-link" href="#索引-info-auxv"> &para;</a></span></dt>
+<dd><p>显示 inferior 的辅助向量，它可以是一个正在运行的进程或一个核心转储文件。<small class="sc">GDB</small>以数字形式打印每个标签值，还会显示已识别标签的名称和文本描述。向量中的一些值是数字，一些是位掩码，还有一些是指向字符串或其他数据的指针。<small class="sc">GDB</small>以最适合已识别标签的形式显示每个值，对于未识别的标签则以十六进制显示。
+</p></dd>
+</dl>
+
+<p>在某些目标上，<small class="sc">GDB</small>可以访问特定于操作系统的信息并向你显示。可用的信息类型将因目标上运行的操作系统类型而异。获取数据所使用的机制在<a class="ref" href="Operating-System-Information.html">操作系统信息</a>中进行了描述。对于远程目标，此功能取决于远程存根对&lsquo;<samp class="samp">qXfer:osdata:read</samp>&rsquo;数据包的支持，请参阅<a class="ref" href="General-Query-Packets.html#qXfer-osdata-read">qXfer osdata读取</a>。
+</p>
+<dl class="table">
+<dt><a id="索引-info-os"></a><span><code class="code">info os <var class="var">信息类型</var></code><a class="copiable-link" href="#索引-info-os"> &para;</a></span></dt>
+<dd>
+<p>显示请求类型的操作系统信息。
+</p>
+<p>在<small class="sc">GNU</small>/Linux上，<var class="var">信息类型</var>的以下值有效：
+</p><a class="anchor" id="linux-info-os-infotypes"></a><dl class="table">
+<dt><a id="索引-info-os-cpus"></a><span><code class="code">cpus</code><a class="copiable-link" href="#索引-info-os-cpus"> &para;</a></span></dt>
+<dd><p>显示所有CPU/核心的列表。对于每个CPU/核心，<small class="sc">GDB</small>会打印来自/proc/cpuinfo的可用字段。对于每个支持的架构，可用的字段不同。两个常见的条目是processor，它给出CPU编号和bogomips；bogomips是一个在kernel初始化期间计算的系统常量。
+</p>
+</dd>
+<dt><a id="索引-info-os-files"></a><span><code class="code">files</code><a class="copiable-link" href="#索引-info-os-files"> &para;</a></span></dt>
+<dd><p>显示目标上打开的文件描述符列表。对于每个文件描述符，<small class="sc">GDB</small>会打印拥有该描述符的进程的标识符、拥有进程的命令名、描述符的值以及描述符的目标。
+</p>
+</dd>
+<dt><a id="索引-info-os-modules"></a><span><code class="code">modules</code><a class="copiable-link" href="#索引-info-os-modules"> &para;</a></span></dt>
+<dd><p>显示目标上所有已加载内核模块的列表。对于每个模块，<small class="sc">GDB</small>会打印模块名称、模块的字节大小、模块被使用的次数、模块的依赖项、模块的状态以及加载模块在内存中的地址。
+</p>
+</dd>
+<dt><a id="索引-info-os-msg"></a><span><code class="code">msg</code><a class="copiable-link" href="#索引-info-os-msg"> &para;</a></span></dt>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI流记录（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI流记录（使用GDB调试）">
+<meta name="keywords" content="GDB/MI流记录（使用GDB调试）">
+<meta name="resource-type" content="文档">    
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI输出记录">
+<link href="GDB_002fMI-Async-Records.html" rel="next" title="GDB/MI异步记录">
+<link href="GDB_002fMI-Result-Records.html" rel="prev" title="GDB/MI结果记录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Stream-Records">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Async-Records.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>异步记录</a>，上一页：<a href="GDB_002fMI-Result-Records.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>结果记录</a>，向上：<a href="GDB_002fMI-Output-Records.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>输出记录</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="gdb_00_2fmi-Stream-Records"><span>27.5.2 <small class="sc">GDB/MI</small>流记录<a class="copiable-link" href="#gdb_00_2fmi-Stream-Records"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-gdb_00_2fmi_00_2c-stream-records"></a>
+<a class="index-entry-id" id="index-stream-records-in-gdb_00_2fmi"></a>
+<p><small class="sc">GDB</small>在内部维护多个输出流：控制台、目标和日志。针对这些流中每个流的输出通过使用<em class="dfn">流记录</em>经由<small class="sc">GDB/MI</small>接口进行传递。
+</p>
+<p>每个流记录以一个唯一的<em class="dfn">前缀字符</em>开头，该字符标识其流（见<a class="pxref" href="GDB_002fMI-Output-Syntax.html"><small class="sc">GDB/MI</small>输出语法</a>）。除了前缀外，每个流记录包含一个<code class="code"><var class="var">string-output</var></code>。这要么是原始文本（带有隐式换行符），要么是带引号的C字符串（不包含隐式换行符）。
+</p>
+<dl class="table">
+<dt><code class="code">&quot;~&quot; <var class="var">string-output</var></code></dt>    
+<dd><p>控制台输出流包含应显示在CLI控制台窗口中的文本。它包含对CLI命令的文本响应文本。
+</p>
+</dd>
+<dt><code class="code">&quot;@&quot; <var class="var">string-output</var></code></dt>    
+<dd><p>目标输出流包含来自正在运行的目标的任何文本输出。只有当GDB的事件循环真正异步时才会出现，目前仅适用于远程目标。
+</p>
+</dd>
+<dt><code class="code">&quot;&amp;&quot; <var class="var">string-output</var></code></dt>    
+<dd><p>日志流包含由<small class="sc">GDB</small>内部生成的调试消息。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

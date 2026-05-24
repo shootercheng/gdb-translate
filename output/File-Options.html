@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文件选项（使用GDB调试）</title>
+
+<meta name="description" content="文件选项（使用GDB调试）">
+<meta name="keywords" content="文件选项（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invoking-GDB.html" rel="up" title="调用GDB">
+<link href="Mode-Options.html" rel="next" title="模式选项">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="文件选项">
+<div class="nav-panel">
+<p>
+下一页：<a href="Mode-Options.html" accesskey="n" rel="next">选择模式</a>，上一级：<a href="Invoking-GDB.html" accesskey="u" rel="up">调用<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="选择文件"><span>2.1.1选择文件<a class="copiable-link" href="#选择文件"> &para;</a></span></h4>
+
+<p>当<small class="sc">GDB</small>启动时，它会将除选项之外的任何参数视为指定可执行文件和核心文件（或进程ID）。这与分别使用&lsquo;<samp class="samp">-se</samp>&rsquo;和&lsquo;<samp class="samp">-c</samp>&rsquo;（或&lsquo;<samp class="samp">-p</samp>&rsquo;）选项指定参数的效果相同。（<small class="sc">GDB</small>将第一个没有关联选项标志的参数视为等同于&lsquo;<samp class="samp">-se</samp>&rsquo;选项后跟该参数；第二个没有关联选项标志的参数（如果有的话）视为等同于&lsquo;<samp class="samp">-c</samp>&rsquo;/&lsquo;<samp class="samp">-p</samp>&rsquo;选项后跟该参数。）如果第二个参数以十进制数字开头，<small class="sc">GDB</small>将首先尝试将其作为进程附加，如果失败，则尝试将其作为核心文件打开。如果你有一个名称以数字开头的核心文件，你可以通过在其前面加上<samp class="file">./</samp>来防止<small class="sc">GDB</small>将其视为进程ID，例如<samp class="file">./12345</samp>。
+</p>
+<p>如果<small class="sc">GDB</small>没有配置为支持核心文件，例如对于大多数嵌入式目标，那么它会对第二个参数发出抱怨并忽略它。
+</p>
+<p>对于&lsquo;<samp class="samp">-s</samp>&rsquo;、&lsquo;<samp class="samp">-e</samp>&rsquo;和&lsquo;<samp class="samp">-se</samp>&rsquo;选项及其长格式等效项，用于在文件系统中搜索符号和/或可执行文件的方法与<code class="code">file</code>命令使用的方法相同。请参阅 <a class="xref" href="Files.html">文件</a>。
+</p>
+<p>许多选项都有长格式和短格式；以下列表中都有显示。如果你截断长格式，<small class="sc">GDB</small>也会识别，只要存在足够的选项以使其明确无误。（如果你愿意，你可以用&lsquo;<samp class="samp">--</samp>&rsquo;而不是&lsquo;<samp class="samp">-</samp>&rsquo;来标记选项参数，不过我们展示的是更常见的约定。）
+</p>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-_002ds"></a>
+<a id="索引-_002d_002dsymbols"></a><span><code class="code">-symbols <var class="var">文件</var></code><a class="copiable-link" href="#索引-_002dsymbols"> &para;</a></span></dt>
+<dt><code class="code">-s <var class="var">文件</var></code></dt>
+<dd><p>从文件<var class="var">文件</var>中读取符号表。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-_002de"></a>
+<a id="索引-_002d_002dexec"></a><span><code class="code">-exec <var class="var">文件</var></code><a class="copiable-link" href="#索引-_002dexec"> &para;</a></span></dt>
+<dt><code class="code">-e <var class="var">文件</var></code></dt>
+<dd><p>在适当的时候使用文件 <var class="var">文件</var> 作为要执行的可执行文件，并结合核心转储来检查纯数据。
+</p>
+</dd>
+<dt><a id="索引-_002d_002dse"></a><span><code class="code">-se <var class="var">文件</var></code><a class="copiable-link" href="#索引-_002dse"> &para;</a></span></dt>
+<dd><p>从文件<var class="var">文件</var>中读取符号表并将其用作可执行文件。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-_002dc"></a>
+<a id="索引-_002d_002dcore"></a><span><code class="code">-core <var class="var">文件</var></code><a class="copiable-link" href="#索引-_002dcore"> &para;</a></span></dt>
+<dt><code class="code">-c <var class="var">文件</var></code></dt>
+<dd><p>使用文件<var class="var">文件</var>作为要检查的核心转储。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-_002dp"></a>
+<a id="索引-_002d_002dpid"></a><span><code class="code">-pid <var class="var">数字</var></code><a class="copiable-link" href="#索引-_002dpid"> &para;</a></span></dt>
+<dt><code class="code">-p <var class="var">数字</var></code></dt>
+<dd><p>连接到进程ID <var class="var">数字</var>，就像使用<code class="code">attach</code>命令一样。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-_002dx"></a>
+<a id="索引-_002d_002dcommand"></a><span><code class="code">-command <var class="var">文件</var></code><a class="copiable-link" href="#索引-_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-x <var class="var">文件</var></code></dt>
+<dd><p>从文件<var class="var">文件</var>中执行命令。此文件的内容将被完全按照<code class="code">source</code>命令的方式进行求值。
+请参阅 <a class="xref" href="Command-Files.html">命令文件</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-_002dex"></a>
+<a id="索引-_002d_002deval_002dcommand"></a><span><code class="code">-eval-command <var class="var">命令</var></code><a class="copiable-link" href="#索引-_002deval_002dcommand"> &para;</a></span></dt>
+<dt><code class="code">-ex <var class="var">命令</var></code></dt>
+<dd><p>执行单个<small class="sc">GDB</small>命令。
+</p>
+<p>此选项可以多次使用以调用多个命令。它也可以根据需要与&lsquo;<samp class="samp">-command</samp>&rsquo;交错使用。
+<div class="example smallexample">
+<pre class="example-preformatted">gdb -ex 'target sim' -ex 'load' \
+   -x setbreakpoints -ex 'run' a.out
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="索引-_

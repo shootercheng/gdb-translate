@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的连接（使用GDB调试）</title>
+
+<meta name="description" content="Python中的连接（使用GDB调试）">
+<meta name="keywords" content="Python中的连接（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="TUI-Windows-In-Python.html" rel="next" title="Python中的TUI窗口">
+<link href="Registers-In-Python.html" rel="prev" title="Python中的寄存器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: �.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的连接">
+<div class="nav-panel">
+<p>
+下一个：<a href="TUI-Windows-In-Python.html" accesskey="n" rel="next">实现新的TUI窗口</a>，上一个：<a href="Registers-In-Python.html" accesskey="p" rel="prev">Python中的寄存器</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的连接-1"><span>23.3.2.39 Python中的连接<a class="copiable-link" href="#Python中的连接-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python中的连接"></a>
+<p><small class="sc">GDB</small> 允许你在单个会话中运行和调试多个程序。每个被调试的程序都有一个连接，该连接描述了 <small class="sc">GDB</small> 如何控制被调试的程序。不同连接类型的示例有 &lsquo;<samp class="samp">native</samp>&rsquo; 和 &lsquo;<samp class="samp">remote</samp>&rsquo;。请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个下级连接和程序</a>。
+</p>
+<p><small class="sc">GDB</small> 中的连接由 <code class="code">gdb.TargetConnection</code> 的实例或其某个子类表示。要获取所有连接的列表，请使用 <code class="code">gdb.connections</code>
+（请参阅 <a class="pxref" href="Basic-Python.html#gdbpy_005fconnections">gdb.connections</a>）。
+</p>
+<p>要获取单个 <code class="code">gdb.Inferior</code> 的连接，请读取其 <code class="code">gdb.Inferior.connection</code> 属性
+（请参阅 <a class="pxref" href="Inferiors-In-Python.html#gdbpy_005finferior_005fconnection">gdb.Inferior.connection</a>）。
+</p>
+<p>目前，<code class="code">gdb.TargetConnection</code> 只有一个子类 <code class="code">gdb.RemoteTargetConnection</code>，
+但是，在 <small class="sc">GDB</small> 的未来版本中可能会添加其他子类。因此，你应该避免编写如下代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">conn = gdb.selected_inferior().connection
+if type(conn) is gdb.RemoteTargetConnection:
+  print(&quot;这是一个远程目标连接&quot;)
+</pre></div>
+
+<p>因为当添加更多连接类型时，这可能会失败。相反，你应该编写：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">conn = gdb.selected_inferior().connection
+if isinstance(conn, gdb.RemoteTargetConnection):
+  print(&quot;这是一个远程目标连接&quot;)
+</pre></div>
+
+<p><code class="code">gdb.TargetConnection</code> 有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-TargetConnection_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">TargetConnection.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-TargetConnection_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>如果 <code class="code">gdb.TargetConnection</code> 对象有效，则返回 <code class="code">True</code>，
+否则返回 <code class="code">False</code>。如果连接在 <small class="sc">GDB</small> 中不再存在，<code class="code">gdb.TargetConnection</code> 将变为无效，
+当没有下级使用该连接时可能会发生这种情况，但可能会延迟到用户替换当前目标。
+</p>
+<p>如果连接无效，读取任何 <code class="code">gdb.TargetConnection</code> 属性将引发异常。
+</p></dd></dl>
+
+<p><code class="code">gdb.TargetConnection</code> 有以下只读属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TargetConnection_002enum"><span class="category-def">变量： </span><span><strong class="def-name">TargetConnection.num</strong><a class="copiable-link" href="#index-TargetConnection_002enum"> &para;</a></span></dt>
+<dd><p><small class="sc">GDB</small> 分配的一个整数，用于唯一标识此连接。这与 <code class="code">info connections</code> 命令输出中的 &lsquo;<samp class="samp">Num</samp>&rsquo; 列中显示的值相同（请参阅 <a class="pxref" href="Inferiors-Connections-and-Programs.html">info connections</a>）。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TargetConnection_002etype"><span class="category-def">变量： </span><span><strong class="def-name">TargetConnection.type</strong><a class="copiable-link" href="#index-TargetConnection_002etype"> &para;</a></span></dt>
+<dd><p>一个描述此连接类型的字符串。此字符串将是可以传递给 <code class="code">target</code> 命令的有效名称之一（请参阅 <a class="pxref" href="Target-Commands.html">target命令</a>）。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TargetConnection_002edescription"><span class="category-def">变量： </span><span><strong class="def-name">TargetConnection.description</strong><a class="copiable-link" href="#index-TargetConnection_002edescription"> &para;</a></span></dt>
+<dd><p>一个给出此目标类型简短描述的字符串。这与 <code class="code">info connection</code> 命令输出中的 &lsquo;<samp class="samp">Description</samp>&rsquo; 列中显示的字符串相同（请参阅 <a class="pxref" href="Inferiors-Connections-and-Programs.html">info connections</a>）。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-TargetConnection_002edetails"><span class="category-def">变量： </span><span><strong class="def-name">TargetConnection.details</strong><a class="copiable-link" href="#index-TargetConnection_002edetails"> &para;</a></span></dt>
+<dd><p>一个可选字符串，给出有关此连接的附加信息。如果此连接没有其他详细信息，此属性可以为 <code class="code">None</code>。
+</p>
+<p>可能有附加详细信息的连接类型的一个示例是 &lsquo;<samp class="samp">remote</samp>&rsquo; 连接，在这种情况下，详细信息字符串可以包含用于连接到远程目标的 &lsquo;<samp class="samp"><var class="var">hostname</var>:<var class="var">port</var></samp>&rsquo;。
+</p></dd></dl>
+
+<p><code class="code">gdb.RemoteTargetConnection</code> 类是 <code class="code">gdb.TargetConnection</code> 的子类，用于表示 &lsquo;<samp class="samp">remote</samp>&rsquo; 和 &lsquo;<samp class="samp">extended-remote</samp>&rsquo; 连接。除了 <code class="code">gdb.TargetConnection</code> 基类可用的属性和方法外，
+<code class="code">gdb.RemoteTargetConnection</code> 还有以下方法：
+</p>
+<a class="index-entry-id" id="index-maint-packet"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-RemoteTargetConnection_002esend_005fpacket"><span class="category-def">函数： </span><span><strong class="def-name">RemoteTargetConnection.send_packet</strong> <var class="def-var-arguments">(packet)</var><a class="copiable-link" href="#index-RemoteTargetConnection_002esend_005fpacket"> &para;</a></span></dt>
+<dd><p>此方法将 <var class="var">packet</var> 发送到远程目标并返回响应。<var class="var">packet</var> 应该是一个 <code class="code">bytes</code> 对象或一个 <code class="code">Unicode</code> 字符串。
+</p>
+<p>如果 <var class="var">packet</var> 是一个 <code class="code">Unicode</code> 字符串，则使用 <small class="sc">ASCII</small> 编解码器将该字符串编码为一个 <code class="code">bytes</code> 对象。如果字符串无法编码，则会引发 <code class="code">UnicodeError</code>。
+</p>
+<p>如果 <var class="var">packet</var> 不是一个 <code class="code">bytes</code> 对象或一个 <code class="code">Unicode</code> 字符串，则会引发 <code class="code">TypeError</code>。如果 <var class="var">packet</var> 为空，则会引发 <code class="code">ValueError</code>。
+</p>
+<p>响应作为一个 <code class="code">bytes</code> 对象返回。如果知道响应可以表示为一个字符串，则可以从缓冲区中解码。例如，如果知道响应是一个 <small class="sc">ASCII</small> 字符串：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">remote_connection.send_packet(&quot;some_packet&quot;).decode(&quot;ascii&quot;)
+</pre></div>
+
+<p>前缀、后缀和校验和（根据远程串行协议的要求）会自动添加到传出数据包中，并在返回回复内容之前从传入数据包中删除。
+</p>
+<p>这等效于 <code class="code">maintenance packet</code> 命令
+（请参阅 <a class="pxref" href="Maintenance-Commands.html#maint-packet">maint packet</a>）。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="TUI-Windows-In-Python.html">实现新TUI窗口</a>，上一个：<a href="Registers-In-Python.html">Python中的寄存器</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

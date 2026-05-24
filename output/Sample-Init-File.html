@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>示例初始化文件（使用GDB调试）</title>
+
+<meta name="description" content="示例初始化文件（使用GDB调试）">
+<meta name="keywords" content="示例初始化文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Init-File.html" rel="up" title="Readline初始化文件">
+<link href="Conditional-Init-Constructs.html" rel="prev" title="条件初始化结构">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="示例初始化文件">
+<div class="nav-panel">
+<p>
+上一个：<a href="Conditional-Init-Constructs.html" accesskey="p" rel="prev">条件初始化结构</a>，向上：<a href="Readline-Init-File.html" accesskey="u" rel="up">Readline初始化文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="示例初始化文件-1"><span>33.3.3示例初始化文件<a class="copiable-link" href="#示例初始化文件-1"> &para;</a></span></h4>
+
+<p>这是一个<var class="var">inputrc</var>文件的示例。它展示了按键绑定、变量赋值和条件语法。
+</p>
+<div class="example">
+<pre class="example-preformatted"># 此文件控制使用GNU Readline库进行行输入编辑的程序的行为。现有程序包括FTP、Bash和GDB。
+#
+# 你可以使用C-x C-r重新读取inputrc文件。
+# 以'#'开头的行是注释。
+#
+# 首先，包含来自 /etc/Inputrc的任何系统范围的绑定和变量赋值
+$include /etc/Inputrc
+
+#
+# 设置emacs模式的各种绑定。
+
+set editing-mode emacs 
+
+$if mode=emacs
+
+Meta-Control-h:	backward-kill-word	函数名后面的数据将被忽略
+
+#
+# 小键盘模式下的箭头键
+#
+#&quot;\M-OD&quot;:        backward-char
+#&quot;\M-OC&quot;:        forward-char
+#&quot;\M-OA&quot;:        previous-history
+#&quot;\M-OB&quot;:        next-history
+#
+# ANSI模式下的箭头键
+#
+&quot;\M-[D&quot;:        backward-char
+&quot;\M-[C&quot;:        forward-char
+&quot;\M-[A&quot;:        previous-history
+&quot;\M-[B&quot;:        next-history
+#
+# 8位小键盘模式下的箭头键
+#
+#&quot;\M-\C-OD&quot;:       backward-char
+#&quot;\M-\C-OC&quot;:       forward-char
+#&quot;\M-\C-OA&quot;:       previous-history
+#&quot;\M-\C-OB&quot;:       next-history
+#
+# 8位ANSI模式下的箭头键
+#
+#&quot;\M-\C-[D&quot;:       backward-char
+#&quot;\M-\C-[C&quot;:       forward-char
+#&quot;\M-\C-[A&quot;:       previous-history
+#&quot;\M-\C-[B&quot;:       next-history
+
+C-q: quoted-insert
+
+$endif
+
+# 一个老式绑定。这恰好是默认设置。
+TAB: complete
+
+# 方便与shell交互的宏
+$if Bash
+# 编辑路径
+&quot;\C-xp&quot;: &quot;PATH=${PATH}\e\C-e\C-a\ef\C-f&quot;
+# 准备输入一个带引号的单词 --
+# 插入左右双引号
+# 并移动到左引号之后
+&quot;\C-x\&quot;&quot;: &quot;\&quot;\&quot;\C-b&quot;
+# 插入一个反斜杠（测试序列和宏中的反斜杠转义）
+&quot;\C-x\\&quot;: &quot;\\&quot;
+# 引用当前或前一个单词
+&quot;\C-xq&quot;: &quot;\eb\&quot;\ef\&quot;&quot;
+# 添加一个刷新行的绑定，该行未绑定
+&quot;\C-xr&quot;: redraw-current-line
+# 编辑当前行上的变量。
+&quot;\M-\C-v&quot;: &quot;\C-a\C-k$\C-y\M-\C-e\C-a\C-y=&quot;
+$endif
+
+# 如果有可用的可见铃声，则使用它
+set bell-style visible
+
+# 读取时不将字符剥离为7位
+set input-meta on
+
+# 允许插入iso-latin1字符而不是转换为前缀元序列
+set convert-meta off
+
+# 将设置了第八位的字符直接显示
+# 而不是作为元前缀字符显示
+set output-meta on
+
+# 如果一个单词有150个或更多可能的补全项，
+# 询问用户是否要查看所有补全项
+set completion-query-items 150
+
+# 对于FTP
+$if Ftp
+&quot;\C-xg&quot;: &quot;get \M-?&quot;
+&quot;\C-xt&quot;: &quot;put \M-?&quot;
+&quot;\M-.&quot;: yank-last-arg
+$endif
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Conditional-Init-Constructs.html">条件初始化结构</a>，向上：<a href="Readline-Init-File.html">Readline初始化文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

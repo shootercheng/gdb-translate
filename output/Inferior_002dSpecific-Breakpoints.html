@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>特定进程的断点（使用GDB调试）</title>
+
+<meta name="description" content="特定进程的断点（使用GDB调试）">
+<meta name="keywords" content="特定进程的断点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Inferiors-Connections-and-Programs.html" rel="up" title="进程连接和程序">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Inferior_002dSpecific-Breakpoints">
+<div class="nav-panel">
+<p>上一级：<a href="Inferiors-Connections-and-Programs.html" accesskey="u" rel="up">调试多个进程连接和程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Inferior_002dSpecific-Breakpoints-1"><span>4.9.1特定进程的断点<a class="copiable-link" href="#Inferior_002dSpecific-Breakpoints-1"> &para;</a></span></h4>
+
+<p>调试多个进程时，你可以选择是为所有进程设置断点，还是为特定进程设置断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-inferior_002dspecific-breakpoints"></a>
+<a class="index-entry-id" id="index-break-_2026-inferior-inferior_002did"></a>
+<a id="index-breakpoints-and-inferiors"></a><span><code class="code">break <var class="var">locspec</var> inferior <var class="var">inferior-id</var></code><a class="copiable-link" href="#index-breakpoints-and-inferiors"> &para;</a></span></dt>
+<dt><code class="code">break <var class="var">locspec</var> inferior <var class="var">inferior-id</var> if &hellip;</code></dt>
+<dd><p><var class="var">locspec</var>指定程序中的一个或多个代码位置。详情见 <a class="xref" href="Location-Specifications.html">位置指定</a>。
+</p>
+<p>在断点命令中使用限定符‘<samp class="samp">inferior <var class="var">inferior-id</var></samp>’，以指定仅当特定进程到达此断点时，GDB才停止。<var class="var">inferior-id</var>指定符是GDB分配的进程标识符之一，显示在‘<samp class="samp">info inferiors</samp>’输出的第一列中。
+</p>
+<p>设置断点时如果不指定‘<samp class="samp">inferior <var class="var">inferior-id</var></samp>’，则该断点适用于程序的<em class="emph">所有</em>进程。
+</p>
+<p>你也可以在条件断点上使用‘<code class="code">inferior</code>’限定符；在这种情况下，将‘<samp class="samp">inferior <var class="var">inferior-id</var></samp>’放在断点条件之前或之后，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break frik.c:13 inferior 2 if bartab &gt; lim
+</pre></div>
+</dd>
+</dl>
+
+<p>当相应的进程从GDB中移除时，特定进程的断点会自动删除。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) remove-inferiors 2
+Inferior-specific breakpoint 3 deleted - inferior 2 has been removed.
+</pre></div>
+
+<p>一个断点不能同时是特定进程的和特定线程的（见 <a class="pxref" href="Thread_002dSpecific-Breakpoints.html">特定线程的断点</a>），也不能是特定任务的（见 <a class="pxref" href="Ada-Tasks.html">Ada任务扩展</a>）；创建断点时使用多个‘<code class="code">inferior</code>’、‘<code class="code">thread</code>’或‘<code class="code">task</code>’关键字会产生错误。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>上一级：<a href="Inferiors-Connections-and-Programs.html">调试多个进程连接和程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

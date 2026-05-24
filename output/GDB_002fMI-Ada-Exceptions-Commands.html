@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI Ada异常命令（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI Ada异常命令（使用GDB调试）">
+<meta name="keywords" content="GDB/MI Ada异常命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Support-Commands.html" rel="next" title="GDB/MI支持命令">
+<link href="GDB_002fMI-File-Transfer-Commands.html" rel="prev" title="GDB/MI文件传输命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Ada-Exceptions-Commands">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Support-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>支持命令</a>，上一个：<a href="GDB_002fMI-File-Transfer-Commands.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>文件传输命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Ada-Exceptions-gdb_002fmi-Commands"><span>27.22 Ada异常 <small class="sc">GDB/MI</small>命令<a class="copiable-link" href="#Ada-Exceptions-gdb_002fmi-Commands"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-_002dinfo_002dada_002dexceptions"></a>
+<h4 class="subheading" id="The-_002dinfo_002dada_002dexceptions-Command"><span><code class="code">-info-ada-exceptions</code>命令<a class="copiable-link" href="#The-_002dinfo_002dada_002dexceptions-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-102"><span>概要<a class="copiable-link" href="#Synopsis-102"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -info-ada-exceptions [ <var class="var">regexp</var>]
+</pre></div>
+
+<p>列出正在调试的程序中定义的所有Ada异常。
+使用正则表达式<var class="var">regexp</var>时，只列出名称与<var class="var">regexp</var>匹配的那些异常。
+</p>
+<h4 class="subsubheading" id="gdb-Command-84"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-84"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">info exceptions</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Result-7"><span>结果<a class="copiable-link" href="#Result-7"> &para;</a></span></h4>
+
+<p>结果是一个Ada异常表。为每个异常定义了以下列：</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">name</samp>&rsquo;</dt>
+<dd><p>异常的名称。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">address</samp>&rsquo;</dt>
+<dd><p>异常的地址。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-84"><span>示例<a class="copiable-link" href="#Example-84"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-info-ada-exceptions aint
+^done,ada-exceptions={nr_rows=&quot;2&quot;,nr_cols=&quot;2&quot;, 
+hdr=[{width=&quot;1&quot;,alignment=&quot;-1&quot;,col_name=&quot;name&quot;,colhdr=&quot;名称&quot;}, 
+{width=&quot;1&quot;,alignment=&quot;-1&quot;,col_name=&quot;address&quot;,colhdr=&quot;地址&quot;}], 
+body=[{name=&quot;constraint_error&quot;,address=&quot;0x0000000000613da0&quot;}, 
+{name=&quot;const.aint_global_e&quot;,address=&quot;0x00000

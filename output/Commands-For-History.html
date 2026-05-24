@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>历史命令（使用GDB调试）</title>
+
+<meta name="description" content="历史命令（使用GDB调试）">
+<meta name="keywords" content="历史命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Commands-For-Text.html" rel="next" title="文本命令">
+<link href="Commands-For-Moving.html" rel="prev" title="移动命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="历史命令">
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-For-Text.html" accesskey="n" rel="next">更改文本的命令</a> , 上一页：<a href="Commands-For-Moving.html" accesskey="p" rel="prev">移动命令</a> , 向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>  
+</div>
+<hr>
+<h4 class="subsection" id="用于操作历史记录的命令"><span>33.4.2 用于操作历史记录的命令<a class="copiable-link" href="#用于操作历史记录的命令"> &para;</a></span></h4>
+
+<dl class="ftable">
+<dt><a id="index-accept_002dline-_0028换行符或回车键_0029"></a><span><code class="code">accept-line (换行符或回车键)</code><a class="copiable-link" href="#index-accept_002dline-_0028换行符或回车键_0029"> &para;</a></span></dt>
+<dd><p>无论光标在何处，都接受该行。
+如果该行不为空，它可能会被添加到历史记录列表中，以便将来使用 <code class="code">add_history()</code> 进行调用。
+如果该行是修改过的历史记录行，则将历史记录行恢复到其原始状态。
+</p>
+</dd>
+<dt><a id="index-previous_002dhistory-_0028Ctrl+p_0029"></a><span><code class="code">previous-history (Ctrl+p)</code><a class="copiable-link" href="#index-previous_002dhistory-_0028Ctrl+p_0029"> &para;</a></span></dt>
+<dd><p>在历史记录列表中 “向后” 移动，获取上一个命令。
+</p>
+</dd>
+<dt><a id="index-next_002dhistory-_0028Ctrl+n_0029"></a><span><code class="code">next-history (Ctrl+n)</code><a class="copiable-link" href="#index-next_002dhistory-_0028Ctrl+n_0029"> &para;</a></span></dt>
+<dd><p>在历史记录列表中 “向前” 移动，获取下一个命令。
+</p>
+</dd>
+<dt><a id="index-beginning_002dof_002dhistory-_0028Meta+小于号_0029"></a><span><code class="code">beginning-of-history (Meta+&lt;)</code><a class="copiable-link" href="#index-beginning_002dof_002dhistory-_0028Meta+小于号_0029"> &para;</a></span></dt>
+<dd><p>移动到历史记录中的第一行。
+</p>
+</dd>
+<dt><a id="index-end_002dof_002dhistory-_0028Meta+大于号_0029"></a><span><code class="code">end-of-history (Meta+&gt;)</code><a class="copiable-link" href="#index-end_002dof_002dhistory-_0028Meta+大于号_0029"> &para;</a></span></dt>
+<dd><p>移动到输入历史记录的末尾，即当前正在输入的行。
+</p>
+</dd>
+<dt><a id="index-reverse_002dsearch_002dhistory-_0028Ctrl+r_0029"></a><span><code class="code">reverse-search-history (Ctrl+r)</code><a class="copiable-link" href="#index-reverse_002dsearch_002dhistory-_0028Ctrl+r_0029"> &para;</a></span></dt>
+<dd><p>从当前行开始向后搜索，并在必要时在历史记录中 “向上” 移动。这是一个增量搜索。
+此命令将区域设置为匹配的文本并激活标记。
+</p>
+</dd>
+<dt><a id="index-forward_002dsearch_002dhistory-_0028Ctrl+s_0029"></a><span><code class="code">forward-search-history (Ctrl+s)</code><a class="copiable-link" href="#index-forward_002dsearch_002dhistory-_0028Ctrl+s_0029"> &para;</a></span></dt>
+<dd><p>从当前行开始向前搜索，并在必要时在历史记录中 “向下” 移动。这是一个增量搜索。
+此命令将区域设置为匹配的文本并激活标记。
+</p>
+</dd>
+<dt><a id="index-non_002dincremental_00_s2dreverse_002dsearch_002dhistory-_0028Meta+p_00_29"></a><span><code class="code">non-incremental-reverse-search-history (Meta+p)</code><a class="copiable-link" href="#index-non_002dincremental_00_s2dreverse_002dsearch_00_28Meta+p_00_29"> &para;</a></span></dt>
+<dd><p>从当前行开始向后搜索，并在必要时在历史记录中 “向上” 移动，使用非增量搜索用户提供的字符串。
+搜索字符串可以匹配历史记录行中的任何位置。
+</p>
+</dd>
+<dt><a id="index-non_002dincremental_002dforward_002dsearch_002dhistory-_0028Meta+n_0029"></a><span><code class="code">non-incremental-forward-search-history (Meta+n)</code><a class="copiable-link" href="#index-non_002dincremental_002dforward_002dsearch_002dhistory-_0028Meta+n_0029"> &para;</a></span></dt>
+<dd><p>从当前行开始向前搜索，并在必要时在历史记录中 “向下” 移动，使用非增量搜索用户提供的字符串。
+搜索字符串可以匹配历史记录行中的任何位置。
+</p>
+</dd>
+<dt><a id="index-history_002dsearch_002dforward-_0028_0029"></a><span><code class="code">history-search-forward ()</code><a class="copiable-link" href="#index-history_002dsearch_002dforward-_0028_0029"> &para;</a></span></dt>
+<dd><p>在历史记录中向前搜索当前行开始到光标位置之间的字符字符串。
+搜索字符串必须在历史记录行的开头匹配。
+这是一个非增量搜索。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-history_002dsearch_002dbackward-_0028_0029"></a><span><code class="code">history-search-backward ()</code><a class="copiable-link" href="#index-history_002dsearch_002dbackward-_0028_0029"> &para;</a></span></dt>
+<dd><p>在历史记录中向后搜索当前行开始到光标位置之间的字符字符串。
+搜索字符串必须在历史记录行的开头匹配。
+这是一个非增量搜索。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-history_002dsubstring_002dsearch_002dforward-_0028_0029"></a><span><code class="code">history-substring-search-forward ()</code><a class="copiable-link" href="#index-history_002dsubstring_002dsearch_002dforward-_002D_0028_0029"> &para;</a></span></dt>
+<dd><p>在历史记录中向前搜索当前行开始到光标位置之间的字符字符串。
+搜索字符串可以在历史记录行中的任何位置匹配。
+这是一个非增量搜索。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-history_002dsubstring_002dsearch_002dbackward-_0028_0029"></a><span><code class="code">history-substring-search-backward ()</code><a class="copiable-link" href="#index-history_002dsubstring_002dsearch_002dbackward-_0028_0029"> &para;</a></span></dt>
+<dd><p>在历史记录中向后搜索当前行开始到光标位置之间的字符字符串。
+搜索字符串可以在历史记录行中的任何位置匹配。
+这是一个非增量搜索。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-yank_002dnth_002darg-_0028Meta+Ctrl+y_0029"></a><span><code class="code">yank-nth-arg (Meta+Ctrl+y)</code><a class="copiable-link" href="#index-yank_002dnth_002darg-_0028Meta+Ctrl+y_0029"> &para;</a></span></dt>
+<dd><p>在光标位置插入上一个命令的第一个参数（通常是上一行的第二个单词）。
+如果有参数 <var class="var">n</var>，
+则插入上一个命令的第 <var class="var">n</var> 个单词（上一个命令中的单词从单词0开始）。负参数插入上一个命令末尾的第 <var class="var">n</var> 个单词。
+一旦计算出参数 <var class="var">n</var>，就会提取该参数，就好像指定了 &lsquo;<samp class="samp">!<var class="var">n</var></samp>&rsquo; 历史扩展一样。
+</p>
+</dd>
+<dt><a id="index-yank_002dlast_002darg-_0028Meta+点号或Meta+下划线_0029"></a><span><code class="code">yank-last-arg (Meta+. 或 Meta+_)</code><a class="copiable-link" href="#index-yank_002dlast_002darg-_0028Meta+点号或Meta+下划线_0029"> &para;</a></span></dt>
+<dd><p>插入上一个命令的最后一个参数（上一个历史记录条目的最后一个单词）。
+如果有数字参数，其行为与 <code class="code">yank-nth-arg</code> 完全相同。
+对 <code class="code">yank-last-arg</code> 的连续调用会在历史记录列表中向后移动，依次插入每行的最后一个单词（或第一次调用的参数指定的单词）。
+提供给这些连续调用的任何数字参数决定了在历史记录中移动的方向。负参数会切换在历史记录中的移动方向（向后或向前）。
+使用历史扩展工具来提取最后一个参数，就好像指定了 &lsquo;<samp class="samp">!$</samp>&rsquo; 历史扩展一样。
+</p>
+</dd>
+<dt><a id="index-operate_002dand_002dget_002dnext-_0028Ctrl+o_0029"></a><span><code class="code">operate-and-get-next (Ctrl+o)</code><a class="copiable-link" href="#index-operate_002dand_002dget_002dnext-_0028Ctrl+o_0029"> &para;</a></span></dt>
+<dd><p>接受当前行以便返回给调用应用程序，就好像输入了换行符一样，
+并从历史记录中获取相对于当前行的下一行进行编辑。
+如果提供了数字参数，则指定要使用的历史记录条目而不是当前行。
+</p>
+</dd>
+<dt><a id="index-fetch_002dhistory-_0028_0029"></a><span><code class="code">fetch-history ()</code><a class="copiable-link" href="#index-fetch_002dhistory-_0028_0029"> &para;</a></span></dt>
+<dd><p>如果有数字参数，从历史记录列表中获取该条目并使其成为当前行。
+如果没有参数，则移动到历史记录列表中的第一个条目。
+</p>
+</dd>
+</dl>
+
+</div> 
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-For-Text.html">更改文本的命令</a> , 上一页：<a href="Commands-For-Moving.html">移动命令</a> , 向上：<a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

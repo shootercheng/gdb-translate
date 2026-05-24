@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的程序空间（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的程序空间（使用GDB调试）">
+<meta name="keywords" content="Guile中的程序空间（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Objfiles-In-Guile.html" rel="next" title="Guile中的目标文件">
+<link href="Parameters-In-Guile.html" rel="prev" title="Guile中的参数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Progspaces-In-Guile">
+<div class="nav-panel">
+<p>
+下一页：<a href="Objfiles-In-Guile.html" accesskey="n" rel="next">Guile中的目标文件</a>，上一页：<a href="Parameters-In-Guile.html" accesskey="p" rel="prev">Guile中的参数</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Program-Spaces-In-Guile"><span>第23.4.3.13节Guile中的程序空间<a class="copiable-link" href="#Program-Spaces-In-Guile"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-progspaces-in-guile"></a>
+<a class="index-entry-id" id="index-_00_3cgdb_00_3aprogspace_00_3e"></a>
+<p>一个程序空间，或称为<em class="dfn">progspace</em>，表示一个地址空间的符号视图。
+它由程序的所有目标文件组成。
+请参阅 <a class="xref" href="Objfiles-In-Guile.html">Guile中的目标文件</a>。
+有关程序空间的更多详细信息，请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">程序空间</a>。
+</p>
+<p>每个程序空间由 <code class="code">&lt;gdb:progspace&gt;</code> smob的一个实例表示。请参阅 <a class="xref" href="GDB-Scheme-Data-Types.html">GDB Scheme数据类型</a>。
+</p>
+<p>在 <code class="code">(gdb)</code> 模块中可以使用以下与程序空间相关的函数：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspace_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspace?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-progspace_003f"> &para;</a></span></dt>
+<dd><p>如果 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:progspace&gt;</code> 对象，则返回 <code class="code">#t</code>。
+否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspace_00_ydvalid_00_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspace-valid?</strong> <var class="def-var-arguments">程序空间</var><a class="copiable-link" href="#index-progspace_00_ydvalid_00_3f"> &para;</a></span></dt>
+<dd><p>如果 <var class="var">程序空间</var> 有效，则返回 <code class="code">#t</code>，否则返回 <code class="code">#f</code>。
+如果它所引用的程序不再加载在GDB中，<code class="code">&lt;gdb:progspace&gt;</code> 对象可能会变得无效。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-current_00_ydprogspace"><span class="category-def">Scheme过程： </span><span><strong class="def-name">current-progspace</strong><a class="copiable-link" href="#index-current_00_ydprogspace"> &para;</a></span></dt>
+<dd><p>此函数返回当前选定的进程的程序空间。
+总是有一个当前程序空间，此函数从不返回 <code class="code">#f</code>。
+请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个进程连接和程序</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspaces"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspaces</strong><a class="copiable-link" href="#index-progspaces"> &para;</a></span></dt>
+<dd><p>返回GDB当前已知的所有程序空间的列表。  
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspace_00_ydfilename"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspace-filename</strong> <var class="def-var-arguments">程序空间</var><a class="copiable-link" href="#index-progspace_00_ydfilename"> &para;</a></span></dt>
+<dd><p>将 <var class="var">程序空间</var> 的绝对文件名作为字符串返回。
+这是作为参数传递给 <code class="code">file</code> 或 <code class="code">symbol-file</code> 命令的文件名。
+如果程序空间没有关联的文件名，则返回 <code class="code">#f</code>。例如，当在没有要调试的程序的情况下启动GDB时就会发生这种情况。  
+如果 <var class="var">程序空间</var> 无效，则会抛出 <code class="code">gdb:invalid-object-error</code> 异常。  
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspace_00_ydobjfiles"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspace-objfiles</strong> <var class="def-var-arguments">程序空间</var><a class="copiable-link" href="#index-progspace_00_ydobjfiles"> &para;</a></span></dt>
+<dd><p>返回 <var class="var">程序空间</var> 的目标文件列表。
+结果中目标文件的顺序是任意的。
+每个元素都是一个 <code class="code">&lt;gdb:objfile&gt;</code> 类型的对象。
+请参阅 <a class="xref" href="Objfiles-In-Guile.html">Guile中的目标文件</a>。  
+如果 <var class="var">程序空间</var> 无效，则会抛出 <code class="code">gdb:invalid-object-error</code> 异常。  
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-progspace_00_ydpretty_00_ydprinters"><span class="category-def">Scheme过程： </span><span><strong class="def-name">progspace-pretty-printers</strong> <var class="def-var-arguments">程序空间</var><a class="copiable-link" href="#index-progspace_00_ydpretty_00_ydprinters"> &para;</a></span></dt>
+<dd><p>返回 <var class="var">程序空间</var> 的漂亮打印机列表。
+每个元素都是一个 <code class="code">&lt;gdb:pretty-printer&gt;</code> 类型的对象。
+有关更多信息，请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。  
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_00_ydprogspace_00_ydpretty_00_ydprinters_00_21"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-progspace-pretty-printers!</strong> <var class="def-var-arguments">程序空间 打印机列表</var><a class="copiable-link" href="#index-set_00_ydprogspace_00_ydpretty_00_ydprinters_00_21"> &para;</a></span></dt>
+<dd><p>将 <var class="var">程序空间</var> 的已注册 <code class="code">&lt;gdb:pretty-printer&gt;</code> 对象列表设置为 <var class="var">打印机列表</var>。
+有关更多信息，请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。  
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Objfiles-In-Guile.html">Guile中的目标文件</a>，上一页：<a href="Parameters-In-Guile.html">Guile中的参数</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

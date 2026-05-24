@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“您可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>标准目标特性（使用GDB调试）</title>
+
+<meta name="description" content="标准目标特性（使用GDB调试）">
+<meta name="keywords" content="标准目标特性（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Target-Descriptions.html" rel="up" title="目标描述">
+<link href="Enum-Target-Types.html" rel="prev" title="枚举目标类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="标准目标特性">
+<div class="nav-panel">
+<p>
+上一个：<a href="Enum-Target-Types.html" accesskey="p" rel="prev">枚举目标类型</a>，向上：<a href="Target-Descriptions.html" accesskey="u" rel="up">目标描述</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="标准目标特性-1"><span>G.5标准目标特性<a class="copiable-link" href="#标准目标特性-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-目标描述_002c-标准特性"></a>
+
+<p>目标描述必须要么不包含任何寄存器，要么包含目标的所有寄存器。如果描述中不包含寄存器，那么GDB将采用基于架构选择的默认寄存器布局。如果描述中包含任何寄存器，则不会使用默认布局；必须在目标描述中描述标准寄存器，以便GDB能够识别它们。
+</p>
+<p>这是通过为包含标准寄存器的特性元素赋予特定名称来实现的。GDB将查找具有这些名称的特性，并验证它们是否包含预期的寄存器；如果任何已知特性缺少所需的寄存器，或者如果任何所需特性缺失，GDB将拒绝该目标描述。您可以向任何标准特性添加额外的寄存器 —— GDB将像显示添加到未识别特性中的寄存器一样显示它们。
+</p>
+<p>本节列出了已知特性及其预期内容。这些特性的示例XML文档包含在GDB源代码树的gdb/features目录中。
+</p>
+<p>GDB识别的名称应包括选择该名称的公司或组织的名称，以及该特性适用的总体架构；例如，包含ARM核心寄存器的特性命名为‘<samp class="samp">org.gnu.gdb.arm.core</samp>’。
+</p>
+<p>为了识别标准特性，寄存器名称不区分大小写，但GDB将仅使用描述中使用的大写形式显示寄存器。
+</p>
+
+
+<ul class="mini-toc">
+<li><a href="AArch64-Features.html" accesskey="1">AArch64特性</a></li>
+<li><a href="Alpha-Features.html" accesskey="2">Alpha特性</a></li>
+<li><a href="ARC-Features.html" accesskey="3">ARC特性</a></li>
+<li><a href="ARM-Features.html" accesskey="4">ARM特性</a></li>
+<li><a href="i386-Features.html" accesskey="5">i386特性</a></li>
+<li><a href="LoongArch-Features.html" accesskey="6">龙架构特性</a></li>

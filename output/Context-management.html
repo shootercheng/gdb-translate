@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>上下文管理（使用GDB调试）</title>
+
+<meta name="description" content="上下文管理（使用GDB调试）">
+<meta name="keywords" content="上下文管理（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-General-Design.html" rel="up" title="GDB/MI通用设计">
+<link href="Asynchronous-and-non_002dstop-modes.html" rel="next" title="异步和非停止模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="上下文管理">
+<div class="nav-panel">
+<p>
+下一页：<a href="Asynchronous-and-non_002dstop-modes.html" accesskey="n" rel="next">异步命令执行和非停止模式</a>，上一级：<a href="GDB_002fMI-General-Design.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>通用设计</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="上下文管理-1"><span>27.1.1上下文管理<a class="copiable-link" href="#上下文管理-1"> &para;</a></span></h4>
+
+<ul class="mini-toc">
+<li><a href="#Threads-and-Frames" accesskey="1">线程和帧</a></li>
+<li><a href="#Language" accesskey="2">语言</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Threads-and-Frames">
+<h4 class="subsubsection"><span>27.1.1.1线程和帧<a class="copiable-link" href="#Threads-and-Frames"> &para;</a></span></h4>
+
+<p>在大多数情况下，当GDB访问目标时，这种访问是在特定线程和帧的上下文中进行的（见<a class="pxref" href="Frames.html">栈帧</a>）。通常，即使在访问全局数据时，目标也要求指定一个线程。CLI接口维护选定的线程和帧，并在每个命令中将它们提供给目标。这很方便，因为命令行用户不想在每个命令上明确指定该信息，而且因为用户通过单个终端与GDB交互，所以对于当前是哪个线程和帧不会有混淆。
+</p>
+<p>在MI的情况下，选定线程和帧的概念用处较小。首先，前端可以很容易地自己记住这个信息！其次，图形前端可以有多个窗口，每个窗口用于调试不同的线程，并且前端可能出于内部目的想要访问其他线程。这增加了这样一种风险，即通过依赖隐式选定的线程，前端可能在错误的线程上操作。因此，每个MI命令应该明确指定要在哪个线程和帧上操作。为了实现这一点，每个MI命令接受“<samp class="samp">--thread</samp>”和“<samp class="samp">--frame</samp>”选项，每个选项的值是要操作的线程和帧的GDB全局标识符。
+</p>
+<p>通常，前端中的每个顶级窗口允许用户选择一个线程和一个帧，并记住用户选择以供进一步操作。然而，在某些情况下，GDB可能建议更改当前线程或帧。例如，当在断点处停止时，切换到命中断点的线程是合理的。再比如，如果用户通过前端发出CLI“<samp class="samp">thread</samp>”或“<samp class="samp">frame</samp>”命令，希望将前端的选择更改为用户指定的选择。GDB使用“<samp class="samp">=thread-selected</samp>”通知来传达更改当前线程和帧的建议。
+</p>
+<p>请注意，从历史上看，MI与CLI共享选定线程，因此前端使用“<code class="code">-thread-select</code>”在正确的上下文中执行命令。然而，使其正常工作很麻烦。最简单的方法是前端在每个命令之前发出“<code class="code">-thread-select</code>”命令。这会使需要发送的命令数量加倍。另一种方法是如果GDB中选定的线程应该与前端想要操作的线程相同，则抑制“</p>
+</div>
+<div class="subsubsection-level-extent" id="Language">
+<h4 class="subsubsection"><span>27.1.1.2语言<a class="copiable-link" href="#Language"> &para;</a></span></h4>
+
+<p>几个命令的执行取决于选择了哪种语言。默认情况下，使用当前语言（见<a class="pxref" href="Show.html#show-language">show language</a>）。但对于已知对语言敏感的命令，建议使用“<samp class="samp">--language</samp>”选项。此选项接受一个参数，该参数是在执行命令时要使用的语言的名称。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-data-evaluate-expression --language c &quot;sizeof (void*)&quot;
+^done,value=&quot;4&quot;
+(gdb) 
+</pre></div>
+
+<p>有效的语言名称与“<samp class="samp">set language</samp>”命令接受的名称相同（见<a class="pxref" href="Manually.html">设置工作语言</a>），不包括“<samp class="samp">auto</samp>”、“<samp class="samp">local</samp>”或“<samp class="samp">unknown</samp>”。
+</p>
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Asynchronous-and-non_002dstop-modes.html">异步命令执行和非停止模式</a>，上一级：<a href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small>通用设计</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>文件传输（使用GDB调试）</title>
+
+<meta name="description" content="文件传输（使用GDB调试）">
+<meta name="keywords" content="文件传输（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Debugging.html" rel="up" title="远程调试">
+<link href="Server.html" rel="next" title="服务器">
+<link href="Connecting.html" rel="prev" title="连接">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="文件传输">
+<div class="nav-panel">
+<p>
+下一页：<a href="Server.html" accesskey="n" rel="next">使用 <code class="code">gdbserver</code> 程序</a>，上一页：<a href="Connecting.html" accesskey="p" rel="prev">连接到远程目标</a>，向上：<a href="Remote-Debugging.html" accesskey="u" rel="up">调试远程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="将文件发送到远程系统"><span>20.2 将文件发送到远程系统<a class="copiable-link" href="#将文件发送到远程系统"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-远程目标_002c文件传输"></a>
+<a class="index-entry-id" id="索引-文件传输"></a>
+<a class="index-entry-id" id="索引-将文件发送到远程系统"></a>
+
+<p>一些远程目标提供了通过与<small class="sc">GDB</small>通信所使用的相同连接来传输文件的功能。这对于通过其他方式可访问的目标很方便，例如通过网络接口运行<code class="code">gdbserver</code>的<small class="sc">GNU</small>/Linux系统。对于其他目标，例如只有单个串行端口的嵌入式设备，这可能是上传或下载文件的唯一方法。
+</p>
+<p>并非所有远程目标都支持这些命令。
+</p>
+<dl class="table">
+<dt><a id="索引-remote-put"></a><span><code class="code">remote put <var class="var">主机文件</var> <var class="var">目标文件</var></code><a class="copiable-link" href="#索引-remote-put"> &para;</a></span></dt>
+<dd><p>将主机系统（运行<small class="sc">GDB</small>的机器）上的文件<var class="var">主机文件</var>复制到目标系统上的<var class="var">目标文件</var>。
+</p>
+</dd>
+<dt><a id="索引-remote-get"></a><span><code class="code">remote get <var class="var">目标文件</var> <var class="var">主机文件</var></code><a class="copiable-link" href="#索引-remote-get"> &para;</a></span></dt>
+<dd><p>将目标系统上的文件<var class="var">目标文件</var>复制到主机系统上的<var class="var">主机文件</var>。
+</p>
+</dd>
+<dt><a id="索引-remote-delete"></a><span><code class="code">remote delete <var class="var">目标文件</var></code><a class="copiable-link" href="#索引-remote-delete"> &para;</a></span></dt>
+<dd><p>从目标系统中删除<var class="var">目标文件</var>。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

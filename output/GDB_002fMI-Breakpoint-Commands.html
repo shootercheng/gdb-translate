@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI断点命令（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI断点命令（使用GDB调试）">
+<meta name="keywords" content="GDB/MI断点命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="next" title="GDB/MI捕获点命令"> 
+<link href="GDB_002fMI-Command-Description-Format.html" rel="prev" title="GDB/MI命令描述格式"> 
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Breakpoint-Commands">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small>捕获点命令</a>，上一页：<a href="GDB_002fMI-Command-Description-Format.html"><small class="sc">GDB/MI</small>命令描述格式</a>，向上：<a href="GDB_002fMI.html"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Breakpoint-Commands"><span>27.8 <small class="sc">GDB/MI</small>断点命令<a class="copiable-link" href="#gdb_002fmi-Breakpoint-Commands"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-breakpoint-commands-for-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-breakpoint-commands"></a>
+<p>本节记录用于操作断点的<small class="sc">GDB/MI</small>命令。
+</p>
+<a class="index-entry-id" id="index-_002dbreak_002dafter"></a>
+<h4 class="subheading" id="The-_002dbreak_002dafter-Command"><span>The <code class="code">-break-after</code>命令<a class="copiable-link" href="#The-_002dbreak_002dafter-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-1"><span>概要<a class="copiable-link" href="#Synopsis-1"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-after <var class="var">number</var> <var class="var">count</var>
+</pre></div>
+
+<p>断点编号<var class="var">number</var>在被命中<var class="var">count</var>次之前不会生效。要了解这在&lsquo;<samp class="samp">-break-list</samp>&rsquo;命令的输出中是如何体现的，请参阅下面&lsquo;<samp class="samp">-break-list</samp>&rsquo;命令的描述。
+</p>
+<h4 class="subsubheading" id="gdb-Command-1"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-1"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">ignore</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-1"><span>示例<a class="copiable-link" href="#Example-1"> &para;</a></span></h4>
+
+<div class="example smallexample">
+ 
+<pre class="example-preformatted">(gdb)
+-break-insert main
+^done,bkpt={number=&quot;1&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,
+enabled=&quot;y&quot;,addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,
+fullname=&quot;/home/foo/hello.c&quot;,line=&quot;5&quot;,thread-groups=[&quot;i1&quot;],
+times=&quot;0&quot;}
+(gdb)
+-break-after 1 3
+~
+^done
+(gdb)
+-break-list
+
+^done,BreakpointTable={nr_rows=&quot;1&quot;,nr_cols=&quot;6&quot;,
+hdr=[{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;number&quot;,colhdr=&quot;Num&quot;},
+{width=&quot;14&quot;,alignment=&quot;-1&quot;,col_name=&quot;type&quot;,colhdr=&quot;Type&quot;},
+{width=&quot;4&quot;,alignment=&quot;-1&quot;,col_name=&quot;disp&quot;,colhdr=&quot;Disp&quot;},
+{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;enabled&quot;,colhdr=&quot;Enb&quot;},
+{width=&quot;10&quot;,alignment=&quot;-1&quot;,col_name=&quot;addr&quot;,colhdr=&quot;Address&quot;},
+{width=&quot;40&quot;,alignment=&quot;2&quot;,col_name=&quot;what&quot;,colhdr=&quot;What&quot;}],
+body=[bkpt={number=&quot;1&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,fullname=&quot;/home/foo/hello.c&quot;,
+line=&quot;5&quot;,thread-groups=[&quot;i1&quot;],times=&quot;0&quot;,ignore=&quot;3&quot;}]}
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dbreak_002dcommands"></a>
+<h4 class="subheading" id="The-_002dbreak_002dcommands-Command"><span>The <code class="code">-break-commands</code>命令<a class="copiable-link" href="#The-_002dbreak_002dcommands-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-2"><span>概要<a class="copiable-link" href="#Synopsis-2"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-commands <var class="var">number</var> [ <var class="var">command1</var> ... <var class="var">commandN</var> ]
+</pre></div>
+
+<p>指定在断点<var class="var">number</var>被命中时应执行的CLI命令。参数<var class="var">command1</var>到<var class="var">commandN</var>是命令。如果未指定命令，则清除任何先前设置的命令。请参阅 <a class="xref" href="Break-Commands.html">断点命令列表</a>。此功能的典型用途是跟踪程序，即每当断点被命中时打印一些变量的值，然后继续执行。
+</p>
+<h4 class="subsubheading" id="gdb-Command-2"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-2"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">commands</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-2"><span>示例<a class="copiable-link" href="#Example-2"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-insert main
+^done,bkpt={number=&quot;1&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,
+enabled=&quot;y&quot;,addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,
+fullname=&quot;/home/foo/hello.c&quot;,line=&quot;5&quot;,thread-groups=[&quot;i1&quot;],
+times=&quot;0&quot;}
+(gdb)
+-break-commands 1 &quot;print v&quot; &quot;continue&quot;
+^done
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dcondition"></a>
+<h4 class="subheading" id="The-_002dbreak_002dcondition-Command"><span>The <code class="code">-break-condition</code>命令<a class="copiable-link" href="#The-_002dbreak_002dcondition-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-3"><span>概要<a class="copiable-link" href="#Synopsis-3"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-condition [ --force ] <var class="var">number</var> [ <var class="var">expr</var> ]
+</pre></div>
+
+<p>仅当<var class="var">expr</var>中的条件为真时，断点<var class="var">number</var>才会使程序停止。该条件成为&lsquo;<samp class="samp">-break-list</samp>&rsquo;输出的一部分（请参阅下面&lsquo;<samp class="samp">-break-list</samp>&rsquo;命令的描述）。如果传递了&lsquo;<samp class="samp">--force</samp>&rsquo;标志，则即使该条件对于断点<var class="var">number</var>的所有位置都无效，也会强制定义该条件。如果省略<var class="var">expr</var>参数，则断点<var class="var">number</var>变为无条件断点。
+</p>
+<h4 class="subsubheading" id="gdb-Command-3"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-3"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">condition</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-3"><span>示例<a class="copiable-link" href="#Example-3"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-condition 1 1
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&quot;1&quot;,nr_cols=&quot;6&quot;,
+hdr=[{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;number&quot;,colhdr=&quot;Num&quot;},
+{width=&quot;14&quot;,alignment=&quot;-1&quot;,col_name=&quot;type&quot;,colhdr=&quot;Type&quot;},
+{width=&quot;4&quot;,alignment=&quot;-1&quot;,col_name=&quot;disp&quot;,colhdr=&quot;Disp&quot;},
+{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;enabled&quot;,colhdr=&quot;Enb&quot;},
+{width=&quot;10&quot;,alignment=&quot;-1&quot;,col_name=&quot;addr&quot;,colhdr=&quot;Address&quot;},
+{width=&quot;40&quot;,alignment=&quot;2&quot;,col_name=&quot;what&quot;,colhdr=&quot;What&quot;}],
+body=[bkpt={number=&quot;1&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,fullname=&quot;/home/foo/hello.c&quot;,
+line=&quot;5&quot;,cond=&quot;1&quot;,thread-groups=[&quot;i1&quot;],times=&quot;0&quot;,ignore=&quot;3&quot;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002ddelete"></a>
+<h4 class="subheading" id="The-_002dbreak_002ddelete-Command"><span>The <code class="code">-break-delete</code>命令<a class="copiable-link" href="#The-_002dbreak_002ddelete-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-4"><span>概要<a class="copiable-link" href="#Synopsis-4"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-delete ( <var class="var">breakpoint</var> )+
+</pre></div>
+
+<p>删除参数列表中指定编号的断点。这在断点列表中会明显体现出来。
+</p>
+<h4 class="subsubheading" id="gdb-Command-4"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-4"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">delete</samp>&rsquo;。 
+</p>
+<h4 class="subsubheading" id="Example-4"><span>示例<a class="copiable-link" href="#Example-4"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-delete 1
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&quot;0&quot;,nr_cols=&quot;6&quot;,
+hdr=[{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;number&quot;,colhdr=&quot;Num&quot;},
+{width=&quot;14&quot;,alignment=&quot;-1&quot;,col_name=&quot;type&quot;,colhdr=&quot;Type&quot;},
+{width=&quot;4&quot;,alignment=&quot;-1&quot;,col_name=&quot;disp&quot;,colhdr=&quot;Disp&quot;},
+{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;enabled&quot;,colhdr=&quot;Enb&quot;},
+{width=&quot;10&quot;,alignment=&quot;-1&quot;,col_name=&quot;addr&quot;,colhdr=&quot;Address&quot;},
+{width=&quot;40&quot;,alignment=&quot;2&quot;,col_name=&quot;what&quot;,colhdr=&quot;What&quot;}],
+body=[]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002ddisable"></a>
+<h4 class="subheading" id="The-_002dbreak_002ddisable-Command"><span>The <code class="code">-break-disable</code>命令<a class="copiable-link" href="#The-_002dbreak_002ddisable-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-5"><span>概要<a class="copiable-link" href="#Synopsis-5"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-disable ( <var class="var">breakpoint</var> )+ 
+</pre></div>
+
+<p>禁用指定的<var class="var">breakpoint</var>。在断点列表中，名为<var class="var">breakpoint</var>的断点的&lsquo;<samp class="samp">enabled</samp>&rsquo;字段现在设置为&lsquo;<samp class="samp">n</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="gdb-Command-5"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-5"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">disable</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-5"><span>示例<a class="copiable-link" href="#Example-5"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-disable 2
+^done
+(gdb) 
+-break-list
+^done,BreakpointTable={nr_rows=&quot;1&quot;,nr_cols=&quot;6&quot;,
+hdr=[{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;number&quot;,colhdr=&quot;Num&quot;},
+{width=&quot;14&quot;,alignment=&quot;-1&quot;,col_name=&quot;type&quot;,colhdr=&quot;Type&quot;},
+{width=&quot;4&quot;,alignment=&quot;-1&quot;,col_name=&quot;disp&quot;,colhdr=&quot;Disp&quot;},
+{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;enabled&quot;,colhdr=&quot;Enb&quot;},
+{width=&quot;10&quot;,alignment=&quot;-1&quot;,col_name=&quot;addr&quot;,colhdr=&quot;Address&quot;},
+{width=&quot;40&quot;,alignment=&quot;2&quot;,col_name=&quot;what&quot;,colhdr=&quot;What&quot;}],
+body=[bkpt={number=&quot;2&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;n&quot;,
+addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,fullname=&quot;/home/foo/hello.c&quot;,
+line=&quot;5&quot;,thread-groups=[&quot;i1&quot;],times=&quot;0&quot;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002denable"></a>
+<h4 class="subheading" id="The-_002dbreak_002denable-Command"><span>The <code class="code">-break-enable</code>命令<a class="copiable-link" href="#The-_002dbreak_002denable-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-6"><span>概要<a class="copiable-link" href="#Synopsis-6"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-enable ( <var class="var">breakpoint</var> )+ 
+</pre></div>
+
+<p>启用（先前禁用的）<var class="var">breakpoint</var>。
+</p>
+<h4 class="subsubheading" id="gdb-Command-6"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb-Command-6"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">enable</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="Example-6"><span>示例<a class="copiable-link" href="#Example-6"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-enable 2
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&quot;1&quot;,nr_cols=&quot;6&quot;,
+hdr=[{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;number&quot;,colhdr=&quot;Num&quot;},
+{width=&quot;14&quot;,alignment=&quot;-1&quot;,col_name=&quot;type&quot;,colhdr=&quot;Type&quot;},
+{width=&quot;4&quot;,alignment=&quot;-1&quot;,col_name=&quot;disp&quot;,colhdr=&quot;Disp&quot;},
+{width=&quot;3&quot;,alignment=&quot;-1&quot;,col_name=&quot;enabled&quot;,colhdr=&quot;Enb&quot;},
+{width=&quot;ten&quot;,alignment=&quot;-1&quot;,col_name=&quot;addr&quot;,colhdr=&quot;Address&quot;},
+{width=&quot;40&quot;,alignment=&quot;2&quot;,col_name=&quot;what&quot;,colhdr=&quot;What&quot;}],
+body=[bkpt={number=&quot;2&quot;,type=&quot;breakpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+addr=&quot;0x000100d0&quot;,func=&quot;main&quot;,file=&quot;hello.c&quot;,fullname=&quot;/home/foo/hello.c&quot;,
+line=&quot;5&quot;,thread-groups=[&quot;i1&quot;],times=&quot;0&quot;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dinfo"></a>
+<h4 class="subheading" id="The-_002dbreak_002dinfo-Command"><span>The <code class="code">-break-info</code>命令<a class="copiable-link" href="#The-_002dbreak_002dinfo-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-7"><span>概要<a class="copiable-link" href="#Synopsis-7"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-info <var class="var">breakpoint</var> 
+</pre></div>
+
+<p>获取单个断点的信息。
+</p>
+<p>结果是一个断点表。有关表中每个断点的格式详细信息，请参阅 <a class="xref" href="GDB_00

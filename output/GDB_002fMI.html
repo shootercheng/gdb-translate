@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI（使用GDB进行调试）">
+<meta name="keywords" content="GDB/MI（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Annotations.html" rel="next" title="注释">
+<link href="Emacs.html" rel="prev" title="Emacs">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="GDB_002fMI">
+<div class="nav-panel">
+<p>
+下一页：<a href="Annotations.html" accesskey="n" rel="next"><small class="sc">GDB</small>注释</a>，上一页：<a href="Emacs.html" accesskey="p" rel="prev">在<small class="sc">GNU</small> Emacs下使用<small class="sc">GDB</small></a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="The-gdb_002fmi-Interface"><span>27 GDB/MI接口<a class="copiable-link" href="#The-gdb_002fmi-Interface"> &para;</a></span></h2>
+
+<ul class="mini-toc">
+<li><a href="#Function-and-Purpose" accesskey="1">功能与目的</a></li>
+<li><a href="#Notation-and-Terminology" accesskey="2">表示法与术语</a></li>
+<li><a href="GDB_002fMI-General-Design.html" accesskey="3"><small class="sc">GDB/MI</small>总体设计</a></li>
+<li><a href="GDB_002fMI-Command-Syntax.html" accesskey="4"><small class="sc">GDB/MI</small>命令语法</a></li>
+<li><a href="GDB_002fMI-Compatibility-with-CLI.html" accesskey="5"><small class="sc">GDB/MI</small>与CLI的兼容性</a></li>
+<li><a href="GDB_002fMI-Development-and-Front-Ends.html" accesskey="6"><small class="sc">GDB/MI</small>开发与前端</a></li>
+<li><a href="GDB_002fMI-Output-Records.html" accesskey="7"><small class="sc">GDB/MI</small>输出记录</a></li>
+<li><a href="GDB_002fMI-Simple-Examples.html" accesskey="8"><small class="sc">GDB/MI</small>交互的简单示例</a></li>
+<li><a href="GDB_002fMI-Command-Description-Format.html" accesskey="9"><small class="sc">GDB/MI</small>命令描述格式</a></li>
+<li><a href="GDB_002fMI-Breakpoint-Commands.html"><small class="sc">GDB/MI</small>断点命令</a></li>
+<li><a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small>捕获点命令</a></li>
+<li><a href="GDB_002fMI-Program-Context.html"><small class="sc">GDB/MI</small>程序上下文</a></li>
+<li><a href="GDB_002fMI-Thread-Commands.html"><small class="sc">GDB/MI</small>线程命令</a></li>
+<li><a href="GDB_002fMI-Ada-Tasking-Commands.html"><small class="sc">GDB/MI</small> Ada任务命令</a></li>
+<li><a href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small>程序执行</a></li> 
+<li><a href="GDB_002fMI-Stack-Manipulation.html"><small class="sc">GDB/MI</small>堆栈操作命令</a></li>
+<li><a href="GDB_002fMI-Variable-Objects.html"><small class="sc">GDB/MI</small>变量对象</a></li>
+<li><a href="GDB_002fMI-Data-Manipulation.html"><small class="sc">GDB/MI</small>数据操作</a></li>
+<li><a href="GDB_

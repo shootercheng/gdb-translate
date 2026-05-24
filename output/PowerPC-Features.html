@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>PowerPC特性（使用GDB调试）</title>
+
+<meta name="description" content="PowerPC特性（使用GDB调试）">
+<meta name="keywords" content="PowerPC特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="RISC_002dV-Features.html" rel="next" title="RISC-V特性">
+<link href="OpenRISC-1000-Features.html" rel="prev" title="OpenRISC 1000特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="PowerPC特性">
+<div class="nav-panel">
+<p>
+下一页：<a href="RISC_002dV-Features.html" accesskey="n" rel="next">RISC-V特性</a>，上一页：<a href="OpenRISC-1000-Features.html" accesskey="p" rel="prev">Openrisc 1000特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="PowerPC特性-1"><span>G.5.12 PowerPC特性<a class="copiable-link" href="#PowerPC特性-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引 - 目标描述，PowerPC特性"></a>
+
+<p>PowerPC目标需要“<samp class="samp">org.gnu.gdb.power.core</samp>”特性。它应该包含寄存器“<samp class="samp">r0</samp>”到“<samp class="samp">r31</samp>”、“<samp class="samp">pc</samp>”、“<samp class="samp">msr</samp>”、“<samp class="samp">cr</samp>”、“<samp class="samp">lr</samp>”、“<samp class="samp">ctr</samp>”和“<samp class="samp">xer</samp>”。根据目标的不同，它们可能是32位或64位。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.fpu</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">f0</samp>”到“<samp class="samp">f31</samp>”和“<samp class="samp">fpscr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.altivec</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">vr0</samp>”到“<samp class="samp">vr31</samp>”、“<samp class="samp">vscr</samp>”和“<samp class="samp">vrsave</samp>”。GDB将定义伪寄存器“<samp class="samp">v0</samp> ”到“<samp class="samp">v31</samp>”作为相应“<samp class="samp">vrX</samp>”寄存器的别名。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.vsx</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">vs0h</samp>”到“<samp class="samp">vs31h</samp> ”。GDB将把这些寄存器与浮点寄存器（“<samp class="samp">f0</samp>”到“<samp class="samp">f31</samp>”）和AltiVec寄存器（“<samp class="samp">vr0</samp>”到“<samp class="samp">vr\31</samp>”）组合起来，以呈现128位宽的寄存器“<samp class="samp">vs0</samp> ”到“<samp class="samp">vs63</samp>”，即POWER7的向量 - 标量寄存器集。因此，此特性需要“<samp class="samp">org.gnu.gdb.power.fpu</samp>”和“<samp class="samp">org.gnu.gdb.power.altivec</samp>”两者。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.spe</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">ev0h</samp>”到“<samp class="samp">ev31h</samp>”、“<samp class="samp">acc</samp>”和“<samp class="samp">spefscr</samp>”。SPE目标应在“<samp class="samp">org.gnu.gdb.power.core</samp>”中提供32位寄存器，并在“<samp class="samp">ev0h</samp>”到“<samp class="samp">ev31h</samp>”中提供上半部分。GDB将把这些组合起来，向用户呈现寄存器“<samp class="samp">ev0</samp>”到“<samp class="samp">ev31</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.ppr</samp>”特性是可选的。它应该包含64位寄存器“<samp class="samp">ppr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.dscr</samp>”特性是可选的。它应该包含64位寄存器 “<samp class="samp">dscr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.tar</samp>”特性是可选的。它应该包含64位寄存器“<samp class="samp">tar</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.ebb</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">bescr</samp>”、“<samp class="samp">ebbhr</samp>”和“<samp class="samp">ebbrr</samp>”，全为64位宽。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.linux.pmu</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">mmcr0</samp>”、“<samp class="samp">mmcr2</samp>”、“<samp class="samp">siar</samp>”、“<samp class="samp">sdar</samp> ”和“<samp class="samp">sier</samp>”，全为64位宽。这是GNU/Linux提供的isa 2.07服务器PMU寄存器的子集。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.spr</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">tfhar</samp>”、“<samp class="samp">texasr</samp>”和“<samp class="samp">tfiar</samp>”，全为64位宽。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.core</samp>”特性是可选的。它应该包含经过检查点处理的通用寄存器“<samp class="samp">cr0</samp>”到“<samp class="samp">cr31</samp> ”，以及经过检查点处理的寄存器“<samp class="samp">clr</samp>”和“<samp class="samp">cctr</samp>”。根据目标的不同，这些寄存器可能全是32位或64位。它还应该包含经过检查点处理的寄存器“<samp class="samp">ccr</samp>”和“<samp class="samp">cxer</samp>”，两者都应为32位宽。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.fpu</samp>”特性是可选的。它应该包含经过检查点处理的64位浮点寄存器“<samp class="samp">cf0</samp>”到“<samp class="samp">cf31</samp>”，以及经过检查点处理的64位寄存器“<samp class="samp">cfpscr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.altivec</samp>”特性是可选的。它应该包含经过检查点处理的AltiVec寄存器“<samp class="samp">cvr0</samp>”到“<samp class="samp">cvr31</samp>”，全为12位宽。它还应该包含经过检查点处理的寄存器“<samp class="samp">cvscr</samp>”和“<samp class="samp">cvrsave</samp>”，两者都为32位宽。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.vsx</samp>”特性是可选的。它应该包含寄存器“<samp class="samp">cvs0h</samp>”到“<samp class="samp">cvs\$31h</samp>”。GDB将把这些寄存器与经过检查点处理的浮点寄存器（“<samp class="samp">cf0</samp>”到“<samp class="samp">cf31</samp>”）和经过检查点处理的AltiVec寄存器（“<samp class="samp">cvr0</samp>”到“<samp class="samp">cvr3\1</samp>”）组合起来，以呈现128位宽的经过检查点处理的向量 - 标量寄存器“<samp class="samp">cvs0</samp>”到“<samp class="samp">cvs63</samp>”。因此，此特性需要“<samp class="samp">org.gnu.gdb.power.htm.altivec</samp>”和“<samp class="samp">org.gnu.gdb.power.htm.fpu</samp>”两者。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.ppr</samp>”特性是可选的。它应该包含64位经过检查点处理的寄存器“<samp class="samp">cppr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.dscr</samp>”特性是可选的。它应该包含64位经过检查点处理的寄存器“<samp class="samp">cdscr</samp>”。
+</p>  
+<p>“<samp class="samp">org.gnu.gdb.power.htm.tar</samp>”特性是可选的。它应该包含64位经过检查点处理的寄存器“<samp class="samp">ctar</samp>”。
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="RISC_002dV-Features.html">RISC-V特性</a>，上一页：<a href="OpenRISC-1000-Features.html">Openrisc 1000特性</a>，向上：<a href="Standard-Target-Features.html">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>多种扩展语言（使用GDB调试）</title>
+
+<meta name="description" content="多种扩展语言（使用GDB调试）">
+<meta name="keywords" content="多种扩展语言（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Extending-GDB.html" rel="up" title="扩展GDB">
+<link href="Auto_002dloading-extensions.html" rel="prev" title="自动加载扩展">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}	
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Multiple-Extension-Languages">
+<div class="nav-panel">
+<p>
+上一个：<a href="Auto_002dloading-extensions.html" accesskey="p" rel="prev">自动加载扩展</a>，向上：<a href="Extending-GDB.html" accesskey="u" rel="up">扩展 <small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Multiple-Extension-Languages-1"><span>23.6 多种扩展语言<a class="copiable-link" href="#Multiple-Extension-Languages-1"> &para;</a></span></h3>
+
+<p>Guile和Python扩展语言不共享任何状态，并且通常不会相互干扰。
+然而，有一些需要注意的事情。
+</p>
+<ul class="mini-toc">
+<li><a href="#Python-comes-first" accesskey="1">Python优先</a></li>
+</ul>
+<div class="subsection-level-extent" id="Python-comes-first">
+<h4 class="subsection"><span>23.6.1 Python优先<a class="copiable-link" href="#Python-comes-first"> &para;</a></span></h4>
+
+<p>Python是<small class="sc">GDB</small>的第一种扩展语言，为避免破坏现有行为，Python优先。这通常通过“先到先得”原则解决。<small class="sc">GDB</small>维护一个启用的扩展语言列表，当它调用扩展语言（例如对一个值进行漂亮打印）时，它会依次尝试每种语言，直到某个扩展语言表示它已经执行了该请求（例如，返回了一个值的漂亮打印形式）。
+这也适用于执行此类请求时的错误：例如，如果在尝试对一个对象进行漂亮打印时发生错误，那么错误会被报告，并且不会再尝试后续的扩展语言。
+</p>
+</div>
+</div>
+
+
+
+</body>
+</html>

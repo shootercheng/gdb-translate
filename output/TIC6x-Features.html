@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TIC6x特性（使用GDB调试）</title>
+
+<meta name="description" content="TIC6x特性（使用GDB调试）">
+<meta name="keywords" content="TIC6x特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="Sparc-Features.html" rel="prev" title="Sparc特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="TIC6x-Features">
+<div class="nav-panel">
+<p>
+上一个：<a href="Sparc-Features.html" accesskey="p" rel="prev">Sparc特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>    
+<h4 class="subsection" id="TMS320C6x-Features"><span>G.5.17 TMS320C6x特性<a class="copiable-link" href="#TMS320C6x-Features"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-TIC6x-features"></a>
+<a class="index-entry-id" id="index-target-descriptions_002c-TMS320C6x-features"></a>
+<p>对于TMS320C6x目标来说，“<samp class="samp">org.gnu.gdb.tic6x.core</samp>”特性是必需的。它应该包含从“<samp class="samp">A0</samp>”到“<samp class="samp">A15</samp>”的寄存器、从“<samp class="samp">B0</samp>”到“<samp class="samp">B15</samp>”的寄存器、“<samp class="samp">CSR</samp>”和“<samp class="samp">PC</samp>”。
+</p>
+<p>“<samp class="samp">org.gnu.gdb.tic6x.gp</samp>”特性是可选的。它应该包含从“<samp class="samp">A16</samp>”到“<samp class="samp">A31</samp>”的寄存器以及从“<samp class="samp">B16</samp>”到“<samp class="samp">B31</samp>”的寄存器。
+</p>
+<p>“<samp class="samp">org.gnu.gdb.tic6x.c6xp</samp>”特性是可选的。它应该包含“<samp class="samp">TSR</samp>”、“<samp class="samp">ILC</samp>”和“<samp class="samp">RILC</samp>”寄存器。
+</p>
+</div>
+
+
+
+</body>
+</html>

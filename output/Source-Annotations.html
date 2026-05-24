@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下，允许复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>源注释（使用GDB调试）</title>
+
+<meta name="description" content="源注释（使用GDB调试）">
+<meta name="keywords" content="源注释（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Annotations.html" rel="up" title="注释">
+<link href="Annotations-for-Running.html" rel="prev" title="运行时的注释">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="源注释">
+<div class="nav-panel">
+<p>
+上一个：<a href="Annotations-for-Running.html" accesskey="p" rel="prev">运行程序</a>，向上：<a href="Annotations.html" accesskey="u" rel="up"><small class="sc">GDB</small>注释</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="显示源"><span>28.7 显示源<a class="copiable-link" href="#显示源"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-用于源显示的注释"></a>
+
+<a class="index-entry-id" id="index-源注释"></a>
+<p>使用以下注释来代替显示源代码：
+</p>
+
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zsource <var class="var">文件名</var>:<var class="var">行号</var>:<var class="var">字符位置</var>:<var class="var">中间/开头</var>:<var class="var">地址</var>
+</pre></div>
+
+<p>其中，<var class="var">文件名</var>是一个绝对文件名，指示要显示的源文件；<var class="var">行号</var>是该文件内的行号（其中1是文件的第一行）；<var class="var">字符位置</var>是文件内的字符位置（其中0是文件的第一个字符）（对于大多数调试格式，这必然指向一行的开头）；如果<var class="var">地址</var>在该行的中间，则<var class="var">中间/开头</var>为&lsquo;<samp class="samp">middle</samp>&rsquo;，如果<var class="var">地址</var>在该行的开头，则为&lsquo;<samp class="samp">beg</samp>&rsquo;；<var class="var">地址</var>是目标程序中与正在显示的源相关联的地址。<var class="var">地址</var>的形式为&lsquo;<samp class="samp">0x</samp>&rsquo;后跟一个或多个小写十六进制数字（请注意，这与语言无关）。
+</p>
+</div>
+
+
+
+</body>
+</html>

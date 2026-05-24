@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>系统范围配置（使用GDB调试）</title>
+
+<meta name="description" content="系统范围配置（使用GDB调试）">
+<meta name="keywords" content="系统范围配置（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Installing-GDB.html" rel="up" title="安装GDB">
+<link href="Configure-Options.html" rel="prev" title="配置选项">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="System_002dwide-configuration">
+<div class="nav-panel">
+<p>
+上一个：<a href="Configure-Options.html" accesskey="p" rel="prev"><samp class="file">configure</samp>选项</a>，向上：<a href="Installing-GDB.html" accesskey="u" rel="up">安装<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="System_002dwide-configuration-and-settings"><span>C.6系统范围配置和设置<a class="copiable-link" href="#System_002dwide-configuration-and-settings"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-system_002dwide-init-file"></a>
+
+<p><small class="sc">GDB</small>可以配置为具有一个系统范围初始化文件和一个系统范围初始化文件目录；该文件以及该目录中的文件（如果它们具有可识别的文件扩展名）将在启动时被读取并执行（见<a class="pxref" href="Startup.html">GDB启动时的操作</a>）。
+</p>
+<p>以下是相应的配置选项：
+</p>
+<dl class="table">
+<dt><code class="code">--with-system-gdbinit=<var class="var">file</var></code></dt>
+<dd><p>指定系统范围初始化文件的默认位置是<var class="var">file</var>。
+</p></dd>
+<dt><code class="code">--with-system-gdbinit-dir=<var class="var">directory</var></code></dt>
+<dd><p>指定系统范围初始化文件目录的默认位置是<var class="var">directory</var>。
+</p></dd>
+</dl>
+
+<p>如果<small class="sc">GDB</small>使用选项<samp class="option">--prefix=$prefix</samp>进行配置，它们可能会被重新定位。有两种可能的情况：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果此初始化文件/目录的默认位置包含<samp class="file">$prefix</samp>，它将被重新定位。假设配置选项是<samp class="option">--prefix=$prefix --with-system-gdbinit=$prefix/etc/gdbinit</samp>；如果<small class="sc">GDB</small>从<samp class="file">$prefix</samp>移动到<samp class="file">$install</samp>，系统初始化文件将被查找为<samp class="file">$install/etc/gdbinit</samp>而不是<samp class="file">$prefix/etc/gdbinit</samp>。
+
+</li><li>相比之下，如果默认位置不包含前缀，它将不会被重新定位。例如，如果<small class="sc">GDB</small>配置为<samp class="option">--prefix=/usr/local --with-system-gdbinit=/usr/share/gdb/gdbinit</samp>，那么无论<small class="sc">GDB</small>安装在哪里，<small class="sc">GDB</small>都会始终查找<samp class="file">/usr/share/gdb/gdbinit</samp>。
+</li></ul>
+
+<p>如果系统范围初始化文件的配置位置（如在配置时由<samp class="option">--with-system-gdbinit</samp>选项给出）在数据目录中（如在配置时由<samp class="option">--with-gdb-datadir</samp>指定）或其一个子目录中，那么<small class="sc">GDB</small>将在由<samp class="option">--data-directory</samp>命令行选项指定的目录中查找系统范围初始化文件。
+请注意，系统范围初始化文件仅在GDB初始化期间读取一次。如果在<small class="sc">GDB</small>使用<code class="code">set data-directory</code>命令启动后更改了数据目录，该文件将不会被重新读取。
+</p>
+<p>这同样适用于在<samp class="option">--with-system-gdbinit-dir</samp>中指定的系统范围目录。
+</p>
+<p>只要文件扩展名与脚本语言匹配，任何支持的脚本语言都可用于这些初始化文件。要被解释为常规的<small class="sc">GDB</small>命令，文件需要具有<samp class="file">.gdb</samp>扩展名。
+</p>
+
+<ul class="mini-toc">
+<li><a href="System_002dwide-Configuration-Scripts.html" accesskey="1">已安装的系统范围配置脚本</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Configure-Options.html"><samp class="file">configure</samp>选项</a>，向上：<a href="Installing-GDB.html">安装<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

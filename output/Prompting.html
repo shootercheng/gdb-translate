@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB调试中的提示</title>
+
+<meta name="description" content="GDB调试中的提示">
+<meta name="keywords" content="GDB调试中的提示">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Annotations.html" rel="up" title="注释">
+<link href="Errors.html" rel="next" title="错误">
+<link href="Server-Prefix.html" rel="prev" title="服务器前缀">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible} 
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="提示">
+<div class="nav-panel">
+<p>
+下一页：<a href="Errors.html" accesskey="n" rel="next">错误</a>，上一页：<a href="Server-Prefix.html" accesskey="p" rel="prev">服务器前缀</a>，向上：<a href="Annotations.html" accesskey="u" rel="up"><small class="sc">GDB</small>注释</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="GDB输入的注释"><span>28.3 GDB输入的注释<a class="copiable-link" href="#Annotation-for-gdb-Input"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-提示的注释"></a>
+<p>当GDB提示输入时，它会对此进行注释，以便能够知道何时发送输出、给定命令的输出何时结束等。
+</p>
+<p>不同类型的输入各有不同的<em class="dfn">输入类型</em>。每种输入类型都有三个注释：一个<code class="code">pre-</code>注释，表示正在输出的任何提示的开始；一个普通注释，表示提示的结束；然后是一个<code class="code">post-</code>注释，表示可能（或可能不）与输入相关联的任何回显的结束。例如，<code class="code">prompt</code>输入类型具有以下注释：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Zpre-prompt
+^Z^Zprompt
+^Z^Zpost-prompt
+</pre></div>
+
+<p>输入类型如下：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-提示注释"></a>
+<a class="index-entry-id" id="索引-post_002d提示注释"></a>
+<a id="索引-pre_002d提示注释"></a><span><code class="code">prompt</code><a class="copiable-link" href="#index-pre_002dprompt-annotation"> &para;</a></span></dt>
+<dd><p>当GDB提示输入命令时（GDB的主提示）。</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-命令注释"></a>
+<a class="index-entry-id" id="索引-post_002d命令注释"></a>
+<a id="索引-pre_002d命令注释"></a><span><code class="code">commands</code><a class="copiable-link" href="#index-pre_002dcommands-annotation"> &para;</a></span></dt>
+<dd><p>当GDB提示输入一组命令时，如在<code class="code">commands</code>命令中。对于输入的每个命令，注释都会重复。</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-重载选择注释"></a>
+<a class="index-entry-id" id="索引-post_002d重载选择注释"></a>
+<a id="索引-pre_002d重载选择注释"></a><span><code class="code">overload-choice</code><a class="copiable-link" href="#index-pre_002doverload_002dchoice-annotation"> &para;</a></span></dt>
+<dd><p>当GDB希望用户在各种重载函数之间进行选择时。</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-查询注释"></a>
+<a class="index-entry-id" id="索引-post_002d查询注释"></a>
+<a id="索引-pre_002d查询注释"></a><span><code class="code">query</code><a class="copiable-link" href="#index-pre_002dquery-annotation"> &para;</a></span></dt>
+<dd><p>当GDB希望用户确认一个潜在危险的操作时。</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-提示继续注释"></a>
+<a class="index-entry-id" id="索引-post_

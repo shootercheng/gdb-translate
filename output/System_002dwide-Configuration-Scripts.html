@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>系统范围的配置脚本（使用GDB调试）</title>
+
+<meta name="description" content="系统范围的配置脚本（使用GDB调试）">
+<meta name="keywords" content="系统范围的配置脚本（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="System_002dwide-configuration.html" rel="up" title="系统范围的配置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="System_002dwide-Configuration-Scripts">
+<div class="nav-panel">
+<p>
+上一级：<a href="System_002dwide-configuration.html" accesskey="u" rel="up">系统范围的配置和设置</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Installed-System_002dwide-Configuration-Scripts"><span>C.6.1 已安装的系统范围配置脚本<a class="copiable-link" href="#Installed-System_002dwide-Configuration-Scripts"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-system_002dwide-configuration-scripts"></a>
+
+<p><samp class="file">system-gdbinit</samp>目录位于数据目录内（在配置时由<samp class="option">--with-gdb-datadir</samp>指定），包含许多可作为系统范围初始化文件使用的脚本。要在启动时自动加载这些脚本，<small class="sc">GDB</small>应该使用<samp class="option">--with-system-gdbinit</samp>进行配置。否则，任何用户都应该能够根据需要手动加载它们。
+</p>
+<p>目前有以下脚本可用：
+</p><ul class="itemize mark-bullet">
+<li><samp class="file">elinos.py</samp>
+<a class="index-entry-id" id="index-elinos_002epy"></a> 
+<a class="index-entry-id" id="index-ELinOS-system_002dwide-configuration-script"></a>
+当在ELinOS目标上调试程序时，此脚本很有用。它利用标准ELinOS环境中定义的环境变量来确定系统共享库的位置，然后适当地设置“<samp class="samp">solib-absolute-prefix</samp>”和“<samp class="samp">solib-search-path</samp>”变量。
+
+</li><li><samp class="file">wrs-linux.py</samp>
+<a class="index-entry-id" id="index-wrs_002dlinux_002epy"></a> 
+<a class="index-entry-id" id="index-Wind-River-Linux-system_002dwide-configuration-script"></a>
+当在运行Wind River Linux的目标上调试程序时，此脚本很有用。它期望将<code class="env">ENV_PREFIX</code>设置为目标系统使用的主机端系统根目录。
+
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

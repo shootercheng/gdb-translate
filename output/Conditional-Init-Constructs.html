@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>条件初始化结构（使用GDB调试）</title>
+
+<meta name="description" content="条件初始化结构（使用GDB调试）">
+<meta name="keywords" content="条件初始化结构（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Init-File.html" rel="up" title="Readline初始化文件">
+<link href="Sample-Init-File.html" rel="next" title="示例初始化文件">
+<link href="Readline-Init-File-Syntax.html" rel="prev" title="Readline初始化文件语法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Conditional-Init-Constructs">
+<div class="nav-panel">
+<p>
+下一页：<a href="Sample-Init-File.html" accesskey="n" rel="next">示例初始化文件</a>，上一页：<a href="Readline-Init-File-Syntax.html" accesskey="p" rel="prev">Readline初始化文件语法</a>，向上：<a href="Readline-Init-File.html" accesskey="u" rel="up">Readline初始化文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Conditional-Init-Constructs-">33.3.2条件初始化结构<a class="copiable-link" href="#Conditional-Init-Constructs-1"> &para;</a></h4>
+
+<p>Readline实现了一种与C预处理器的条件编译功能类似的机制，它允许根据测试结果来执行按键绑定和变量设置。这里使用了四个解析指令。
+</p>
+<dl class="table">
+<dt><code class="code">$if</code></dt>
+<dd><p><code class="code">$if</code>结构允许根据编辑模式、正在使用的终端或使用Readline的应用程序来进行绑定。测试文本在任何比较运算符之后，一直延伸到行尾；除非另有说明，不需要任何字符来分隔它。
+</p>
+<dl class="table">
+<dt><code class="code">mode</code></dt>
+<dd><p><code class="code">$if</code>指令的<code class="code">mode=</code>形式用于测试Readline是处于<code class="code">emacs</code>模式还是<code class="code">vi</code>模式。例如，这可以与&lsquo;<samp class="samp">set keymap</samp>&rsquo;命令结合使用，以便仅在Readline以<code class="code">emacs</code>模式启动时，在<code class="code">emacs-standard</code>和<code class="code">emacs-ctlx</code>键映射中设置绑定。
+</p>
+</dd>
+<dt><code class="code">term</code></dt>
+<dd><p><code class="code">term=</code>形式可用于包含特定于终端的按键绑定，也许是为了绑定终端功能键输出的键序列。&lsquo;<samp class="samp">=</samp>&rsquo;右侧的单词会与终端的全名以及终端名称中第一个&lsquo;<samp class="samp">-</samp>&rsquo;之前的部分进行测试。例如，这允许<code class="code">sun</code>匹配<code class="code">sun</code>和<code class="code">sun-cmd</code>。
+</p>
+</dd>
+<dt><code class="code">version</code></dt>
+<dd><p><code class="code">version</code>测试可用于与特定的Readline版本进行比较。<code class="code">version</code>会扩展为当前的Readline版本。比较运算符包括&lsquo;<samp class="samp">=</samp>&rsquo;（以及&lsquo;<samp class="samp">==</samp>&rsquo;）、&lsquo;<samp class="samp">!=</samp>&rsquo;、&lsquo;<samp class="samp">&lt;=</samp>&rsquo;、&lsquo;<samp class="samp">&gt;=</samp>&rsquo;、&lsquo;<samp class="samp">&lt;</samp>&rsquo;和&lsquo;<samp class="samp">&gt;</samp>&rsquo;。运算符右侧提供的版本号由主版本号、一个可选的小数点和一个可选的次版本号组成（例如，&lsquo;<samp class="samp">7.1</samp>&rsquo;）。如果省略次版本号，则假定为&lsquo;<samp class="samp">0</samp>&rsquo;。运算符可以与字符串<code class="code">version</code>以及版本号参数用空格分隔。以下示例在使用的Readline版本为7.0或更高版本时设置一个变量：
+</p><div class="example">
+<pre class="example-preformatted">$if version &gt;= 7.0
+set show-mode-in-prompt on
+$endif
+</pre></div>
+
+</dd>
+<dt><code class="code">application</code></dt>
+<dd><p><var class="var">application</var>结构用于包含特定于应用程序的设置。每个使用Readline库的程序都会设置<var class="var">应用程序名称</var>，你可以测试特定的值。
+这可用于将键序列绑定到对特定程序有用的函数。例如，以下命令添加了一个在Bash中引用当前或前一个单词的键序列：
+</p><div class="example">
+<pre class="example-preformatted">$if Bash
+# 引用当前或前一个单词
+&quot;\C-xq&quot;: &quot;\eb\&quot;\ef\&quot;&quot;
+$endif
+</pre></div>
+
+</dd>
+<dt><code class="code">variable</code></dt>
+<dd><p><var class="var">variable</var>结构为Readline变量和值提供简单的相等性测试。
+允许的比较运算符是&lsquo;<samp class="samp">=</samp>&rsquo;、&lsquo;<samp class="samp">==</samp>&rsquo;和&lsquo;<samp class="samp">!=</samp>&rsquo;。变量名必须与比较运算符用空格分隔；运算符可以与右侧的值用空格分隔。
+字符串和布尔变量都可以进行测试。布尔变量必须与值<var class="var">on</var>和<var class="var">off</var>进行测试。
+以下示例等同于上述的<code class="code">mode=emacs</code>测试：
+</p><div class="example">
+<pre class="example-preformatted">$if editing-mode == emacs
+set show-mode-in-prompt on
+$endif
+</pre></div>
+</dd>
+</dl>
+
+</dd>
+<dt><code class="code">$endif</code></dt>
+<dd><p>如前一个示例所示，此命令终止一个<code class="code">$if</code>命令。</p>
+</dd>
+<dt><code class="code">$else</code></dt>
+<dd><p>如果测试失败，则执行<code class="code">$if</code>指令此分支中的命令。</p>
+</dd>
+<dt><code class="code">$include</code></dt>
+<dd><p>此指令接受一个文件名作为参数，并从该文件中读取命令和绑定。
+例如，以下指令从<samp class="file">/etc/inputrc</samp>读取：
+</p><div class="example">
+<pre class="example-preformatted">$include /etc/inputrc
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Sample-Init-File.html">示例初始化文件</a>，上一页：<a href="Readline-Init-File-Syntax.html">Readline初始化文件语法</a>，向上：<a href="Readline-Init-File.html">Readline初始化文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

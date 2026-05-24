@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025 自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>F请求数据包（使用GDB调试）</title>
+
+<meta name="description" content="F请求数据包（使用GDB调试）">
+<meta name="keywords" content="F请求数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_*id*2dI_*id*2fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="The-F-Reply-Packet.html" rel="next" title="F回复数据包">
+<link href="Protocol-Basics.html" rel="prev" title="协议基础">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="The-F-Request-Packet">
+<div class="nav-panel">
+<p>
+下一页：<a href="The-F-Reply-Packet.html" accesskey="n" rel="next">F回复数据包</a>，上一页：<a href="Protocol-Basics.html" accesskey="p" rel="prev">协议基础</a>，向上：<a href="File_*id*2dI_*id*2fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-F-Request-Packet-1"><span>E.14.3 F请求数据包<a class="copiable-link" href="#The-F-Request-Packet-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-file_*id*2di_*id*2fo-request-packet"></a>
+<a class="index-entry-id" id="index-F-request-packet"></a>
+
+<p>F请求数据包具有以下格式：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">F<var class="var">调用ID</var>,<var class="var">参数&hellip;</var></samp>&rsquo;</dt>
+<dd>
+<p><var class="var">调用ID</var>是用于指示要调用的主机系统调用标识。
+这只是函数的名称。
+</p>
+<p><var class="var">参数&hellip;</var>是系统调用的参数。
+参数是十六进制整数值，对于标量数据类型是实际值，对于复合数据类型和未指定内存区域是指向目标缓冲区空间的指针，对于字符串参数是指针/长度对。
+这些作为逗号分隔的列表附加到<var class="var">调用ID</var>后面。
+所有值都以ASCII字符串表示形式传输，指针/长度对用斜杠分隔。
+</p>
+</dd>
+</dl>
+
+
+
+</div>
+
+
+
+</body>
+</html>
+
+ 请注意，原文中部分链接中的“*id*”属于不完整信息，翻译时保留原样。实际使用中可能需要根据完整准确的链接信息进行调整。 

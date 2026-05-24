@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI输入语法（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI输入语法（使用GDB调试）">
+<meta name="keywords" content="GDB/MI输入语法（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Command-Syntax.html" rel="up" title="GDB/MI命令语法">
+<link href="GDB_002fMI-Output-Syntax.html" rel="next" title="GDB/MI输出语法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Input-Syntax">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Output-Syntax.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>输出语法</a>，上一个：</a href="GDB_00/mi-Command-Syntax.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>命令语法</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>  
+<hr>
+<h4 class="subsection" id="gdb_/mi-Input-Syntax"><span>27.2.1 <small class="sc">GDB/MI</small>输入语法<a class="copiable-link" href="#gdb_/mi-Input-Syntax"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-input-syntax-for-gdb_/mi"></a>
+<a class="index-entry-id" id="index-gdb_/mi_002c-input-syntax"></a>
+<dl class="table">
+<dt><code class="code"><var class="var">命令</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">cli命令</var> | <var class="var">mi命令</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">cli命令</var> &rarr;</code></dt>
+<dd><p><code class="code">[ <var class="var">令牌</var> ] <var class="var">cli命令</var> <var class="var">换行符</var></code>，其中
+<var class="var">cli命令</var>是任何现有的<small class="sc">GDB</small> CLI命令。
+</p>
+</dd>
+<dt><code class="code"><var class="var">mi命令</var> &rarr;</code></dt>
+<dd><p><code class="code">[ <var class="var">令牌</var> ] &quot;-&quot; <var class="var">操作</var> ( &quot; &quot; <var class="var">选项</var> )*
+<code class="code">[</code> &quot; --&quot; <code class="code">]</code> ( &quot; &quot; <var class="var">参数</var> )* <var class="var">换行符</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">令牌</var> &rarr;</code></dt>
+<dd><p>&quot;任意数字序列&quot;
+</p>
+</dd>
+<dt><code class="code"><var class="var">选项</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;-&quot; <var class="var">参数</var> [ &quot; &quot; <var class="var">参数</var> ]</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">参数</var> &rarr;</code></dt>
+<dd><p><code class="code"><var class="var">非空白序列</var> | <var class="var">c字符串</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">操作</var> &rarr;</code></dt>
+<dd><p><em class="emph">本章中描述的任何操作</em>
+</p>
+</dd>
+<dt><code class="code"><var class="var">非空白序列</var> &rarr;</code></dt>
+<dd><p><em class="emph">任何内容，只要它不包含特殊字符，如
+&quot;-&quot;、<var class="var">换行符</var>、&quot;&quot;&quot;，当然还有 &quot; &quot;</em>
+</p>
+</dd>
+<dt><code class="code"><var class="var">c字符串</var> &rarr;</code></dt>
+<dd><p><code class="code">&quot;&quot;&quot; <var class="var">七位ISO c字符串内容</var> &quot;&quot;&quot;</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">换行符</var> &rarr;</code></dt>
+<dd><p><code class="code">CR<br> | CR-LF</code>
+</p></dd>
+</dl>
+
+<p>注意：
+</p>
+<ul class="itemize mark-bullet">
+<li>CLI命令仍由<small class="sc">MI</small>解释器处理；其
+输出将在下面描述。
+
+</li><li><code class="code"><var class="var">令牌</var></code>（如果存在）在命令
+完成时会被传回。
+
+</li><li>一些<small class="sc">MI</small>命令接受可选参数作为参数
+列表的一部分。 每个选项由一个前导 &lsquo;<samp class="samp">-</samp>&rsquo;（破折号）标识，并且可以
+后跟一个可选的参数参数。 选项在参数列表中首先出现，并且可以使用
+&lsquo;<samp class="samp">--</samp>&rsquo; 与普通参数分隔开（当一些参数以破折号开头时这很有用）。
+</li></ul>
+
+<p>实用方法：
+</p>
+<ul class="itemize mark-bullet">
+<li>我们希望能够轻松访问现有的CLI语法（用于调试）。
+
+</li><li>我们希望能够轻松识别<small class="sc">MI</small>操作。
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Output-Syntax.html"><small class="sc">GDB/MI</small>输出语法</a>，上一个：</a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small>命令语法</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

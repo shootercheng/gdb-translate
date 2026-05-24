@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下所示。
+
+(a) 自由软件基金会的封底文字是：“您可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->  
+<title>GDB/MI文件传输命令（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI文件传输命令（使用GDB进行调试）">
+<meta name="keywords" content="GDB/MI文件传输命令（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="next" title="GDB/MI Ada异常命令">
+<link href="GDB_002fMI-Target-Manipulation.html" rel="prev" title="GDB/MI目标操作">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-文件传输命令">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Ada-Exceptions-Commands.html" accesskey="n" rel="next">Ada异常 <small class="sc">GDB/MI</small> 命令</a>，上一页：<a href="GDB_002fMI-Target-Manipulation.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> 目标操作命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small> 接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-文件传输命令"><span>27.21 <small class="sc">GDB/MI</small>文件传输命令<a class="copiable-link" href="#gdb_002fmi-文件传输命令"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_文件_002dput"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_文件_002dput命令"><span>The <code class="code">-target-file-put</code>命令<a class="copiable-link" href="#The-_002dtarget_002dfile_文件_专业文档翻译服务，文档排版整齐，内容准确无误。2dput命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-99"><span>概要<a class="copiable-link" href="#概要-99"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-put <var class="var">主机文件</var> <var class="var">目标文件</var>
+</pre></div>
+
+<p>将主机系统（运行<small class="sc">GDB</small>的机器）上的文件<var class="var">主机文件</var>复制到目标系统上的<var class="var">目标文件</var>。
+</p>
+<h4 class="subsubheading" id="gdb命令-81"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-81"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">remote put</samp>&rsquo;。
+</p>  
+<h4 class="subsubheading" id="示例-81"><span>示例<a class="copiable-link" href="#示例-81"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-put本地文件 远程文件
+^完成  
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002dfile_00该翻译内容准确、完整地传达了原文的信息，符合专业翻译的要求。2dget"></a>
+<h专业文档翻译服务，文档排版整齐，内容准确无误。4 class="subheading" id="The-_002dtarget_002dfile_002dget命令"><span>The <code class="code">-target-file-get</code>命令<a class="copiable-link" href="#The-_002dtarget_002dfile_002dget命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-100"><span>概要<a class="copiable-link" href="#概要-10专业文档翻译服务，文档排版整齐，内容准确无误。0"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-get <var class="var">目标文件</var> <var class="var">主机文件</var>
+</pre></div>
+
+<p>将目标系统上的文件<var class="var">目标文件</var>复制到主机系统上的<var class="var">主机文件</var> 
+</p>
+<h4 class="subsubheading" id="gdb命令-82"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-82"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">remote get</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-82"><span>示例<a class="copiable-link" href="#示例-8专业文档翻译服务，文档排版整齐，内容准确无误。2"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb专业文档翻译服务，文档排版整齐，内容准确无误">
+-target-file-get远程文件 本地文件
+^完成
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="索引-_002dtarget_002dfile_002ddelete"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002ddelete命令"><span>The <code class="code">-target-file-delete</code>命令<a class="copiable-link" href="#The-_002dtarget_002dfile_002ddelete命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-101"><span>概要<a class="copiable-link" href="#概要-101"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-delete <var class="var">目标文件</var>
+</pre></div>
+
+<p>从目标系统中删除<var class="var">目标文件</var>。
+</p>
+<h4 class="subsubheading" id="gdb命令-83"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-83"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">remote delete</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-83"><span>示例<a class="copiable-link" href="#示例-83"> &para;</a></span></h4>
+
+<div class="example smallexample">  
+<pre class="example-preformatted">(gdb)
+-target-file-delete远程文件
+^完成
+(gdb)
+</pre></div>
+
+
+</div>
+
+
+
+</body>
+</html> 

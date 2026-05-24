@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python API（使用GDB调试）</title>
+
+<meta name="description" content="Python API（使用GDB调试）">
+<meta name="keywords" content="Python API（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python.html" rel="up" title="Python">
+<link href="Python-Auto_002dloading.html" rel="next" title="Python自动加载">
+<link href="Python-Commands.html" rel="prev" title="Python命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Python-API">
+<div class="nav-panel">
+<p>
+下一页：<a href="Python-Auto_002dloading.html" accesskey="n" rel="next">Python自动加载</a>，上一页：<a href="Python-Commands.html" accesskey="p" rel="prev">Python命令</a>，向上：<a href="Python.html" accesskey="u" rel="up">使用Python扩展<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Python-API-1"><span>23.3.2 Python API<a class="copiable-link" href="#Python-API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-python-api"></a>
+<a class="index-entry-id" id="index-programming-in-python"></a>
+
+<p>通过发出命令<kbd class="kbd">python help (gdb)</kbd><!-- /@w -->，你可以获取<small class="sc">GDB</small>的Python API的快速在线帮助。
+</p>
+<p>具有两个或更多可选参数的函数和方法允许使用关键字语法来指定它们。这允许传递一些可选参数，同时跳过其他参数。示例：<code class="code">gdb.some_function ('foo', bar = 1, baz = 2)</code><!-- /@w -->。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Basic-Python.html" accesskey="1">基础Python</a></li>
+<li><a href="Threading-in-GDB.html" accesskey="2">GDB中的线程</a></li>
+<li><a href="Exception-Handling.html" accesskey="3">异常处理</a></li>
+<li><a href="Values-From-Inferior.html" accesskey="4">来自下级的值</a></li> 
+<li><a href="Types-In-Python.html" accesskey="5">Python中的类型</a></li>
+<li><a href="Pretty-Printing-API.html" accesskey="�">漂亮打印API</a></li>
+<li><a href="Selecting-Pretty_002dPrinters.html" accesskey="7">选择漂亮打印机</a></li>
+<li><a href="Writing-a-Pretty_002dPrinter.html" accesskey="8">编写漂亮打印机</a></li>
+<li><a href="Type-Printing-API.html" accesskey="9">类型打印API</a></li>
+<li><a href="Frame-Filter-API.html">过滤帧</a></li>
+<li><a href="Frame-Decorator-API.html">装饰帧</a></li>
+<li><a href="Writing-a-Frame-Filter.html">编写帧过滤器</a></li>
+<li><a href="Unwinding-Frames-in-Python.html">在Python中展开帧</a></li>
+<li><a href="Xmethods-In-Python.html">Python中的X方法</a></li>
+<li><a href="Xmethod-API.html">X方法API</a></li>
+<li><a href="Writing-an-Xmethod.html">编写X方法</a></li>
+<li><a href="Inferiors-In-Python.html">Python中的下级</a></li>
+<li><a href="Events-In-Python.html">Python中的事件</a></li>
+<li><a href="Threads-In-Python.html">Python中的线程</a></li>
+<li><a href="Recordings-In-Python.html">Python中的录制</a></li>
+<li><a href="CLI-Commands-In-Python.html">Python中的CLI命令</a></li>
+<li><a href="GDB_002fMI-Commands-In-Python.html"><small class="sc">GDB/MI</small>命令在Python中</a></li>
+<li><a href="GDB_002fMI-Notifications-In-Python.html"><small class="sc">GDB/MI</small>通知在Python中</a></li>
+<li><a href="Parameters-In-Python.html">Python中的参数</a></li>
+<li><a href="Functions-In-Python.html">编写新的便利函数</a></li>
+<li><a href="Progspaces-In-Python.html">Python中的程序空间</a></li>
+<li><a href="Objfiles-In-Python.html">Python中的目标文件</a></li>
+<li><a href="Frames-In-Python.html">从Python访问下级堆栈帧</a></li>
+<li><a href="Blocks-In-Python.html">从Python访问块</a></li>
+<li><a href="Symbols-In-Python.html">符号的Python表示</a></li>
+<li><a href="Symbol-Tables-In-Python.html">Python中的符号表表示</a></li>
+<li><a href="Line-Tables-In-Python.html">使用Python操作行表</a></li>
+<li><a href="Breakpoints-In-Python.html">使用Python操作断点</a></li>
+<li><a href="Finish-Breakpoints-in-Python.html">完成断点</a></li>
+<li><a href="Lazy-Strings-In-Python.html">惰性字符串的Python表示</a></li>
+<li><a href="Colors-In-Python.html">颜色的Python表示</a></li>
+<li><a href="Architectures-In-Python.html">架构的Python表示</a></li>
+<li><a href="Registers-In-Python.html">Python中的寄存器</a></li>
+<li><a href="Connections-In-Python.html">Python中的连接</a></li>
+<li><a href="TUI-Windows-In-Python.html">实现新的TUI窗口</a></li>
+<li><a href="Disassembly-In-Python.html">Python中的指令反汇编</a></li>
+<li><a href="Missing-Debug-Info-In-Python.html">Python中的缺失调试信息</a></li>
+<li><a href="Missing-Objfiles-In-Python.html">Python中的缺失目标文件</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Python-Auto_002dloading.html">Python自动加载</a>，上一页：<a href="Python-Commands.html">Python命令</a>，向上：<a href="Python.html">使用Python扩展<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

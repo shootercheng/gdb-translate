@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的参数（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的参数（使用GDB调试）">
+<meta name="keywords" content="Guile中的参数（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Progspaces-In-Guile.html" rel="next" title="Guile中的程序空间">
+<link href="Commands-In-Guile.html" rel="prev" title="Guile中的命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的参数">
+<div class="nav-panel">
+<p>
+下一个：<a href="Progspaces-In-Guile.html" accesskey="n" rel="next">Guile中的程序空间</a>，上一个：<a href="Commands-In-Guile.html" accesskey="p" rel="prev">Guile中的命令</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中的参数-1"><span>23.4.3.12 Guile中的参数<a class="copiable-link" href="#Guile中的参数-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的参数"></a>
+<a class="index-entry-id" id="index-Guile参数"></a>
+<a class="index-entry-id" id="index-参数-1"></a>
+<p>你可以使用Guile实现新的GDB <em class="dfn">参数</em> <a class="footnote" id="DOCF19" href="#FOOT19"><sup>19</sup></a>。
+</p>
+<p>已经存在许多可以在GDB中设置的参数。 两个例子是：<code class="code">set follow-fork</code> 和 <code class="code">set charset</code>。 设置这些参数会影响GDB中的某些行为。 同样，你可以定义可用于影响自定义Guile脚本和命令中行为的参数。
+</p>
+<p>使用Guile函数 <code class="code">make-parameter</code> 定义新参数，并使用Guile函数 <code class="code">register-parameter!</code> 将其添加到GDB中。 采取这种两步法是为了将向GDB添加参数的副作用与 <code class="code">make-parameter</code> 分开。
+</p>
+<p>参数通过 <code class="code">set</code> 和 <code class="code">show</code> 命令向用户公开。 请参阅 <a class="xref" href="Help.html">获取帮助</a>。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dparameter"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-parameter</strong> <var class="def-var-arguments">name     <span class="r">[</span>#:command-class&nbsp;command-class<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:parameter-type&nbsp;parameter-type<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:enum-list&nbsp;enum-list<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:set-func&nbsp;set-func<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:show-func&nbsp;show-func<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:doc&nbsp;doc<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:set-doc&nbsp;set-doc<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:show-doc&nbsp;show-doc<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:initial-value&nbsp;initial-value<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dparameter"> &para;</a></span></dt>
+<dd>
+<p>参数 <var class="var">name</var> 是新参数的名称。 如果 <var class="var">name</var> 由多个单词组成，则最初的单词会被视为前缀参数进行查找。 这方面的一个例子可以用 <code class="code">set print</code> 这组参数来说明。 如果 <var class="var">name</var> 是 <code class="code">print foo</code>，那么 <code class="code">print</code> 将被作为前缀参数进行搜索。 在这种情况下，该参数随后可以在GDB中通过 <code class="code">set print foo</code> 来访问。
+如果 <var class="var">name</var> 由多个单词组成，并且找不到前缀参数组，则会引发异常。
+</p>
+<p>结果是表示该参数的 <code class="code">&lt;gdb:parameter&gt;</code> 对象。 在使用 <code class="code">register-parameter!</code> 将其注册到GDB之前，该参数不可用。
+</p>
+<p>其余参数是可选的。
+</p>
+<p>参数 <var class="var">command-class</var> 应该是 &lsquo;<samp class="samp">COMMAND_</samp>&rsquo; 常量之一（请参阅 <a class="pxref" href="Commands-In-Guile.html">Guile中的命令</a>）。 此参数告诉GDB如何在帮助系统中对新参数进行分类。
+默认值是 <code class="code">COMMAND_NONE</code>。
+</p>
+<p>参数 <var class="var">parameter-type</var> 应该是下面定义的 &lsquo;<samp class="samp">PARAM_</samp>&rsquo; 常量之一。 此参数告诉GDB新参数的类型；此信息用于输入验证和自动完成。 默认值是 <code class="code">PARAM_BOOLEAN</code>。
+</p>
+<p>如果 <var class="var">parameter-type</var> 是 <code class="code">PARAM_ENUM</code>，那么 <var class="var">enum-list</var> 必须是一个字符串列表。 这些字符串表示参数的可能值。
+</p>
+<p>如果 <var class="var">parameter-type</var> 不是 <code class="code">PARAM_ENUM</code>，那么 <var class="var">enum-list</var> 的存在将导致抛出异常。
+</p>
+<p>参数 <var class="var">set-func</var> 是一个单参数函数：<var class="var">self</var>，它是表示该参数的 <code class="code">&lt;gdb:parameter&gt;</code> 对象。
+当通过 <code class="code">set</code> API更改参数的值时（例如，<kbd class="kbd">set foo off</kbd>），GDB将调用此函数。
+参数的值已经设置为新值。
+此函数必须返回一个要显示给用户的字符串。
+如果字符串不为空，GDB将添加一个换行符。
+当设置参数时，GDB通常不打印任何内容，因此通常此函数应返回 &lsquo;<samp class="samp">&quot;&quot;</samp>&rsquo;。
+通常应使用非空字符串结果来显示警告和错误。
+</p>
+<p>参数 <var class="var">show-func</var> 是一个双参数函数：<var class="var">self</var>，它是表示该参数的 <code class="code">&lt;gdb:parameter&gt;</code> 对象，以及 <var class="var">svalue</var>，它是当前值的字符串表示。
+当调用参数的 <code class="code">show</code> API时（例如，<kbd class="kbd">show foo</kbd>），GDB将调用此函数。
+此函数必须返回一个字符串，并将显示给用户。
+GDB将添加一个换行符。
+</p>
+<p>参数 <var class="var">doc</var> 是新参数的帮助文本。 如果没有文档字符串，则使用默认值。 如果文档字符串为空，则GDB将只打印 <var class="var">set-doc</var> 和 <var class="var">show-doc</var> 字符串（见下文）。  
+</p>
+<p>参数 <var class="var">set-doc</var> 是此参数的 <code class="code">set</code> 命令的帮助文本。
+</p>
+<p>参数 <var class="var">show-doc</var> 是此参数的 <code class="code">show</code> 命令的帮助文本。
+</p>
+<p>参数 <var class="var">initial-value</var> 指定参数的初始值。
+如果它是一个函数，它接受一个参数，即 <code class="code">&lt;gdb:parameter&gt;</code> 对象，其结果用作参数的初始值。
+初始值必须对参数类型有效，否则将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-register_002dparameter_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">register-parameter!</strong> <var class="def-var-arguments">parameter</var><a class="copiable-link" href="#index-register_002dparameter_0021"> &para;</a></span></dt>
+<dd><p>将 <var class="var">parameter</var>（一个 <code class="code">&lt;gdb:parameter&gt;</code> 对象）添加到GDB的参数列表中。
+多次注册参数是错误的。
+结果未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-parameter_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">parameter?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-parameter_003f"> &para;</a></span></dt>
+<dd><p>如果 <var class="var">object</var> 是一个 <code class="code">&lt;gdb:parameter&gt;</code> 对象，则返回 <code class="code">#t</code>。
+否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-parameter_002dvalue"><span class="category-def">Scheme过程： </span><span><strong class="def-name">parameter-value</strong> <var class="def-var-arguments">parameter</var><a class="copiable-link" href="#index-parameter_002dvalue"> &para;</a></span></dt>
+<dd><p>返回 <var class="var">parameter</var> 的值，它可以是一个 <code class="code">&lt;gdb:parameter&gt;</code> 对象或一个命名该参数的字符串。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dparameter_002dvalue_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-parameter-value!</strong> <var class="def-var-arguments">parameter new-value</var><a class="copiable-link" href="#index-set_002dparameter_002dvalue_0021"> &para;</a></span></dt>
+<dd><p>将 <var class="var">parameter</var> 的值设置为 <var class="var">new-value</var>。
+参数 <var class="var">parameter</var> 必须是 <code class="code">&lt;gdb:parameter&gt;</code> 类型的对象。
+GDB在进行赋值时会进行验证。
+</p></dd></dl>
+
+<p>定义新参数时，必须指定其类型。 可用类型由 <code class="code">gdb</code> 模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a id="index-PARAM_005fBOOLEAN-1"></a><span><code class="code">PARAM_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fBOOLEAN-1"> &para;</a></span></dt>
+<dd><p>值是一个普通布尔值。 Guile布尔值 <code class="code">#t</code> 和 <code class="code">#f</code> 是唯一有效的值。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fAUTO_005fBOOLEAN-1"></a><span><code class="code">PARAM_AUTO_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fAUTO_005fBOOLEAN-1"> &para;</a></span></dt>
+<dd><p>该值有三种可能的状态：真、假和 &lsquo;<samp class="samp">auto</samp>&rsquo;。 在Guile中，真和假用布尔常量表示，&lsquo;<samp class="samp">auto</samp>&rsquo; 用 <code class="code">#:auto</code> 表示。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fUINTEGER-1"></a><span><code class="code">PARAM_UINTEGER</code><a class="copiable-link" href="#index-PARAM_005fUINTEGER-1"> &para;</a></span></dt>
+<dd><p>值是一个无符号整数。 <code class="code">#:unlimited</code> 的值应解释为“无限制”，&lsquo;<samp class="samp">0</samp>&rsquo; 的值保留，不应使用。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fZINTEGER-1"></a><span><code class="code">PARAM_ZINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZINTEGER-1"> &para;</a></span></dt>
+<dd><p>值是一个整数。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fZUINTEGER-1"></a><span><code class="code">PARAM_ZUINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER-1"> &para;</a></span></dt>
+<dd><p>值是一个无符号整数。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fZUINTEGER_005fUNLIMITED-1"></a><span><code class="code">PARAM_ZUINTEGER_UNLIMITED</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER_005fUNLIMITED-1"> &para;</a></span></dt>
+<dd><p>值是一个范围在 &lsquo;<samp class="samp">[0, INT_MAX]</samp>&rsquo; 的整数。 <code class="code">#:unlimited</code> 的值表示“无限制”，&lsquo;<samp class="samp">-1</samp>&rsquo; 的值保留，不应使用，并且不允许其他负数。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fSTRING-1"></a><span><code class="code">PARAM_STRING</code><a class="copiable-link" href="#index-PARAM_005fSTRING-1"> &para;</a></span></dt>
+<dd><p>值是一个字符串。 当用户修改字符串时，任何转义序列，如 &lsquo;<samp class="samp">\t</samp>&rsquo;、&lsquo;<samp class="samp">\f</samp>&rsquo; 和八进制转义，都会被转换为相应的字符并编码为当前主机字符集。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fSTRING_005fNOESCAPE-1"></a><span><code class="code">PARAM_STRING_NOESCAPE</code><a class="copiable-link" href="#index-PARAM_005fSTRING_005fNOESCAPE-1"> &para;</a></span></dt>
+<dd><p>值是一个字符串。 当用户修改字符串时，转义字符将不被转换直接传递。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fOPTIONAL_005fFILENAME-1"></a><span><code class="code">PARAM_OPTIONAL_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fOPTIONAL_005fFILENAME-1"> &para;</a></span></dt>
+<dd><p>值是一个文件名（字符串）或 <code class="code">#f</code>。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fFILENAME-1"></a><span><code class="code">PARAM_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fFILENAME-1"> &para;</a></span></dt>
+<dd><p>值是一个文件名。 这与 <code class="code">PARAM_STRING_NOESCAPE</code> 类似，但使用文件名进行自动完成。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fENUM-1"></a><span><code class="code">PARAM_ENUM</code><a class="copiable-link" href="#index-PARAM_005fENUM-1"> &para;</a></span></dt>
+<dd><p>值是一个字符串，它必须是创建参数时提供的一组字符串常量之一。
+</p>
+</dd>
+<dt><a id="index-PARAM_005fCOLOR-1"></a><span><code class="code">PARAM_COLOR</code><a class="copiable-link" href="#index-PARAM_005fCOLOR-1"> &para;</a></span></dt>
+<dd><p>值可以是一个字符串或一个无符号整数。 从0到255的整数表示终端颜色调色板中的索引。 字符串可以是 &lsquo;<samp class="samp">#RRGGBB</samp>&rsquo; 格式的十六进制RGB三元组或以下颜色名称之一：&lsquo;<samp class="samp">none</samp>&rsquo;（表示终端默认颜色）、&lsquo;<samp class="samp">black</samp>&rsquo;、&lsquo;<samp class="samp">red</samp>&rsquo;、&lsquo;<samp class="samp">green</samp>&rsquo;、&lsquo;<samp class="samp">yellow</samp>&rsquo;、&lsquo;<samp class="samp">blue</samp>&rsquo;、&lsquo;<samp class="samp">magenta</samp>&rsquo;、&lsquo;<samp class="samp">cyan</samp>&rsquo; 或 &lsquo;<samp class="samp">white</samp>&rsquo;。
+</p></dd>
+</dl>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT19" href="#DOCF19">(19)</a></h5>
+<p>请注意，GDB参数绝不能与Guile的参数对象混淆（请参阅 <cite class="cite">GNU Guile参考手册</cite> 中的 <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Parameters.html#Parameters">参数</a>）。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Progspaces-In-Guile.html">Guile中的程序空间</a>，上一个：<a href="Commands-In-Guile.html">Guile中的命令</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

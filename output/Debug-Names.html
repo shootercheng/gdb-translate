@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>调试名称（使用GDB进行调试）</title>
+
+<meta name="description" content="调试名称（使用GDB进行调试）">
+<meta name="keywords" content="调试名称（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="Symbol-Errors.html" rel="next" title="符号错误">
+<link href="Index-Files.html" rel="prev" title="索引文件加速GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="调试名称">
+
+<div class="nav-panel">
+<p>
+下一页：<a href="Symbol-Errors.html" accesskey="n" rel="next">读取符号文件时的错误</a>，上一页：<a href="Index-Files.html" accesskey="p" rel="prev">索引文件加速GDB</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up">GDB文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="对_002edebug_005fnames的扩展"><span>18.6对‘<samp class="samp">.debug_names</samp>’的扩展</span><a class="copiable-link" href="#对_00_2edebug_00_5fnames的扩展"> &para;</a></h3>
+<a class="index-entry-id" id="索引-索引文件-1"></a>
+<a class="index-entry-id" id="索引-_002edebug_005fnames部分"></a>
+
+<p>DWARF规范记录了一个名为‘<samp class="samp">.debug_names</samp>’的可选索引部分。GDB既可以读取也可以创建这个部分。然而，为了与GDB配合使用，一些扩展是必要的。
+</p>
+<p>GDB使用一个增强字符串来指定正在使用哪些扩展，并允许支持此功能中向后不兼容的更改。增强字符串的形式为‘<samp class="samp">GDB<var class="var">n</var></samp>’，其中<var class="var">n</var>是扩展的整数版本号，当扩展被添加或修改时会递增。最小的<var class="var">n</var>是2；早期版本的GDB仅使用不带版本号的‘<samp class="samp">GDB</samp>’，但这些版本的索引不再受支持。
+</p>
+<p>以下是增强字符串版本列表以及与上一版本相比每个版本引入的更改。
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">GDB2</samp>’</dt>
+<dd><p>指定使用属性<code class="code">DW_IDX_GNU_internal</code>、<code class="code">DW_IDX_GNU_main</code>、<code class="code">DW_IDX_GNU_language</code>和<code class="code">DW_IDX_GNU_linkage_name</code>如下所述。
+</p>
+</dd>
+<dt>‘<samp class="samp">GDB3</samp>’</dt>
+<dd><p>更改了<code class="code">DW_IDX_parent</code>属性的语义。对于‘<samp class="samp">GDB2</samp>’，<code class="code">DW_IDX_parent</code>提供了一个指向名称表的偏移量。对于‘<samp class="samp">GDB3</samp>’，它现在提供了相对于条目池区域起始位置的父条目索引的偏移量。
+</p>
+</dd>
+</dl>
+
+<p>GDB生成的索引使用增强字符串‘<samp class="samp">GDB3</samp>’。
+</p>
+<p>GDB可以读取使用增强字符串‘<samp class="samp">GDB2</samp>’或‘<samp class="samp">GDB3</samp>’的索引。GDB不支持读取使用任何其他增强字符串的索引。
+</p>
+<p>GDB不使用指定的哈希表。因此，由于这个哈希表是可选的，GDB也不会写入它。
+</p>
+<p>GDB生成并使用以下非标准索引属性：
+</p>
+<dl class="table">
+<dt><code class="code">DW_IDX_GNU_internal</code></dt>
+<dd><p>其值为‘<samp class="samp">0x2000</samp>’。它是一个标志，当设置时，表示关联的条目具有<code class="code">静态</code>链接。
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_main</code></dt>
+<dd><p>其值为‘<samp class="samp">0x2002</samp>’。它是一个标志，当设置时，表示关联的条目是程序的<code class="code">main</code>。
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_language</code></dt>
+<dd><p>其值为‘<samp class="samp">0x2003</samp>’。它是一个‘<samp class="samp">DW_LANG_</samp>’常量，表示关联条目的语言。
+</p>
+</dd>
+<dt><code class="code">DW_IDX_GNU_linkage_name</code></dt>
+<dd><p>其值为‘<samp class="samp">0x2004</samp>’。它是一个标志，当设置时，表示关联的条目是一个链接名称，而不是源名称。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Symbol-Errors.html">读取符号文件时的错误</a>，上一页：<a href="Index-Files.html">索引文件加速GDB</a>，向上：<a href="GDB-Files.html">GDB文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

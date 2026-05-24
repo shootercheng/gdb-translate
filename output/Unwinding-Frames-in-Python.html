@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的展开帧（使用GDB调试）</title>
+
+<meta name="description" content="Python中的展开帧（使用GDB调试）">
+<meta name="keywords" content="Python中的展开帧（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Xmethods-In-Python.html" rel="next" title="Python中的X方法">
+<link href="Writing-a-Frame-Filter.html" rel="prev" title="编写帧过滤器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的展开帧">
+<div class="nav-panel">
+<p>
+下一页：<a href="Xmethods-In-Python.html" accesskey="n" rel="next">Python中的X方法</a>，上一页：<a href="Writing-a-Frame-Filter.html" accesskey="p" rel="prev">编写帧过滤器</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中的展开帧-1"><span>23.3.2.13 Python中的展开帧<a class="copiable-link" href="#Python中的展开帧-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Python中的展开帧"></a>
+
+<p>在GDB术语中，“展开”是指从当前帧找到上一帧（即调用者的帧）的过程。一个展开器有三种方法。第一种方法检查它是否可以处理给定的帧（“嗅探”它）。对于它可以嗅探的帧，展开器提供另外两种方法：它可以返回帧的ID，并且它可以从上一帧获取寄存器。正在运行的GDB维护一个展开器列表，并依次调用每个展开器的嗅探器，直到找到识别当前帧的展开器。有一个用于注册展开器的API。
+</p>
+<p>GDB附带的展开器处理标准帧。然而，混合语言应用程序（例如，运行Java虚拟机的应用程序）有时会使用GDB展开器无法处理的帧布局。你可以编写能够处理此类自定义帧的Python代码。
+</p>
+<p>你在Python中实现一个帧展开器，作为一个类，它有两个属性，<code class="code">name</code>和<code class="code">enabled</code>，含义很明显，还有一个方法<code class="code">__call__</code>，它检查给定的帧并返回一个描述它的对象（<code class="code">gdb.UnwindInfo类的实例</code>）。如果一个展开器不识别一个帧，它应该返回<code class="code">None</code>。GDB中用于在Python中编写展开器的代码使用这个对象在GDB核心请求时返回帧的ID和上一帧的寄存器。
+</p>
+<p>展开器应该尽可能少地做工作。一些原本无害的操作可能会导致问题（甚至崩溃，因为这段代码还没有经过充分的加固）。例如，从展开器进行低级调用是不可取的，因为低级调用会重置GDB的堆栈展开过程，可能导致重新进入展开。
+</p>
+<h4 class="subheading" id="展开器输入"><span>展开器输入<a class="copiable-link" href="#展开器输入"> &para;</a></span></h4>
+
+<p>传递给展开器的对象（一个<code class="code">gdb.PendingFrame</code>实例）提供了一种读取帧寄存器的方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002eread_005fregister"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.read_register</strong> <var class="def-var-arguments">(register)</var><a class="copiable-link" href="#index-PendingFrame_002eread_005fregister"> &para;</a></span></dt>
+<dd><p>此方法返回帧中<var class="var">register</var>的内容，作为一个<code class="code">gdb.Value</code>对象。有关<var class="var">register</var>的可接受值的描述，请参阅<a class="ref" href="Frames-In-Python.html#gdbpy_005fframe_005fread_005fregister">Frame.read_register</a>。如果<var class="var">register</var>没有为当前架构命名一个寄存器，此方法将引发异常。
+</p>
+<p>请注意，对于有效的寄存器名称，此方法将始终返回一个<code class="code">gdb.Value</code>。这并不意味着该值将是有效的。例如，你可能请求一个早期展开器无法展开的寄存器 - 该值将不可用。相反，此方法返回的<code class="code">gdb.Value</code>将是惰性的；也就是说，它的底层位在首次使用之前不会被获取。因此，尝试使用这样的值将在使用点引发异常。
+</p>
+<p>返回的<code class="code">gdb.Value</code>的类型取决于寄存器和架构。寄存器通常具有标量类型，如<code class="code">long long</code>；但也可能有许多其他类型，如指针、函数指针、浮点或向量类型。
+</p></dd></dl>
+
+<p>它还提供了一个工厂方法来创建一个<code class="code">gdb.UnwindInfo</code>实例，以返回给GDB：
+</p>
+<a class="anchor" id="gdb_002ePendingFrame_002ecreate_005funwind_005finfo"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002ecreate_005funwind_005finfo"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.create_unwind_info</strong> <var class="def-var-arguments">(frame_id)</var><a class="copiable-link" href="#index-PendingFrame_002ecreate_005funwind_005finfo"> &para;</a></span></dt>
+<dd><p>返回一个由给定的<var class="var">frame_id</var>标识的新的<code class="code">gdb.UnwindInfo</code>实例。<var class="var">frame_id</var>在GDB内部用于标识当前线程堆栈中的帧。<var class="var">frame_id</var>的属性决定了在GDB中创建的帧的类型：
+</p>
+<dl class="table">
+<dt><code class="code">sp, pc</code></dt>
+<dd><p>帧由给定的堆栈地址和PC标识。堆栈地址必须选择为在帧的整个生命周期内保持不变，因此典型的选择是函数开始时堆栈指针的值 - 在DWARF标准中，这将是“调用帧地址”。
+</p>
+<p>这是迄今为止最常见的情况。其他情况为了完整性而记录，但仅在特殊情况下有用。
+</p>
+</dd>
+<dt><code class="code">sp, pc, special</code></dt>
+<dd><p>帧由堆栈地址、PC和一个“特殊”地址标识。特殊地址用于那些可以有不改变堆栈但仍然不同的帧的架构，例如IA - 64，它有一个用于寄存器的第二个堆栈。<var class="var">sp</var>和<var class="var">special</var>在帧的整个生命周期内都必须是常量。
+</p>
+</dd>
+<dt><code class="code">sp</code></dt>
+<dd><p>帧仅由堆栈地址标识。任何其他具有匹配<var class="var">sp</var>的堆栈帧将被视为与该帧匹配。在gdb内部，这称为“野生帧”。你永远不需要这个。
+</p></dd>
+</dl>
+
+<p>每个属性值应该是一个<code class="code">gdb.Value</code>实例或一个整数。
+</p>
+<p><code class="code">gdb.unwinder</code>模块中提供了一个辅助类，可用于表示帧ID
+（请参阅 <a class="pxref" href="#gdb_002eunwinder_002eFrameId">gdb.unwinder.FrameId</a>）。
+</p>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002earchitecture"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.architecture</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002earchitecture"> &para;</a></span></dt>
+<dd><p>返回此<code class="code">gdb.PendingFrame</code>的<code class="code">gdb.Architecture</code>（请参阅 <a class="pxref" href="Architectures-In-Python.html">Python中架构的表示</a>）。这表示正在展开的特定帧的架构。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002elevel"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.level</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002elevel"> &para;</a></span></dt>
+<dd><p>返回一个整数，即此帧的堆栈帧级别。
+请参阅 <a class="xref" href="Frames.html">堆栈帧</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002ename"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.name</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002ename"> &para;</a></span></dt>
+<dd><p>返回此挂起帧的函数名称，如果无法获取则返回<code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002eis_005fvalid"> &para;</a></span></dt>
+<dd><p>如果<code class="code">gdb.PendingFrame</code>对象有效，则返回true，否则返回false。当为其创建挂起帧的展开器调用返回时，挂起帧对象将变为无效。
+</p>
+<p>如果在调用方法时挂起帧对象无效，则除了此方法之外的所有<code class="code">gdb.PendingFrame</code>方法都将引发异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002epc"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.pc</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002epc"> &para;</a></span></dt>
+<dd><p>返回挂起帧的恢复地址。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002eblock"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.block</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002eblock"> &para;</a></span></dt>
+<dd><p>返回挂起帧的代码块（请参阅 <a class="pxref" href="Blocks-In-Python.html">从Python访问块</a>）。如果帧没有块 - 例如，如果没有关于相关代码的调试信息 - 那么这将引发一个<code class="code">RuntimeError</code>异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002efunction"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.function</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002efunction"> &para;</a></span></dt>
+<dd><p>返回与此挂起帧对应的函数的符号。
+请参阅 <a class="xref" href="Symbols-In-Python.html">Python中符号的表示</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002efind_005fsal"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.find_sal</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002efind_005fsal"> &para;</a></span></dt>
+<dd><p>返回挂起帧的符号表和行对象（请参阅 <a class="pxref" href="Symbol-Tables-In-Python.html">Python中的符号表表示</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-PendingFrame_002elanguage"><span class="category-def">函数： </span><span><strong class="def-name">PendingFrame.language</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-PendingFrame_002elanguage"> &para;</a></span></dt>
+<dd><p>返回此帧的语言，作为一个字符串，或者为None。
+</p></dd></dl>
+
+<h4 class="subheading" id="展开器输出：UnwindInfo"><span>展开器输出：UnwindInfo<a class="copiable-link" href="#展开器输出：UnwindInfo"> &para;</a></span></h4>
+
+<p>使用上面描述的<code class="code">PendingFrame.create_unwind_info</code>方法来创建一个<code class="code">gdb.UnwindInfo</code>实例。使用以下方法指定已保存在此帧中的调用者寄存器：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eUnwindInfo_002eadd_005fsaved_005fregister"><span class="category-def">函数： </span><span><strong class="def-name">gdb.UnwindInfo.add_saved_register</strong> <var class="def-var-arguments">(register, value)</var><a class="copiable-link" href="#index-gdb_002eUnwindInfo_002eadd_005fsaved_005fregister"> &para;</a></span></dt>
+<dd><p><var class="var">register</var>标识寄存器，有关可接受值的描述，请参阅 <a class="ref" href="Frames-In-Python.html#gdbpy_005fframe_005fread_005fregister">Frame.read_register</a>。
+<var class="var">value</var>是一个寄存器值（一个<code class="code">gdb.Value</code>对象）。
+</p></dd></dl>
+
+<h4 class="subheading" id="gdb_002eunwinder模块"><span>The <code class="code">gdb.unwinder</code>模块<a class="copiable-link" href="#gdb_002eunwinder模块"> &para;</a></span></h4>
+
+<p>GDB附带一个<code class="code">gdb.unwinder</code>模块，其中包含以下类：
+</p>
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002eunwinder_002eUnwinder"><span class="category-def">类： </span><span><strong class="def-name">gdb.unwinder.Unwinder</strong><a class="copiable-link" href="#index-gdb_002eunwinder_002eUnwinder"> &para;</a></span></dt>
+<dd><p><code class="code">Unwinder</code>类是一个基类，用户创建的展开器可以从中派生，不过展开器不一定要从这个类派生，只要任何用户创建的展开器具有所需的<code class="code">name</code>和<code class="code">enabled</code>属性即可。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eunwinder_002eUnwinder_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">gdb.unwinder.Unwinder.__init__</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-gdb_002eunwinder_002eUnwinder_002e_

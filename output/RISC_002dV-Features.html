@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>RISC-V特性（使用GDB调试）</title>
+
+<meta name="description" content="RISC-V特性（使用GDB调试）">
+<meta name="keywords" content="RISC-V特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="RX-Features.html" rel="next" title="RX特性">
+<link href="PowerPC-Features.html" rel="prev" title="PowerPC特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="RISC_002dV-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="RX-Features.html" accesskey="n" rel="next">RX特性</a>，上一页：<a href="PowerPC-Features.html" accesskey="p" rel="prev">PowerPC特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="RISC_002dV-Features-1"><span>G.5.13 RISC-V特性<a class="copiable-link" href="#RISC_002dV-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-RISC_002dV-Features"></a>
+
+<p>RISC-V目标需要 &lsquo;<samp class="samp">org.gnu.gdb.riscv.cpu</samp>&rsquo; 特性。它应该包含从 &lsquo;<samp class="samp">x0</samp>&rsquo; 到 &lsquo;<samp class="samp">x31</samp>&rsquo; 以及 &lsquo;<samp class="samp">pc</samp>&rsquo; 的寄存器。既可以使用架构名称（如 &lsquo;<samp class="samp">x0</samp>&rsquo;、&lsquo;<samp class="samp">x1</samp>&rsquo; 等），也可以使用ABI名称（如 &lsquo;<samp class="samp">zero</samp>&rsquo;、&lsquo;<samp class="samp">ra</samp>&rsquo; 等）。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.riscv.fpu</samp>&rsquo; 特性是可选的。如果存在，它应该包含从 &lsquo;<samp class="samp">f0</samp>&rsquo; 到 &lsquo;<samp class="samp">f31</samp>&rsquo;、&lsquo;<samp class="samp">fflags</samp>&rsquo;、&lsquo;<samp class="samp">frm</samp>&rsquo; 以及 &lsquo;<samp class="samp">fcsr</samp>&rsquo; 的寄存器。与cpu特性一样，既可以使用架构寄存器名称，也可以使用ABI名称。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.riscv.virtual</samp>&rsquo; 特性是可选的

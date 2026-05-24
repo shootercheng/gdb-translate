@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪帧信息格式（使用GDB调试）</title>
+
+<meta name="description" content="跟踪帧信息格式（使用GDB调试）">
+<meta name="keywords" content="跟踪帧信息格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Branch-Trace-Format.html" rel="next" title="分支跟踪格式">
+<link href="Thread-List-Format.html" rel="prev" title="线程列表格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跟踪帧信息格式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Branch-Trace-Format.html" accesskey="n" rel="next">分支跟踪格式</a>，上一页：<a href="Thread-List-Format.html" accesskey="p" rel="prev">线程列表格式</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="跟踪帧信息格式-1"><span>E.19跟踪帧信息格式<a class="copiable-link" href="#跟踪帧信息格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-跟踪帧信息格式"></a>
+
+<p>为了能够知道在检查跟踪点命中时可以检查下级中的哪些对象，<small class="sc">GDB</small>需要获取在跟踪帧中收集的内存范围、寄存器和跟踪状态变量的列表。
+</p>
+<p>这个列表是使用“<samp class="samp">qXfer:traceframe-info:read</samp>”（见 <a class="pxref" href="General-Query-Packets.html#qXfer-traceframe-info-read">qXfer跟踪帧信息读取</a>）数据包获取的，并是一个XML文档。
+</p>
+<p><small class="sc">GDB</small>必须与Expat库链接以支持XML跟踪帧信息发现。见 <a class="xref" href="Requirements.html#Expat">Expat</a>。
+</p>
+<p>文档的顶级结构如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE traceframe-info
+          PUBLIC &quot;+//IDN gnu.org//DTD GDB Memory Map V1.0//EN&quot;
+                 &quot;http://sourceware.org/gdb/gdb-traceframe-info.dtd&quot;&gt;
+&lt;traceframe-info&gt;
+   block...
+&lt;/traceframe-info&gt;
+</pre></div>
+
+<p>每个跟踪帧块可以是：
+</p>
+<ul class="itemize mark-bullet">
+<li>一个从<var class="var">addr</var>开始并从那里延伸<var class="var">length</var>字节的收集内存区域：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;memory start=&quot;<var class="var">addr</var>&quot; length=&quot;<var class="var">length</var>&quot;/&gt;
+</pre></div>
+
+</li><li>一个块，指示已收集编号为<var class="var">number</var>的跟踪状态变量：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;tvar id=&quot;<var class="var">number</var>&quot;/&gt;
+</pre></div>
+
+</li></ul>
+
+<p>跟踪帧信息格式的正式DTD如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!ELEMENT traceframe-info  (memory | tvar)* &gt;
+&lt;!ATTLIST traceframe-info  version CDATA   #FIXED  &quot;1.0&quot;&gt;
+
+&lt;!ELEMENT memory        EMPTY&gt;
+&lt;!ATTLIST memory        start   CDATA   #REQUIRED
+                        length  CDATA   #REQUIRED&gt;
+&lt;!ELEMENT tvar&gt;
+&lt;!ATTLIST tvar          id      CDATA   #REQUIRED&gt;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

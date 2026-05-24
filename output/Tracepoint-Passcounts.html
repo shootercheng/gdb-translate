@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点通过计数（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点通过计数（使用GDB调试）">
+<meta name="keywords" content="跟踪点通过计数（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Tracepoint-Conditions.html" rel="next" title="跟踪点条件">
+<link href="Enable-and-Disable-Tracepoints.html" rel="prev" title="启用和禁用跟踪点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="跟踪点通过计数">
+<div class="nav-panel">
+<p>
+下一个：<a href="Tracepoint-Conditions.html" accesskey="n" rel="next">跟踪点条件</a>，上一个：<a href="Enable-and-Disable-Tracepoints.html" accesskey="p" rel="prev">启用和禁用跟踪点</a>，向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="跟踪点通过计数-1"><span>13.1.3跟踪点通过计数<a class="copiable-link" href="#跟踪点通过计数-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-跟踪点通过计数"></a>
+<a id="索引-通过计数"></a><span><code class="code">passcount <span class="r">[</span><var class="var">n</var> <span class="r">[</span><var class="var">num</var><span class="r">]]</span></code><a class="copiable-link" href="#索引-通过计数"> &para;</a></span></dt>
+<dd><p>设置跟踪点的<em class="dfn">通过计数</em>。通过计数是一种自动停止跟踪实验的方法。如果一个跟踪点的通过计数是<var class="var">n</var>，那么在该跟踪点第<var class="var">n</var>次被命中时，跟踪实验将自动停止。如果未指定跟踪点编号<var class="var">num</var>，则<code class="code">passcount</code>命令将设置最近定义的跟踪点的通过计数。如果未给出通过计数，跟踪实验将一直运行，直到用户明确停止。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">passcount 5 2</b> // 在跟踪点2的第5次执行时停止
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// 
+</pre><pre class="example-preformatted">
+
+(gdb) <b class="b">passcount 12</b>  // 在最近定义的跟踪点的第12次执行时停止
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// 
+</pre><pre class="example-preformatted">(gdb) <b class="b">trace foo</b>
+(gdb) <b class="b">pass 3</b>
+(gdb) <b class="b">trace bar</b>
+(gdb) <b class="b">pass 2</b>
+(gdb) <b class="b">trace baz</b>
+(gdb) <b class="b">pass 1</b>        // 当foo被执行3次或者bar被执行2次
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// 或者baz被执行1次时停止跟踪
+</pre><pre class="exdent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="code">// 
+</pre></div>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

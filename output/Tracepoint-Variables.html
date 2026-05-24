@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点变量（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点变量（使用GDB调试）">
+<meta name="keywords" content="跟踪点变量（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Tracepoints.html" rel="up" title="跟踪点">
+<link href="Trace-Files.html" rel="next" title="跟踪文件">
+<link href="Analyze-Collected-Data.html" rel="prev" title="分析收集的数据">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跟踪点变量">
+<div class="nav-panel">
+<p>
+下一页：<a href="Trace-Files.html" accesskey="n" rel="next">使用跟踪文件</a>，上一页：<a href="Analyze-Collected-Data.html" accesskey="p" rel="prev">使用收集的数据</a>，向上：<a href="Tracepoints.html" accesskey="u" rel="up">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>  
+<hr>
+<h3 class="section" id="跟踪点的便利变量"><span>13.3 跟踪点的便利变量<a class="copiable-link" href="#跟踪点的便利变量"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-跟踪点变量"></a>
+<a class="index-entry-id" id="索引-跟踪点的便利变量"></a>
+
+<dl class="table">
+<dt><a id="索引-$trace_frame"></a><span><code class="code">(int) $trace_frame</code><a class="copiable-link" href="#索引-$trace_frame"> &para;</a></span></dt>
+<dd><p>当前跟踪快照（又名<em class="dfn">帧</em>）编号，如果没有选择快照则为 -1。
+</p>
+</dd>  
+<dt><a id="索引-$tracepoint"></a><span><code class="code">(int) $tracepoint</code><a class="copiable-link" href="#索引-$tracepoint"> &para;</a></span></dt>
+<dd><p>当前跟踪快照的跟踪点。
+</p>
+</dd>  
+<dt><a id="索引-$trace_line"></a><span><code class="code">(int) $trace_line</code><a class="copiable-link" href="#索引-$trace_line"> &para;</a></span></dt>
+<dd><p>当前跟踪快照的行号。
+</p>
+</dd>  
+<dt><a id="索引-$trace_file"></a><span><code class="code">(char []) $trace_file</code><a class="copiable-link" href="#索引-$trace_file"> &para;</a></span></dt>
+<dd><p>当前跟踪快照的源文件。
+</p>
+</dd>  
+<dt><a id="索引-$trace_func"></a><span><code class="code">(char []) $trace_func</code><a class="copiable-link" href="#索引-$trace_func"> &para;</a></span></dt>
+<dd><p>包含 <code class="code">$tracepoint</code> 的函数名称。
+</p></dd>
+</dl>
+
+<p>注意：<code class="code">$trace_file</code> 不适合在 <code class="code">printf</code> 中使用，应使用 <code class="code">output</code> 代替。
+</p>
+<p>以下是一个使用这些便利变量逐步遍历所有跟踪快照并打印其中一些数据的简单示例。请注意，这些与由目标管理的跟踪状态变量不同。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">tfind start</b>
+
+(gdb) <b class="b">while $trace_frame != -1</b>
+&gt; output $trace_file
+&gt; printf &quot;, line %d (tracepoint #%d)\n&quot;, $trace_line, $tracepoint
+&gt; tfind
+&gt; end
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html> 

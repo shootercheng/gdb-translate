@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>协议基础（使用GDB调试）</title>
+
+<meta name="description" content="协议基础（使用GDB调试）">
+<meta name="keywords" content="协议基础（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="The-F-Request-Packet.html" rel="next" title="F请求数据包">
+<link href="File_002dI_002fO-Overview.html" rel="prev" title="文件I/O概述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="协议基础">
+<div class="nav-panel">
+<p>
+下一页：<a href="The-F-Request-Packet.html" accesskey="n" rel="next">F请求数据包</a>，上一页：<a href="File_002dI_002fO-Overview.html" accesskey="p" rel="prev">文件I/O概述</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="协议基础-1"><span>E.14.2协议基础<a class="copiable-link" href="#协议基础-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-协议基础_002c文件_002di_002fo"></a>
+
+<p>文件I/O协议使用F数据包作为请求以及回复数据包。由于文件I/O系统调用只能在GDB等待来自继续或单步执行目标的响应时发生，因此文件I/O请求是GDB由于先前的“C”、“c”、“S”或“s”数据包而必须期待的回复。
+这个F数据包包含了允许GDB调用适当的主机系统调用所需的所有信息：
+</p>
+<ul class="itemize mark-bullet">
+<li>所请求系统调用的唯一标识符。
+
+</li><li>系统调用的所有参数。指针以目标内存地址空间中的地址给出。指向字符串的指针以指针/长度对给出。数值按原样给出。数值控制标志以特定于协议的表示形式给出。
+
+</li></ul>
+
+<p>此时，GDB必须执行以下操作。
+</p>
+<ul class="itemize mark-bullet">
+<li>如果参数包括指向系统调用所需输入数据的指针值，GDB使用标准的m数据包请求从目标请求此数据。目标实现必须预期这种额外的通信，并将其作为任何其他m数据包进行处理。
+
+</li><li>GDB根据需要将所有值从协议表示转换为主机表示。数据类型被强制转换为主机类型。
+
+</li><li>GDB调用系统调用。
+
+</li><li>然后它将数据类型强制转换回协议表示。
+
+</li><li>如果系统调用预期在由调用的指针参数指定的缓冲区空间中返回数据，则使用M或X数据包将数据传输到目标。目标实现必须预期此数据包，并将其作为任何其他M或X数据包进行处理。
+
+</li></ul>
+
+<p>最终，GDB用另一个F数据包进行回复，该数据包包含目标继续所需的所有必要信息。这至少包含
+</p>
+<ul class="itemize mark-bullet">
+<li>返回值。
+
+</li><li>errno（如果系统调用已更改它）。
+
+</li><li>“Ctrl-C”标志。
+
+</li></ul>
+
+<p>在进行了所需的类型和值强制转换之后，目标继续最新的继续或单步执行操作。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="The-F-Request-Packet.html">F请求数据包</a>，上一页：<a href="File_002dI_002fO-Overview.html">文件I/O概述</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

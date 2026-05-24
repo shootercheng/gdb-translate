@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>跟踪点数据包（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点数据包（使用GDB调试）">
+<meta name="keywords" content="跟踪点数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Host-I_002fO-Packets.html" rel="next" title="主机I/O数据包">
+<link href="Architecture_002dSpecific-Protocol-Details.html" rel="prev" title="特定于架构的协议细节">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="跟踪点数据包">
+<div class="nav-panel">
+<p>
+下一页：<a href="Host-I_002fO-Packets.html" accesskey="n" rel="next">主机I/O数据包</a>，上一页：<a href="Architecture_002dSpecific-Protocol-Details.html" accesskey="p" rel="prev">特定于架构的协议细节</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="跟踪点数据包-1"><span>E.7跟踪点数据包<a class="copiable-link" href="#跟踪点数据包-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-跟踪点数据包"></a>
+<a class="index-entry-id" id="index-数据包_002c跟踪点"></a>
+
+<p>在这里，我们描述GDB用于实现跟踪点的数据包（请参阅 <a class="pxref" href="Tracepoints.html">跟踪点</a>）。
+</p>
+<dl class="table">
+<dt><a id="index-QTDP-数据包"></a><span>&lsquo;<samp class="samp">QTDP:<var class="var">n</var>:<var class="var">addr</var>:<var class="var">ena</var>:<var class="var">step</var>:<var class="var">pass</var>[:F<var class="var">flen</var>][:S][:X<var class="var">len</var>,<var class="var">bytes</var>]<span class="r">[</span>-<span class="r">]</span></samp>&rsquo;<a class="copiable-link" href="#index-QTDP-数据包"> &para;</a></span></dt>
+<dd><p>在<var class="var">addr</var>处创建一个新的跟踪点，编号为<var class="var">n</var>。如果<var class="var">ena</var>为&lsquo;<samp class="samp">E</samp>&rsquo;，则跟踪点启用；如果为&lsquo;<samp class="samp">D</samp>&rsquo;，则跟踪点禁用。<var class="var">step</var>给出跟踪点的步计数，<var class="var">pass</var>给出其通过计数。如果存在&lsquo;<samp class="samp">F</samp>&rsquo;，则跟踪点为快速跟踪点，<var class="var">flen</var>是目标应复制到其他位置以腾出空间给跟踪点的字节数。如果存在&lsquo;<samp class="samp">S</samp>&rsquo;，则跟踪点为静态跟踪点。如果存在&lsquo;<samp class="samp">X</samp>&rsquo;，则引入一个跟踪点条件，它由一个十六进制长度，后跟一个逗号和十六进制编码的字节组成，其方式类似于下面描述的动作编码。如果存在尾随的&lsquo;<samp class="samp">-</samp>&rsquo;，则后续将有更多的&lsquo;<samp class="samp">QTDP</samp>&rsquo;数据包来指定此跟踪点的动作。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp">OK</samp>&rsquo;</dt>
+<dd><p>数据包已被理解并执行。
+</p></dd>
+<dt>&lsquo;<samp class="samp">qRelocInsn</samp>&rsquo;</dt>
+<dd><p>请参阅 <a class="xref" href="#跟踪点数据包">重定位指令回复数据包</a>。
+</p></dd>
+</dl>
+
+</dd>
+<dt>&lsquo;<samp class="samp">QTDP:-<var class="var">n</var>:<var class="var">addr</var>:<span class="r">[</span>S<span class="r">]</span><var class="var">action</var>&hellip;<span class="r">[</span>-<span class="r">]</span></samp>&rsquo;</dt>
+<dd><p>定义跟踪点命中时要采取的动作。<var class="var">n</var>和<var class="var">addr</var>必须与该跟踪点的初始&lsquo;<samp class="samp">QTDP</samp>&rsquo;数据包中的相同。此数据包只能在另一个以&lsquo;<samp class="samp">-</samp>&rsquo;结尾的&lsquo;<samp class="samp">QTDP</samp>&rsquo;数据包之后立即发送。如果存在尾随的&lsquo;<samp class="samp">-</samp>&rsquo;

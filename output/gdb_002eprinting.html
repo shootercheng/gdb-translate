@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gdb.printing（使用GDB进行调试）</title>
+
+<meta name="description" content="gdb.printing（使用GDB进行调试）">
+<meta name="keywords" content="gdb.printing（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-modules.html" rel="up" title="Python模块">
+<link href="gdb_002etypes.html" rel="next" title="gdb.types">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="gdb_002eprinting">
+<div class="nav-panel">
+<p>
+下一个：<a href="gdb_002etypes.html" accesskey="n" rel="next">gdb.types</a>，上一级：<a href="Python-modules.html" accesskey="u" rel="up">Python模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb_002eprinting-1"><span>23..4.1 gdb.printing<a class="copiable-link" href="#gdb_002eprinting-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdb_002eprinting"></a>
+
+<p>本模块提供了一组用于处理漂亮打印机的实用工具。
+</p>
+<dl class="table">
+<dt><code class="code">PrettyPrinter (<var class="var">name</var>, <var class="var">subprinters</var>=None)</code></dt>
+<dd><p>这个类指定了使“<samp class="samp">info pretty-printer</samp>”、“<samp class="samp">enable pretty-printer</samp>”和“<samp class="samp">disable pretty-printer</samp>”起作用的API。
+漂亮打印机通常应该继承这个类。
+</p>
+</dd>
+<dt><code class="code">SubPrettyPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>对于处理多种类型的打印机，这个类指定了子打印机的相应API。
+</p>
+</dd>
+<dt><code class="code">RegexpCollectionPrettyPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>用于处理多个打印机的实用类，所有打印机都通过正则表达式识别。
+有关示例，请参阅 <a class="xref" href="Writing-a-Pretty_002dPrinter.html">编写漂亮打印机</a>。
+</p>
+</dd>
+<dt><code class="code">FlagEnumerationPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>一个用于处理枚举值打印的漂亮打印机。与GDB内置的枚举打印不同，当枚举常量之间存在一些重叠时，这个打印机试图正常工作。参数<var class="var">name</var>既是打印机的名称，也是要查找的枚举类型的名称。
+</p>
+</dd>
+<dt><code class="code">register_pretty_printer (<var class="var">obj</var>, <var class="var">printer</var>, <var class="var">replace</var>=False)</code></dt>
+<dd><p>将<var class="var">printer</var>注册到<var class="var">obj</var>的漂亮打印机列表中。
+如果<var class="var">replace</var>为True，则替换打印机的任何现有副本。否则，如果已经存在具有相同名称的打印机，则会引发RuntimeError异常。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

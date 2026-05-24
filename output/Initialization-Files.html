@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>初始化文件（使用GDB调试）</title>
+
+<meta name="description" content="初始化文件（使用GDB调试）">
+<meta name="keywords" content="初始化文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invoking-GDB.html" rel="up" title="调用GDB">
+<link href="Startup.html" rel="prev" title="启动">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="初始化文件">
+<div class="nav-panel">
+<p>
+上一个：<a href="Startup.html" accesskey="p" rel="prev">GDB启动时的操作</a>，向上：<a href="Invoking-GDB.html" accesskey="u" rel="up">调用GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="初始化文件-1"><span>2.1.4初始化文件<a class="copiable-link" href="#初始化文件-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-init-file-name"></a>
+
+<p>在启动期间（见<a class="pxref" href="Startup.html">GDB启动时的操作</a>），GDB将从几个初始化文件中执行命令。这些初始化文件使用与<em class="dfn">命令文件</em>相同的语法（见<a class="pxref" href="Command-Files.html">命令文件</a>），并且由GDB以相同的方式处理。
+</p>
+<p>要按加载顺序显示GDB在启动时加载的初始化文件列表，可以使用<kbd class="kbd">gdb --help</kbd>。
+</p>
+<a class="index-entry-id" id="index-早期初始化"></a>
+<p><em class="dfn">早期初始化</em>文件在GDB初始化过程的早期加载，在解释器（见<a class="pxref" href="Interpreters.html">命令解释器</a>）初始化之前，以及默认目标（见<a class="pxref" href="Targets.html">指定调试目标</a>）初始化之前。早期初始化文件中只能放置<code class="code">set</code>或<code class="code">source</code>命令，并且唯一可以使用的<code class="code">set</code>命令是那些控制GDB如何启动的命令。
+</p>
+<p>可以放在早期初始化文件中的命令将在本手册中全程记录。任何未记录为适合早期初始化文件的命令应改为放在一般初始化文件中。传递给<code class="code">--early-init-command</code>或<code class="code">-eix</code>的命令文件也是早期初始化文件，具有相同的命令限制。只有可以出现在早期初始化文件中的命令才能传递给<code class="code">--early-init-eval-command</code>或<code class="code">-eiex</code>。
+</p>
+<a class="index-entry-id" id="index-一般初始化"></a>
+<p>相比之下，<em class="dfn">一般初始化</em>文件在GDB完成其自身的内部初始化过程之后处理，这些文件中可以使用任何有效命令。
+</p>
+<a class="index-entry-id" id="index-初始化文件"></a>
+<p>在本文档的其余部分，术语<em class="dfn">初始化文件</em>指的是一般初始化文件之一，而不是早期初始化文件。任何关于早期初始化文件的讨论都会特别提到它是正在讨论的早期初始化文件。
+</p>
+<p>由于系统范围和主目录初始化文件在大多数命令行选项之前处理，因此对设置的更改（例如&lsquo;<samp class="samp">set complaints</samp>&rsquo;）可能会影响命令行选项及其操作数随后的处理。
+</p>
+<p>以下各节描述了GDB在何处查找早期初始化文件和初始化文件，以及搜索文件的顺序。
+</p>
+<ul class="mini-toc">
+<li><a href="#主目录早期初始化文件" accesskey="1">主目录早期初始化文件</a></li>
+<li><a href="#系统范围初始化文件" accesskey="2">系统范围初始化文件</a></li>
+<li><a href="#主目录初始化文件" accesskey="3">主目录初始化文件</a></li>
+<li><a href="#本地目录初始化文件" accesskey="4">本地目录初始化文件</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="主目录早期初始化文件">
+<h4 class="subsubsection"><span>2.1.4.1主目录早期初始化文件<a class="copiable-link" href="#主目录早期初始化文件"> &para;</a></span></h4>
+
+<p>GDB最初在用户主目录中查找早期初始化文件<a class="footnote" id="DOCF1" href="#FOOT1"><sup>1</sup></a>。GDB将在主目录中搜索多个位置，这些位置按顺序搜索，GDB将加载找到的第一个文件，后续位置将不再检查。
+</p>
+<p>在非macOS主机上搜索的位置是：
+</p><ul class="itemize mark-bullet">
+<li>如果定义了环境变量<code class="env">XDG_CONFIG_HOME</code>，则在其指向的目录中的文件<samp class="file">gdb/gdbearlyinit</samp>。
+</li><li>如果定义了环境变量<code class="env">HOME</code>，则在其指向的目录中的文件<samp class="file">.config/gdb/gdbearlyinit</samp>。
+</li><li>如果定义了环境变量<code class="env">HOME</code>，则在其指向的目录中的文件<samp class="file">.gdbearlyinit</samp>。
+</li></ul>
+
+<p>相比之下，在macOS主机上搜索的位置是：
+</p><ul class="itemize mark-bullet">
+<li>如果定义了环境变量<code class="env">HOME</code>，则在其指向的目录中的文件<samp class="file">Library/Preferences/gdb/gdbearlyinit</samp>。
+</li><li>如果定义了环境变量<code class="env">HOME</code>，则在其指向的目录中的文件<samp class="file">.gdbearlyinit</samp>。
+</li></ul>
+
+<p>可以使用&lsquo;<samp class="samp">-nx</samp>&rsquo;或&lsquo;<samp class="samp">-nh</samp>&rsquo;命令行选项阻止加载主目录早期初始化文件，见<a class="pxref" href="Mode-Options.html">选择模式</a>。
+</p>
+<a class="anchor" id="系统范围初始化文件"></a></div>
+<div class="subsubsection-level-extent" id="系统范围初始化文件">
+<h4 class="subsubsection"><span>2.1.4.2系统范围初始化文件<a class="copiable-link" href="#系统范围初始化文件"> &para;</a></span></h4>
+
+<p>有两个位置用于搜索系统范围的初始化文件。这两个位置都会被检查：
+</p>
+<dl class="table">
+<dt><code class="code"><samp class="file">system.gdbinit</samp></code></dt>
+<dd><p>这是一个单一的系统范围初始化文件。其位置由<code class="code">--with-system-gdbinit</code>配置选项指定（见<a class="pxref" href="System_002dwide-configuration.html">系统范围配置和设置</a>）。它在GDB启动时首先加载，在处理命令行选项之前。
+</p>
+</dd>
+<dt><code class="code"><samp class="file">system.gdbinit.d</samp></code></dt>
+<dd><p>这是系统范围初始化目录。其位置由<code class="code">--with-system-gdbinit-dir</code>配置选项指定（见<a class="pxref" href="System_002dwide-configuration.html">系统范围配置和设置</a>）。该目录中的文件在GDB启动时，在处理命令行选项之前，在<samp class="file">system.gdbinit</samp>（如果启用）之后按字母顺序加载。文件需要具有公认的脚本语言扩展名（<samp class="file">.py</samp>/<samp class="file">.scm</samp>）或具有<samp class="file">.gdb</samp>扩展名才能被解释为常规GDB命令。GDB不会递归进入此目录的任何子目录。
+</p>
+</dd>
+</dl>
+
+<p>可以使用&lsquo;<samp class="samp">-nx</samp>&rsquo;命令行选项阻止加载系统范围的初始化文件见<a class="pxref" href="Mode-Options.html">选择模式</a>。
+</p>
+<a class="anchor" id="主目录初始化文件"></a></div>
+<div class="subsubsection-level-extent" id="主目录初始化文件">
+<h4 class="subsubsection"><span>2.1.4.3主目录初始化文件<a class="copiable-link" href="#主目录初始化文件"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdbinit"></a>
+<a class="index-entry-id" id="index-_002egdbinit"></a>
+<a class="index-entry-id" id="index-gdb_002eini"></a>
+
+<p>加载系统范围的初始化文件后，GDB将在用户主目录中查找初始化文件<a class="footnote" id="DOCF2" href="#FOOT2"><sup>2</sup></a>。GDB将在主目录中搜索多个位置，这些位置按顺序搜索，GDB将加载找到的第一个文件，后续位置将不再检查。
+</p>
+<p>在非苹果主机上搜索的位置是：
+</p><dl class="table">
+<dt><samp class="file">$XDG_CONFIG_HOME/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.config/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.gdbinit</samp></dt>
+</dl>
+
+<p>而在苹果主机上搜索的位置是：
+</p><dl class="table">
+<dt><samp class="file">$HOME/Library/Preferences/gdb/gdbinit</samp></dt>
+<dt><samp class="file">$HOME/.gdbinit</samp></dt>
+</dl>
+
+<p>可以使用&lsquo;<samp class="samp">-nx</samp>&rsquo;或&lsquo;<samp class="samp">-nh</samp>&rsquo;命令行选项阻止加载主目录初始化文件，见<a class="pxref" href="Mode-Options.html">选择模式</a>。
+</p>
+<p>GDB的DJGPP端口使用<samp class="file">gdb.ini</samp>而不是<samp class="file">.gdbinit</samp>或<samp class="file">gdbinit</samp>，这是由于DOS文件系统对文件名的限制。GDB的Windows端口使用标准名称，但如果在你的主目录中找到<samp class="file">gdb.ini</samp>文件，它会向你发出警告并建议将该文件重命名为标准名称。
+</p>
+<a class="anchor" id="启动时当前目录中的初始化文件"></a></div>
+<div class="subsubsection-level-extent" id="本地目录初始化文件">
+<h4 class="subsubsection"><span>2.1.4.4本地目录初始化文件<a class="copiable-link" href="#本地目录初始化文件"> &para;</a></span></h4>
+
+<p>GDB将检查当前目录中是否有一个名为<samp class="file">.gdbinit</samp>的文件。它在处理除&lsquo;<samp class="samp">-x</samp>&rsquo;和&lsquo;<samp class="samp">-ex</samp>&rsquo;之外的命令行选项之后最后加载。命令行选项&lsquo;<samp class="samp">-x</samp>&rsquo;和&lsquo;<samp class="samp">-ex</samp>&rsquo;在加载<samp class="file">.gdbinit</samp>之后最后处理，见<a class="pxref" href="File-Options.html">选择文件</a>。
+</p>
+<p>如果当前目录中的文件已经作为主目录初始化文件加载，则不会再次加载。
+</p>
+<p>可以使用&lsquo;<samp class="samp">-nx</samp>&rsquo;命令行选项阻止加载本地目录初始化文件，见<a class="pxref" href="Mode-Options.html">选择模式</a>。
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="#DOCF1">(1)</a></h5>
+<p>在DOS/Windows系统上，主目录是由环境变量<code class="env">HOME</code>指向的目录。</p>
+<h5 class="footnote-body-heading"><a id="FOOT2" href="#DOCF2">(2)</a></h5>
+<p>在DOS/Windows系统上，主目录是由环境变量<code class="env">HOME</code>指向的目录。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Startup.html">GDB启动时的操作</a>，向上：<a href="Invoking-GDB.html">调用GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>

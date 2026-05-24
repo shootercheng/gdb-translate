@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI栈操作（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI栈操作（使用GDB调试）">
+<meta name="keywords" content="GDB/MI栈操作（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Variable-Objects.html" rel="next" title="GDB/MI变量对象">
+<link href="GDB_002fMI-Program-Execution.html" rel="prev" title="GDB/MI程序执行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 清空}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-栈操作">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Variable-Objects.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>变量对象</a>，上一页：<a href="GDB_002fMI-Program-Execution.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small>程序执行</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small>接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-栈操作命令"><span>27.14 <small class="sc">GDB/MI</small>栈操作命令<a class="copiable-link" href="#gdb_002fmi-栈操作命令"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-_002denable_002dframe_002dfilters"></a>
+<h4 class="subheading" id="enable_002dframe_002dfilters命令"><span><code class="code">-enable-frame-filters</code>命令<a class="copiable-link" href="#enable_002dframe_002dfilters命令"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-enable-frame-filters
+</pre></div>
+
+<p><small class="sc">GDB</small>允许基于Python的帧过滤器影响与堆栈跟踪相关的MI命令的输出。由于无法以完全向后兼容的方式实现此功能，前端必须请求启用此功能。
+</p>
+<p>一旦启用此功能，就无法禁用。
+</p>
+<p>请注意，如果没有将Python支持编译到<small class="sc">GDB</small>中，此命令仍然会成功（但不执行任何操作）。
+</p>
+<a class="index-entry-id" id="索引-_002dstack_002dinfo_002dframe"></a>
+<h4 class="subheading" id="stack_002dinfo_002dframe命令"><span><code class="code">-stack-info-frame</code>命令<a class="copiable-link" href="#stack_002dinfo_	frame命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-41"><span>概要<a class="copiable-link" href="#概要-41"> &para;</a></span></h></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-info-frame
+</pre></div>
+
+<p>获取所选帧的信息。
+</p>
+<h4 class="subsubheading" id="gdb命令-40"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-40"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">info frame</samp>&rsquo;或&lsquo;<samp class="samp">frame</samp>&rsquo;（无参数）。
+</p>
+<h4 class="subsubheading" id="示例-39"><span>示例<a class="copiable-link" href="#示例-39"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-info-frame
+^done,frame={level=&quot;1&quot;,addr=&quot;0x0001076c&quot;,func=&quot;callee3&quot;,
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;1	7&quot;,
+arch=&quot;i386:x86_64&quot;}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="索引-_002dstack_002dinfo_002ddepth"></a>
+<h4 class="subheading" id="stack_002dinfo_002ddepth命令"><span><code class="code">-stack-info-depth</code>命令<a class="copiable-link" href="#stack_002dinfo_002ddepth命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-42"><span>概要<a class="copiable-link" href="#概要-42"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-info-depth [ <var class="var">最大深度</var> ]
+</pre></div>
+
+<p>返回堆栈的深度。如果指定了整数参数<var class="var">最大深度</var>，则计数不超过<var class="var">最大深度</var>个帧。
+</p>
+<h4 class="subsubheading" id="gdb命令-41"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-41"> &para;</a></span></h4>
+
+<p>没有等效的<small class="sc">GDB</small>命令。
+</p>
+<h4 class="subsubheading" id="示例-40"><span>示例<a class="copiable-link" href="#示例-40"> &para;</a></span></h4>
+
+<p>对于具有从0到11的帧级别的堆栈：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb))
+-stack-info-depth
+^done,depth=&quot;12&quot;
+(gdb)
+-stack-info-depth 4
+^done,depth=&quot;4&quot;
+(gdb)
+-stack-info-depth 12
+^done,depth=&quot;12&quot;
+(gdb)
+-stack-info-depth 11
+^done,depth=&quot;11&quot;
+(gdb)
+-stack-info-depth 13
+^done,depth=&quot;12&quot;
+(gdb)
+</pre></div>
+
+<a class="anchor" id="g_t_002dstack_002dlist_002darguments"></a><a class="index-entry-id" id="索引-_002dstack_002dlist_002darguments"></a>
+<h4 class="subheading" id="stack_002dlist_002darguments命令"><span><code class="code">-stack-list-arguments</code>命令<a class="copiable-link" href="#stack_002dlist_002darguments命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-43"><span>概要<a class="copiable-link" href="#概要-43"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-arguments [ --no-frame-filters ] [ --skip-unavailable ] <var class="var">打印值</var>
+    [ <var class="var">低帧</var> <var class="var">高帧</var> ]
+</pre></div>
+
+<p>显示<var class="var">低帧</var>和<var class="var">高帧</var>之间（包括）的帧的参数列表。如果未提供<var class="var">低帧</var>和<var class="var">高帧</var>，则列出整个调用堆栈的参数。如果两个参数相等，则显示相应级别的单个帧。如果<var class="var">低帧</var>大于实际帧数，则为错误。另一方面，<var class="var">高帧</var>可能大于实际帧数，在这种情况下，只返回现有帧。
+</p>
+<p>如果<var class="var">打印值</var>为0或<code class="code">--no-values</code>，则只打印变量名；如果为1或<code class="code">--all-values</code>，则也打印它们的值；如果为2或<code class="code">--simple-values</code>，则打印简单数据类型的名称、类型和值，以及数组、结构和联合的名称和类型。如果提供了<code class="code">--no-frame-filters</code>选项，则不会执行Python帧过滤器。
+</p>
+<p>如果指定了<code class="code">--skip-unavailable</code>选项，则不列出不可用的参数。但是，部分可用的参数仍会显示。
+</p>
+<p>使用此命令获取单个帧中的参数已被弃用，建议使用&lsquo;<samp class="samp">-stack-list-variables</samp>&rsquo;命令。
+</p>
+<h4 class="subsubheading" id="gdb命令-42"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-42"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small>没有等效命令。<code class="code">gdbtk</code>有一个&lsquo;<samp class="samp">gdb_get_args</samp>&rsquo;命令，其功能与&lsquo;<samp class="samp">-stack-list-arguments</samp>&rsquo;部分重叠。
+</p>
+<h4 class="subsubheading" id="示例-41"><span>示例<a class="copiable-link" href="#示例-41"> &para;</a></span></h4>
+
+<div class="example smallexample">
+
+
+<pre class="example-preformatted">(gdb)                                                                                                                          
+-stack-list-frames                                                                                                              
+^done,                                                                                                                          
+stack=[                                                                                                                          
+frame={level=&quot;0&quot;,addr=&quot;0x00010734&quot;,func=&quot;callee4&quot;,                                                                             
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,                                                                             
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;8&quot;,                                                          
+arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;1&quot;,addr=&quot;0x0001076c&quot;,func=&quot;callee3&quot;,                                                                             
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,                                                                             
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;17&quot;,                                                          
+arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;2&quot;,addr=&quot;0x0001078c&quot;,func=&quot;callee2&quot;,                                                                             
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,                                                                             
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;22&quot;,                                                          
+arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;3&quot;,addr=&quot;0x000107b4&quot;,func=&quot;callee1&quot;,                                                                             
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,                                                                             
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;27&quot;,                                                          
+arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;4&quot;,addr=&quot;0x000107e0&quot;,func=&quot;main&quot;,                                                                                
+file=&quot;../../../devo/gdb/testsuite/gdb.mi/basics.c&quot;,                                                                             
+fullname=&quot;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&quot;,line=&quot;32&quot;,                                                          
+arch=&quot;i386:x86_64&quot;}]                                                                                                            
+(gdb)                                                                                                                          
+-stack-list-arguments 0                                                                                                         
+^done,                                                                                                                          
+stack-args=[                                                                                                                   
+frame={level=&quot;0&quot;,args=[]},                                                                                                     
+frame={level=&quot;1&quot;,args=[name=&quot;strarg&quot;]},                                                                                       
+frame={level=&quot;2&quot;,args=[name=&quot;intarg&quot;,name=&quot;strarg&quot;]},                                                                           
+frame={level=&quot;3&quot;,args=[name=&quot;intarg&quot;,name=&quot;strarg&quot;,name=&quot;fltarg&quot;]},                                                                
+frame={level=&quot;4&quot;,args=[]}]                                                                                                     
+(gdb)                                                                                                                          
+-stack-list-arguments 1                                                                                                         
+^done,                                                                                                                          
+stack-args=[                                                                                                                   
+frame={level=&quot;0&quot;,args=[]},                                                                                                     
+frame={level=&quot;1&quot;,                                                                                                             
+ args=[{name=&quot;strarg&quot;,value=&quot;0x11940 \&quot;A string argument.\&quot;&quot;}]},                                                                
+frame={level=&quot;                                                                                                                          
+2&quot;,args=[                                                                                                                          
+{name=&quot;intarg&quot;,value=&quot;2&quot;},                                                                                                   
+{name=&quot;strarg&quot;,value=&quot;0x11940 \&quot;A string argument.\&quot;&quot;}]},                                                                           
+{frame={level=&quot;3&quot;,args=[                                                                                                                          
+{name=&quot;intarg&quot;,value=&quot;2&quot;},                                                                                                   
+{name=&quot;strarg&quot;,value=&quot;0x11940 \&quot;A string argument.\&quot;&quot;},                                                                           
+{name=&quot;fltarg&quot;,value=&quot;3.5&quot;}]},                                                                                               
+frame={level=&quot;4&quot;,args=[]}]                                                                                                     
+(gdb)                                                                                                                          
+-stack-list-arguments 0 2 2                                                                                                     
+^done,stack-args=[frame={level=&quot;2&quot;,args=[name=&quot;intarg&quot;,name=&quot;strarg&quot;]}]                                                          
+(gdb)                                                                                                                          
+-stack-list-arguments 1 2 2                                                                                                     
+^done,stack-args=[frame={level=&quot;2&quot;,                                                                                         
+args=[{name=&quot;intarg&quot;,value=&quot;2&quot;},                                                                                           
+{name=&quot;strarg&quot;,value=&quot;0x11940 \&quot;A string argument.\&quot;&quot;}]}]                                                                    
+(gdb)                                                                                                                          
+</pre></div>
+
+
+
+<a class="anchor" id="g_t_002dstack_002dlist_002dframes"></a><a class="index-entry-id" id="索引-_002dstack_002dlist_002dframes"></a>
+<h4 class="subheading" id="stack_002dlist_002dframes命令"><span><code class="code">-stack-list-frames</code>命令<a class="copiable-link" href="#stack_002dlist_002dframes命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-44"><span>概要<a class="copiable-link" href="#概要-44"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-frames [ --no-frame-filters <var class="var">低帧</var> <var class="var">高帧</var> ]  
+</pre></div>
+
+<p>列出当前堆栈上的帧。对于每个帧，它会显示以下信息：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp"><var class="var">级别</var></samp>&rsquo;</dt>
+<dd><p>帧编号，0是最顶层的帧，即最内层的函数。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">地址</var></samp>&rsquo;</dt>
+<dd><p>该帧的<code class="code">$pc</code>值。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">函数</var></samp>&rsquo;</dt>
+<dd><p>函数名。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">文件</var></samp>&rsquo;</dt>
+<dd><p>函数所在源文件的文件名。 
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">全名</var></samp>&rsquo;</dt>
+<dd><p>函数所在源文件的完整文件名。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">行</var></samp>&rsquo;</dt>
+<dd><p>与<code class="code">$pc</code>对应的行号。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">来自</var></samp>&rsquo;</dt>
+<dd><p>定义此函数的共享库。仅当帧的函数未知时才会给出此信息。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">架构</var></samp>&rsquo;</dt>
+<dd><p>帧的架构。
+</p></dd>
+</dl>
+
+<p>如果不带参数调用此命令，它将打印整个堆栈的回溯。如果给定两个整数参数，它将显示其级别在这两个参数之间（包括）的帧。如果两个参数相等，它将显示相应级别的单个帧。如果<var class="var">低帧</var>大于实际帧数，则为错误。另一方面，<var class="var">高帧</var>可能大于实际帧数，在这种情况下，只返回现有帧。如果提供了<code class="code">--no-frame-filters</code>选项，则不会执行Python帧过滤器。
+</p>
+<h4 class="subsubheading" id="gdb命令-43"><span><small class="sc">GDB</small>命令<a class="copiable-link" href="#gdb命令-43"> &para;</a></span></h4>
+
+<p>相应的<small class="sc">GDB</small>命令是&lsquo;<samp class="samp">backtrace</samp>&rsquo;和&lsquo;<samp class="samp">where</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-42"><span>示例<a class="copiable-link" href="#示例-42"> &para;</a></span></h4>
+
+<p>完整堆栈回溯：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb)                                                                                                                          
+-stack-list-frames                                                                                                              
+^done,stack=                                                                                                                          
+[frame={level=&quot;0&quot;,addr=&quot;0x0001076c&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;11&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;1&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;2&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;3&quot;,addr=&quot;0x000107	a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;4&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;5&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;6&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;7&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             
+frame={level=&quot;8&quot;,addr=&quot;0x000107a4&quot;,func=&quot;foo&quot;,                                                                                 
+  file=&quot;recursive2.c&quot;,fullname=&quot;/home/foo/bar/recursive	2.c&quot;,line=&quot;14&quot;,                                                          
+  arch=&quot;i386:x86_64&quot;},                                                                                                             

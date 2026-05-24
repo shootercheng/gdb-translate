@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的函数（使用GDB调试）</title>
+
+<meta name="description" content="Python中的函数（使用GDB调试）">
+<meta name="keywords" content="Python中的函数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Progspaces-In-Python.html" rel="next" title="Python中的程序空间">
+<link href="Parameters-In-Python.html" rel="prev" title="Python中的参数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的函数">
+<div class="nav-panel">
+<p>
+下一页：<a href="Progspaces-In-Python.html" accesskey="n" rel="next">Python中的程序空间</a>，上一页：<a href="Parameters-In-Python.html" accesskey="p" rel="prev">Python中的参数</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="编写新的便利函数"><span>23.3.2.25编写新的便利函数<a class="copiable-link" href="#编写新的便利函数"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-编写便利函数"></a>
+<a class="index-entry-id" id="索引-Python中的便利函数"></a>
+<a class="index-entry-id" id="索引-Python便利函数"></a>
+<a class="index-entry-id" id="索引-gdb_002eFunction"></a>
+<a class="index-entry-id" id="索引-Function"></a>
+<p>你可以在Python中实现新的便利函数（见 <a class="pxref" href="Convenience-Vars.html">便利变量</a>） 
+便利函数是 <code class="code">gdb.Function</code> 类的子类的一个实例。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-Function_002e_005f_005finit_005f_005f"><span class="category-def">函数：</span><span><strong class="def-name">Function.__init__</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#索引-Function_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p><code class="code">Function</code> 的初始化器会向 <small class="sc">GDB</small> 注册新函数。参数 <var class="var">name</var> 是函数的名称，为字符串类型。该函数对用户来说将作为一个类型为 <code class="code">内部函数</code> 的便利变量可见，其名称与给定的 <var class="var">name</var> 相同。
+</p>
+<p>新函数的文档取自新类的文档字符串。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-Function_002einvoke"><span class="category-def">函数：</span><span><strong class="def-name">Function.invoke</strong> <var class="def-var-arguments">(*args)</var><a class="copiable-link" href="#索引-Function_002einvoke"> &para;</a></span></dt>
+<dd><p>当评估一个便利函数时，其参数会被转换为 <code class="code">gdb.Value</code> 的实例，然后调用该函数的 <code class="code">invoke</code> 方法。请注意，<small class="sc">GDB</small> 不会预先确定便利函数的参数个数。相反，所有可用的参数会按照标准的Python调用约定传递给 <code class="code">invoke</code>。特别地，便利函数可以有默认参数值而不会产生不良影响。
+</p>
+<p>此方法的返回值将用作其在包含表达式中的值。如果返回一个普通的Python值，它将按照通常的规则转换为 <code class="code">gdb.Value</code>。
+</p></dd></dl>
+
+<p>以下代码片段展示了如何在Python中实现一个简单的便利函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class Greet (gdb.Function):
+  &quot;&quot;&quot;返回用于问候某人的字符串。
+以名字作为参数。&quot;&quot;&quot;
+
+def __init__ (self):
+    super (Greet, self).__init__ (&quot;greet&quot;)
+
+def invoke (self, name):
+    return &quot;Hello, %s!&quot; % name.string ()
+
+Greet ()
+</pre></div>
+
+<p>最后一行实例化了这个类，并且这对于触发函数向 <small class="sc">GDB</small> 的注册是必要的。根据Python代码如何被读入 <small class="sc">GDB</small>，你可能需要显式地导入 <code class="code">gdb</code>模块。
+</p>
+<p>现在你可以在表达式中使用这个函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $greet(&quot;Bob&quot;)
+$1 = &quot;Hello, Bob!&quot;
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Progspaces-In-Python.html">Python中的程序空间</a>，上一页：<a href="Parameters-In-Python.html">Python中的参数</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

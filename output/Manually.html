@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>手动设置（使用GDB调试）</title>
+
+<meta name="description" content="手动设置（使用GDB调试）">
+<meta name="keywords" content="手动设置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Setting.html" rel="up" title="设置">
+<link href="Automatically.html" rel="next" title="自动设置">
+<link href="Filenames.html" rel="prev" title="文件名">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="手动设置">
+<div class="nav-panel">
+<p>
+下一页：<a href="Automatically.html" accesskey="n" rel="next">让GDB推断源语言</a>，上一页：<a href="Filenames.html" accesskey="p" rel="prev">文件名扩展名和语言列表</a>，向上：<a href="Setting.html" accesskey="u" rel="up">在源语言之间切换</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="设置工作语言"><span>15.1.2 设置工作语言<a class="copiable-link" href="#设置工作语言"> &para;</a></span></h4>
+
+<p>如果允许GDB自动设置语言，那么在调试会话和程序中，表达式的解释方式是相同的。
+</p>
+<a class="index-entry-id" id="index-set-language"></a>
+<p>如果愿意，也可以手动设置语言。为此，发出命令“<samp class="samp">set language <var class="var">lang</var></samp>”，其中<var class="var">lang</var>是一种语言的名称，例如
+<code class="code">c</code> 或 <code class="code">modula-2</code>。
+要获取支持的语言列表，请输入“<samp class="samp">set language</samp>”。
+</p>
+<p>手动设置语言会阻止GDB自动更新工作语言。如果在工作语言与源语言不同时尝试调试程序，而某个表达式在两种语言中都可接受但含义不同，这可能会导致混淆。例如，如果当前源文件是用C编写的，而GDB正在解析Modula-2，那么像这样的命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">print a = b + c
+</pre></div>
+
+<p>可能不会产生预期的效果。在C中，这意味着将<code class="code">b</code> 和 <code class="code">c</code> 相加并将结果放入 <code class="code">a</code> 中。打印出的结果将是 <code class="code">a</code> 的值。在Modula-2中，这意味着将 <code class="code">a</code> 与 <code class="code">b+c</code> 的结果进行比较，产生一个 <code class="code">BOOLEAN</code> 值。
+</p>
+</div>
+
+
+
+</body>
+</html>

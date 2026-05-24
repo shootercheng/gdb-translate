@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>数据包（使用GDB调试）</title>
+
+<meta name="description" content="数据包（使用GDB调试）">
+<meta name="keywords" content="数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Stop-Reply-Packets.html" rel="next" title="停止回复数据包">
+<link href="Standard-Replies.html" rel="prev" title="标准回复">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="数据包">
+<div class="nav-panel">
+<p>
+下一页：<a href="Stop-Reply-Packets.html" accesskey="n" rel="next">停止回复数据包</a>，上一页：<a href="Standard-Replies.html" accesskey="p" rel="prev">标准回复</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="数据包-节"><span>E.3 数据包<a class="copiable-link" href="#数据包-节"> ¶</a></span></h3>
+
+<p>下表提供了所有当前定义的<var class="var">命令</var>及其相应响应<var class="var">数据</var>的完整列表。有关远程协议的文件I/O扩展的详细信息，请参阅 <a class="xref" href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a>。
+</p>
+<p>每个数据包的描述都有一个模板，展示了数据包整体语法，随后是对数据包含义的解释。为了清晰起见，我们在一些模板中包含了空格；这些空格不是数据包语法的一部分。没有任何<small class="sc">GDB</small>数据包使用空格来分隔其组件。例如，像 &lsquo;<samp class="samp">foo <var class="var">bar</var> <var class="var">baz</var></samp>&rsquo; 这样的模板描述了一个数据包，它以三个ASCII字节 &lsquo;<samp class="samp">foo</samp>&rsquo; 开头，后面跟着一个<var class="var">bar</var>，然后直接跟着一个<var class="var">baz</var>。<small class="sc">GDB</small>不会在 &lsquo;<samp class="samp">foo</samp>&rsquo; 和<var class="var">bar</var>之间，或者<var class="var">bar</var>和<var class="var">baz</var>之间传输空格字符。
+</p>
+<a class="index-entry-id" id="索引-线程_002did_002c-在远程协议中"></a>
+<a class="anchor" id="线程_002did-语法"></a><p>几个数据包和回复包含一个<var class="var">线程ID</var>字段来标识一个线程。通常，这些是具有特定于目标的解释的正数，格式为大端十六进制字符串。<var class="var">线程ID</var>也可以是文字 &lsquo;<samp class="samp">-1</samp>&rsquo; 表示所有线程，或者 &lsquo;<samp class="samp">0</samp>&rsquo; 表示选择任何线程。
+</p>
+<p>此外，远程协议支持多进程功能，其中<var class="var">线程ID</var>语法扩展为可选地包括进程和线程ID字段，格式为 &lsquo;<samp class="samp">p<var class="var">pid</var>.<var class="var">tid</var></samp>&rsquo;。<var class="var">pid</var>（进程）和<var class="var">tid</var>（线程）组件都具有上述格式：一个具有特定于目标的解释的正数，格式为大端十六进制字符串，文字 &lsquo;<samp class="samp">-1</samp>&rsquo; 分别表示所有进程或线程，或者 &lsquo;<samp class="samp">0</samp>&rsquo; 表示任意进程或线程。仅指定一个进程，如 &lsquo;<samp class="samp">p<var class="var">pid</var></samp>&rsquo;，等同于 &lsquo;<samp class="samp">p<var class="var">pid</var>.-1</samp>&rsquo;。指定所有进程但特定线程是错误的，例如 &lsquo;<samp class="samp">p-1.<var class="var">tid</var></samp>&rsquo;。请注意，对于那些明确记录为包含进程ID而不是<var class="var">线程ID</var>的数据包和回复，不使用 &lsquo;<samp class="samp">p</samp>&rsquo; 前缀。
+</p>
+<p>仅当<small class="sc">GDB</small>和存根都通过 &lsquo;<samp class="samp">qSupported</samp>&rsquo; 报告对 &lsquo;<samp class="samp">multiprocess</samp>&rsquo;功能的支持时，才使用多进程<var class="var">线程ID</var>语法扩展。有关更多信息，请参阅 <a class="xref" href="General-Query-Packets.html#multiprocess-extensions">多进程扩展</a>。
+</p>
+<p>请注意，所有以大写或小写字母开头的数据包形式（此处未描述的除外）均保留供将来使用。
+</p>
+<p>以下是数据包描述 
+</p>
+<dl class="table">
+<dt><a id="索引-_0021-数据包"></a><span>&lsquo;<samp class="samp">!</samp>&rsquo;<a class="copiable-link" href="#索引-_0021-数据包"> ¶</a></span></dt>
+<dd><a class="anchor" id="扩展模式"></a><p>启用扩展模式。在扩展模式下，远程服务器将保持持久连接。&lsquo;<samp class="samp">R</samp>&rsquo; 数据包用于重新启动正在调试的程序。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp">OK</samp>&rsquo;</dt>
+<dd><p>远程目标支持并已启用扩展模式。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="索引-_003f-数据包"></a><span>&lsquo;<samp class="samp">?</samp>&rsquo;<a class="copiable-link" href="#索引-_003f-数据包"> ¶</a></span></dt>
+<dd><a class="anchor" id="g_t_003f-数据包"></a><p>首次建立连接时发送此数据包，以查询目标停止的原因。回复与单步执行和继续执行的回复相同。当目标处于非停止模式时，此数据包有特殊解释；请参阅 <a class="ref" href="Remote-Non_002dStop.html">远程协议对非停止模式的支持</a>。
+</p>
+<p>回复：
+请参阅 <a class="xref" href="Stop-Reply-Packets.html">停止回复数据包</a> 以获取回复规范。
+</p>
+</dd>
+<dt><a id="索引-A-数据包"></a><span>&lsquo;<samp class="samp">A <var class="var">arglen</var>,<var class="var">argnum</var>,<var class="var">arg</var>,&hellip;</samp>&rsquo;<a class="copiable-link" href="#索引-A-数据包"> ¶</a></span></dt>
+<dd><p>传递给程序的初始化 <code class="code">argv[]</code> 数组。<var class="var">arglen</var> 指定十六进制编码字节流 <var class="var">arg</var> 中的字节数。有关更多详细信息，请参阅 <code class="code">gdbserver</code>。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp">OK</samp>&rsquo;</dt>
+<dd><p>参数已设置。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="索引-b-数据包"></a><span>&lsquo;<samp class="samp">b <var class="var">baud</var></samp>&rsquo;<a class="copiable-link" href="#索引-b-数据包"> ¶</a></span></dt>
+<dd><p>（不要使用此数据包；其行为未明确定义。）将串行线路速度更改为 <var class="var">baud</var>.
+</p>
+<p>JTC：<em class="emph">传输层状态何时改变？是在接收到时，还是在ACK传输之后。在任何一种情况下，如果命令或确认数据包丢失，都会有问题。</em>
+</p>
+<p>Stan：<em class="emph">如果人们真的想添加这样的东西，并首次使其工作，他们应该修改ser-unix.c以向专门设置的存根发送某种带外消息，并在数据包之间进行切换，这样从远程协议的角度来看，实际上什么都没有发生。</em>
+</p>
+</dd>

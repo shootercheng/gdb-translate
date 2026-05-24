@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>编辑（使用GDB调试）</title>
+
+<meta name="description" content="编辑（使用GDB调试）">
+<meta name="keywords" content="编辑（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Search.html" rel="next" title="搜索">
+<link href="Location-Specifications.html" rel="prev" title="位置规范">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="编辑">
+<div class="nav-panel">
+<p>
+下一页：<a href="Search.html" accesskey="n" rel="next">搜索源文件</a>，上一页：<a href="Location-Specifications.html" accesskey="p" rel="prev">位置规范</a>，向上：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="编辑源文件"><span>9.3编辑源文件<a class="copiable-link" href="#编辑源文件"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-编辑源文件"></a>
+
+<a class="index-entry-id" id="索引-编辑"></a>
+<a class="index-entry-id" id="索引-e-（编辑）"></a>
+<p>要编辑源文件中的行，请使用<code class="code">edit</code>命令。
+你选择的编辑程序
+会以程序中的活动行为当前行来调用。
+或者，如果您想查看程序的其他部分，有几种方法可以指定要打印文件的哪一部分：
+</p>
+<dl class="table">
+<dt><code class="code">edit <var class="var">位置规范</var></code></dt>
+<dd><p>编辑解析<code class="code">位置规范</code>后得到的代码位置的源文件。编辑从源文件开始，从<code class="code">位置规范</code>解析到的源文件和行开始。
+有关<var class="var">位置规范</var>参数的所有可能形式，请参阅 <a class="xref" href="位置规范.html">位置规范</a>。
+</p>
+<p>如果<code class="code">位置规范</code>在你的程序中解析为多个源行，那么该命令会打印解析后的源行列表，并且不会继续进行编辑。
+</p>
+<p>以下是最常用的<code class="code">edit</code>命令形式：
+</p>
+<dl class="table">
+<dt><code class="code">edit <var class="var">编号</var></code></dt>
+<dd><p>以<var class="var">编号</var>作为活动行号编辑当前源文件。
+</p>
+</dd>
+<dt><code class="code">edit <var class="var">函数</var></code></dt>
+<dd><p>在其定义开始处编辑包含<var class="var">函数</var> 的文件。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a href="#选择你的编辑器" accesskey="1">选择你的编辑器</a></li>
+</ul>
+<div class="subsection-level-extent" id="选择你的编辑器">
+<h4 class="subsection"><span>9.3.1选择你的编辑器<a class="copiable-link" href="#选择你的编辑器"> &para;</a></span></h4>
+<p>你可以自定义<small class="sc">GDB</small>以使用任何你想要的编辑器 <a class="footnote" id="DOCF10" href="#FOOT10"><sup>10</sup></a>。
+默认情况下，它是<samp class="file">/bin/ex</samp>，但你可以在使用<small class="sc">GDB</small>之前通过设置环境变量<code class="env">EDITOR</code>来更改此设置。例如，要将<small class="sc">GDB</small>配置为使用<code class="code">vi</code>编辑器，你可以在<code class="code">sh</code> shell中使用以下命令：
+</p><div class="example smallexample">
+<pre class="example-preformatted">EDITOR=/usr/bin/vi
+export EDITOR
+gdb ...
+</pre></div>
+<p>或者在<code class="code">csh</code> shell中，
+</p><div class="example smallexample">
+<pre class="example-preformatted">setenv EDITOR /usr/bin/vi
+gdb ...
+</pre></div>
+
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT10" href="#DOCF10">(10)</a></h5>
+<p>唯一的限制是你的编辑器（例如<code class="code">ex</code>）必须识别以下命令行语法：
+</p><div class="example smallexample">
+<pre class="example-preformatted">ex +<var class="var">编号</var> 文件
+</pre></div>
+<p>可选的数值 +<var class="var">编号</var> 指定文件中开始编辑的行号。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Search.html">搜索源文件</a>，上一页：<a href="Location-Specifications.html">位置规范</a>，向上：<a href="Source.html">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+
+
+</html>

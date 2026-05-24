@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>M2类型（使用GDB调试）</title>
+
+<meta name="description" content="M2类型（使用GDB调试）">
+<meta name="keywords" content="M2类型（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">
+<link href="M2-Defaults.html" rel="next" title="M2默认值">
+<link href="M2-Constants.html" rel="prev" title="M2常量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-Types">
+<div class="nav-panel">
+<p>
+下一个：<a href="M2-Defaults.html" accesskey="n" rel="next">Modula-2默认值</a>，上一个：<a href="M2-Constants.html" accesskey="p" rel="prev">常量</a>，向上：<a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr> 
+<h4 class="subsubsection" id="Modula_002d2-Types"><span>15.4.9.4 Modula-2类型<a class="copiable-link" href="#Modula_002d2-Types"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Modula_002d2-types"></a>
+
+<p>目前，GDB可以用Modula-2语法打印以下数据类型：数组类型、记录类型、集合类型、指针类型、过程类型、枚举类型、子界类型和基类型。你也可以打印使用这些类型声明的变量的内容。
+本节给出了一些简单的源代码示例以及GDB会话示例。
+</p>
+<p>第一个示例包含以下代码段：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">VAR
+   s: SET OF CHAR ;
+   r: [20..40] ;
+</pre></div>
+
+<p>你可以请求GDB询问<code>r</code>和<code>s</code>的类型和值。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+{'A'..'C', 'Z'}
+(gdb) ptype s
+SET OF CHAR
+(gdb) print r
+21 
+(gdb) ptype r
+[20..40]
+</pre></div>
+
+<p>同样，如果你的源代码将<code>s</code>声明为： 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">VAR
+   s: SET ['A'..'Z'] ;
+</pre></div>
+
+<p>那么你可以通过以下方式查询<code>s</code>的类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype s
+type = SET ['A'..'Z']
+</pre></div>
+
+<p>请注意，目前你不能使用调试器交互式地操作集合表达式。
+</p>
+<p>以下示例展示了如何在Modula-2中声明一个数组，以及如何与GDB交互以打印其类型和内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">VAR
+   s: ARRAY [-10..10] OF CHAR ;
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype s
+ARRAY [-10..10] OF CHAR
+</pre></div>
+
+<p>请注意，数组处理尚未完成，虽然类型打印正确，但表达式处理仍然假设所有数组的下界为零，而不是像上面示例中的<code>-10</code>。
+</p>
+<p>这里还有一些与Modula-2类型相关的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">TYPE
+   colour = (blue, red, yellow, green) ;
+   t = [blue..yellow] ;
+VAR
+   s: t ;
+BEGIN
+   s := blue ;
+</pre></div>
+
+<p>GDB交互展示了如何查询变量的数据类型和值。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$1 = blue
+(gdb) ptype t
+type = [blue..yellow]
+</pre></div>
+
+<p>在这个示例中，声明了一个Modula-2数组并显示其内容。请注意，内容的写法与它们在C中的对应写法相同。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">VAR
+   s: ARRAY [1..5] OF CARDINAL ;
+BEGIN
+   s[1] := 1 ;
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print s
+$1 = {1, 0, 0, 0, 0}
+(gdb) ptype s
+type = ARRAY [1..5] OF CARDINAL
+</pre></div>
+
+<p>GDB的Modula-2语言接口也理解指针类型，如这个示例所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">VAR
+   s: POINTER TO ARRAY [1..5] OF CARDINAL ;
+BEGIN
+   NEW(s) ;
+   s^[1] := 1 ;
+</pre></div>
+
+<p>你可以请求GDB描述<code>s</code>的类型。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype s
+type = POINTER TO ARRAY [1..5] OF CARDINAL
+</pre></div>
+
+<p>GDB处理复合类型，正如我们在这个示例中看到的。这里我们组合了数组类型、记录类型、指针类型和子界类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">TYPE
+   foo = RECORD
+            f1: CARDINAL ;
+            f2: CHAR ;
+            f3: myarray ;
+         END ;
+
+   myarray = ARRAY myrange OF CARDINAL ;
+   myrange = [-2..2] ;
+VAR
+   s: POINTER TO ARRAY myrange OF foo ;
+</pre></div>
+
+<p>你可以像下面这样请求GDB描述<code>s</code>的类型。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype s
+type = POINTER TO ARRAY [-2..2] OF foo = RECORD
+    f1 : CARDINAL;
+    f2 : CHAR;
+    f3 : ARRAY [-2..2] OF CARDINAL;
+END 
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="M2-Defaults.html">Modula-2默认值</a>，上一个：<a href="M2-Constants.html">常量</a>，向上：<a href="Modula_002d2.html">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

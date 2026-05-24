@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>简介与符号（使用GDB调试）</title>
+
+<meta name="description" content="简介与符号（使用GDB调试）">
+<meta name="keywords" content="简介与符号（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Command-Line-Editing.html" rel="up" title="命令行编辑">
+<link href="Readline-Interaction.html" rel="next" title="Readline交互">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="简介与符号">
+<div class="nav-panel">
+<p>
+下一页：<a href="Readline-Interaction.html" accesskey="n" rel="next">Readline交互</a>，上一级：<a href="Command-Line-Editing.html" accesskey="u" rel="up">命令行编辑</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="行编辑简介"><span>33.1行编辑简介<a class="copiable-link" href="#行编辑简介"> &para;</a></span></h3>
+
+<p>以下段落描述了用于表示按键的符号。
+</p>
+<p>文本<kbd class="kbd">C-k</kbd>读作“Control-K”，表示在按下Control键的同时按下<kbd class="key">k</kbd>键所产生的字符。
+</p>
+<p>文本<kbd class="kbd">M-k</kbd>读作“Meta-K”，表示在按下Meta键（如果你有该键）的同时按下<kbd class="key">k</kbd>键所产生的字符。
+在许多键盘上，Meta键标为<kbd class="key">ALT</kbd>。
+在有两个标为<kbd class="key">ALT</kbd>的键（通常在空格键两侧）的键盘上，左侧的<kbd class="key">ALT</kbd>通常设置为作为Meta键工作。
+右侧的<kbd class="key">ALT</kbd>键也可以配置为作为Meta键工作，或者可以配置为其他修饰键，例如用于输入带重音字符的组合键。
+</p>
+<p>如果你没有Meta键或<kbd class="key">ALT</kbd>键，或者没有其他作为Meta键工作的键，可以通过先键入<kbd class="key">ESC</kbd>，然后键入<kbd class="key">k</kbd>来生成相同的按键操作。
+这两种操作过程都称为对<kbd class="key">k</kbd>键进行<em class="emph">元化</em>。
+</p>
+<p>文本<kbd class="kbd">M-C-k</kbd>读作“Meta-Control-k”，表示对<kbd class="kbd">C-k</kbd>进行<em class="dfn">元化</em>所产生的字符。
+</p>
+<p>此外，几个键有它们自己的名称。具体来说，<kbd class="key">DEL</kbd>、<kbd class="key">ESC</kbd>、<kbd class="key">LFD</kbd>、<kbd class="key">SPC</kbd>、<kbd class="key">RET</kbd>和<kbd class="key">TAB</kbd>在本文档或初始化文件中（见 <a class="pxref" href="Readline-Init-File.html">Readline初始化文件</a>）出现时都代表它们自身。
+如果你的键盘缺少<kbd class="key">LFD</kbd>键，键入<kbd class="key">C-j</kbd>将产生所需的字符。
+<kbd class="key">RET</kbd>键在某些键盘上可能标为<kbd class="key">Return</kbd>或<kbd class="key">Enter</kbd>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Readline-Interaction.html">Readline交互</a>，上一级：<a href="Command-Line-Editing.html">命令行编辑</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

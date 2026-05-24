@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>搜索（使用GDB调试）</title>
+
+<meta name="description" content="搜索（使用GDB调试）">
+<meta name="keywords" content="搜索（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Readline-Interaction.html" rel="up" title="Readline交互">
+<link href="Readline-Arguments.html" rel="prev" title="Readline参数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="搜索">
+<div class="nav-panel">
+<p>
+上一个：<a href="Readline-Arguments.html" accesskey="p" rel="prev">Readline参数</a>，向上：<a href="Readline-Interaction.html" accesskey="u" rel="up">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="在历史记录中搜索命令"><span>3<a class="copiable-link" href="#在历史记录中搜索命令"> &para;</a></span></h4>
+
+<p>Readline提供了用于在命令历史记录中搜索包含指定字符串的行的命令。
+有两种搜索模式：<em class="dfn">增量式</em>和<em class="dfn">非增量式</em>。</p>
+<p>增量式搜索在用户完成输入搜索字符串之前就开始。
+在输入搜索字符串的每个字符时，Readline会显示历史记录中与到目前为止输入的字符串匹配的下一个条目。
+增量式搜索只需要输入找到所需历史记录条目所需的字符数。
+要在历史记录中向后搜索特定字符串，请键入<kbd class="kbd">C-r</kbd>。键入<kbd class="kbd">C-s</kbd>会在历史记录中向前搜索。
+<code class="code">isearch - terminators</code>变量值中存在的字符用于终止增量式搜索。
+如果该变量尚未赋值，则<kbd class="key">ESC</kbd>和<kbd class="kbd">C-J</kbd>字符将终止增量式搜索。
+<kbd class="kbd">C-g</kbd>将中止增量式搜索并恢复原始行。
+当搜索终止时，包含搜索字符串的历史记录条目将成为当前行。</p>
+<p>要在历史记录列表中找到其他匹配条目，请根据需要键入<kbd class="kbd">C-r</kbd>或<kbd class="kbd">C-s</kbd>。
+这将在历史记录中向后或向前搜索与到目前为止输入搜索字符串匹配的下一个条目。
+任何其他绑定到Readline命令的键序列将终止搜索并执行该命令。
+例如，<kbd class="key">RET</kbd>将终止搜索并接受该行，从而执行历史记录列表中的命令。
+一个移动命令将终止搜索，使找到的最后一行成为当前行，并开始编辑。</p>
+<p>Readline会记住最后一个增量式搜索字符串。如果在没有任何定义新搜索字符串的中间字符的情况下键入两个<kbd class="kbd">C-r</kbd>，则会使用任何记住的搜索字符串。</p>
+<p>非增量式搜索在开始搜索匹配的历史记录行之前读取整个搜索字符串。搜索字符串可以由用户键入，也可以是当前行内容的一部分。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Readline-Arguments.html">Readline参数</a>，向上：<a href="Readline-Interaction.html">Readline交互</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

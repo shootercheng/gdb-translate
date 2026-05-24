@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>信号（使用GDB调试）</title>
+
+<meta name="description" content="信号（使用GDB调试）">
+<meta name="keywords" content="信号（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Altering.html" rel="up" title="改变">
+<link href="Returning.html" rel="next" title="返回">
+<link href="Jumping.html" rel="prev" title="跳转">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="信号">
+<div class="nav-panel">
+<p>
+下一个：<a href="Returning.html" accesskey="n" rel="next">从函数返回</a>，上一个：<a href="Jumping.html" accesskey="p" rel="prev">在不同地址继续</a>，向上：<a href="Altering.html" accesskey="u" rel="up">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="向你的程序发送信号"><span>17.3向你的程序发送信号<a class="copiable-link" href="#向你的程序发送信号"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-向程序发送信号"></a>
+
+<dl class="table">
+<dt><a id="索引-signal"><span><code class="code">signal <var class="var">信号</var></code><a class="copiable-link" href="#索引-signal"> &para;</a></span></dt>
+<dd><p>在你的程序停止的地方恢复执行，但立即给它发送<var class="var">信号</var>。<var class="var">信号</var>可以是信号的名称或编号。例如，在许多系统上，<code class="code">signal 2</code>和<code class="code">signal SIGINT</code>都是发送中断信号的方式。
+</p>
+<p>或者，如果<var class="var">信号</var>为零，则继续执行而不发送信号。当你的程序因信号而停止，并且通常在使用<code class="code">continue</code>命令恢复执行时会收到该信号时，这很有用；‘<samp class="samp">signal 0</samp>’会使它在不发送信号的情况下恢复执行。
+</p>
+<p><em class="emph">注意：</em>在恢复多线程程序时，<var class="var">信号</var>会发送到当前选定的线程，而不是最后报告停止的线程。这包括线程因信号而停止的情况。因此，如果要在抑制停止线程的信号的情况下继续执行，应该在发出‘<samp class="samp">signal 0</samp>’命令之前选择同一个线程。如果你以另一个线程作为选定线程发出‘<samp class="samp">signal 
+0</samp>’命令，GDB会检测到并要求确认。
+</p>
+<p>调用<code class="code">signal</code>命令与从 shell 调用<code class="code">kill</code>实用程序不同。使用<code class="code">kill</code>发送信号会使GDB根据信号处理表决定如何处理该信号（见 <a class="pxref" href="Signals.html">信号</a>）。<code class="code">signal</code>命令会将信号直接传递给你的程序。
+</p>
+<p>执行命令后，当你再次按下<kbd class="key">RET</kbd>时，<code class="code">signal</code>不会重复。
+</p>
+</dd>
+<dt><a id="索引-queue_002dsignal"><span><code class="code">queue-signal <var class="var">信号</var></code><a class="copiable-link" href="#索引-queue_002dsignal"> &para;</a></span></dt>
+<dd><p>将<var class="var">信号</var>排队，以便在当前线程恢复执行时立即发送给它。<var class="var">信号</var>可以是信号的名称或编号。例如，在许多系统上，<code class="code">signal 2</code>和<code class="code">signal SIGINT</code>都是发送中断信号的方式。
+信号的处理必须设置为将信号传递给程序，否则GDB会报告错误。
+你可以使用<code class="code">handle</code>命令从GDB控制信号的处理（见 <a class="pxref" href="Signals.html">信号</a>）。
+</p>
+<p>或者，如果<var class="var">信号</var>为零，则丢弃当前线程当前排队的任何信号，并且在恢复执行时不会发送任何信号。当你的程序因信号而停止，并且通常在使用<code class="code">continue</code>命令恢复执行时会收到该信号时，这很有用。
+</p>
+<p>此命令与<code class="code">signal</code>命令的不同之处在于，信号只是被排队，执行不会恢复。并且<code class="code">queue-signal</code>不能用于传递其处理状态已设置为<code class="code">nopass</code>的信号（见 <a class="pxref" href="Signals.html">信号</a>）。
+</p></dd>
+</dl>
+
+<p>有关当线程有信号排队时步进命令的行为，请参阅 <a class="xref" href="Signals.html#stepping-into-signal-handlers">进入信号处理程序</a>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Returning.html">从函数返回</a>，上一个：<a href="Jumping.html">在不同地址继续</a>，向上：<a href="Altering.html">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

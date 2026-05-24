@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) FSF的封底文字为：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>补丁（使用GDB调试）</title>
+
+<meta name="description" content="补丁（使用GDB调试）">
+<meta name="keywords" content="补丁（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Altering.html" rel="up" title="修改">
+<link href="Compiling-and-Injecting-Code.html" rel="next" title="编译和注入代码">
+<link href="Calling.html" rel="prev" title="调用">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="补丁">
+<div class="nav-panel">
+<p>
+下一页：<a href="Compiling-and-Injecting-Code.html" accesskey="n" rel="next">在GDB中编译和注入代码</a>，上一页：<a href="Calling.html" accesskey="p" rel="prev">调用程序函数</a>，向上：<a href="Altering.html" accesskey="u" rel="up">修改执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="补丁程序"><span>17.6 补丁程序<a class="copiable-link" href="#补丁程序"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-修补二进制文件"></a>
+<a class="index-entry-id" id="索引-写入可执行文件"></a>
+<a class="index-entry-id" id="索引-写入核心文件"></a>
+
+<p>默认情况下，GDB以只读方式打开包含程序可执行代码的文件（或核心文件）。这可防止意外更改机器代码；但它也阻止你有意修补程序的二进制文件。
+</p>
+<p>如果你希望能够修补二进制文件，可以使用<code class="code">set write</code>命令明确指定。例如，你可能想要启用内部调试标志，甚至进行紧急修复。
+</p>
+<dl class="table">
+<dt><a id="索引-set-write"></a><span><code class="code">set write on</code><a class="copiable-link" href="#索引-set-write"> &para;</a></span></dt>
+<dt><code class="code">set write off</code></dt>
+<dd><p>如果你指定‘<samp class="samp">set write on</samp>’，GDB会以读写方式打开可执行文件和核心文件；如果你指定<kbd class="kbd">set write off</kbd>（默认设置），GDB会以只读方式打开它们。
+</p>
+<p>如果你已经加载了一个文件，在更改<code class="code">set write</code>后，必须再次加载它（使用<code class="code">exec-file</code>或<code class="code">core-file</code>命令），以便新设置生效。
+</p>
+</dd>
+<dt><a id="索引-show-write"></a><span><code class="code">show write</code><a class="copiable-link" href="#索引-show-write"> &para;</a></span></dt>
+<dd><p>显示可执行文件和核心文件是否以读写方式打开。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>进程信息（使用GDB调试）</title>
+
+<meta name="description" content="进程信息（使用GDB调试）">
+<meta name="keywords" content="进程信息（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Native.html" rel="up" title="本地">
+<link href="DJGPP-Native.html" rel="next" title="DJGPP本地">
+<link href="BSD-libkvm-Interface.html" rel="prev" title="BSD libkvm接口">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}  
+div.example {margin-left: 3.2em}  
+kbd.kbd {font-style: oblique}  
+span:hover a.copiable-link {visibility: visible}  
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="进程信息">
+<div class="nav-panel">
+<p>
+下一页：<a href="DJGPP-Native.html" accesskey="n" rel="next">调试<small class="sc">DJGPP</small>程序的功能</a>，上一页：<a href="BSD-libkvm-Interface.html" accesskey="p" rel="prev">BSD libkvm接口</a> , 向上：<a href="Native.html" accesskey="u" rel="up">本地</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="进程信息-1"><span>2<span class="ordinal">1</span>.1.2进程信息<a class="copiable-link" href="#进程信息-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-_002fproc"></a>
+<a class="index-entry-id" id="index-检查进程映像"></a>
+<a class="index-entry-id" id="index-通过_002fproc获取进程信息"></a>
+
+<p>一些操作系统提供接口，用于获取有关正在运行的进程的额外信息，这些信息超出了内存和每个线程的寄存器状态。如果为具有受支持接口的操作系统配置了<small class="sc">GDB</small>，则可以使用<code class="code">info proc</code>命令来报告有关运行您的程序的进程或系统上正在运行的任何进程的信息 
+</p>
+<p>一个受支持的接口是一个名为“<samp class="samp">/proc</samp>”的工具，可用于使用文件系统子例程检查正在运行的进程的映像。<small class="sc">GNU</small>/Linux和Solaris系统支持此工具。
+</p>
+<p>在FreeBSD和NetBSD系统上，使用系统控制节点来查询进程信息。
+</p>
+<p>此外，一些系统可能会在核心文件中提供额外的进程信息。请注意，核心文件可能只包含活动进程可用信息的一个子集。目前，<small class="sc">GNU</small>/Linux和FreeBSD系统上创建的核心文件中可以获取进程信息。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-进程ID"></a>
+<a id="index-info-proc"></a><span><code class="code">info proc</code><a class="copiable-link" href="#index-info-proc"> &para;</a></span></dt>
+<dt><code class="code">info proc <var class="var">进程ID</var></code></dt>
+<dd><p>总结有关进程的可用信息。如果<var class="var">进程ID</var>指定了一个进程ID，则显示有关该进程的信息；否则，显示有关正在调试程序的信息。总结内容包括调试的进程ID、用于调用它的命令行、其当前工作目录以及其可执行文件的绝对文件名。
+</p>
+<p>在某些系统上，<var class="var">进程ID</var>的形式可以是“<samp class="samp">[<var class="var">pid</var>]/<var class="var">tid</var></samp>”，它指定了进程中的某个线程ID。如果缺少可选的<var class="var">pid</var>部分，则表示来自正在调试的进程的一个线程（仍然需要有前导的“<samp class="samp">/</samp>”，否则<small class="sc">GDB</small>将把这个数字解释为进程ID而不是线程ID）。
+</p>
+</dd>
+<dt><a id="index-info-proc-cmdline"></a><span><code class="code">info proc cmdline</code><a class="copiable-link" href="#index-info-proc-cmdline"> &para;</a></span></dt>
+<dd><p>显示进程的原始命令行。此命令在<small class="sc">GNU</small>/Linux、FreeBSD和NetBSD上受支持。
+</p>
+</dd>
+<dt><a id="index-info-proc-cwd"></a><span><code class="code">info proc cwd</code><a class="copiable-link" href="#index-info-proc-cwd"> &para;</a></span></dt>
+<dd><p>显示进程的当前工作目录。此命令在<small class="sc">GNU</small>/Linux、FreeBSD和NetBSD上受支持。
+</p>
+</dd>
+<dt><a id="index-info-proc-exe"></a><span><code class="code">info proc exe</code><a class="copiable-link" href="#index-info-proc-exe"> &para;</a></span></dt>
+<dd><p>显示进程的可执行文件名。此命令在<small class="sc">GNU</small>/Linux、FreeBSD和NetBSD上受支持。
+</p>
+</dd>
+<dt><a id="index-info-proc-files"></a><span><code class="code">info proc files</code><a class="copiable-link" href="#index-info-proc-files"> &para;</a></span></dt>
+<dd><p>显示进程打开的文件描述符。对于每个打开的文件描述符，<small class="sc">GDB</small>会显示其编号、类型（文件、目录、字符设备、套接字）、文件指针偏移量以及描述符上打开的资源名称。资源名称可以是文件名（对于文件、目录和设备），也可以是套接字地址后面跟的协议（对于网络连接）。此命令在FreeBSD上受支持。
+</p>
+<p>这个例子展示了一个使用tty作为标准输入和输出以及两个网络套接字的进程的打开文件描述符：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info proc files 22<span class="ordinal">1</span>3<span class="ordinal">6</span>
+进程22<span class="ordinal">1</span>3<span class="ordinal">6</span>
+打开的文件：
+
+      FD   类型     偏移   标志   名称
+    text   文件          - r-------- /usr/bin/ssh
+    ctty    字符设备       - rw------- /dev/pts/20
+     cwd    目录          - r-------- /usr/home/john
+    root    目录          - r-------- /
+       0    字符设备  0x32933a4 rw------- /dev/pts/20
+       <span class="ordinal">1</span>    字符设备  0x32933a4 rw------- /dev/pts/20
+       <span class="ordinal">2</span>    字符设备   0x32933a4 rw------- /dev/pts/20
+       <span class="ordinal">3</span>  套接字        0x0 rw----n-- tcp4 10.0.1.2:53014 -&gt; 10.0.1.10:22
+       <span class="ordinal">4</span>  套接字        0x0 rw-------  Unix流:/tmp/ssh-FIt89oAzOn5f/agent. <span class="ordinal">2456</span>
+</pre></div>
+
+</dd>
+<dt><a id="index-内存地址空间映射"></a><span><code class="code">info proc mappings</code><a class="copiable-link" href="#index-内存地址空间映射"> &para;</a></span></dt>
+<dd><p>报告进程中可访问的内存地址空间范围。在Solaris、FreeBSD和NetBSD系统上，每个内存范围包括进程对每个范围是否具有读、写或执行访问权限的信息。在<small class="sc">GNU</small>/Linux、FreeBSD和NetBSD系统上，每个内存范围包括映射到该范围的目标文件。
+</p>
+</dd>
+<dt><a id="index-进程详细状态信息"></a><span><code class="code">info proc stat</code><a class="copiable-link" href="#index-进程详细状态信息"> &para;</a></span></dt>
+<dt><code class="code">info proc status</code></dt>
+<dd><p>显示与进程相关的其他信息，包括用户ID和组ID；虚拟内存使用情况；挂起、阻塞和忽略的信号；其TTY；其系统和用户时间消耗；其堆栈大小；其“<samp class="samp">nice</samp>”值等。这些命令在<small class="sc">GNU</small>/Linux、FreeBSD和NetBSD上受支持。
+</p>
+<p>对于<small class="sc">GNU</small>/Linux系统，请参阅“<samp class="samp">proc</samp>”手册页以获取更多信息（从你的 shell 提示符输入 <kbd class="kbd">man 5 proc</kbd>）。
+</p>
+<p>对于FreeBSD和NetBSD系统，<code class="code">info proc stat</code>是<code class="code">info proc status</code> 的别名。
+</p>
+</dd>
+<dt><code class="code">info proc all</code></dt>
+<dd><p>显示上述所有<code class="code">info proc</code>子命令所描述的进程的所有信息。
+</p>
+
+</dd>
+<dt><a class="index-entry-id" id="index-procfs-API调用"></a>
+<a id="index-set-procfs_002dtrace"></a><span><code class="code">set procfs-trace</code><a class="copiable-link" href="#index-set-procfs_002dtrace"> &para;</a></span></dt>
+<dd><p>此命令启用和禁用对<code class="code">procfs</code> API调用的跟踪。
+</p>
+</dd>
+<dt><a id="index-show-procfs_002dtrace"></a><span><code class="code">show procfs-trace</code><a class="copiable-link" href="#index-show-procfs_002dtrace"> &para;</a></span></dt>
+<dd><p>显示<code class="code">procfs</code> API调用跟踪的当前状态。
+</p>
+</dd>
+<dt><a id="index-set-procfs_002dfile"></a><span><code class="code">set procfs-file <var class="var">文件</var></code><a class="copiable-link" href="#index-set-procfs_002dfile"> &para;</a></span></dt>
+<dd><p>告诉<small class="sc">GDB</small>将<code class="code">procfs</code> API跟踪写入指定的<var class="var">文件</var>。<small class="sc">GDB</small>将跟踪信息追加到文件的先前内容之后。默认是在标准输出上显示跟踪信息。
+</p>
+</dd>
+<dt><a id="index-show-procfs_002dfile"></a><span><code class="code">show procfs-file</code><a class="copiable-link" href="#index-show-procfs_002dfile"> &para;</a></span></dt>
+<dd><p>显示写入<code class="code">procfs</code> API跟踪的文件。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-proc_002dtrace_002dexit"></a>
+<a class="index-entry-id" id="index-proc_002duntrace_002dentry"></a>
+<a class="index-entry-id" id="index-proc_002duntrace_002dexit"></a>
+<a id="index-proc_002dtrace_002dentry"></a><span><code class="code">proc-trace-entry</code><a class="copiable-link" href="#index-proc_002dtrace_002dentry"> &para;</a></span></dt>
+<dt><code class="code">proc-trace-exit</code></dt>
+<dt><code class="code">proc-untrace-entry</code></dt>
+<dt><code class="code">proc-untrace-exit</code></dt>
+<dd><p>这些命令启用和禁用对进入和离开<code class="code">syscall</code>接口的跟踪。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="DJGPP-Native.html">调试<small class="sc">DJGPP</small>程序的功能</a>，上一页：<a href="BSD-libkvm-Interface.html">BSD libkvm接口</a> , 向上：<a href="Native.html">本地</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

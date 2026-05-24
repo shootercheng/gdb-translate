@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Alpha Features (Debugging with GDB)</title>
+
+<meta name="description" content="Alpha Features (Debugging with GDB)">
+<meta name="keywords" content="Alpha Features (Debugging with GDB)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features">
+<link href="ARC-Features.html" rel="next" title="ARC Features">
+<link href="AArch64-Features.html" rel="prev" title="AArch64 Features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Alpha-Features">
+<div class="nav-panel">
+<p>
+Next: <a href="ARC-Features.html" accesskey="n" rel="next">ARC Features</a>, Previous: <a href="AArch64-Features.html" accesskey="p" rel="prev">AArch64 Features</a>, Up: <a href="Standard-Target-Features.html" accesskey="u" rel="up">Standard Target Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Alpha-Features-1"><span>G.5.2 Alpha Features<a class="copiable-link" href="#Alpha-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-Alpha-Features"></a>
+
+<p>The &lsquo;<samp class="samp">org.gnu.gdb.alpha.core</samp>&rsquo; feature is required for Alpha targets.  It
+must contain the following 64-bit registers; note that <small class="sc">GDB</small> uses the
+software names for Alpha registers:
+</p>
+<ul class="itemize mark-minus">
+<li>&lsquo;<samp class="samp">v0</samp>&rsquo;: function return value
+</li><li>&lsquo;<samp class="samp">t0</samp>&rsquo; through &lsquo;<samp class="samp">t12</samp>&rsquo;: temporary registers
+</li><li>&lsquo;<samp class="samp">s0</samp>&rsquo; through &lsquo;<samp class="samp">s5</samp>&rsquo;: saved registers
+</li><li>&lsquo;<samp class="samp">fp</samp>&rsquo;: frame pointer
+</li><li>&lsquo;<samp class="samp">a0</samp>&rsquo; through &lsquo;<samp class="samp">a5</samp>&rsquo;: argument registers
+</li><li>&lsquo;<samp class="samp">ra</samp>&rsquo;: return address
+</li><li>&lsquo;<samp class="samp">at</samp>&rsquo;: assembler temporary register
+</li><li>&lsquo;<samp class="samp">gp</samp>&rsquo;: global pointer
+</li><li>&lsquo;<samp class="samp">sp</samp>&rsquo;: stack pointer
+</li><li>&lsquo;<samp class="samp">zero</samp>&rsquo;: always zero
+</li><li>&lsquo;<samp class="samp">f0</samp>&rsquo; through &lsquo;<samp class="samp">f30</samp>&rsquo;: floating-point registers
+</li><li>&lsquo;<samp class="samp">fpcr</samp>&rsquo;: floating-point control register
+</li><li>&lsquo;<samp class="samp">pc</samp>&rsquo;: program counter
+</li><li>&lsquo;<samp class="samp"></samp>&rsquo;: an anonymous register for historical purpose
+</li><li>&lsquo;<samp class="samp">unique</samp>&rsquo;: PALcode memory slot
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

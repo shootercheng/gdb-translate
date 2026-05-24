@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>核心文件生成（使用GDB调试）</title>
+
+<meta name="description" content="核心文件生成（使用GDB调试）">
+<meta name="keywords" content="核心文件生成（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Character-Sets.html" rel="next" title="字符集">
+<link href="Dump_002fRestore-Files.html" rel="prev" title="转储/恢复文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="核心文件生成">
+<div class="nav-panel">
+<p>
+下一页：<a href="Character-Sets.html" accesskey="n" rel="next">字符集</a>，上一页：<a href="Dump_002fRestore-Files.html" accesskey="p" rel="prev">内存与文件之间的复制</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="如何从你的程序生成核心文件"><span>10.20如何从你的程序生成核心文件<a class="copiable-link" href="#如何从你的程序生成核心文件"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-从子进程转储核心"></a>
+
+<p>一个<em class="dfn">核心文件</em>或<em class="dfn">核心转储</em>是一个记录正在运行的进程的内存映像及其进程状态（寄存器值等）的文件。它的主要用途是对在调试器外部运行时崩溃的程序进行事后调试。一个崩溃的程序会自动生成一个核心文件，除非该功能被用户禁用。有关在事后调试模式下调用<small class="sc">GDB</small>的信息，请参阅 <a class="xref" href="Files.html">指定文件的命令</a>。
+</p>
+<p>偶尔，你可能希望生成正在调试的程序的核心文件，以便保存其状态的快照。<small class="sc">GDB</small>有一个专门的命令用于此目的。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-generate_002dcore_002dfile"></a>
+<a id="index-gcore"></a><span><code class="code">generate-core-file [<var class="var">文件</var>]</code><a class="copiable-link" href="#index-gcore"> &para;</a></span></dt>
+<dt><code class="code">gcore [<var class="var">文件</var>]</code></dt>
+<dd><p>生成子进程的核心转储。可选参数<var class="var">文件</var>指定放置核心转储的文件名。如果未指定，文件名默认为<samp class="file">core.<var class="var">pid</var></samp>，其中<var class="var">pid</var>是子进程ID。
+</p>
+<p>如果写入核心文件的文件系统支持，<small class="sc">GDB</small>会生成一个稀疏核心转储文件。
+</p>
+<p>请注意，此命令仅在某些系统上实现（截至本文撰写时，<small class="sc">GNU</small>/Linux、FreeBSD、Solaris和S390）。
+</p>
+<p>在<small class="sc">GNU</small>/Linux上，此命令在生成核心转储时可以考虑文件<samp class="file">/proc/<var class="var">pid</var>/coredump_filter</samp>的值（请参阅 <a class="pxref" href="#set-use_002dcoredump_002dfilter">设置使用核心转储过滤器</a>），并且默认情况下会尊重文件 <samp class="file">/proc/<var class="var">pid</var>/smaps</samp> 中存在的映射的 <code class="code">VM_DONTDUMP</code> 标志（请参阅 <a class="pxref" href="#set-dump_002dexcluded_002dmappings">设置转储排除的映射</a>）。
+</p>
+<a class="index-entry-id" id="index-set-use_002dcoredump_002dfilter"></a>
+<a class="anchor" id="set-use_002dcoredump_002dfilter"></a></dd>
+<dt><code class="code">设置使用核心转储过滤器开启</code></dt>
+<dt><code class="code">设置使用核心转储过滤器关闭</code></dt>
+<dd><p>在生成核心转储文件时启用或禁用对文件<samp class="file">/proc/<var class="var">pid</var>/coredump_filter</samp>的使用。Linux内核使用此文件来决定在生成核心转储文件时哪些类型的内存映射将被转储或忽略。<var class="var">pid</var>是当前正在运行的进程的进程ID。
+</p>
+<p>要使用此功能，你必须在<samp class="file">/proc/<var class="var">pid</var>/coredump_filter</samp>文件中写入一个十六进制值，该值是一个表示内存映射类型的位掩码。如果位掩码中的一位被设置，则相应类型的内存映射将被转储；否则，它们将被忽略。此配置由子进程继承。有关可以在<samp class="file">/proc/<var class="var">pid</var>/coredump_filter</samp>文件中设置的位的更多信息，请参考 <code class="code">core(5)</code> 的手册页。
+</p>
+<p>默认情况下，此选项为<code class="code">开启</code>。如果此选项被设置为<code class="code">关闭</code>，<small class="sc">GDB</small>不会读取<samp class="file">coredump_filter</samp>文件，而是使用与Linux内核相同的默认值来决定哪些页面将被转储到核心转储文件中。此值当前为<code class="code">0x33</code>，这意味着位<code class="code">0</code>（匿名私有映射）、<code class="code">1</code>（匿名共享映射）、<code class="code">4</code>（ELF头）和<code class="code">5</code>（私有大页面）是活动的。这将导致这些内存映射被自动转储。
+</p>
+<a class="index-entry-id" id="index-set-dump_002dexcluded_002dmappings"></a>
+<a class="anchor" id="set-dump_已排除_002dmappings"></a></dd>
+<dt><code class="code">设置转储排除的映射开启</code></dt>
+<dt><code class="code">设置转储排除的映射关闭</code></dt>
+<dd><p>如果指定为<code class="code">开启</code>，<small class="sc">GDB</small>将转储标记有<code class="code">VM_DONTDUMP</code>标志的内存映射。此标志在文件<samp class="file">/proc/<var class="var">pid</var>/smaps</samp>中表示为缩写<code class="code">dd</code>。
+</p>
+<p>默认值为<code class="code">关闭</code>。
+</p></dd>
+</dl>
+
+</div>

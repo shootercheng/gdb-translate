@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。" -->
+<title>unlink（使用GDB调试）</title>
+
+<meta name="description" content="unlink（使用GDB调试）">
+<meta name="keywords" content="unlink（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">  
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="List-of-Supported-Calls.html" rel="up" title="支持的调用列表">
+<link href="stat_002ffstat.html" rel="next" title="stat/fstat">
+<link href="rename.html" rel="prev" title="rename">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}  
+div.example {margin-left: 3.2em}  
+span:hover a.copiable-link {visibility: visible}  
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="unlink">
+<div class="nav-panel">
+<p>
+下一个：<a href="stat_002ffstat.html" accesskey="n" rel="next">stat/fstat</a>，上一个：<a href="rename.html" accesskey="p" rel="prev">rename</a>，向上：<a href="List-of-Supported-Calls.html" accesskey="u" rel="up">支持的调用列表</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="unlink-1"><span>unlink<a class="copiable-link" href="#unlink-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-unlink_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>概要：</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int unlink(const char *pathname);
+</pre></div>
+
+</dd>
+<dt>请求：</dt>
+<dd><p>&lsquo;<samp class="samp">Funlink,<var class="var">pathnameptr</var>/<var class="var">len</var></samp>&rsquo;
+</p>
+</dd>
+<dt>返回值：</dt>
+<dd><p>成功时，返回零。出错时，返回 -1。
+</p>
+</dd>
+<dt>错误：</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EACCES</code></dt>
+<dd><p>没有对文件或文件路径的访问权限。
+</p>
+</dd>
+<dt><code class="code">EPERM</code></dt>  
+<dd><p>系统不允许删除目录。
+</p>
+</dd>
+<dt><code class="code">EBUSY</code></dt>  
+<dd><p>文件<var class="var">pathname</var>不能被删除，因为它正被另一个进程使用。
+</p>
+</dd>
+<dt><code class="code">EFAULT</code></dt>  
+<dd><p><var class="var">pathnameptr</var>是一个无效的指针值。
+</p>
+</dd>
+<dt><code class="code">ENAMETOOLONG</code></dt>  
+<dd><p><var class="var">pathname</var>太长。
+</p>
+</dd>
+<dt><code class="code">ENOENT</code></dt>  
+<dd><p><var class="var">pathname</var>中的一个目录组件不存在。
+</p>
+</dd>
+<dt><code class="code">ENOTDIR</code></dt>  
+<dd><p>路径的一个组件不是目录。
+</p>
+</dd>
+<dt><code class="code">EROFS</code></dt>  
+<dd><p>文件在只读文件系统上。
+</p>  
+</dd>
+<dt><code class="code">EINTR</code></dt>  
+<dd><p>调用被用户中断。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的惰性字符串（使用GDB调试）</title>
+
+<meta name="description" content="Python中的惰性字符串（使用GDB调试）">
+<meta name="keywords" content="Python中的惰性字符串（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Colors-In-Python.html" rel="next" title="Python中的颜色">
+<link href="Finish-Breakpoints-in-Python.html" rel="prev" title="Python中的完成断点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的惰性字符串">
+<div class="nav-panel">
+<p>
+下一页：<a href="Colors-In-Python.html" accesskey="n" rel="next">Python中颜色的表示</a>，上一页：<a href="Finish-Breakpoints-in-Python.html" accesskey="p" rel="prev">完成断点</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python中惰性字符串的表示"><span>23.3.2.35 Python中惰性字符串的表示<a class="copiable-link" href="#Python中惰性字符串的表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Python中的惰性字符串"></a>
+<a class="index-entry-id" id="index-gdb_002eLazyString"></a>
+
+<p>惰性字符串是一种字符串，其内容在需要之前不会被检索或编码。
+</p>
+<p>在GDB中，<code class="code">gdb.LazyString</code>表示为一个指向内存区域的<code class="code">地址</code>、一个将用于编码该内存区域的<code class="code">编码</code>以及一个用于界定表示字符串的内存区域的<code class="code">长度</code>。<code class="code">gdb.LazyString</code>与包装在<code class="code">gdb.Value</code>中的字符串之间的区别在于，<code class="code">gdb.LazyString</code>仅在打印期间才会被检索和编码，而包装字符串的<code class="code">gdb.Value</code>在创建时会立即被检索和编码。
+</p>
+<p>可以使用<code class="code">gdb.Value.lazy_string</code>方法创建<code class="code">gdb.LazyString</code>（见 <a class="pxref" href="Values-From-Inferior.html">来自下级的值</a>）。
+</p>
+<p><code class="code">gdb.LazyString</code>对象具有以下函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LazyString_002evalue"><span class="category-def">函数： </span><span><strong class="def-name">LazyString.value</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-LazyString_002evalue"> &para;</a></span></dt>
+<dd><p>将<code class="code">gdb.LazyString</code>转换为<code class="code">gdb.Value</code>。 此值将指向内存中的字符串，但会失去GDB应用于<code class="code">gdb.LazyString</code>的所有延迟检索、编码和处理。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LazyString_002eaddress"><span class="category-def">变量： </span><span><strong class="def-name">LazyString.address</strong><a class="copiable-link" href="#index-LazyString_002eaddress"> &para;</a></span></dt>
+<dd><p>此属性保存字符串的地址。 此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LazyString_002elength"><span class="category-def">变量： </span><span><strong class="def-name">LazyString.length</strong><a class="copiable-link" href="#index-LazyString_002elength"> &para;</a></span></dt>
+<dd><p>此属性保存字符串的字符长度。 如果长度为-1，则字符串将被获取并编码，直到遇到适当宽度的第一个空字符。 此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LazyString_002eencoding"><span class="category-def">变量： </span><span><strong class="def-name">LazyString.encoding</strong><a class="copiable-link" href="#index-LazyString_002eencoding"> &para;</a></span></dt>
+<dd><p>此属性保存当GDB打印字符串时将应用于该字符串的编码。 如果未设置编码，或包含空字符串，则GDB将在打印字符串时选择最合适的编码。 此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LazyString_002etype"><span class="category-def">变量： </span><span><strong class="def-name">LazyString.type</strong><a class="copiable-link" href="#index-LazyString_002etype"> &para;</a></span></dt>
+<dd><p>此属性保存由惰性字符串的类型表示的类型。 对于惰性字符串，这是一个指针或数组类型。 要将其解析为惰性字符串的字符类型，请使用类型的<code class="code">target</code>方法。 见 <a class="xref" href="Types-In-Python.html">Python中的类型</a>。 此属性不可写。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Colors-In-Python.html">Python中颜色的表示</a>，上一页：<a href="Finish-Breakpoints-in-Python.html">完成断点</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>删除命令（使用GDB调试）</title>
+
+<meta name="description" content="删除命令（使用GDB调试）">
+<meta name="keywords" content="删除命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定Readline命令">
+<link href="Numeric-Arguments.html" rel="next" title="数值参数">
+<link href="Commands-For-Text.html" rel="prev" title="文本命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="删除命令"> 
+<div class="nav-panel">
+<p>
+下一个：<a href="Numeric-Arguments.html" accesskey="n" rel="next">指定数值参数</a>，上一个：<a href="Commands-For-Text.html" accesskey="p" rel="prev">更改文本的命令</a>，向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="删除和粘贴"><span>33.4.4 删除和粘贴<a class="copiable-link" href="#删除和粘贴"> &para;</a></span></h4>
+
+<dl class="ftable">
+<dt><a id="index-kill_002dline-_0028C_002dk_0029"></a><span><code class="code">kill-line (C-k)</code><a class="copiable-link" href="#index-kill_002dline-_0028C_002dk_0029"> &para;</a></span></dt>
+<dd><p>删除从光标到行尾的文本。
+如果有负的数值参数，则从光标向后删除到当前行的开头。
+</p>
+</dd>
+<dt><a id="index-backward_002dkill_002dline-_0028C_002dx-Rubout_0029"></a><span><code class="code">backward-kill-line (C-x Rubout)</code><a class="copiable-link" href="#index-backward_002dkill_002dline-_0028C_002dx-Rubout_0029"> &para;</a></span></dt>
+<dd><p>从光标向后删除到当前行的开头。
+如果有负的数值参数，则从光标向前删除到当前行的末尾。
+</p>
+</dd>
+<dt><a id="index-unix_002dline_002ddiscard-_0028C_002du_0029"></a><span><code class="code">unix-line-discard (C-u)</code><a class="copiable-link" href="#index-unix_002dline_

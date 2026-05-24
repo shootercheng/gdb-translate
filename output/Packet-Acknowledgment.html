@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>数据包确认（使用GDB调试）</title>
+
+<meta name="description" content="数据包确认（使用GDB调试）">
+<meta name="keywords" content="数据包确认（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Examples.html" rel="next" title="示例">
+<link href="Remote-Non_002dStop.html" rel="prev" title="远程非停止">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="数据包确认">
+<div class="nav-panel">
+<p>
+下一页：<a href="Examples.html" accesskey="n" rel="next">示例</a>，上一页：<a href="Remote-Non_002dStop.html" accesskey="p" rel="prev">对非停止模式的远程协议支持</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="数据包确认-1"><span>E.12数据包确认<a class="copiable-link" href="#数据包确认-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-确认_002c用于-gdb-远程"></a>
+<a class="index-entry-id" id="索引-数据包-确认_002c用于-gdb-远程"></a>
+<p>默认情况下，当主机或目标机器接收到一个数据包时，预期的第一个响应是一个确认：要么是‘<samp class="samp">+</samp>’（表示数据包已正确接收），要么是‘<samp class="samp">-</samp>’（请求重传）。这种机制允许<small class="sc">GDB</small>远程协议在不可靠的传输机制上运行，例如串行线路。
+</p>
+<p>在传输机制本身可靠的情况下（例如管道或TCP连接），‘<samp class="samp">+</samp>’/‘<samp class="samp">-</samp>’确认是多余的。在这种情况下，为了减少通信开销或其他原因，可能希望禁用它们。这可以通过‘<samp class="samp">QStartNoAckMode</samp>’数据包来完成；请参阅 <a class="pxref" href="General-Query-Packets.html#QStartNoAckMode">QStartNoAckMode</a>。
+</p>
+<p>在无确认模式下，存根程序和<small class="sc">GDB</small>都不应发送或期望‘<samp class="samp">+</samp>’/‘<samp class="samp">-</samp>’协议确认。数据包和响应格式仍然包括如 <a class="ref" href="Overview.html">概述</a> 中所述的正常校验和，但接收方可以忽略校验和。
+</p>
+<p>如果存根程序支持‘<samp class="samp">QStartNoAckMode</samp>’并且更喜欢在无确认模式下运行，它应该通过在对‘<samp class="samp">qSupported</samp>’的响应中包含‘<samp class="samp">QStartNoAckMode+</samp>’来向<small class="sc">GDB</small>报告这一点；请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>。
+如果<small class="sc">GDB</small>也支持‘<samp class="samp">QStartNoAckMode</samp>’并且尚未通过‘<code class="code">set remote noack-packet off</code>’命令禁用它（请参阅 <a class="pxref" href="Remote-Configuration.html">远程配置</a>），
+<small class="sc">GDB</small>然后可以向存根程序发送一个‘<samp class="samp">QStartNoAckMode</samp>’数据包。
+只有到那时存根程序才能实际关闭数据包确认。
+<small class="sc">GDB</small>会发送一个对存根程序‘<samp class="samp">OK</samp>’响应的最终‘<samp class="samp">+</samp>’确认，存根程序可以安全地忽略它。
+</p>
+<p>请注意，‘<code class="code">set remote noack-packet</code>’命令仅影响后续连接时<small class="sc">GDB</small>与存根程序之间的协商；
+它不会影响任何当前连接的协议确认状态。
+由于在建立新连接时默认启用‘<samp class="samp">+</samp>’/‘<samp class="samp">-</samp>’确认，
+一旦禁用，也没有协议请求重新启用当前连接的确认。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Examples.html">示例</a>，上一页：<a href="Remote-Non_002dStop.html">对非停止模式的远程协议支持</a>，向上：<a href="Remote-Protocol.html"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

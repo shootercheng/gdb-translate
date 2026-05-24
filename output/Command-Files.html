@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>命令文件（使用GDB调试）</title>
+
+<meta name="description" content="命令文件（使用GDB调试）">
+<meta name="keywords" content="命令文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Sequences.html" rel="up" title="命令序列">
+<link href="Output.html" rel="next" title="输出">
+<link href="Hooks.html" rel="prev" title="钩子">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Command-Files">
+<div class="nav-panel">
+<p>
+下一页：<a href="Output.html" accesskey="n" rel="next">用于控制输出的命令</a>，上一页：<a href="Hooks.html" accesskey="p" rel="prev">用户定义的命令钩子</a>，向上：<a href="Sequences.html" accesskey="u" rel="up">预定义的命令序列</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Command-Files-1"><span>23.1.3命令文件<a class="copiable-link" href="#Command-Files-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-命令文件"></a>
+<a class="index-entry-id" id="index-脚本命令"></a>
+<p>用于GDB的命令文件是一个文本文件，由一行行的GDB命令组成。也可以包含注释（以#开头的行）。命令文件中的空行不执行任何操作；它不像在终端中那样表示重复上一个命令。
+</p>
+<p>你可以使用 <code class="code">source</code> 命令来请求执行命令文件。请注意，<code class="code">source</code> 命令也用于评估不是命令文件的脚本。可以使用 <code class="code">script-extension</code> 设置来配置确切的行为。
+请参阅 <a class="xref" href="Extending-GDB.html">扩展GDB</a>。
+</p>
+<dl class="table"> 
+<dt><a class="index-entry-id" id="index-从文件执行命令"></a>
+<a id="index-source"></a><span><code class="code">source [-s] [-v] <var class="var">文件名</var></code><a class="copiable-link" href="#index-source"> &para;</a></span></dt>
+<dd><p>执行命令文件 <var class="var">文件名</var>。
+</p></dd>
+</dl>
+
+<p>命令文件中的行通常按顺序执行，除非执行顺序被下面描述的某个 <em class="emph">流控制命令</em> 改变。命令执行时不会被打印出来。任何命令中的错误都会终止命令文件的执行，并将控制权返回给控制台。
+</p>
+<p>GDB首先在当前目录中搜索 <var class="var">文件名</var>。如果未在该目录中找到该文件，并且 <var class="var">文件名</var>未指定目录，那么GDB也会在源搜索路径（由 &lsquo;<samp class="samp">directory</samp>&rsquo; 命令指定）中查找该文件；
+但不会搜索 <samp class="file">$cdir</samp>，因为编译目录与脚本无关。
+</p> 
+<p>如果指定了 <code class="code">-s</code>，那么即使 <var class="var">文件名</var> 指定了目录，GDB也会在搜索路径中搜索 <var class="var">文件名</var>。
+搜索是通过将 <var class="var">文件名</var> 附加到搜索路径的每个元素来完成的。例如，如果 <var class="var">文件名</var> 是 <samp class="file">mylib/myscript</samp> 并且搜索路径包含 <samp class="file">/home/user</samp>，那么GDB将查找脚本 <samp class="file">/home/user/mylib/myscript</samp>。
+如果 <var class="var">文件名</var> 是绝对路径，也会进行搜索。例如，如果 <var class="var">文件名</var> 是 <samp class="file">/tmp/myscript</samp> 并且搜索路径包含 <samp class="file">/home/user</samp>，那么GDB将查找脚本 <samp class="file">/home/user/tmp/myscript</samp>。
+对于类似DOS的系统，如果 <var class="var">文件名</var> 包含驱动器规范，在拼接之前会将其去掉。例如，如果 <var class="var">文件名</var> 是 <samp class="file">d:myscript</samp> 并且搜索路径包含 <samp class="file">c:/tmp</samp>，那么GDB将查找脚本 <samp class="file">c:/tmp/myscript</samp>。
+</p>
+<p>如果给定了 <code class="code">-v</code>（用于详细模式），那么GDB会在执行每个命令时显示它。该选项必须在 <var class="var">文件名</var> 之前给出，并在其他任何地方都被解释为文件名的一部分。
+</p>
+<p>在交互式使用时会要求确认的命令，在命令文件中使用时会直接执行而不询问。许多通常会打印消息说明其操作的GDB命令，从命令文件中调用时会省略这些消息。
+</p>
+<p>GDB也接受来自标准输入的命令输入。在这种模式下，正常输出到标准输出，错误输出到标准错误。从标准输入提供的命令文件中的错误不会终止命令文件的执行 —— 执行会继续处理下一个命令。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb &lt; cmds &gt; log 2&gt;&amp;1 
+</pre></div>
+
+<p>（上述语法会根据所使用的 shell 而有所不同。）这个例子将执行文件 <samp class="file">cmds</samp> 中的命令。所有输出和错误都将被定向到 <samp class="file">log</samp>。
+</p>
+<p>由于存储在命令文件中的命令往往比交互式输入的命令更通用，它们经常需要处理复杂的情况，例如变量和符号的不同或意外值、被调试程序构建方式的变化等。GDB提供了一组流控制命令来处理这些复杂性。使用这些命令，你可以编写复杂的脚本，例如遍历数据结构、有条件地执行命令等。
+</p>
+<dl class="table"> 
+<dt><a class="index-entry-id" id="index-else"></a>
+<a id="index-if"></a><span><code class="code">if</code><a class="copiable-link" href="#index-if"> &para;</a></span></dt>
+<dt><code class="code">else</code></dt>
+<dd><p>这个命令允许在你的脚本中包含有条件执行的命令。<code class="code">if</code> 命令接受一个参数，即要求值的表达式。后面跟着一系列只有在表达式为真（其值非零）时才会执行的命令。
+然后可以选择有一个 <code class="code">else</code> 行，后面跟着一系列只有在表达式为假时才会执行 的命令。列表的结尾由包含 <code class="code">end</code 的行标记。
+</p></dd>
+<dt><a id="index-while"></a><span><code class="code">while</code><a class="copiable-link" href="#index-while"> &para;</a></span></dt>
+<dd><p>这个命令允许编写循环。它的语法与 <code class="code">if</code> 类似：该命令接受一个参数，即要求值的表达式，后面必须跟着要执行的命令，每行一个，以 <code class="code">end</code> 结束。这些命令被称为循环的 <em class="dfn">主体</em>。只要表达式求值为真，<code class="code">while</code> 主体中的命令就会被重复执行。
+</p></dd>
+<dt><a id="index-loop_005fbreak"></a><span><code class="code">loop_break</code><a class="copiable-link" href="#index-loop_break"> &para;</a></span></dt>
+<dd><p>这个命令退出包含它的 <code class="code">while</code> 循环。在那个 <code class="code">while</code> 的 <code class="code">end</code> 行之后，脚本的执行继续。
+</p></dd>
+<dt><a id="index-loop_005fcontinue"></a><span><code class="code">loop_continue</code><a class="copiable-link" href="#index-loop_continue"> &para;</a></span></dt>
+<dd><p>这个命令跳过包含它的 <code class="code">while</code> 循环主体中其余命令的执行。执行分支到 <code class="code">while</code> 循环的开头，在那里它会求值控制表达式。
+</p></dd>
+<dt><a id="index-end-_0028if_002felse_002fwhile-命令_0029"></a><span><code class="code">end</code><a class="copiable-link" href="#index-end-_0028if_002felse_002fwhile-命令_0029"> &para;</a></span></dt>
+<dd><p>终止作为 <code class="code">if</code>、<code class="code">else</code> 或 <code class="code">while</code> 流控制命令主体的命令块。
+</p></dd>
+</dl>
+
+
+</div> 
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Output.html">用于控制输出的命令</a>，上一页：<a href="Hooks.html">用户定义的命令钩子</a>，向上：<a href="Sequences.html">预定义的命令序列</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

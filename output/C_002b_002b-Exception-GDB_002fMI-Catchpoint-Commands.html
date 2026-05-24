@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>C++异常GDB/MI捕获点命令（使用GDB调试）</title>
+
+<meta name="description" content="C++异常GDB/MI捕获点命令（使用GDB调试）">
+<meta name="keywords" content="C++异常GDB/MI捕获点命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="up" title="GDB/MI捕获点命令">
+<link href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="prev" title="Ada异常GDB/MI捕获点命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="C_002b_002b-异常-GDB_002fMI-捕获点">
+<div class="nav-panel">
+<p>
+上一个：<a href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" accesskey="p" rel="prev">Ada异常 <small class="sc">GDB/MI</small> 捕获点</a>，向上：<a href="GDB_002fMI-Catchpoint-Commands.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small> 捕获点命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="C_002b_002b-异常-gdb_002fmi-捕获点"><span>27.9.3 C<code class="t">++</code> 异常 <small class="sc">GDB/MI</small> 捕获点<a class="copiable-link" href="#C_002b_002b-异常-gdb_002fmi-捕获点"> &para;</a></span></h4>
+
+<p>以下 <small class="sc">GDB/MI</small> 命令可用于创建捕获点，当C<code class="t">++</code> 异常被抛出、重新抛出或捕获时停止执行。
+</p>
+<a class="index-entry-id" id="index-_00负号-catch_002dthrow"></a>
+<h4 class="subheading" id="The-_00负号-catch_002dthrow-命令"><span>The <code class="code">-catch-throw</code> 命令<a class="copiable-link" href="#The-_00负号-catch_002dthrow-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-18"><span>概要<a class="copiable-link" href="#概要-18"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-throw [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当被调试程序抛出C<code class="t">++</code> 异常时停止。如果给出了 <var class="var">正则表达式</var>，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+
+<p>如果给出了 &lsquo;<samp class="samp">-t</samp>&rsquo;，那么捕获点仅在一次停止时启用，在因该事件停止一次后捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-命令-17"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-命令-17"> &para;</a></span></h4>
+
+<p>相应的 <small class="sc">GDB</small> 命令是 &lsquo;<samp class="samp">catch throw</samp>&rsquo;
+和 &lsquo;<samp class="samp">tcatch throw</samp>&rsquo;（见 <a class="pxref" href="设置捕获点.html">设置捕获点</a>）。
+</p>
+<h4 class="subsubheading" id="示例-17"><span>示例<a class="copiable-link" href="#示例-17"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-throw -r 异常类型
+^done,bkpt={number=&quot;1&quot;,type=&quot;catchpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+  what=&quot;异常抛出&quot;,catch-type=&quot;throw&quot;,
+  thread-groups=[&quot;i1&quot;],
+  regexp=&quot;异常类型&quot;,times=&quot;0&quot;}
+(gdb)
+-exec-run
+^running
+(gdb) 
+~&quot;\n&quot;
+~&quot;捕获点1（异常抛出），0x00007ffff7ae00ed在__cxa_throw () 中，来自 /lib64/libstdc++.so.6\n&quot;
+*stopped,bkptno=&quot;1&quot;,reason=&quot;断点命中&quot;,disp=&quot;keep&quot;,
+  frame={addr=&quot;0x00007ffff7ae00ed&quot;,func=&quot;__cxa_throw&quot;,
+  args=[],from=&quot;/lib64/libstdc++.so.6&quot;,arch=&quot;i386:x86-64&quot;},
+  thread-id=&quot;1&quot;,stopped-threads=&quot;all&quot;,core=&quot;6&quot;
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_00负号-catch_002drethrow"></a>
+<h4 class="subheading" id="The-_00负号-catch_002drethrow-命令"><span>The <code class="code">-catch-rethrow</code> 命令<a class="copiable-link" href="#The-_00负号-catch_002drethrow-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-19"><span>概要<a class="copiable-link" href="#概要-19"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-rethrow [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当C<code class="t">++</code> 异常被重新抛出时停止。如果给出了 <var class="var">正则表达式</var>，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+
+<p>如果给出了 &lsquo;<samp class="samp">-t</samp>&rsquo;，那么捕获点仅在一次停止时启用，在捕获第一个事件后捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-命令-18"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-命令-18"> &para;</a></span></h4>
+
+<p>相应的 <small class="sc">GDB</small> 命令是 &lsquo;<samp class="samp">catch rethrow</samp>&rsquo;
+和 &lsquo;<samp class="samp">tcatch rethrow</samp>&rsquo;（见 <a class="pxref" href="设置捕获点.html">设置捕获点</a>）。
+</p>
+<h4 class="subsubheading" id="示例-18"><span>示例<a class="copiable-link" href="#示例-18"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-rethrow -r 异常类型
+^done,bkpt={number=&quot;1&quot;,type=&quot;catchpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+  what=&quot;异常重新抛出&quot;,catch-type=&quot;rethrow&quot;,
+  thread-groups=[&quot;i1&quot;],
+  regexp=&quot;异常类型&quot;,times=&quot;0&quot;}
+(gdb)
+-exec-run
+^running
+(gdb) 
+~&quot;\n&quot;
+~&quot;捕获点1（异常重新抛出），0x00007ffff7ae00ed在__cxa_rethrow () 中，来自 /lib64/libstdc++.so.6\n&quot;
+*stopped,bkptno=&quot;1&quot;,reason=&quot;断点命中&quot;,disp=&quot;keep&quot;,
+  frame={addr=&quot;0x00007ffff7ae00ed&quot;,func=&quot;__cxa_rethrow&quot;,
+  args=[],from=&quot;/lib64/libstdc++.so.6&quot;,arch=&quot;i386:x86-64&quot;},
+  thread-id=&quot;1&quot;,stopped-threads=&quot;all&quot;,core=&quot;6&quot;
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_00负号-catch_002dcatch"></a>
+<h4 class="subheading" id="The-_00负号-catch_002dcatch-命令"><span>The <code class="code">-catch-catch</code> 命令<a class="copiable-link" href="#The-_00负号-catch_002dcatch-命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-20"><span>概要<a class="copiable-link" href="#概要-20"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-catch [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当被调试程序捕获C<code class="t">++</code> 异常时停止。如果给出了 <var class="var">正则表达式</var>，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+
+<p>如果给出了 &lsquo;<samp class="samp">-t</samp>&rsquo;，那么捕获点仅在一次停止时启用，在捕获第一个事件后捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-命令-19"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-命令-19"> &para;</a></span></h4>
+
+<p>相应的 <small class="sc">GDB</small> 命令是 &lsquo;<samp class="samp">catch catch</samp>&rsquo;
+和 &lsquo;<samp class="samp">tcatch catch</samp>&rsquo;（见 <a class="pxref" href="设置捕获点.html">设置捕获点</a>）。
+</p>
+<h4 class="subsubheading" id="示例-19"><span>示例<a class="copiable-link" href="#示例-19"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-catch -r 异常类型
+^done,bkpt={number=&quot;1&quot;,type=&quot;catchpoint&quot;,disp=&quot;keep&quot;,enabled=&quot;y&quot;,
+  what=&quot;异常捕获&quot;,catch-type=&quot;catch&quot;,
+  thread-groups=[&quot;i1&quot;],
+  regexp=&quot;异常类型&quot;,times=&quot;0&quot;}
+(gdb)
+-exec-run
+^running
+(gdb) 
+~&quot;\n&quot;
+~&quot;捕获点1（异常捕获）, 0x0

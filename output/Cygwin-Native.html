@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Cygwin原生（使用GDB调试）</title>
+
+<meta name="description" content="Cygwin原生（使用GDB调试）">
+<meta name="keywords" content="Cygwin原生（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Native.html" rel="up" title="原生">
+<link href="Hurd-Native.html" rel="next" title="GNU Hurd原生">
+<link href="DJGPP-Native.html" rel="prev" title="DJGPP原生">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Cygwin-Native">
+<div class="nav-panel">
+<p>
+下一页：<a href="Hurd-Native.html" accesskey="n" rel="next">特定于GNU Hurd系统的命令</a>，上一页：<a href="DJGPP-Native.html" accesskey="p" rel="prev">调试DJGPP程序的功能</a>，向上：<a href="Native.html" accesskey="u" rel="up">原生</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Features-for-Debugging-MS-Windows-PE-Executables"><span>21.1.4 调试MS Windows PE可执行文件的功能<a class="copiable-link" href="#Features-for-Debugging-MS-Windows-PE-Executables"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-MS-Windows-debugging"></a>
+<a class="index-entry-id" id="index-native-Cygwin-debugging"></a>
+<a class="index-entry-id" id="index-Cygwin_002dspecific-commands"></a>
+
+<p>GDB支持对MS Windows程序进行原生调试，包括有和没有符号调试信息的DLL。
+</p>
+<a class="index-entry-id" id="index-Ctrl_002dBREAK_002c-MS_002dWindows"></a>
+<a class="index-entry-id" id="index-interrupt-debuggee-on-MS_002dWindows"></a>
+<p>调用<code class="code">SetConsoleMode</code>以关闭“Ctrl-C”按键特殊含义的MS-Windows程序不能通过键入 <kbd class="kbd">C-c</kbd> 来中断。因此，MS-Windows上的GDB支持 <kbd class="kbd">C-<kbd class="key">BREAK</kbd></kbd> 作为替代的中断键序列，即使调试对象忽略 <kbd class="kbd">C-c</kbd>，也可用于中断调试对象。
+</p>
+<p>本节介绍了各种其他特定于Cygwin的命令。在 <a class="ref" href="Non_002ddebug-DLL-Symbols.html">对没有调试符号的DLL的支持</a> 中描述了处理没有调试符号的DLL的情况。
+</p>
+<dl class="table">
+<dt><a id="index-info-w32"></a><span><code class="code">info w32</code><a class="copiable-link" href="#index-info-w32"> &para;</a></span></dt>
+<dd><p>这是特定于MS Windows命令的前缀，用于打印有关目标系统和重要OS结构的信息。
+</p>
+</dd>
+<dt><code class="code">info w32 selector</code></dt>
+<dd><p>此命令显示Win3 API <code class="code">GetThreadSelectorEntry</code> 函数返回的信息。它接受一个可选参数，该参数被计算为一个长值，以给出有关此给定选择器的信息。无参数时，此命令显示有关六个段寄存器的信息。
+</p>
+</dd>
+<dt><code class="code">info w32 thread-information-block</code></dt>
+<dd><p>此命令显示存储在线程信息块中的线程特定信息（在X86 CPU系列上，对于32位程序使用 <code class="code">$fs</code> 选择器，对于64位程序使用 <code class="code">$gs</code> 选择器可读）。
+</p>
+</dd>
+<dt><a id="index-signal_002devent"></a><span><code class="code">signal-event <var类="var">id</var></code><a class="copiable-link" href="#index-signal_002devent"> &para;</a></span></dt>
+<dd><p>此命令用用户提供的 <var类="var">id</var> 发出一个事件信号。用于在使用MS-Windows JIT调试（AeDebug）附加到崩溃进程时恢复该进程。
+</p>
+<p>要使用它，请在 <code class="code">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug</code> 和/或 <code class="code">HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug</code>（对于x86_64版本）中创建或编辑以下键：
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">Debugger</code>（REG_SZ） —— 启动调试器的命令。
+建议的命令是：<code class="code"><var类="var">fully-qualified-path-to-gdb.exe</var> -ex &quot;attach %ld&quot; -ex &quot;signal-event %ld&quot; -ex &quot;continue&quot;</code>。
+
+<p>第一个 <code class="code">%ld</code> 将被崩溃进程的进程ID替换，第二个 <code class="code">%ld</code> 将被阻止崩溃进程并等待GDB附加的事件ID替换。
+</p>
+</li><li><code class="code">Auto</code>（REG_SZ） —— 要么是 <code class="code">数值1</code> 要么是 <code class="code">数值0</code>。<code class="code">数值1</code> 将使系统自动运行由Debugger键指定的调试器，<code class="code">数值0</code> 将导致出现一个带有“确定”和“取消”按钮的对话框，允许用户终止崩溃进程（确定）或调试它（取消）。
+</li></ul>
+
+</dd>
+<dt><a class="index-entry-id" id="index-debugging-the-Cygwin-DLL"></a>
+<a class="index-entry-id" id="index-Cygwin-DLL_002c-debugging"></a>
+<a id="index-set-cygwin_002dexceptions"></a><span><code class="code">set cygwin-exceptions <var类="var">mode</var></code><a class="copiable-link" href="#index-set-cygwin_002dexceptions"> &para;</a></span></dt>
+<dd><p>如果 <var类="var">mode</var> 是 <code class="code">on</code>，GDB将在Cygwin DLL内部发生异常时中断。如果 <var类="var">mode</var> 是 <code class="code">off</code>，GDB将延迟对异常的识别，并且可能忽略一些似乎由Cygwin DLL内部“簿记”引起的异常。此选项主要用于调试Cygwin DLL本身；默认值是 <code class="code">off</code>，以避免用虚假的 <code class="code">SIGSEGV</code> 信号打扰GDB用户。
+</p>
+</dd>
+<dt><a id="index-show-cygwin_002dexceptions"></a><span><code class="code">show cygwin-exceptions</code><a class="copiable-link" href="#index-show-cygwin_002dexceptions"> &para;</a></span></dt> 
+<dd><p>显示GDB是否会在Cygwin DLL本身内部发生的异常时中断。
+</p>
+</dd>
+<dt><a id="index-set-new_002dconsole"></a><span><code class="code">set new-console <var类="var">mode</var></code><a class="copiable-link" href="#index-set-new_002dconsole"> &para;</a></span></dt>
+<dd><p>如果 <var类="var">mode</var> 是 <code class="code">on</code>，调试对象将在下一次启动时在新控制台中启动。
+如果 <var类="var">mode</var> 是 <code class="code">off</code>，调试对象将在与调试器相同的控制台中启动。
+</p>
+</dd>
+<dt><a id="index-show-new_002dconsole"></a><span><code class="code">show new-console</code><a class="copiable-link" href="#index-show-new_002dconsole"> &para;</a></span></dt>
+<dd><p>显示启动调试对象时是否使用新控制台。
+</p>
+</dd>
+<dt><a id="index-set-new_002dgroup"></a><span><code class="code">set new-group <var类="var">mode</var></code><a class="copiable-link" href="#index-set-new_002dgroup"> &para;</a></span></dt>
+<dd><p>此布尔值控制调试对象是应启动新组还是与调试器留在同一组中。
+这会影响Windows OS处理“<samp class="samp">Ctrl-C</samp>”的方式。
+</p>
+</dd>
+<dt><a id="index-show-new_002dgroup"></a><span><code class="code">show new-group</code><a class="copiable-link" href="#index-show-new_002dgroup"> &para;</a></span></dt>
+<dd><p>显示new-group布尔值的当前值。
+</p>
+</dd>
+<dt><a id="index-set-debugevents"></a><span><code class="code">set debugevents</code><a class="copiable-link" href="#index-set-debugevents"> &para;</a></span></dt>
+<dd><p>此布尔值会添加与调试器看到的与调试对象相关的内核事件有关的调试输出。这包括发出线程和进程创建及退出信号的事件、DLL加载和卸载、控制台中断以及由Windows <code class="code">OutputDebugString</code> API调用产生的调试消息。
+</p>
+</dd>
+<dt><a id="index-set-debugexec"></a><span><code class="code">set debugexec</code><a class="copiable-link" href="#index-set-debugexec"> &para;</a></span></dt>
+<dd><p>此布尔值会添加与调试器看到的执行事件（如恢复线程）有关的调试输出。
+</p>
+</dd>
+<dt><a id="index-set-debugexceptions"></a><span><code class="code">set debugexceptions</code><a class="copiable-link" href="#index-set-debugexceptions"> &para;</a></span></dt>
+<dd><p>此布尔值会添加与调试器看到的调试对象中的异常有关的调试输出。
+</p>
+</dd>
+<dt><a id="index-set-debugmemory"></a><span><code class="code">set debugmemory</code><a class="copiable-link" href="#index-set-debugmemory"> &para;</a></span></dt>
+<dd><p>此布尔值会添加与调试器对调试对象内存的读取和写入有关的调试输出。
+</p>
+</dd>
+<dt><a id="index-set-shell"></a><span><code class="code">set shell</code><a class="copiable-link" href="#index-set-shell"> &para;</a></span></dt>
+<dd><p>此布尔值指定调试对象是通过 shell 调用还是直接调用（默认值是开启）。
+</p>
+</dd>
+<dt><a id="index-show-shell"></a><span><code class="code">show shell</code><a class="copiable-link" href="#index-show-shell"> &para;</a></span></dt>
+<dd><p>显示调试对象是否将通过 shell 启动。
+</p>
+</dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="Non_002ddebug-DLL-Symbols.html" accesskey="1">对没有调试符号的DLL的支持</a></li>
+<li><a href="Non_002ddebug-DLL-Symbols.html#DLL-Name-Prefixes" accesskey="2">DLL名称前缀</a></li>
+<li><a href="Non_002ddebug-DLL-Symbols.html#Working-with-Minimal-Symbols" accesskey="3">使用最小符号</a></li>
+</ul>`
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Hurd-Native.html">特定于GNU Hurd系统的命令</a>，上一页：<a href="DJGPP-Native.html">调试DJGPP程序的功能</a>，向上：<a href="Native.html">原生</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept_Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

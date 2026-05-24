@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>内联函数（使用GDB调试）</title>
+
+<meta name="description" content="内联函数（使用GDB调试）">
+<meta name="keywords" content="内联函数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录"> 
+<link href="Optimized-Code.html" rel="up" title="优化代码">
+<link href="Tail-Call-Frames.html" rel="next" title="尾调用帧">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="内联函数">
+<div class="nav-panel">
+<p>
+下一页：<a href="Tail-Call-Frames.html" accesskey="n" rel="next">尾调用帧</a>，上一级：<a href="Optimized-Code.html" accesskey="u" rel="up">调试优化代码</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="内联函数-1"><span>11.1内联函数<a class="copiable-link" href="#内联函数-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-内联函数_002c-调试"></a>
+
+<p><em class="dfn">内联</em>是一种优化，它直接在每个调用点插入函数体的副本，而不是跳转到共享例程。GDB显示内联函数的方式与非内联函数相同。它们会出现在回溯中。你可以查看它们的参数和局部变量，可以使用 <code class="code">step</code> 单步进入它们，使用 <code class="code">next</code> 跳过它们，并使用 <code class="code">finish</code> 从中跳出。你可以使用 <code class="code">info frame</code> 命令检查一个函数是否被内联。
+</p>
+<p>为了让GDB支持内联函数，编译器必须在调试信息中记录有关内联的信息 &mdash; 使用DWARF 2格式的GCC会这样做，其他几个编译器也会。GDB仅在使用DWARF 2时支持内联函数。4.1之前版本的GCC不会发出两个必需的属性（&lsquo;<samp class="samp">DW_AT_call_file</samp>&rsquo; 和 &lsquo;<samp class="samp">DW_AT_call_line</samp>&rsquo;）；GDB不会显示使用早期版本GCC的内联函数调用。相反，它会将内联函数的参数和局部变量显示为调用者中的局部变量。
+</p>
+<p>内联函数的函数体直接包含在其调用点；与非内联函数不同，没有专门用于调用的指令。GDB仍然假装调用点和内联函数的开头是不同的指令。单步执行到调用点会显示调用点，然后再次单步执行会显示内联函数的第一行，即使没有执行其他指令。
+</p>
+<p>这使得源级调试更加清晰；你可以看到调用的上下文以及调用的效果。只有使用 <code class="code">stepi</code> 或 <code class="code">nexti</code> 单步执行一条指令时不会这样；单步执行指令总是显示内联的函数体。
+</p>
+<p>在某些方面，GDB并不假装内联函数调用与正常调用相同：</p>
+<ul class="itemize mark-bullet">
+<li>在内联函数的调用点设置断点可能不起作用，因为调用点不包含任何代码。GDB可能会错误地将断点移动到包含函数的下一行，即在调用之后。这个限制将在GDB未来的版本中消除；在此之前，改为在更早的行或内联函数内部设置断点。
+
+</li><li>GDB在使用 <code class="code">finish</code> 命令后无法定位内联调用的返回值。这是编译器生成的调试信息的一个限制；执行 <code class="code">finish</code> 之后，你可以单步执行到下一行并打印程序存储返回值的变量。
+
+</li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Tail-Call-Frames.html">尾调用帧</a>，上一级：<a href="Optimized-Code.html">调试优化代码</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

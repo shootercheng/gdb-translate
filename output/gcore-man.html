@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gcore手册（使用GDB调试）</title>
+
+<meta name="description" content="gcore手册（使用GDB调试）">
+<meta name="keywords" content="gcore手册（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+pre.format-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gcore-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="heading" id="gcore"><span>gcore<a class="copiable-link" href="#gcore"> ¶</a></span></h3>
+
+
+<div class="format">
+<pre class="format-preformatted">gcore [-v | --version] [-h | --help] [-a] [-o <var class="var">前缀</var>] [-d <var class="var">目录</var>]
+      <var class="var">进程ID1</var> [<var class="var">进程ID2</var>...<var class="var">进程IDN</var>]
+</pre></div>
+
+<p>生成一个或多个具有进程ID <var class="var">进程ID1</var>、<var class="var">进程ID2</var>等的正在运行程序的核心转储。由 <code class="command">gcore</code> 生成的核心文件等同于进程崩溃时内核生成的核心文件（并且当使用 <kbd class="kbd">ulimit -c</kbd> 设置了适当的核心转储大小时）。然而，与崩溃后不同，在 <code class="command">gcore</code> 完成其任务后，程序仍保持运行且没有任何变化。
+</p>
+<dl class="table">
+<dt><code class="env">-a</code></dt>
+<dd><p>转储所有内存映射。此选项的实际效果取决于操作系统。在GNU/Linux上，它将禁用 <code class="code">use-coredump-filter</code>（见 <a class="pxref" href="Core-File-Generation.html#set-use_002dcoredump_002dfilter">设置use-coredump-filter</a>）并启用 <code class="code">dump-excluded-mappings</code>（见 <a class="pxref" href="Core-File-Generation.html#set-dump_002dexcluded_002dmappings">设置dump-excluded-mappings</a>）。
+</p>
+</dd>
+<dt><code class="env">-o <var class="var">前缀</var></code></dt>
+<dd><p>可选参数 <var class="var">前缀</var> 指定在组成核心转储文件名时要使用的前缀。文件名的组成方式为 <samp class="file"><var class="var">前缀</var>.<var class="var">进程ID</var></samp>，其中 <var class="var">进程ID</var> 是由 <code class="command">gcore</code> 分析的正在运行程序的进程ID。如果未指定，<var class="var">前缀</var> 默认为 <var class="var">core</var>。
+</p>
+</dd>
+<dt><code class="env">-d <var class="var">目录</var></code></dt>
+<dd><p>在调用GDB运行gcore命令时将 <var class="var">目录</var> 用作数据目录。此参数是可选的。
+</p>
+</dd>
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项并给出简要解释。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dt><code class="env">-v</code></dt>
+<dd><p>打印版本信息然后退出。
+</p></dd>
+</dl>
+
+
+
+
+
+</body>
+</html>

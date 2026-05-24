@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>F回复数据包（使用GDB调试）</title>
+
+<meta name="description" content="F回复数据包（使用GDB调试）">
+<meta name="keywords" content="F回复数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="文件I/O远程协议扩展">
+<link href="The-Ctrl_002dC-Message.html" rel="next" title="Ctrl-C消息">
+<link href="The-F-Request-Packet.html" rel="prev" title="F请求数据包">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="The-F-Reply-Packet">
+<div class="nav-panel">
+<p>
+下一页：<a href="The-Ctrl_002dC-Message.html" accesskey="n" rel="next">‘<samp class="samp">Ctrl-C</samp>’消息</a>，上一页：<a href="The-F-Request-Packet.html" accesskey="p" rel="prev">‘<code class="code">F</code>’请求数据包</a>，向上：<a href="File_002dI_002fO-Remote-Protocol-Extension.html" accesskey="u" rel="up">文件I/O远程协议扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="The-F-Reply-Packet-1"><span>E.14.4 ‘<code class="code">F</code>’回复数据包<a class="copiable-link" href="#The-F-Reply-Packet-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-file_002di_002fo-reply-packet"></a>
+<a class="index-entry-id" id="index-F-reply-packet"></a>
+
+<p>‘<code class="code">F</code>’回复数据包具有以下格式：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">F<var class="var">返回码</var>,<var class="var">错误码</var>,<var class="var">Ctrl-C标志</var>;<var class="var">特定调用附件</var></samp>&rsquo;</dt>
+<dd>
+<p><var class="var">返回码</var>是系统调用的返回码，以十六进制值表示。
+</p>
+<p><var class="var">错误码</var>是调用设置的<code class="code">errno</code>，采用特定协议的表示形式。
+如果调用成功，此参数可以省略。
+</p>
+<p><var class="var">Ctrl-C标志</var>仅在用户请求中断时发送。在这种情况下，即使调用成功，<var class="var">错误码</var>也必须发送。
+<var class="var">Ctrl-C标志</var>本身由字符‘<samp class="samp">C</samp>’组成：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">F0,0,C
+</pre></div>
+
+<p>或者，如果在主机调用执行之前调用被中断：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">F-1,4,C
+</pre></div>
+
+<p>假设4是‘<code class="code">EINTR</code>’的特定协议表示形式。
+</p>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+</body>
+</html>

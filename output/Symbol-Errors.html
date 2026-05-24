@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>符号错误（使用GDB调试）</title>
+
+<meta name="description" content="符号错误（使用GDB调试）">
+<meta name="keywords" content="符号错误（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="Data-Files.html" rel="next" title="数据文件">
+<link href="Debug-Names.html" rel="prev" title="调试名称">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="符号错误">
+<div class="nav-panel">
+<p>
+下一页：<a href="Data-Files.html" accesskey="n" rel="next">GDB数据文件</a>，上一页：<a href="Debug-Names.html" accesskey="p" rel="prev">&lsquo;<samp class="samp">.debug_names</samp>&rsquo;的扩展</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="读取符号文件时的错误"><span>18.7读取符号文件时的错误<a class="copiable-link" href="#读取符号文件时的错误"> &para;</a></span></h3>
+
+<p>在读取符号文件时，<small class="sc">GDB</small>偶尔会遇到问题，例如它不识别的符号类型，或者编译器输出中的已知错误。默认情况下，<small class="sc">GDB</small>不会通知你此类问题，因为它们相对常见，并且主要是编译器调试人员感兴趣的。如果你有兴趣查看有关构造不良的符号表的信息，你可以要求<small class="sc">GDB</small>对于每种此类问题只打印一条消息，无论问题出现多少次；或者你可以要求<small class="sc">GDB</small>打印更多消息，以查看问题出现的次数，使用<code class="code">set complaints</code>命令（见 <a class="pxref" href="Messages_002fWarnings.html">可选警告和消息</a>）。
+</p>
+<p>当前打印的消息及其含义包括：
+</p>
+<dl class="table">
+<dt><code class="code">在<var class="var">符号</var>中内部块不在外部块内</code></dt>
+<dd>
+<p>符号信息显示符号作用域的开始和结束位置（例如在函数或语句块的开头）。此错误表示内部作用域块没有完全包含在其外部作用域块中。
+</p>
+<p><small class="sc">GDB</small>通过将内部块视为与外部块具有相同作用域来规避此问题。在错误消息中，如果外部块不是函数，<var class="var">符号</var>可能会显示为“<code class="code">(未知)</code>”。
+</p>
+</dd>
+<dt><code class="code">位于<var class="var">地址</var>的块顺序错误</code></dt>
+<dd>
+<p>符号作用域块的符号信息应该按地址递增顺序出现。此错误表示并非如此。
+</p>
+<p><small class="sc">GDB</small>不会规避此问题，并且在定位它正在读取符号的源文件中的符号时会遇到麻烦。（你通常可以通过指定<code class="code">set verbose on</code>来确定受影响的源文件。见 <a class="xref" href="Messages_002fWarnings.html">可选警告和消息</a>。）
+</p>
+</dd>
+<dt><code class="code">错误的块起始地址已修正</code></dt>
+<dd>
+<p>符号作用域块的符号信息的起始地址小于前一行源文件的地址。已知这发生在SunOS 4.1.1（及更早版本）的C编译器中。
+</p>
+<p><small class="sc">GDB</small>通过将符号作用域块视为从前一行源文件开始来规避此问题。
+</p>
+</dd>
+<dt><code class="code">符号<var class="var">n</var>中的字符串表偏移错误</code></dt>
+<dd>
+<a class="index-entry-id" id="索引-foo"></a>
+<p>符号编号<var class="var">n</var>包含一个指向字符串表的指针，该指针大于字符串表的大小。
+</p>
+<p><small class="sc">GDB</small>通过将符号视为具有名称“<code class="code">foo</code>”来规避此问题，如果许多符号最终都有这个名字，可能会导致其他问题。
+</p>
+</dd>
+<dt><code class="code">未知符号类型 <code class="code">0x<var class="var">nn</var></code></code></dt>
+<dd>
+<p>符号信息包含<small class="sc">GDB</small>尚未知道如何读取的新数据类型。<code class="code">0x<var class="var">nn</var></code>是以十六进制表示的未理解信息的符号类型。
+</p>
+<p><small class="sc">GDB</small>通过忽略此符号信息来规避错误。这通常允许你调试你的程序，尽管某些符号不可访问。如果你遇到这样的问题并且想要调试它，你可以使用<small class="sc">gdb</small>本身进行调试，在<code class="code">complain</code>上设置断点，然后进入函数<code class="code">read_dbx_symtab</code>并检查<code class="code">*bufp</code>以查看符号。
+</p>
+</dd>
+<dt><code class="code">存根类型的名称为空</code></dt>
+<dd>
+<p><small class="sc">GDB</small>找不到结构体或类的完整定义。
+</p>

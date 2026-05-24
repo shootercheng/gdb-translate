@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>非调试DLL符号（使用GDB调试）</title>
+
+<meta name="description" content="非调试DLL符号（使用GDB调试）">
+<meta name="keywords" content="非调试DLL符号（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Cygwin-Native.html" rel="up" title="Cygwin原生">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Non_002ddebug-DLL-Symbols">
+<div class="nav-panel">
+<p>
+上一级：<a href="Cygwin-Native.html" accesskey="u" rel="up">调试MS Windows PE可执行文件的功能</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Support-for-DLLs-without-Debugging-Symbols"><span>21.1.4.1 对没有调试符号的DLL的支持<a class="copiable-link" href="#Support-for-DLLs-without-Debugging-Symbols"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-DLLs-with-no-debugging-symbols"></a>
+<a class="index-entry-id" id="index-Minimal-symbols-and-DLLs"></a>
+
+<p>在Windows上，你的程序所依赖的一些DLL通常不包含符号调试信息（例如，<samp class="file">kernel32.dll</samp>）。当GDB在一个DLL中没有识别到任何调试符号时，它会依赖于DLL导出表中包含的最少符号信息。本节描述如何使用这些符号，GDB内部将其称为“最小符号”。
+</p>
+<p>请注意，在被调试程序开始执行之前，不会加载任何DLL。解决这个问题最简单的方法就是启动程序 —— 可以通过设置断点或者让程序运行一次直到完成。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="DLL-Name-Prefixes">
+<h4 class="subsubsection"><span>21.1.4.**2 DLL名称前缀<a class="copiable-link" href="#DLL-Name-Prefixes"> &para;</a></span></h4>
+
+<p>为了符合Microsoft调试工具使用的命名约定，DLL导出符号会带有一个基于DLL名称的前缀，例如 <code class="code">KERNEL32!CreateFileA</code>。纯名称也会被放入符号表中，所以 <code class="code">CreateFileA</code> 通常就足够了。在某些情况下，程序中可能会存在名称冲突（特别是如果可执行文件本身包含完整的调试符号），这时在引用DLL的内容时就需要使用完全限定名称。在名称周围使用单引号以避免感叹号（“!”）被解释为语言运算符。
+</p>
+<p>请注意，DLL的内部名称可能全是大写，即使DLL的文件名是小写，反之亦然。由于GDB中的符号是<em class="emph">区分大小写的</em>，这可能会导致一些混淆。如果有疑问，可以尝试使用 <code class="code">info functions</code> 和 <code class="code">info variables</code> 命令，甚至 <code class="code">maint print msymbols</code>（请参阅 <a class="pxref" href="Symbols.html">检查符号表</a>）。这里有一个例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info function CreateFileA
+所有与正则表达式 &quot;CreateFileA&quot; 匹配的函数：
+
+非调试符号：
+0x77e885**4  CreateFileA
+0x77e885**4  KERNEL32!CreateFileA
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info function !
+所有与正则表达式 &quot;!&quot; 匹配的函数：
+
+非调试符号：
+0x6100114c  cygwin1!__assert
+0x61004034  cygwin1!_dll_crt0@0
+0x610042**0  cygwin1!dll_crt0(per_process *)
+[等等...]
+</pre></div>
+
+</div>
+<div class="subsubsection-level-extent" id="Working-with-Minimal-Symbols">
+<h4 class="subsubsection"><span>21.1.4.**第三部分 使用最小符号<a class="copiable-link" href="#Working-with-Minimal-Symbols"> &para;</a></span></h4>
+
+<p>从DLL导出表中提取的符号不包含太多类型信息。GDB所能做的只是根据包含该符号的链接器段来猜测一个符号是指函数还是变量。还要注意，除非程序正在运行，否则DLL中包含的内存的实际内容是不可用的。这意味着在没有运行程序的情况下，你无法检查变量的内容或反汇编DLL中的函数。
+</p>
+<p>变量通常被视为指针并自动解引用。因此，通常需要在变量名前加上取地址运算符（“&amp;”），并在命令中提供显式的类型信息。这里有一个问题类型的例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print 'cygwin1!__argv'
+'cygwin1!__argv' 具有未知类型；将其转换为其声明的类型
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) x 'cygwin1!__argv'
+'cygwin1!__argv' 具有未知类型；将其转换为其声明的类型
+</pre></div>
+
+<p>以及两种可能的解决方案：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print ((char **)'cygwin1!__argv')[0]
+$2 = 0x22fd98 &quot;/cygdrive/c/mydirectory/myprogram&quot;
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) x/2x &amp;'cygwin1!__argv'
+0x610c0aa8 &lt;cygwin1!__argv&gt;:    0x10021608      0x00000000
+(gdb) x/x 0x10021608
+0x10021608:     0x0022fd98
+(gdb) x/s 0x0022fd98
+0x22fd98:        &quot;/cygdrive/c/mydirectory/myprogram&quot; 
+</pre></div>
+
+<p>即使在程序开始执行之前，也可以在DLL内设置断点。然而，在这种情况下，GDB无法检查函数的初始指令以跳过函数的帧设置代码。你可以通过使用“*&amp;”在原始内存地址设置断点来解决这个问题：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break *&amp;'python22!PyOS_Readline'
+断点1位于0x1e04eff0
+</pre></div>
+
+<p>这些扩展的作者并不完全相信在像 <samp class="file">kernel32.dll</samp> 这样的共享DLL中设置断点是完全安全的安全。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一级：<a href="Cygwin-Native.html">调试MS Windows PE可执行文件的功能</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

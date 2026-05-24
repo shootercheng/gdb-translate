@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>不同的目标能力（使用GDB调试）</title>
+
+<meta name="description" content="不同的目标能力（使用GDB调试）">
+<meta name="keywords" content="不同的目标能力（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Agent-Expressions.html" rel="up" title="代理表达式">
+<link href="Rationale.html" rel="next" title="基本原理">
+<link href="Using-Agent-Expressions.html" rel="prev" title="使用代理表达式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="不同的目标能力">
+<div class="nav-panel">
+<p>
+下一个：<a href="Rationale.html" accesskey="n" rel="next">基本原理</a>，上一个：<a href="Using-Agent-Expressions.html" accesskey="p" rel="prev">使用代理表达式</a>，向上：<a href="Agent-Expressions.html" accesskey="u" rel="up">GDB代理表达式机制</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="不同的目标能力-1"><span>F.4不同的目标能力<a class="copiable-link" href="#不同的目标能力-1"> &para;</a></span></h3>
+
+
+<p>一些目标不支持浮点运算, 而一些目标则不想处理 <code class="code">long long</code> 操作。此外，不同目标的堆栈大小不同，字节码缓冲区长度也不同。
+</p>
+<p>因此，GDB需要一种方法来询问目标自身的情况。我们尚未确定细节，但一般来说，GDB应该能够向目标发送一个数据包，要求它描述自己。回复应该是一个长度明确的数据包，这样我们就可以在代理的未来版本中向数据包添加新信息，而不会使旧版本的GDB感到困惑，并且它应该包含一个版本号。它至少应该包含以下信息：
+</p>
+<ul class="itemize mark-bullet">
+<li>是否支持浮点运算
+
+</li><li>是否支持 <code class="code">long long</code>
+
+</li><li>字节码堆栈的最大可接受大小
+
+</li><li>字节码表达式的最大可接受长度
+
+</li><li>哪些寄存器实际上可用于收集
+
+</li><li>目标是否支持禁用的跟踪点
+
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

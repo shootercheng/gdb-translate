@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>通知数据包（使用GDB调试）</title>
+
+<meta name="description" content="通知数据包（使用GDB调试）">
+<meta name="keywords" content="通知数据包（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Remote-Non_002dStop.html" rel="next" title="远程非停止模式">
+<link href="Interrupts.html" rel="prev" title="中断">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="通知数据包">
+<div class="nav-panel">
+<p>下一页：<a href="Remote-Non_002dStop.html" accesskey="n" rel="next">远程协议对非停止模式的支持</a>，上一页：<a href="Interrupts.html" accesskey="p" rel="prev">中断</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="通知数据包-1"><span>E.10通知数据包<a class="copiable-link" href="#通知数据包-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-通知数据包"></a>
+<a class="index-entry-id" id="索引-数据包，通知"></a>
+
+<p><small class="sc">GDB</small>远程串行协议包括<em class="dfn">通知</em>，即不需要确认的数据包。GDB和存根程序都可以发送通知（尽管目前定义的唯一通知是由存根程序发送的）。通知携带信息，而不会产生确认的往返延迟，因此对于偶尔丢包不是问题的低影响通信很有用。
+</p>
+<p>通知数据包的形式为‘<samp class="samp">% <var class="var">数据</var> # <var class="var">校验和</var></samp>’，其中<var class="var">数据</var>是通知的内容，<var class="var">校验和</var>是<var class="var">数据</var>的校验和，其计算和格式化方式与普通<small class="sc">GDB</small>数据包相同。通知的<var class="var">数据</var>中从不包含‘<samp class="samp">$</samp>’、‘<samp class="samp">%</samp>’或‘<samp class="samp">#</samp>’字符。收到通知后，接收方不会发送‘<samp class="samp">+</samp>’或‘<samp class="samp">-</samp>’来确认通知的接收或报告其损坏情况。
+</p>
+<p>每个通知的<var class="var">数据</var>都以一个名称开头，该名称不包含冒号字符，后面跟着一个冒号字符。
+</p>
+<p>接收方应默默地忽略损坏的通知和他们不理解的通知。接收方在收到格式正确的通知时，无论是否理解，都应重新启动超时周期。
+</p>
+<p>发送方应仅在本协议描述指定允许时才发送此处描述的通知。将来，我们可能会扩展协议，以允许在新的上下文中使用现有的通知；此规则有助于旧的发送方避免使新的接收方感到困惑。
+</p>
+<p>（旧版本的<small class="sc">GDB</small>会忽略接收到的字节，直到看到普通数据包开始的‘<samp class="samp">$</samp>’字节，因此新的存根程序可以发送通知而不用担心会使旧的客户端感到困惑。目前没有定义GDB要发送的通知，但我们假设大多数旧的存根程序也会忽略它们。）
+</p>
+<p>每个通知由三部分组成：
+</p><dl class="table">
+<dt>&lsquo;<samp class="samp"><var class="var">名称</var>:<var class="var">事件</var></samp>&rsquo;</dt>
+<dd><p>通知数据包由发起交换的一方（目前只有存根程序这样做）发送，其中<var class="var">事件</var>携带有关通知的特定信息，<var class="var">名称</var>指定通知的名称。
+</p></dd>
+<dt>&lsquo;<samp class="samp"><var class="var">确认</var></samp>&rsquo;</dt>
+<dd><p>另一方（通常是<small class="sc">GDB</small>）发送的确认，以确认交换并请求事件。
+</p></dd>
+</dl>
+
+<p>异步通知机制的目的是向<small class="sc">GDB</small>报告远程存根程序中发生的有趣事情。 
+</p>  
+<p>远程存根程序可以随时发送通知<var class="var">名称</var>:<var class="var">事件</var>，但<small class="sc">GDB</small>会在适当的时候确认该通知。在<small class="sc">GDB</small>确认之前，通知事件处于待处理状态。一次只能有一个通知处于待处理状态；如果在<small class="sc">GDB</small>确认之前发生了其他事件，存根程序必须将它们排队，以便稍后响应来自<small class="sc">GDB</small>的<var class="var">确认</var>数据包进行同步传输。由于通知机制不可靠，如果存根程序认为<small class="sc">GDB</small>可能没有收到通知，它可以重新发送通知。
+</p>
+<p>具体来说，当<small class="sc">GDB</small>没有从存根程序读取其他输入时，或者当<small class="sc">GDB</small>期望读取正常的同步响应或对其发送的数据包的‘<samp class="samp">+</samp>’/‘<samp class="samp">-</samp>’确认时，可能会出现通知。通知数据包与存根程序的任何其他通信都不同，因此不存在歧义。
+</p>
+<p>收到通知后，<small class="sc">GDB</small>应通过向存根程序发送一个<var class="var">确认</var>数据包作为常规的同步请求来确认它。这种确认不需要立即发生，因为<small class="sc">GDB</small>可以先向存根程序发送其他无关的数据包，存根程序应正常处理这些数据包。
+</p>
+<p>收到<var class="var">确认</var>数据包后，如果存根程序有其他排队的事件要报告给<small class="sc">GDB</small>，它应通过发送一个正常的<var class="var">事件</var>来响应。然后<small class="sc">GDB</small>应发送另一个<var class="var">确认</var>数据包以请求进一步的响应；同样，它也可以发送其他无关的数据包，存根程序应正常处理这些数据包。
+</p>
+<p>如果存根程序收到一个<var class="var">确认</var>数据包且没有其他<var class="var">事件</var>要报告，存根程序应返回一个‘<samp class="samp">OK</samp>’响应。此时，<small class="sc">GDB</small>已完成处理一个通知，存根程序也已完成发送任何排队的事件。在收到最终的‘<samp class="samp">OK</samp>’之前，<small class="sc">GDB</small>不会接受任何新的通知。如果发生进一步的通知事件，存根程序应发送一个新的通知，<small class="sc">GDB</small>应接受该通知，并重复该过程。
+</p>
+<p>异步通知的过程可以通过以下示例来说明：
+</p><div class="example smallexample">
+<pre class="example-preformatted">&lt;- <code class="code">%Stop:T0505:98e7ffbf;04:4ce6ffbf;08:b1b6e54c;thread:p7526.7526;core:0;</code>
+<code class="code">...</code>
+-&gt; <code class="code">vStopped</code>
+&lt;- <code class="code">T0505:68f37db7;04:40f37db7;08:63850408;thread:p7526.7528;core:0;</code>
+-&gt; <code class="code">vStopped</code>
+&lt;- <code class="code">T0505:68e3fdb6;04:40e3fdb6;08:63850408;thread:p7526.7529;core:0;</code>
+-&gt; <code class="code">vStopped</code>
+&lt;- <code class="code">OK</code>
+</pre></div>
+
+<p>定义了以下通知：
+</p><table class="multitable">
+<tbody><tr><td width="12%">通知</td><td width="12%">确认</td><td width="38%">事件</td><td width="38%">描述</td></tr>
+<tr><td width="12%">停止</td><td width="12%">vStopped</td><td width="38%"><var class="var">回复</var>。<var class="var">回复</var>具有停止回复的形式，如在 <a class="ref" href="Stop-Reply-Packets.html">停止回复数据包</a> 中所述。有关<small class="sc">GDB</small>如何确认这些通知的信息，请参阅 <a class="ref" href="Remote-Non_002dStop.html">远程协议对非停止模式的支持</a>。</td><td width="38%">报告非停止模式下的异步停止事件。</td></tr>
+</tbody>
+</table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Remote-Non_002dStop.html">远程协议对非停止模式的支持</a>，上一页：<a href="Interrupts.html">中断</a>，向上：<a href="Remote-Protocol.html"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

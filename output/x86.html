@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>x86（使用GDB调试）</title>
+
+<meta name="description" content="x86（使用GDB调试）">
+<meta name="keywords" content="x86（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Architectures.html" rel="up" title="架构">
+<link href="Alpha.html" rel="next" title="Alpha">
+<link href="AArch64.html" rel="prev" title="AArch64">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="x86">
+<div class="nav-panel">
+<p>
+下一页：<a href="Alpha.html" accesskey="n" rel="next">Alpha</a>，上一页：<a href="AArch64.html" accesskey="p" rel="prev">AArch64</a>，向上：<a href="Architectures.html" accesskey="u" rel="up">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="x86-1"><span>21.4.2 x86<a class="copiable-link" href="#x86-1"> &para;</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-struct-return-convention"></a>
+<a class="index-entry-id" id="index-struct_002funion-returned-in-registers"></a>
+<a id="index-set-struct_002dconvention"></a><span><code class="code">set struct-convention <var class="var">mode</var></code><a class="copiable-link" href="#index-set-struct_002dconvention"> &para;</a></span></dt>
+<dd><p>设置下级程序用于从函数返回结构体和联合体的约定为<var class="var">模式</var>。<var class="var">模式</var>的可能值为<code class="code">&quot;pcc&quot;</code>、<code class="code">&quot;reg&quot;</code>和<code class="code">&quot;default&quot;</code>（默认值）。<code class="code">&quot;default&quot;</code>或<code class="code">&quot;pcc&quot;</code>表示结构体在栈上返回，而<code class="code">&quot;reg&quot;</code>表示大小为1、2、4或8字节的结构体或联合体将在寄存器中返回。
+</p>
+</dd>
+<dt><a id="index-show-struct_002dconvention"></a><span><code class="code">show struct-convention</code><a class="copiable-link" href="#index-show-struct_002dconvention"> &para;</a></span></dt>
+<dd><p>显示当前用于从函数返回结构体的约定设置。
+</p></dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a href="#x87-registers" accesskey="1">x87寄存器</a></li>
+<li><a href="#Intel-Control_002dFlow-Enforcement-Technology_002e" accesskey="2">英特尔控制流强制技术。</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="x87-registers">
+<h4 class="subsubsection"><span>21.4.2.1 x87寄存器<a class="copiable-link" href="#x87-registers"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small>通过以下寄存器提供对x87状态的访问：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">$st0</code>到<code class="code">st7</code>：<code class="code">ST(0)</code>到<code class="code">ST(7)</code>浮点寄存器
+</li><li><code class="code">$fctrl</code>：控制字寄存器（<code class="code">FCW</code>）
+</li><li><code class="code">$fstat</code>：状态字寄存器（<code class="code">FSW</code>）
+</li><li><code class="code">$ftag</code>：标记字（<code class="code">FTW</code>）
+</li><li><code class="code">$fiseg</code>：最后一条指令指针段
+</li><li><code class="code">$fioff</code>：最后一条指令指针
+</li><li><code class="code">$foseg</code>：最后一个数据指针段
+</li><li><code class="code">$fooff</code>：最后一个数据指针
+</li><li><code class="code">$fop</code>：最后一个操作码
+
+</li></ul>
+
+</div>
+<div class="subsubsection-level-extent" id="Intel-Control_002dFlow-Enforcement-Technology_002e">
+<h4 class="subsubsection"><span>21.4.2.2英特尔控制流强制技术。<a class="copiable-link" href="#Intel-Control_002dFlow-Enforcement-Technology_002e"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Intel-Control_002dFlow-Enforcement-Technology_002e"></a>
+
+<p><em class="dfn">英特尔控制流强制技术</em>（<abbr class="acronym">Intel CET</abbr>）提供了两种功能来抵御“面向返回的编程”和“面向调用/jmp的编程”风格的控制流攻击：
+</p>
+<ul class="itemize mark-bullet">
+<li>影子栈：
+影子栈是程序的第二个栈。它保存由调用指令推送的返回地址。<code class="code">RET</code>指令从调用栈和影子栈中弹出返回地址。如果两个栈中的返回地址不匹配，处理器会发出控制保护异常信号。
+</li><li>间接分支跟踪（IBT）：
+当启用IBT时，CPU实现一个状态机来跟踪间接<code class="code">JMP</code>和<code class="code">CALL</code>指令。状态机可以处于IDLE或WAIT_FOR_ENDBRANCH状态。当执行<code class="code">JMP</code>或<code class="code">CALL</code>时，状态机变为WAIT_FOR_ENDBRANCH状态。在WAIT_FOR_ENDBRANCH状态下，程序流中的下一条指令必须是<code class="code">ENDBR</code>指令，否则处理器会发出控制保护异常信号。执行完<code class="code">ENDBR</code>指令后，状态机返回IDLE状态。
+</li></ul>
+
+<p>对<small class="sc">GDB</small>命令的影响：
+</p><ul class="itemize mark-bullet">
+<li>调用/打印：
+<small class="sc">GDB</small>中的下级调用会将当前PC重置为被调用函数的开头。不会执行调用指令，但实际上会执行<code class="code">RET</code>指令。为了避免由于影子栈上缺少返回地址而导致的控制保护异常，<small class="sc">GDB</small>会将新的返回地址推送到影子栈并更新影子栈指针。
+</li><li>单步执行：
+对于移位单步执行，<small class="sc">GDB</small>可能会运行一条调用指令的外部副本。在这种情况下，错误的返回地址会被推送到影子栈。<small class="sc">GDB</small>会纠正这个值以避免控制保护异常。有关移位单步执行的更多详细信息，请参阅 <a class="ref" href="Maintenance-Commands.html#displaced_002dstepping">移位单步执行</a>。
+</li></ul>
+
+</div>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Alpha.html">Alpha</a>，上一页：<a href="AArch64.html">AArch64</a>，向上：<a href="Architectures.html">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

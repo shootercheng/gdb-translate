@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>GDB/MI支持命令（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI支持命令（使用GDB调试）">
+<meta name="keywords" content="GDB/MI支持命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Miscellaneous-Commands.html" rel="next" title="GDB/MI杂项命令">
+<link href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="prev" title="GDB/MI Ada异常命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Support-Commands">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Miscellaneous-Commands.html" accesskey="n" rel="next">GDB/MI杂项命令</a>，上一个：<a href="GDB_002fMI-Ada-Exceptions-Commands.html" accesskey="p" rel="prev">GDB/MI Ada异常命令</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up">GDB/MI接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi-Support-Commands"><span>27.23 GDB/MI支持命令<a class="copiable-link" href="#gdb_002fmi-Support-Commands"> &para;</a></span></h3>
+
+<p>由于新命令和功能会定期添加到GDB/MI中，因此有一些命令可用于帮助前端向调试器查询对这些功能的支持。同样，也可以向GDB查询对某些功能的目标支持。
+</p>
+<a class="index-entry-id" id="index-_002dinfo_002dgdb_002dmi_002dcommand"></a>
+<a class="index-entry-id" id="index-_002dinfo_002dgdb_002dmi_002dcommand-1"></a>
+<h4 class="subheading" id="The-_002dinfo_002dgdb_002dmi_002dcommand-Command"><span>The <code class="code">-info-gdb-mi-command</code>命令<a class="copiable-link" href="#The-_002dinfo_002dgdb_002dmi_002dcommand-Command"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-103"><span>概要<a class="copiable-link" href="#Synopsis-103"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -info-gdb-mi-command <var class="var">cmd_name</var>
+</pre></div>
+
+<p>查询对名为<var class="var">cmd_name</var>的GDB/MI命令的支持。
+</p>
+<p>请注意，所有GDB/MI命令开头的破折号（<code class="code">-</code>）实际上并不是命令名称的一部分（请参阅<a class="pxref" href="GDB_002fMI-Input-Syntax.html">GDB/MI输入语法</a>），因此在<var class="var">cmd_name</var>中应省略。但是，为了使用方便，此命令也接受带前导破折号的形式。
+</p>
+<h4 class="subsubheading" id="gdb-Command-85"><span>GDB命令<a class="copiable-link" href="#gdb-Command-85"> &para;</a></span></h4>
+
+<p>没有相应的GDB命令。
+</p>
+<h4 class="subsubheading" id="Result-8"><span>结果<a class="copiable-link" href="#Result-8"> &para;</a></span></h4>
+
+<p>结果是一个元组。目前只有一个字段：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">exists</samp>&rsquo;</dt>
+<dd><p>如果GDB/MI命令存在，此字段等于<code class="code">&quot;true&quot;</code>，否则等于<code class="code">&quot;false&quot;</code>。</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-85"><span>示例<a class="copiable-link" href="#Example-85"> &para;</a></span></h4>
+
+<p>这里有一个GDB/MI命令不存在的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-info-gdb-mi-command unsupported-command
+^done,command={exists=&quot;false&quot;}
+</pre></div>
+
+<p>这里有一个调试器已知GDB/MI命令的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-info-gdb-mi-command symbol-list-lines
+^done,command={exists=&quot;true&quot;}
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dlist_002dfeatures"></a>
+<a class="index-entry-id" id="index-supported-gdb_002fmi-features_002c-list"></a>
+<h4 class="subheading" id="The-_002dlist_002dfeatures-Command"><span>The <code class="code">-list-features</code>命令<a class="copiable-link" href="#The-_002dlist_002dfeatures-Command"> &para;</a></span></h4>
+
+<p>返回此版本的gdb实现的MI协议的特定功能列表。一个功能可以是一个命令，或者是某个命令输出中的一个新字段，甚至是一个重要的错误修复。虽然前端有时可以在运行时检测功能的存在，但在调试器启动时进行检测更容易。
+</p>
+<p>该命令返回一个字符串列表，每个字符串命名一个可用功能。每个返回的字符串只是一个名称，没有任何内部结构。下面给出了可能的功能名称列表。
+</p>
+<p>示例输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) -list-features
+^done,features=[&quot;feature1&quot;,&quot;feature2&quot;]
+</pre></div>
+
+<p>当前的功能列表如下：
+</p>
+<dl class="ftable">
+<dt><a id="index-frozen_002dvarobjs"></a><span>&lsquo;<samp class="samp">frozen-varobjs</samp>&rsquo;<a class="copiable-link" href="#index-frozen_002dvarobjs"> &para;</a></span></dt>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>单独的目标目录（使用GDB调试）</title>
+
+<meta name="description" content="单独的目标目录（使用GDB调试）">
+<meta name="keywords" content="单独的目标目录（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Installing-GDB.html" rel="up" title="安装GDB">
+<link href="Config-Names.html" rel="next" title="配置名称">
+<link href="Running-Configure.html" rel="prev" title="运行Configure">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Separate-Objdir">
+<div class="nav-panel">
+<p>
+下一页：<a href="Config-Names.html" accesskey="n" rel="next">为主机和目标指定名称</a>，上一页：<a href="Running-Configure.html" accesskey="p" rel="prev">调用GDB configure脚本</a>，向上：<a href="Installing-GDB.html" accesskey="u" rel="up">安装GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Compiling-gdb-in-Another-Directory"><span>C.3 在另一个目录中编译GDB<a class="copiable-link" href="#Compiling-gdb-in-Another-Directory"> &para;</a></span></h3>
+
+<p>如果你想为多个主机或目标机器运行GDB版本，那么对于主机和目标的每种组合，你都需要一个不同的已编译的<code>gdb</code>。<samp class="file">configure</samp>的设计目的是通过允许你在单独的子目录中生成每个配置，而不是在源目录中，来使这变得容易。如果你的<code>make</code>程序支持“<samp class="samp">VPATH</samp>”功能（GNU <code>make</code>支持），那么在这些目录中的每个目录中运行<code>make</code>都会构建在那里指定的<code>gdb</code>程序。
+</p>
+<p>要在单独的目录中构建<code>gdb</code>，使用“<samp class="samp">--srcdir</samp>”选项运行<samp class="file">configure</samp>来指定源文件的位置。（你还需要指定从工作目录找到<samp class="file">configure</samp>本身的路径。如果<samp class="file">configure</samp>的路径与“<samp class="samp">--srcdir</samp>”的参数相同，你可以省略“<samp class="samp">--srcdir</samp>”选项；这是默认的。）
+</p>
+<p>例如，对于17.2版本，你可以像这样在一个单独的目录中为Sun 4构建GDB：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">cd gdb-17.2
+mkdir ../gdb-sun4
+cd ../gdb-sun4
+../gdb-17.2/configure
+make
+</pre></div></div>
+
+<p>当<samp class="file">configure</samp>使用远程源目录构建一个配置时，它会为二进制文件创建一个与源目录下的树具有相同结构（并使用相同名称）的树。在这个例子中，你会在目录<samp class="file">gdb-sun4/libiberty</samp>中找到Sun 4库<samp class="file">libiberty.a</samp>，而GDB本身在<samp class="file">gdb-sun4/gdb</samp>中。
+</p>
+<p>确保你到<samp class="file">configure</samp>脚本的路径中只有一个<code>gdb</code>实例。如果你的<samp class="file">configure</samp>路径看起来像<samp class="file">../gdb-17.2/gdb/configure</samp>，那么你只在配置GDB的一个子目录，而不是整个包。这会导致关于缺少头文件（如<samp class="file">bfd/bfd.h</samp>）的构建错误。
+</p>
+<p>在单独的目录中构建多个GDB配置的一个常见原因是为交叉编译配置GDB（其中GDB在一台机器上运行——即<em class="dfn">主机</em>——而调试在另一台机器上运行的程序——即<em class="dfn">目标</em>）。你通过给<samp class="file">configure</samp>提供“<samp class="samp">--target=<var class="var">target</var></samp>”选项来指定交叉调试目标。
+</p>
+<p>当你运行<code>make</code>来构建一个程序或库时，你必须在一个已配置的目录中运行它——无论你在调用<samp class="file">configure</samp>时所在的目录（或其一个子目录）。
+</p>
+<p><samp class="file">configure</samp>在每个源目录中生成的<code>Makefile</code>也会递归运行。如果你在一个源目录（如<samp class="file">gdb-17.2</samp>）中输入<code>make</code>（或在使用“<samp class="samp">--srcdir=<var class="var">dirname</var>/gdb-17.2</samp>”配置好的单独目录中），你将构建所有所需的库，然后构建GDB。
+</p>
+<p>当你在单独的目录中配置了多个主机或目标时，你可以并行地在它们上面运行<code>make</code>（例如，如果它们通过NFS挂载在每个主机上）；它们不会相互干扰。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Config-Names.html">为主机和目标指定名称</a>，上一页：<a href="Running-Configure.html">调用GDB configure脚本</a>，向上：<a href="Installing-GDB.html">安装GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>帧信息（使用GDB调试）</title>
+
+<meta name="description" content="帧信息（使用GDB调试）">
+<meta name="keywords" content="帧信息（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stack.html" rel="up" title="栈">
+<link href="Frame-Apply.html" rel="next" title="将命令应用于多个帧">
+<link href="Selection.html" rel="prev" title="选择帧">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frame-Info">
+<div class="nav-panel">
+<p>下一页：<a href="Frame-Apply.html" accesskey="n" rel="next">将命令应用于多个帧。</a>，上一页：<a href="Selection.html" accesskey="p" rel="prev">选择帧</a>，向上：<a href="Stack.html" accesskey="u" rel="up">检查栈</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>  
+<hr>
+<h3 class="section" id="Information-About-a-Frame"><span>8.4 关于一个帧的信息<a class="copiable-link" href="#Information-About-a-Frame"> &para;</a></span></h3>
+
+<p>还有其他几个命令用于打印有关选定栈帧的信息。
+</p>
+<dl class="table">
+<dt><code class="code">frame</code></dt>
+<dt><code class="code">f</code></dt>
+<dd><p>当不带任何参数使用时，此命令不会更改选定的帧，但会打印当前选定栈帧的简要描述。它可以缩写为 <code class="code">f</code>。带参数时，此命令用于选择一个栈帧。
+请参阅 <a class="xref" href="Selection.html">选择帧</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-info-f-_0028info-frame_0029"></a>
+<a id="index-info-frame"></a><span><code class="code">info frame</code><a class="copiable-link" href="#index-info-frame"> &para;</a></span></dt>
+<dt><code class="code">info f</code></dt>
+<dd><p>此命令打印选定栈帧的详细描述，包括：
+</p>
+<ul class="itemize mark-bullet">
+<li>帧的地址
+</li><li>向下的下一个帧（此帧调用的帧）的地址
+</li><li>向上的下一个帧（此帧的调用者）的地址
+</li><li>与此帧对应的源代码所使用的语言
+</li><li>帧的参数的地址
+</li><li>帧的局部变量的地址
+</li><li>保存在其中的程序计数器（调用者帧中的执行地址）
+</li><li>哪些寄存器保存在该帧中
+</li></ul>
+
+<p>当出现问题导致栈格式不符合通常的约定时，详细描述会很有用。
+</p>
+</dd>
+<dt><code class="code">info frame <span class="r">[</span> <var class="var">frame-selection-spec</var> <span class="r">]</span></code></dt>
+<dt><code class="code">info f <span class="r">[</span> <var class="var">frame-selection-spec</var> <span class="r">]</span></code></dt>
+<dd><p>打印由 <var class="var">frame-selection-spec</var> 选择的帧的详细描述。<var class="var">frame-selection-spec</var> 与 <code class="command">frame</code> 命令的相同（请参阅 <a class="pxref" href="Selection.html">选择帧</a>）。此命令不会更改选定的帧。
+</p>
+</dd>
+<dt><a id="index-info-args"></a><span><code class="code">info args [-q]</code><a class="copiable-link" href="#index-info-args"> &para;</a></span></dt>
+<dd><p>打印选定帧的参数，每个参数占一行。
+</p>
+<p>可选标志 &lsquo;<samp class="samp">-q</samp>&rsquo;，代表 &lsquo;<samp class="samp">quiet</samp>&rsquo;，禁用打印标题信息和解释为何未打印任何参数的消息。
+</p>
+</dd>
+<dt><code class="code">info args [-q] [-t <var class="var">type_regexp</var>] [<var class="var">regexp</var>]</code></dt>
+<dd><p>与 <kbd class="kbd">info args</kbd> 类似，但只打印用提供的正则表达式选择的参数。
+</p>
+<p>如果提供了 <var class="var">regexp</var>，则只打印名称与正则表达式 <var class="var">regexp</var> 匹配的参数。
+</p>
+<p>如果提供了 <var class="var">type_regexp</var>，则只打印其类型（由 <code class="code">whatis</code> 命令打印）与正则表达式 <var class="var">type_regexp</var> 匹配的参数。
+如果 <var class="var">type_regexp</var> 包含空格，应将其括在引号中。如有需要，使用反斜杠转义特殊字符或引号的含义。
+</p>
+<p>如果同时提供了 <var class="var">regexp</var> 和 <var class="var">type_regexp</var>，则仅当参数的名称与 <var class="var">regexp</var> 匹配且其类型与 <var class="var">type_regexp</var> 匹配时才打印该参数。
+</p>
+</dd>
+<dt><a id="index-info-locals"></a><span><code class="code">info locals [-q]</code><a class="copiable-link" href="#index-info-locals"> &para;</a></span></dt>
+<dd><p>打印选定帧的局部变量，每个变量占一行。这些是在选定帧的执行点可访问的所有变量（声明为静态或自动）。
+</p>
+<p>可选标志 &lsquo;<samp class="samp">-q</samp>&rsquo;，代表 &lsquo;<samp class="samp">quiet</samp>&rsquo;，禁用打印标题信息和解释为何未打印任何局部变量的消息。
+</p>
+</dd>
+<dt><code class="code">info locals [-q] [-t <var class="var">type_regexp</var>] [<var class="var">regexp</var>]</code></dt>
+<dd><p>与 <kbd class="kbd">info locals</kbd> 类似，但只打印用提供的正则表达式选择 的局部变量。
+</p>
+<p>如果提供了 <var class="var">regexp</var>，则只打印名称与正则表达式 <var class="var">regexp</var> 匹配的局部变量。
+</p>
+<p>如果提供了 <var class="var">type_regexp</var>，则只打印其类型（由 <code class="code">whatis</code> 命令打印）与正则表达式 <var class="var">type_regexp</var> 匹配的局部变量。
+如果 <var class="var">type_regexp</var> 包含空格，应将其括在引号中。如有需要，使用反斜杠转义特殊字符或引号的含义。
+</p>
+<p>如果同时提供了 <var class="var">regexp</var> 和 <var class="var">type_regexp</var>；则仅当局部变量的名称与 <var class="var">regexp</var> 匹配且其类型与 <var class="var">type_regexp</var> 匹配时才打印该局部变量。
+</p>
+<p>命令 <kbd class="kbd">info locals -q -t <var class="var">type_regexp</var></kbd> 可以有效地与命令 <kbd class="kbd">frame apply</kbd> 和 <kbd class="kbd">thread apply</kbd> 结合使用。
+例如，你的程序可能使用资源获取即初始化类型（RAII），如 <code class="code">lock_something_t</code>：每个类型为 <code class="code">lock_something_t</code> 的局部变量会自动放置一个锁，当变量超出作用域时该锁会被销毁。然后你可以通过执行以下操作列出程序中所有获取的锁：
+</p><div class="example smallexample">
+<pre class="example-preformatted">thread apply all -s frame apply all -s info locals -q -t lock_something_t
+</pre></div>
+<p>或等效的简短形式
+</p><div class="example smallexample">
+<pre class="example-preformatted">tfaas i lo -q -t lock_something_t
+</pre></div>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>下一页：<a href="Frame-Apply.html">将命令应用于多个帧。</a>，上一页：<a href="Selection.html">选择帧</a>，向上：<a href="Stack.html">检查栈</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

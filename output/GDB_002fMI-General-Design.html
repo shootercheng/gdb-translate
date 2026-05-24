@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GDB/MI通用设计（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI通用设计（使用GDB调试）">
+<meta name="keywords" content="GDB/MI通用设计（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Command-Syntax.html" rel="next" title="GDB/MI命令语法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI通用设计">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Command-Syntax.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small>命令语法</a>，上一级：<a href="GDB_002fMI.html" accesskey="u" rel="up">GDB/MI接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="gdb_002fmi通用设计"><span>27.1 GDB/MI通用设计<a class="copiable-link" href="#gdb_002fmi通用设计"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-GDB_002fMI通用设计"></a>
+
+<p>GDB/MI前端与GDB的交互涉及三个部分——发送到GDB的命令、对这些命令的响应以及通知。每个命令恰好产生一个响应，表明命令是成功完成还是出错。对于不恢复目标的命令，响应包含请求的信息。对于恢复目标的命令，响应仅指示目标是否成功恢复。通知是用于报告目标状态或GDB状态变化的机制，这些变化不能方便地与命令相关联并作为该命令响应的一部分进行报告。
+</p>
+<p>通知的重要示例包括：
+</p><ul class="itemize mark-bullet">
+<li>执行通知。这些用于报告目标状态的变化——当目标恢复或停止时。将此信息包含在恢复命令的响应中是不可行的，因为一个恢复命令可能会在不同线程中导致多个事件。此外，在目标中发生任何事件之前可能会经过相当长的时间，而前端需要知道恢复命令本身是否已成功执行。
+
+</li><li>控制台输出和状态通知。控制台输出通知用于报告CLI命令的输出以及其他命令的诊断信息。状态通知用于报告长时间运行操作的进度。自然地，将此信息包含在命令响应中意味着在命令完成之前不会产生任何输出，这是不可取的。
+
+</li><li>一般通知。命令除了其官方目的之外，可能会对GDB或目标状态产生各种副作用。例如，一个命令可能会更改选定的线程。虽然此类更改可以包含在命令响应中，但使用通知允许进行更正交的前端设计。
+
+</li></ul>
+
+<p>不能保证每当MI命令报告错误时，GDB或目标处于任何特定状态，特别是，状态不会恢复到处理MI命令之前的状态。因此，每当MI命令导致错误时，我们建议前端刷新用户界面中显示的所有信息。
+</p>
+
+
+<ul class="mini-toc">
+<li><a href="Context-management.html" accesskey="1">上下文管理</a></li>
+<li><a href="Asynchronous-and-non_002dstop-modes.html" accesskey="2">异步命令执行和非停止模式</a></li>
+<li><a href="Thread-groups.html" accesskey="3">线程组</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB_002fMI-Command-Syntax.html">GDB/MI命令语法</a>，上一级：<a href="GDB_002fMI.html">GDB/MI接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

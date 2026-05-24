@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>开始（使用GDB调试）</title>
+
+<meta name="description" content="开始（使用GDB调试）">
+<meta name="keywords" content="开始（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Arguments.html" rel="next" title="你的程序的参数">
+<link href="Compilation.html" rel="prev" title="编译">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="开始">
+<div class="nav-panel">
+<p>
+下一页：<a href="Arguments.html" accesskey="n" rel="next">你的程序的参数</a>，上一页：<a href="Compilation.html" accesskey="p" rel="prev">为调试而编译</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="启动你的程序"><span>4.2启动你的程序<a class="copiable-link" href="#启动你的程序"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-启动"></a>
+<a class="index-entry-id" id="index-运行"></a>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-r-_0028运行_0029"></a>
+<a id="index-运行"></a><span><code class="code">run</code><a class="copiable-link" href="#index-运行"> &para;</a></span></dt>
+<dt><code class="code">r</code></dt>
+<dd><p>使用<code class="code">run</code>命令在GDB下启动你的程序。
+你必须首先使用GDB的参数指定程序名（见<a class="pxref" href="Invocation.html">进入和退出GDB</a>），或者使用<code class="code">file</code>或<code class="code">exec-file</code>命令（见<a class="pxref" href="Files.html">指定文件的命令</a>）。
+</p>
+</dd>
+</dl>
+
+<p>如果你在一个支持进程的执行环境中运行你的程序，<code class="code">run</code>会创建一个子进程并使该进程运行你的程序。在一些没有进程的环境中，<code class="code">run</code>会跳转到你的程序的开头。其他目标，如“<samp class="samp">remote</samp>”，总是在运行。如果你得到这样的错误消息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">“remote”目标不支持“run”。
+试试“help target”或“continue”。
+</pre></div>
+
+<p>那么使用<code class="code">continue</code>来运行你的程序。你可能首先需要<code class="code">load</code>（见<a class="pxref" href="Target-Commands.html#load">load</a>）。
+</p>
+<p>程序的执行会受到它从上级接收的某些信息的影响。GDB提供了指定这些信息的方法，你必须在启动程序<em class="emph">之前</em>进行指定。（你可以在启动程序后更改它，但这样的更改只会在你下次启动程序时影响你的程序。）这些信息可以分为四类：
+</p>
+<dl class="table">
+<dt><em class="emph">参数。</em></dt>
+<dd><p>将给你的程序的参数指定为<code class="code">run</code>命令的参数。如果你的目标上有一个可用的shell，那么会使用该shell来传递参数，这样你就可以在描述参数时使用正常的约定（如通配符扩展或变量替换）。
+在Unix系统中，你可以使用<code class="env">SHELL</code>环境变量来控制使用哪个shell。如果你没有定义<code class="env">SHELL</code>，GDB会使用默认的shell（<samp class="file">/bin/sh</samp>）。你可以使用<code class="code">set startup-with-shell</code>命令禁用任何shell的使用（详情见下文）。
+</p>
+</dd>
+<dt><em class="emph">环境。</em></dt>
+<dd><p>你的程序通常从GDB继承其环境，但你可以使用GDB命令<code class="code">set environment</code>和<code class="code">unset environment</code>来更改影响你的程序的环境部分。见<a class="xref" href="Environment.html">你的程序的环境</a>。
+</p>
+</dd>
+<dt><em class="emph">工作目录。</em></dt>
+<dd><p>你可以使用命令<kbd class="kbd">set cwd</kbd>设置你的程序的工作目录。如果你没有使用这个命令设置任何工作目录，如果是本地调试，你的程序将继承GDB的工作目录；如果是远程调试，将继承远程服务器的工作目录。见<a class="xref" href="Working-Directory.html">你的程序工作目录</a>。
+</p>
+</dd>
+<dt><em class="emph">标准输入和输出。</em></dt>
+<dd><p>你的程序通常使用与GDB相同的设备作为标准输入和标准输出。你可以在<code class="code">run</code>命令行中重定向输入和输出，或者使用<code class="code">tty</code>命令为你的程序设置不同的设备。
+见<a class="xref" href="Input_002fOutput.html">你的程序的输入和输出</a>。
+</p>
+<a class="index-entry-id" id="index-管道"></a>
+<p><em class="emph">警告：</em>虽然输入和输出重定向有效，但你不能使用管道将你正在调试的程序的数据传递给另一个程序；如果你尝试这样做，GDB可能最终调试错误的程序。
+</p></dd>
+</dl>
+
+<p>当你发出<code class="code">run</code>命令时，你的程序会立即开始执行。关于如何安排你的程序停止，请见<a class="xref" href="Stopping.html">停止和继续</a>。一旦你的程序停止，你可以使用<code class="code">print</code>或<code class="code">call</code>命令调用你的程序中的函数。见<a class="xref" href="Data.html">检查数据</a>。
+</p>
+<p>如果自GDB上次读取符号文件以来，你的符号文件的修改时间发生了变化，GDB会丢弃其符号表并再次读取它。当它这样做时，GDB会尝试保留你当前的断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-开始"></a>
+<a id="index-运行到主程序"></a><span><code class="code">start</code><a class="copiable-link" href="#index-运行到主程序"> &para;</a></span></dt>
+<dd><p>主程序的名称可能因语言而异。对于C或C++语言，主程序名称始终是<code class="code">main</code>，但其他语言，如Ada，不需要为其主程序指定特定名称。调试器提供了一种方便的方法来启动程序的执行并在主程序的开头停止，这取决于所使用的语言。
+</p>
+<p>“<samp class="samp">start</samp>”命令相当于在主程序的开头设置一个临时断点，然后调用“<samp class="samp">run</samp>”命令。
+</p>
+<a class="index-entry-id" id="index-详细说明阶段"></a>
+<p>一些程序包含一个<em class="dfn">详细说明</em>阶段，在调用主程序之前会执行一些启动代码。这取决于编写你的程序所使用的语言。例如，在C++中，静态和全局对象的构造函数在调用<code class="code">main</code>之前会被执行。因此，调试器可能会在到达主程序之前停止。然而，临时断点将保留以停止执行。
+</p>
+<p>将给你的程序的参数指定为“<samp class="samp">start</samp>”命令的参数。这些参数将原封不动地传递给底层的“<samp class="samp">run</samp>”命令。请注意，如果在后续调用“<samp class="samp">start</samp>”或“<samp class="file">run</samp>时没有提供参数，将重用相同的参数。
+</p>
+<p>有时需要在详细说明阶段调试程序。在这些情况下，使用<code class="code">start</code>命令会使你的程序的执行停止得太晚，因为程序已经完成了详细说明阶段。在这种情况下，要么在运行程序之前在你的详细说明代码中插入断点，要么使用<code class="code">starti</code>命令。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-starti"></a>
+<a id="index-运行到第一条指令"></a><span><code class="code">starti</code><a class="copiable-link" href="#index-运行到第一条指令"> &para;</a></span></dt>
+<dd><p>“<samp class="samp">starti</samp>”命令相当于在程序执行的第一条指令处设置一个临时断点，然后调用“<samp class="samp">run</samp>”命令。对于包含详细说明阶段的程序，“<samp class="samp">starti</samp>”命令将在详细说明阶段的开始处停止执行。
+</p>
+<a class="anchor" id="set-exec_002dwrapper"></a></dd>
+<dt><a id="index-set-exec_002dwrapper"></a><span><code class="code">set exec-wrapper <var class="var">wrapper</var></code><a class="copiable-link" href="#index-set-exec_002dwrapper"> &para;</a></span></dt>
+<dt><code class="code">show exec-wrapper</code></dt>
+<dt><code class="code">unset exec-wrapper</code></dt>
+<dd><p>当设置了“ exec-wrapper”时，指定的包装器用于启动程序进行调试。GDB使用形式为<kbd class="kbd">exec <var class="var">wrapper</var> <var class="var">program</var></kbd>的shell命令启动你的程序。会为<var class="var">program</var>及其参数添加引号，但不会为<var class="var">wrapper</var>添加引号，因此如果适合你的shell，你应该添加引号。包装器运行直到它执行你的程序，然后GDB接管控制。
+</p>
+<p>你可以使用任何最终使用其参数调用<code class="code">execve</code>的程序作为包装器。几个标准的Unix实用程序可以做到这一点，例如<code class="code">env</code>和<code class="code">nohup</code>。任何以<code class="code">exec &quot;$@&quot;</code>结尾的Unix shell脚本也可以工作。
+</p>
+<p>例如，你可以使用<code class="code">env</code>将一个环境变量传递给被调试的程序，而无需在你的shell环境中设置该变量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set exec-wrapper env 'LD_PRELOAD=libtest.so'
+(gdb) run
+</pre></div>
+
+<p>在大多数目标上进行本地调试时，此命令可用，但不包括DJGPP、Cygwin和MS Windows。
+</p>
+<a class="index-entry-id" id="index-set-startup_002dwith_002dshell"></a>
+<a class="anchor" id="set-startup_002dwith_002dshell"></a></dd>
+<dt><code class="code">set startup-with-shell</code></dt>
+<dt><code class="code">set startup-with-shell on</code></dt>
+<dt><code class="code">set startup-with-shell off</code></dt>
+<dt><code class="code">show startup-with-shell</code></dt>
+<dd><p>在Unix系统上，默认情况下，如果你的目标上有一个可用的shell，GDB会使用它来启动你的程序。“<samp class="samp">run</samp>”命令的参数会传递给shell，shell会进行变量替换、展开通配符字符并执行I/O重定向。在某些情况下，禁用这种对shell的使用可能会很有用，例如，当调试shell本身或诊断启动失败时，如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) run
+启动程序：./a.out
+在启动期间程序以信号SIGSEGV终止，段错误。
+</pre></div>
+
+<p>这表明指定的shell或使用“ exec-wrapper”指定的包装器崩溃了，而不是你的程序。最常见的情况是，这是由你的shell的非交互式模式初始化文件中的某些奇怪内容引起的，例如C-shell的<samp class="file">.cshrc</samp>、Z shell的$<samp class="file">.zshenv</samp>，或者BASH的<code class="env">BASH_ENV</code>环境变量中指定的文件。
+</p>
+<a class="anchor" id="set-auto_002dconnect_00

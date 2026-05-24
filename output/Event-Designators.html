@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>事件指示符（使用GDB调试）</title>
+
+<meta name="description" content="事件指示符（使用GDB调试）">
+<meta name="keywords" content="事件指示符（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="History-Interaction.html" rel="up" title="历史交互">
+<link href="Word-Designators.html" rel="next" title="单词指示符">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="事件指示符">
+<div class="nav-panel">
+<p>
+下一个：<a href="Word-Designators.html" accesskey="n" rel="next">单词指示符</a>，上一个：<a href="History-Interaction.html" accesskey="u" rel="up">历史扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="事件指示符-1"><span>34.1.1事件指示符<a class="copiable-link" href="#事件指示符-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-事件指示符"></a>
+
+<p>事件指示符是对历史列表中命令行条目的引用。
+除非该引用是绝对的，否则事件相对于历史列表中的当前位置。
+<a class="index-entry-id" id="索引-历史事件"></a>
+</p>
+<dl class="table">
+<dt><code class="code">!</code></dt>
+<dd><p>开始历史替换，除非后面跟着空格、制表符、行尾或&lsquo;<samp class="samp">=</samp>&rsquo;。
+</p>
+</dd>
+<dt><code class="code">!<var class="var">n</var></code></dt>
+<dd><p>引用命令行<var class="var">n</var>。
+</p>
+</dd>
+<dt><code class="code">!-<var class="var">n</var></code></dt>
+<dd><p>引用往前<var class="var">n</var>行的命令。
+</p>
+</dd>
+<dt><code class="code">!!</code></dt>
+<dd><p>引用上一个命令。这是&lsquo;<samp class="samp">!-1</samp>&rsquo;的同义词。
+</p>
+</dd>
+<dt><code class="code">!<var class="var">string</var></code></dt>
+<dd><p>引用历史列表中当前位置之前以<var class="var">string</var>开头的最新命令。
+</p>
+</dd>
+<dt><code class="code">!?<var class="var">string</var>[?]</code></dt>
+<dd><p>引用历史列表中当前位置之前包含<var class="var">string</var>的最新命令。
+如果<var class="var">string</var>后面紧接着是换行符，则尾随的&lsquo;<samp class="samp">?</samp>&rsquo;可以省略。
+如果<var class="var">string</var>缺失，则使用最近一次搜索中的字符串；如果没有之前的搜索字符串，则为错误。
+</p>
+</dd>
+<dt><code class="code">^<string1>^<string2>^</code></dt>
+<dd><p>快速替换。重复上一个命令，将<string1>替换为<string2>。等同于
+<code class="code">!!:s^<var class="var">string1</var>^<var class="var">string2</var>^</code>.
+</p>
+</dd>
+<dt><code class="code">!#</code></dt>
+<dd><p>到目前为止输入的整个命令行。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

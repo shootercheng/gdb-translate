@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>数值参数（使用GDB调试）</title>
+
+<meta name="description" content="数值参数（使用GDB调试）">
+<meta name="keywords" content="数值参数（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Commands-For-Completion.html" rel="next" title="用于补全的命令">
+<link href="Commands-For-Killing.html" rel="prev" title="用于删除的命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Numeric-Arguments">
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-For-Completion.html" accesskey="n" rel="next">让Readline为你输入</a>，上一页：<a href="Commands-For-Killing.html" accesskey="p" rel="prev">删除和粘贴</a>，向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Specifying-Numeric-Arguments"><span>33.4.5 指定数值参数<a class="copiable-link" href="#Specifying-Numeric-Arguments"> &para;</a></span></h4>
+<dl class="ftable">
+<dt><a id="index-digit_002dargument-_0028M_002d0_002c-M_002d1_002c-_2026-M_002d_002d_0029"></a><span><code class="code">digit-argument (<kbd class="kbd">M-0</kbd>, <kbd class="kbd">M-1</kbd>, &hellip; <kbd class="kbd">M--</kbd>)</code><a class="copiable-link" href="#index-digit_002dargument-_0028M_002d0_002c-M_002d1_002c-_2026-M_002d_002d_0029"> &para;</a></span></dt>
+<dd><p>将此数字添加到已累积的参数中，或开始一个新的参数。<kbd class="kbd">M--</kbd> 开始一个负参数。
+</p>
+</dd>
+<dt><a id="index-universal_002dargument-_0028_0029"></a><span><code class="code">universal-argument ()</code><a class="copiable-link" href="#index-universal_002dargument-_0028_0029"> &para;</a></span></dt>
+<dd><p>这是指定参数的另一种方式。
+如果此命令后跟一个或多个数字，可选地带有一个前导负号，这些数字定义参数。
+如果命令后跟数字，再次执行 <code class="code">universal - argument</code> 会结束数值参数，否则将被忽略。
+作为一种特殊情况，如果此命令紧接着后跟一个既不是数字也不是负号的字符，则下一个命令的参数计数将乘以四。
+参数计数最初为一，因此第一次执行此函数会使参数计数变为四，第二次执行会使参数计数变为十六，依此类推。
+默认情况下，此命令未绑定到某个键。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

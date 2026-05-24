@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>调试器适配器协议（使用GDB进行调试）</title>
+
+<meta name="description" content="调试器适配器协议（使用GDB进行调试）">
+<meta name="keywords" content="调试器适配器协议（使用GDB进行调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="JIT-Interface.html" rel="next" title="JIT接口">
+<link href="Annotations.html" rel="prev" title="注释">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Debugger-Adapter-Protocol">
+<div class="nav-panel">
+<p>
+下一页：<a href="JIT-Interface.html" accesskey="n" rel="next">JIT编译接口</a>，上一页：<a href="Annotations.html" accesskey="p" rel="prev"><small class="sc">GDB</small>注释</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Debugger-Adapter-Protocol-1"><span>29调试器适配器协议<a class="copiable-link" href="#Debugger-Adapter-Protocol-1"> &para;</a></span></h2>
+
+<p>调试器适配器协议是一种通用API，一些IDE使用它与调试器进行通信。其文档位于 <a class="url" href="https://microsoft.github.io/debug-adapter-protocol/">https://microsoft.github.io/debug-adapter-protocol/</a>。
+</p>
+<p>一般来说，<small class="sc">GDB</small> 按文档实现调试器适配器协议。然而，在某些情况下，需要甚至期望进行扩展。
+</p>
+<p><small class="sc">GDB</small> 定义了一些可以传递给 <code class="code">launch</code> 请求的参数：
+</p>
+<dl class="table">
+<dt><code class="code">args</code></dt>
+<dd><p>如果提供，这应该是一个字符串数组。这些字符串作为命令行参数提供给子进程，就像通过 <code class="code">set args</code> 一样。见 <a class="xref" href="Arguments.html">程序的参数</a>。
+</p>
+</dd>
+<dt><code class="code">cwd</code></dt>
+<dd><p>如果提供，这应该是一个字符串。<small class="sc">GDB</small> 将其工作目录更改为该目录，就像通过 <code class="code">cd</code> 命令一样（见 <a class="pxref" href="Working-Directory.html">程序的工作目录</a>）。启动的程序将继承此作为其工作目录。请注意，目录更改在处理 <code class="code">program</code> 参数之前发生。如果 <code class="code">program</code> 是一个相对文件名，这将影响结果。
+</p>
+</dd>
+<dt><code class="code">env</code></dt>
+<dd><p>如果提供，这应该是一个对象。对象的每个键将用作环境变量的名称；每个值必须是一个字符串，并且将是该变量的值。子进程的环境将设置为与传入的完全相同。见 <a class="xref" href="Environment.html">程序的环境</a>。
+</p>
+</dd>
+<dt><code class="code">program</code></dt>
+<dd><p>如果提供，这是一个指定要使用的程序的字符串。这对应于 <code class="code">file</code> 命令。见 <a class="xref" href="Files.html">指定文件的命令</a>。
+</p>
+</dd>
+<dt><code class="code">stopAtBeginningOfMainSubprogram</code></dt>
+<dd><p>如果提供，这必须是一个布尔值。当为 &lsquo;<samp class="samp">True</samp>&rsquo; 时，<small class="sc">GDB</small> 将在程序的主过程中设置一个临时断点，使用与 <code class="code">start</code> 命令相同的方法。见 <a class="xref" href="Starting.html">启动你的程序</a>。
+</p>
+</dd>
+<dt><code class="code">stopOnEntry</code></dt>
+<dd><p>如果提供，这必须是一个布尔值。当为 &lsquo;<samp class="samp">True</samp>&rsquo; 时，<small class="sc">GDB</small> 将在程序的第一条指令处设置一个临时断点，使用与 <code class="code">starti</code> 命令相同的方法。见 <a class="xref" href="Starting.html">启动你的程序</a>。
+</p></dd>
+</dl>
+
+<p><small class="sc">GDB</small> 定义了一些可以传递给 <code class="code">attach</code> 请求的参数。必须指定 <code class="code">pid</code> 或 <code class="code">target</code>，但如果两者都指定，则 <code class="code">target</code> 将被忽略。
+</p>
+<dl class="table">
+<dt><code class="code">pid</code></dt>
+<dd><p><small class="sc">GDB</small> 应附加到的进程ID。见 <a class="xref" href="Attach.html">调试一个正在运行的进程</a>。
+</p>
+</dd>
+<dt><code class="code">program</code></dt>
+<dd><p>如果提供，这是一个指定要使用的程序的字符串。这对应于 <code class="code">file</code> 命令。见 <a class="xref" href="Files.html">指定文件的命令</a>。在某些情况下，<small class="sc">GDB</small> 可以自动确定正在运行哪个程序。然而，对于许多远程目标，情况并非如此，因此应提供此参数。
+</p>
+</dd>
+<dt><code class="code">target</code></dt>
+<dd><p><small class="sc">GDB</small> 应连接到的目标。这是一个字符串，并传递给 <code class="code">target remote</code> 命令。见 <a class="xref" href="Connecting.html">连接到远程目标</a>。
+</p></dd>
+</dl>
+
+<p>响应 <code class="code">disassemble</code> 请求时，DAP允许客户端以实现定义的格式返回每条指令的字节。<small class="sc">GDB</small> 通过发送一个用十六进制编码字节的字符串来实现这一点，例如 <code class="code">&quot;55a2b900&quot;</code>。
+</p>
+<p>当 <code class="code">repl</code> 上下文用于 <code class="code">evaluate</code> 请求时，<small class="sc">GDB</small> 将提供的表达式作为CLI命令进行求值。
+</p>
+<p>一般来说，求值可能会导致子进程继续执行。例如，求值 <code class="code">continue</code> 命令可能会这样，求值涉及子进程函数调用的表达式也可能会这样。
+</p>
+<p><code class="code">repl</code> 求值也可能导致 <small class="sc">GDB</small> 似乎停止响应请求，例如，如果一个CLI脚本进行长时间计算。
+</p>
+<p>这样的求值可以使用DAP <code class="code">cancel</code> 请求中断。（实际上，<code class="code">cancel</code> 应该对任何请求都有效，但对大多数请求可能没有用。）
+</p>
+<p><small class="sc">GDB</small> 提供了一些可以在DAP模式下使用的日志记录设置。可以使用 <code class="code">-iex</code> 选项在命令行上设置这些设置（见 <a class="pxref" href="File-Options.html">选择文件</a>）。
+</p>
+<dl class="table">
+<dt><code class="code">set debug dap-log-file <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code></dt>
+<dd><p>启用DAP日志记录。日志写入 <var class="var">filename</var>。如果未给出 <var class="var">filename</var>，则停止日志记录。
+</p>
+</dd>
+<dt><code class="code">set debug dap-log-level <var class="var">level</var></code></dt>
+<dd><p>设置DAP日志记录级别。默认值为 &lsquo;<samp class="samp">1</samp>&rsquo;，它记录DAP协议、开发人员认为有用的任何调试消息以及意外异常。级别 &lsquo;<samp class="samp">2</samp>&rsquo; 可用于记录所有异常，包括被认为是预期的异常。例如，解析表达式失败将被视为正常异常，通常不会记录。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="JIT-Interface.html">JIT编译接口</a>，上一页：<a href="Annotations.html"><small class="sc">GDB</small>注释</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>进行调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

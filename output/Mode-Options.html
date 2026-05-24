@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>模式选项（使用GDB调试）</title>
+
+<meta name="description" content="模式选项（使用GDB调试）">
+<meta name="keywords" content="模式选项（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invoking-GDB.html" rel="up" title="调用GDB">
+<link href="Startup.html" rel="next" title="启动时GDB的操作">
+<link href="File-Options.html" rel="prev" title="文件选项">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="模式选项">
+<div class="nav-panel">
+<p>
+下一个：<a href="Startup.html" accesskey="n" rel="next">启动时GDB的操作</a>，上一个：<a href="File-Options.html" accesskey="p" rel="prev">选择文件</a>，向上：<a href="Invoking-GDB.html" accesskey="u" rel="up">调用GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="选择模式"><span>2.1.2选择模式<a class="copiable-link" href="#选择模式"> &para;</a></span></h4>
+
+<p>你可以在各种替代模式下运行GDB，例如批处理模式或安静模式。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="g_t_002dnx"></a></dd>
+<dt><a class="index-entry-id" id="index-_002dn"></a>
+<a id="index-_002d_002dnx"></a><span><code class="code">-nx</code><a class="copiable-link" href="#index-_002d_002dnx"> &para;</a></span></dt>
+<dt><code class="code">-n</code></dt>
+<dd><p>不执行在任何初始化文件中找到的命令（见 <a class="pxref" href="Initialization-Files.html">初始化文件</a>）。
+</p>
+<a class="anchor" id="g_t_002dnh"></a></dd>
+<dt><a id="index-_002d_002dnh"></a><span><code class="code">-nh</code><a class="copiable-link" href="#index-_002d_002dnh"> &para;</a></span></dt>
+<dd><p>不执行在任何主目录初始化文件中找到的命令（见 <a class="pxref" href="Initialization-Files.html">主目录初始化文件</a>）。系统范围和当前目录的初始化文件仍会被加载。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002d_002dsilent"></a>
+<a class="index-entry-id" id="index-_002dq"></a>
+<a id="index-_002d_002dquiet"></a><span><code class="code">-quiet</code><a class="copiable-link" href="#index-_002d_002dquiet"> &para;</a></span></dt>
+<dt><code class="code">-silent</code></dt>
+<dt><code class="code">-q</code></dt>
+<dd><p>“安静”。不打印介绍性和版权信息。这些信息在批处理模式下也会被抑制。
+</p>
+<a class="index-entry-id" id="index-set-startup_002dquietly"></a>
+<a class="index-entry-id" id="index-show-startup_002dquietly"></a>
+<p>这也可以使用 <code class="code">set startup-quietly on</code> 来启用。默认值是 <code class="code">off</code>。使用 <code class="code">show startup-quietly</code> 来查看当前设置。将 <code class="code">set startup-quietly on</code> 放入你的早期初始化文件（见 <a class="pxref" href="Initialization-Files.html">初始化文件</a>），以便未来的GDB会话安静地启动。
+</p>)
+</dd>
+<dt><a id="index-_002d_002dbatch"></a><span><code class="code">-batch</code><a class="copiable-link" href="#index-_002d_002dbatch"> &para;</a></span></dt>
+<dd><p>以批处理模式运行。在处理完所有用‘<samp class="samp">-x</samp>’指定的命令文件（以及初始化文件中的所有命令，如果没有用‘<samp class="samp">-n</samp>’禁止）后，以状态码 <code class="code">0</code> 退出。如果在执行命令文件中的GDB命令时发生错误，则以非零状态退出。批处理模式还会禁用分页，设置无限的终端宽度和高度，见 <a class="pxref" href="Screen-Size.html">屏幕大小</a>，并且行为就好像 <kbd class="kbd">set confirm off</kbd> 生效一样（见 <a class="pxref" href="Messages_002fWarnings.html">可选的警告和消息</a>）。
+</p>
+<p>批处理模式对于将GDB用作过滤器可能很有用，例如在另一台计算机上下载并运行程序；为了使其更有用，消息
+</p>:
+<div class="example smallexample">
+<pre class="example-preformatted">程序正常退出。
+</pre></div>
+
+<p>（通常在GDB控制下运行的程序终止时发出）在批处理模式下运行时不会发出。
+</p>
+</dd>
+<dt><a id="index-_002d_002dbatch_002dsilent"></a><span><code class="code">-batch-silent</code><a class="copiable-link" href="#index-_002d_002dbatch_002dsilent"> &para;</a></span></dt>
+<dd><p>以与‘<samp class="samp">-batch</samp>’完全相同的批处理模式运行，但完全安静。防止所有GDB输出到 <code class="code">stdout</code>（<code class="code">stderr</code> 不受影响）。这比‘<samp class="samp">-silent</samp>’安静得多，对于交互式会话将毫无用处。
+</p>
+<p>例如，当使用给出‘<samp class="samp">Loading section</samp>’消息的目标时，这特别有用。
+</p>
+<p>请注意，通过GDB输出其输出的目标（而不是直接写入 <code class="code">stdout</code>）也将被设为安静。
+</p>
+</dd>
+<dt><a id="index-_002d_002dreturn_002dchild_002dresult"></a><span><code class="code">-return-child-result</code><a class="copiable-link" href="#index-_002d_002dreturn_002dchild_002dresult"> &para;</a></span></dt>
+<dd><p>GDB的返回码将是子进程（被调试的进程）的返回码，但有以下例外情况：
+</p>
+<ul class="itemize mark-bullet">
+<li>GDB异常退出。例如，由于不正确的参数或内部错误。在这种情况下，如果没有‘<samp class="samp">-return-child-result</samp>’，退出码将与原来相同。
+</li><li>用户使用显式值退出。例如，‘<samp class="samp">quit 1</samp>’。
+</li><li>子进程从未运行，或不被允许终止，在这种情况下，退出码将为 -1。
+</li></ul>
+
+<p>当GDB用作远程程序加载器或模拟器接口时，如果与‘<samp class="samp">-batch</samp>’或‘<samp class="samp">-batch-silent</samp>’一起使用，此选项很有用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dnw"></a>
+<a id="index-_002d_002dnowindows"></a><span><code class="code">-nowindows</code><a class="copiable-link" href="#index-_002d_002dnowindows"> &para;</a></span></dt>
+<dt><code class="code">-nw</code></dt>
+<dd><p>“无窗口”。如果GDB内置了图形用户界面（GUI），那么此选项会告诉GDB仅使用命令行界面。如果没有可用的GUI，此选项无效。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dw"></a>
+<a id="index-_002d_002dwindows"></a><span><code class="code">-windows</code><a class="copiable-link" href="#index-_002d_002dwindows"> &para;</a></span></dt>
+<dt><code class="code">-w</code></dt>
+<dd><p>如果GDB包括GUI，那么此选项要求尽可能使用它。
+</p>
+</dd>
+<dt><code class="code">-cd <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002dcd"> &para;</a></dt>
+<dd><p>使用 <var class="var">directory</var> 作为其工作目录运行GDB，而不是当前目录。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dD"></a>
+<a id="index-_002d_0

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>libthread_db.so.1文件（使用GDB调试）</title>
+
+<meta name="description" content="libthread_db.so.1文件（使用GDB调试）">
+<meta name="keywords" content="libthread_db.so.1文件（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading.html" rel="up" title="自动加载">
+<link href="Auto_002dloading-safe-path.html" rel="next" title="自动加载安全路径">
+<link href="Init-File-in-the-Current-Directory.html" rel="prev" title="当前目录中的初始化文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="libthread_005fdb_002eso_002e1-file">
+<div class="nav-panel">
+<p>
+下一个：<a href="Auto_00!dloading-safe-path.html" accesskey="n" rel="next">自动加载的安全限制</a>，上一个：<a href="Init-File-in-the-Current-Directory.html" accesskey="p" rel="prev">在当前目录中自动加载初始化文件</a>，向上：<a href="Auto_00!dloading.html" accesskey="u" rel="up">自动加载关联文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Automatically-loading-thread-debugging-library"><span>22.8.2自动加载线程调试库<a class="copiable-link" href="#Automatically-loading-thread-debugging-library"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-auto_002dloading-libthread_005fdb_002eso_002e1"></a>
+
+<p>此功能目前仅在GNU/Linux原生主机上可用。
+</p>
+<p>GDB在某些情况下会从特定于被调试程序的位置读取线程调试库（请参见 <a class="pxref" href="Threads.html#set-libthread_002ddb_002dsearch_002dpath">设置libthread-db-search-path</a>）。
+</p>
+<p>特殊的“<samp class="samp">libthread-db-search-path</samp>”条目“<samp class="samp">$sdir</samp>”在处理时不会检查“<samp class="samp">设置自动加载libthread-db</samp>”开关，因为一般来说系统库必须是可信的。在“<samp class="samp">libthread-db-search-path</samp>”条目的所有其他情况下，GDB在尝试打开此类线程调试库之前，会首先检查“<samp class="samp">设置自动加载libthread-db</samp>”是否启用。
+</p>
+<p>请注意，加载此调试库还需要相应配置的 <code class="code">自动加载安全路径</code>（请参见 <a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-libthread_002ddb"></a></dd>
+<dt><a id="index-set-auto_002dload-libthread_002ddb"></a><span><code class="code">设置自动加载libthread-db [开|关]</code><a class="copiable-link" href="#index-set-auto_002dload-libthread_002ddb"> &para;</a></span></dt>
+<dd><p>启用或禁用自动加载特定于被调试程序的线程调试库。
+</p>
+<a class="anchor" id="show-auto_002dload-libthread_002ddb"></a></dd>
+<dt><a id="index-show-auto_002dload-libthread_002ddb"></a><span><code class="code">显示自动加载libthread-db</code><a class="copiable-link" href="#index-show-auto_002dload-libthread_002ddb"> &para;</a></span></dt>
+<dd><p>显示是否启用了自动加载特定于被调试程序的线程调试库。
+</p>
+<a class="anchor" id="info-auto_002dload-libthread_002ddb"></a></dd>
+<dt><a id="index-info-auto_002dload-libthread_002ddb"></a><span><code class="code">信息自动加载libthread-db</code><a class="copiable-link" href="#index-info-auto_002dload-libthread_00!ddb"> &para;</a></span></dt>
+<dd><p>打印所有已加载的特定于被调试程序的线程调试库的列表，并为每个此类库打印使用它的被调试程序的 <var class="var">pid</var> 列表。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>
+
+ 

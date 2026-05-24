@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证第1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>GNU自由文档许可证（使用GDB调试）</title>
+
+<meta name="description" content="GNU自由文档许可证（使用GDB调试）">
+<meta name="keywords" content="GNU自由文档许可证（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Concept-Index.html" rel="next" title="概念索引">
+<link href="Copying.html" rel="prev" title="复制">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.center {text-align:center}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="GNU自由文档许可证">
+<div class="nav-panel">
+<p>
+下一页：<a href="Concept-Index.html" accesskey="n" rel="next">概念索引</a>，上一页：<a href="Copying.html" accesskey="p" rel="prev">GNU通用公共许可证</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="GNU自由文档许可证-1"><span>附录N GNU自由文档许可证<a class="copiable-link" href="#GNU自由文档许可证-1"> &para;</a></span></h2>
+<div class="center">版本1.3，2008年11月3日
+</div>
+
+<div class="display">
+<pre class="display-preformatted">版权所有 &copy; 2000、2001、2002、2007、2008自由软件基金会，
+<a class="uref" href="http://fsf.org/">http://fsf.org/</a>
+
+允许每个人复制和分发本许可证文档的逐字副本，但不允许对其进行更改。
+</pre></div>
+
+<ol class="enumerate" start="0">
+<li> 前言
+
+<p>本许可证的目的是使手册、教科书或其他功能实用的文档在自由意义上是“免费的”：确保每个人都有有效复制和重新分发它的自由，无论是否修改它，无论是商业性还是非商业性的。其次，本许可证为作者和出版商保留了一种为他们的作品获得认可的方式，同时不被认为对他人所做的修改负责。
+</p>
+<p>本许可证是一种“版权共享”，这意味着文档的衍生作品本身在相同意义上也必须是免费的。它补充了GNU通用公共许可证，后者是为自由软件设计的版权共享许可证。  
+</p><p>我们设计本许可证是为了将其用于自由软件的手册，因为自由软件需要自由文档：一个自由程序应该附带提供与软件相同自由的手册。但本许可证不限于软件手册；它可用于任何文本作品，无论主题是什么，也无论它是否作为印刷书籍出版。我们主要推荐本许可证用于以指导或参考为目的的作品。
+</p>
+</li><li> 适用范围和定义
+
+<p>本许可证适用于任何包含版权所有者声明可根据本许可证条款分发的通知的手册或其他作品，无论以何种媒介形式。这样的通知授予在本文所述条件下使用该作品的全球范围内、免版税、无期限的许可。以下的“文档”指任何此类手册或作品。公众中的任何成员都是被许可人，并被称为“你”。如果你以需要版权法许可的方式复制修改或分发该作品，你即接受本许可证。
+</p><p>“文档的修改版本”指包含该文档或其一部分的任何作品，无论是逐字复制、修改和/或翻译成另一种语言。
+</p><p>“次要章节”是文档中专门处理文档的出版商或作者与文档整体主题（或相关事项）的关系且不包含直接属于该整体主题内容的命名附录或前言部分。（因此，如果文档部分是数学教科书，次要章节不得解释任何数学内容。）这种关系可能是与主题或相关事项的历史联系，或者是关于它们的法律、商业、哲学、伦理或政治立场。
+</p><p>“不变章节”是在声明文档根据本许可证发布的通知中指定为不变章节标题的某些次要章节。如果一个章节不符合次要章节的上述定义，则不允许将其指定为不变章节。文档可能包含零个不变章节。如果文档未标识任何不变章节，则不存在不变章节。
+</p><p>“封面文字”是在声明文档根据本许可证发布通知中列为封面文字或封底文字的某些简短文本段落。封面文字最多可为5个单词，封底文字最多可为25个单词。
+</p><p>“透明”的文档副本指机器可读副本，以一种其规范可供公众获取的格式表示，适合使用通用文本编辑器直接修改文档，或者（对于由像素组成的图像）使用通用绘图程序，或者（对于绘图）使用一些广泛可用的绘图编辑器，并且适合输入到文本格式化程序或自动翻译成适合输入到文本格式化程序的各种格式。以其他透明文件格式制作的副本，其标记或无标记的安排旨在阻止或阻碍读者后续修改，则不是透明副本。如果用于大量文本，则图像格式不是透明的。不“透明”的副本称为“不透明”副本。
+</p><p>透明副本的合适格式示例包括无标记的纯<small class="sc">ASCII</small>、Texinfo输入格式、LaTeX输入格式、使用公开可用<abbr class="acronym">DTD</abbr>的<abbr class="acronym">SGML</abbr>或<abbr class="acronym">XML</abbr>，以及为便于人工修改而设计的符合标准的简单<abbr class="acronym">HTML</abbr>、PostScript或<abbr class="acronym">PDF</abbr>文件。透明图像格式的示例包括 <abbr class="acronym">PNG</abbr>、<abbr class="acronym">XCF</abbr> 和 <abbr class="acronym">JPG</abbr>。不透明格式包括只能由专有文字处理器读取和编辑 的专有格式、<abbr class="acronym">SGML</abbr> 或 <abbr class="acronym">XML</abbr>，其 <abbr class="acronym">DTD</abbr> 和/或处理工具通常不可用，以及某些文字处理器仅为输出目的生成的机器生成的<abbr class="acronym">HTML</abbr>、PostScript或<abbr class="acronym">PDF</abbr>。
+</p><p>“标题页”对于印刷书籍而言，指标题页本身，以及为清晰可读地容纳本许可证要求出现在标题页上的材料所需的后续页面。对于没有此类标题页的格式的作品，“标题页”指作品标题最突出出现位置附近、正文开始之前的文本。
+</p><p>“出版商”指将文档副本分发给公众的任何个人或实体。
+</p><p>“名为XYZ的章节”指文档的命名子单元，其标题要么恰好是XYZ，要么在将XYZ翻译成另一种语言的文本之后，在括号中包含XYZ。（这里XYZ代表下面提到的特定章节名称，如“致谢”、“献辞”、“认可”或“历史”。）当你修改文档时，“保留该章节的标题”意味着根据此定义它仍然是“名为XYZ的章节”。
+</p><p>文档可能在声明本许可证适用于该文档的通知旁边包括保修免责声明。这些保修免责声明被视为通过引用包含在本许可证中，但仅就免责声明而言：这些保修免责声明可能具有的任何其他含义均无效，并且对本许可证的含义没有影响。
+</p>
+</li><li> 逐字复制
+
+<p>你可以在任何媒介中复制和分发文档，无论是商业性还是非商业性的，前提是本许可证、版权声明以及声明本许可证适用于该文档的许可声明在所有副本中都被复制，并且你不向本许可证的条件添加任何其他条件。你不得使用技术措施来阻碍或控制你制作或分发的副本的阅读或进一步复制。但是，你可以接受复制的补偿。如果你分发足够数量的副本，你还必须遵守第3节中的条件。
+</p><p>你也可以在上述相同条件下出借副本，并且你可以公开展示副本。
+</p>
+</li><li> 大量复制
+
+<p>If you publish printed copies (or copies in media that commonly have
+printed covers) of the Document, numbering more than 100, and the
+Document&rsquo;s license notice requires Cover Texts, you must enclose the
+copies in covers that carry, clearly and legibly, all these Cover
+Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on
+the back cover.  Both covers must also clearly and legibly identify
+you as the publisher of these copies.  The front cover must present
+the full title with all words of the title equally prominent and
+visible.  You may add other material on the covers in addition.
+Copying with changes limited to the covers, as long as they preserve
+the title of the Document and satisfy these conditions, can be treated
+as verbatim copying in other respects.
+</p><p>If the required texts for either cover are too voluminous to fit
+legibly, you should put the first ones listed (as many as fit
+reasonably) on the actual cover, and continue the rest onto adjacent
+pages.
+</p><p>If you publish or distribute Opaque copies of the Document numbering
+more than 100, you must either include a machine-readable Transparent
+copy along with each Opaque copy, or state in or with each Opaque copy
+a computer-network location from which the general network-using
+public has access to download using public-standard network protocols
+a complete Transparent copy of the Document, free of added material.
+If you use the latter option, you must take reasonably prudent steps,
+when you begin distribution of Opaque copies in quantity, to ensure
+that this Transparent copy will remain thus accessible at the stated
+location until at least one year after the last time you distribute an
+Opaque copy (directly or through your agents or retailers) of that
+edition to the public.
+</p><p>It is requested, but not required, that you contact the authors of the
+Document well before redistributing any large number of copies, to give
+them a chance to provide you with an updated version of the Document.
+</p>
+</li><li> 修改
+
+<p>你可以在上述第2节和第3节的条件下复制和分发文档的修改版本，前提是你根据本许可证精确发布修改版本，修改版本充当文档的角色，从而许可拥有其副本的任何人分发和修改修改版本。此外，你必须在修改版本中执行以下操作：
+</p><ol class="enumerate" type="A" start="1">
+<li> 在标题页（以及如果有的话，在封面上）使用与文档不同的标题，并且与以前版本的标题不同（如果有以前版本，应在文档的历史部分列出）。如果该版本的原始出版商给予许可，你可以使用与以前版本相同的标题。
+
+</li><li> 在标题页上列出作为作者的一个或多个负责修改版本中修改内容的个人或实体，以及至少五个文档的主要作者（如果文档的主要作者少于五个，则列出所有主要作者），除非他们免除你的此要求。
+
+</li><li> 在标题页上声明修改版本的出版商名称，作为出版商。
+
+</li><li> 保留文档的所有版权声明。
+
+</li><li> 在其他版权声明旁边添加一个适当的版权声明，用于你的修改。
+
+</li><li> 在版权声明之后立即包括一个许可声明，给予公众根据本许可证条款使用修改版本的许可，形式如下文附录所示。
+
+</li><li> 在该许可声明中保留文档许可声明中给出的确切不变章节列表和所需封面文字列表。
+
+</li><li> 包括本许可证的未更改副本。
+
+</li><li> 保留名为“历史”的章节，保留其标题，并在其中添加一项，至少说明修改版本的标题、年份、新作者和标题页上给出的出版商。如果文档中没有名为“历史”的章节，则创建一个章节，说明文档标题页上给出的文档标题、年份、作者和出版商，然后添加一项按照前一句描述修改版本。
+
+</li><li> 保留文档中给出的用于公众访问文档透明副本的网络位置（如果有的话），以及文档基于的以前版本中给出的网络位置。这些可以放在“历史”章节中。如果作品在文档本身之前至少四年出版，或者其引用版本的原始出版商给予许可，你可以省略网络位置。
+
+</li><li> 对于任何名为“致谢”或“献辞”的章节，保留该章节的标题，并在该章节中保留每个贡献者致谢和/或献辞的所有实质内容和语气。
+
+</li><li> 保留文档的所有不变章节，其文本和标题均未更改。章节编号或其等效内容不被视为章节标题的一部分。
+
+</li><li> 删除任何名为“认可”的章节。修改版本中不得包含此类章节。
+
+</li><li> 不要将任何现有章节重新命名为“认可”，或使其标题与任何不变章节冲突。
+
+</li><li> 保留任何保修免责声明。
+</li></ol>
+
+<p>If the Modified Version includes new front-matter sections or
+appendices that qualify as Secondary Sections and contain no material
+copied from the Document, you may at your option designate some or all
+of these sections as invariant.  To do this, add their titles to the
+list of Invariant Sections in the Modified Version&rsquo;s license notice.
+These titles must be distinct from any other section titles.
+</p><p>You may add a section Entitled &ldquo;Endorsements&rdquo;, provided it contains
+nothing but endorsements of your Modified Version by various parties&mdash;for example, statements of peer review or that the text has
+been approved by an organization as the authoritative definition of a
+standard.
+</p><p>You may add a passage of up to five words as a Front-Cover Text, and a
+passage of up to 25 words as a Back-Cover Text, to the end of the list
+of Cover Texts in the Modified Version.  Only one passage of
+Front-Cover Text and one of Back-Cover Text may be added by (or
+through arrangements made by) any one entity.  If the Document already
+includes a cover text for the same cover, previously added by you or
+by arrangement made by the same entity you are acting on behalf of,
+you may not add another; but you may replace the old one, on explicit
+permission from the previous publisher that added the old one.
+</p><p>The author(s) and publisher(s) of the Document do not by this License
+give permission to use their names for publicity for or to assert or
+imply endorsement of any Modified Version.
+</p>
+</li><li> 合并文档
+
+<p>你可以根据上述第4节中为修改版本定义的条款，将文档与根据本许可证发布的其他文档合并，前提是你在合并中包括所有原始文档的所有未修改的不变章节，并在合并作品的许可声明中将它们全部列为不变章节，并且你保留所有它们的保修免责声明。
+</p><p>合并后的作品只需要包含一份本许可证的副本，并且多个相同的不变章节可以用一份副本替换。如果有多个名称相同但内容不同的不变章节，则通过在其末尾（如果已知）添加该章节的原始作者或出版商的名称，或者添加一个唯一的编号，使每个此类章节的标题唯一。对合并作品许可声明中的不变章节列表中的章节标题进行相同的调整。
+</p><p>In the combination, you must combine any sections Entitled &ldquo;History&rdquo;
+in the various original documents, forming one section Entitled
+&ldquo;History&rdquo;; likewise combine any sections Entitled &ldquo;Acknowledgements&rdquo;,
+and any sections Entitled &ldquo;Dedications&rdquo;.  You must delete all
+sections Entitled &ldquo;Endorsements.&rdquo;
+</p>
+</li><li> 文档集合
+
+<p>你可以制作一个由文档和根据本许可证发布的其他文档组成的集合，并将各个文档中的本许可证副本替换为集合中包含的一份副本，前提是你在其他所有方面遵循本许可证对每个文档逐字复制的规则。
+</p><p>你可以从这样的集合中提取单个文档，并根据本许可证单独分发它，前提是你在提取的文档中插入一份本许可证副本，并在关于该文档逐字复制的所有其他方面遵循本许可证。  
+</p>
+</li><li> 与独立作品聚合
+
+<p>如果文档或其衍生作品与其他单独和独立的文档或作品在存储或分发介质的一卷中进行汇编，并且汇编产生的版权不用于限制汇编用户的合法权利，超出各个作品允许的范围，则该汇编称为“聚合”。当文档包含在聚合中时，本许可证不适用于聚合中不是文档衍生作品的其他作品。
+</p><p>If the Cover Text requirement of section 3 is applicable to these
+copies of the Document, then if the Document is less than one half of
+the entire aggregate, the Document&rsquo;s Cover Texts may be placed on
+covers that bracket the Document within the aggregate, or the
+electronic equivalent of covers if the Document is in electronic form.
+Otherwise they must appear on printed covers that bracket the whole
+aggregate.
+</p>
+</li><li> 翻译
+
+<p>翻译被视为一种修改，因此你可以根据第4节的条款分发文档的翻译。用翻译替换不变章节需要得到其版权所有者的特别许可，但你可以在这些不变章节的原始版本之外，包括一些或全部不变章节的翻译。你可以包括本许可证的翻译，以及文档中的所有许可声明和任何保修免责声明，前提是你还包括本许可证的原始英文版本以及那些声明和免责声明的原始版本。如果翻译与本许可证或声明或免责声明的原始版本之间存在分歧，原始版本将优先适用。
+</p><p>If a section in the Document is Entitled &ldquo;Acknowledgements&rdquo;,
+&ldquo;Dedications&rdquo;, or &ldquo;History&rdquo;, the requirement (section 4) to Preserve
+its Title (section 1) will typically require changing the actual
+title.
+</p>
+</li><li> 终止
+
+<p>除非本许可证明确规定，否则你不得复制、修改、再许可或分发文档。任何其他试图复制、修改、再许可或分发它的行为都是无效的，并将自动终止你根据本许可证享有的权利。
+</p><p>然而，如果您停止所有违反本许可证的行为，那么您从特定版权所有者处获得的许可将被恢复：(a) 暂时恢复，除非版权所有者明确最终终止您的许可；(b) 如果版权所有者在停止侵权行为后60天内未通过合理方式通知您侵权行为，则永久恢复。
+</p><p>此外，如果版权所有者通过合理方式通知您侵权行为，这是您第一次收到该版权所有者关于违反本许可证（针对任何作品）的通知，并且您在收到通知后30天内纠正了侵权行为，则您从该特定版权所有者处获得的许可将永久恢复。
+</p><p>本节中您权利的终止不会终止根据本许可证从您处获得副本或权利的各方的许可。如果您的权利已被终止且未永久恢复，收到部分或全部相同材料的副本不会赋予您使用它的任何权利。
+</p>
+</li><li> 本许可证的未来修订
+
+<p>自由软件基金会可能会不时发布GNU自由文档许可证的新的修订版本。这些新版本在精神上与当前版本相似，但可能在细节上有所不同，以解决新问题或关注点。请参阅 <a class="uref" href="http://www.gnu.org/copyleft/">http://www.gnu.org/copyleft/</a>。
+</p><p>This License is given a distinguishing version number.
+If the Document specifies that a particular numbered version of this
+License &ldquo;or any later version&rdquo; applies to it, you have the option of
+following the terms and conditions either of that specified version or
+of any later version that has been published (not as a draft) by the
+Free Software Foundation.  If the Document does not specify a version
+number of this License, you may choose any version ever published (not
+as a draft) by the Free Software Foundation.  If the Document
+specifies that a proxy can decide which future versions of this
+License can be used, that proxy&rsquo;s public statement of acceptance of a
+version permanently authorizes you to choose that version for the
+Document.
+</p>
+</li><li> 重新许可
+
+<p>“大规模多作者协作网站”（或“MMC网站”）指任何发布可版权作品并为任何人提供突出编辑这些作品设施的万维网服务器。任何人都可以编辑的公共维基就是这样一个服务器的例子。网站中包含的“大规模多作者协作”（或“MMC”）指在MMC网站上发布的任何一组可版权作品。
+</p><p>“CC - BY - SA”指由Creative Commons Corporation发布的知识共享署名 - 相同方式共享3.0许可证，该公司是一家非营利性公司，主要营业地点在加利福尼亚州旧金山，以及该组织发布的该许可证的未来版权共享版本。
+</p><p>“合并”指将文档全部或部分作为另一文档的一部分进行发布或重新发布。
+</p><p>如果MMC根据本许可证获得许可，并且所有最初在本许可证下于本MMC之外的其他地方发布、随后全部或部分合并到本MMC中的作品：(1) 没有封面文字或不变章节，并且 (2) 在2008年11月1日之前合并，则该MMC“有资格重新许可”。
+</p><p>MMC网站的运营者可以在2009年8月1日之前的任何时间，在同一网站上根据CC - BY - SA重新发布网站中包含的MMC，前提是该MMC有资格重新许可。
+</p>
+</li></ol>
+
+<h3 class="heading" id="附录-003a-如何在你的文档中使用本许可证"><span>附录：如何在你的文档中使用本许可证<a class="copiable-link" href="#附录-003a-如何在你的文档中使用本许可证"> &para;</a></span></h3>
+
+<p>要在你编写的文档中使用本许可证，请在文档中包含许可证副本，并在标题页之后立即放置以下版权和许可声明：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">  Copyright (C)  <var class="var">年份</var>  <var class="var">你的名字</var>.
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.3
+  or any later version published by the Free Software Foundation;
+  with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+  Texts.  A copy of the license is included in the section entitled ``GNU
+  Free Documentation License''.
+</pre></div></div>
+
+<p>If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
+replace the &ldquo;with&hellip;Texts.&rdquo; line with this:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">    with the Invariant Sections being <var class="var">列出它们的标题</var>, with
+    the Front-Cover Texts being <var class="var">列出</var>, and with the Back-Cover Texts
+    being <var class="var">列出</var>.
+</pre></div></div>
+
+<p>If you have Invariant Sections without Cover Texts, or some other
+combination of the three, merge those two alternatives to suit the
+situation.
+</p><p>If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License,
+to permit their use in free software.
+</p>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Concept-Index.html">概念索引</a>，上一页：<a href="Copying.html">GNU通用公共许可证</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>调试输出（使用GDB进行调试）</title>
+
+<meta name="description" content="调试输出（使用GDB进行调试）">
+<meta name="keywords" content="调试输出（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Other-Misc-Settings.html" rel="next" title="其他杂项设置">
+<link href="Messages_002fWarnings.html" rel="prev" title="消息/警告">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="调试输出">
+<div class="nav-panel">
+<p>
+下一页：<a href="Other-Misc-Settings.html" accesskey="n" rel="next">其他杂项设置</a>，上一页：<a href="Messages_002fWarnings.html" accesskey="p" rel="prev">可选警告和消息</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="关于内部事件的可选消息"><span>22.10关于内部事件的可选消息<a class="copiable-link" href="#关于内部事件的可选消息"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-可选调试消息"></a>
+
+<p><small class="sc">GDB</small>有一些命令可以启用来自各种<small class="sc">GDB</small>子系统的可选调试消息；通常这些命令对<small class="sc">GDB</small>维护人员或在报告错误时很有用。本节记录这些命令。
+</p>
+<dl class="table">
+<dt><a id="index-set-exec_002ddone_002ddisplay"></a><span><code class="code">set exec-done-display</code><a class="copiable-link" href="#index-set-exec_002ddone_002ddisplay"> &para;</a></span></dt>
+<dd><p>打开或关闭异步命令完成的通知。开启后，当异步命令完成执行时，<small class="sc">GDB</small>将打印一条消息。默认是关闭。
+<a class="index-entry-id" id="index-show-exec_002ddone_002ddisplay"></a>
+</p></dd>
+<dt><code class="code">show exec-done-display</code></dt>
+<dd><p>显示异步命令完成通知的当前设置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-ARM-AArch64"></a>
+<a id="index-set-debug"></a><span><code class="code">set debug aarch64</code><a class="copiable-link" href="#index-set-debug"> &para;</a></span></dt>
+<dd><p>打开或关闭与ARM AArch64相关的调试消息显示。默认是关闭。
+<a class="index-entry-id" id="index-show-debug"></a>
+</p></dd>
+<dt><code class="code">show debug aarch64</code></dt>
+<dd><p>显示与ARM AArch64相关的调试消息显示的当前状态。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-架构调试信息"></a>
+<a id="index-gdbarch-debugging-info"></a><span><code class="code">set debug arch</code><a class="copiable-link" href="#index-gdbarch-debugging-info"> &para;</a></span></dt>
+<dd><p>打开或关闭gdbarch调试信息的显示。默认是关闭
+</p></dd>
+<dt><code class="code">show debug arch</code></dt>
+<dd><p>显示gdbarch调试信息显示的当前状态。
+</p>
+</dd>
+<dt><a id="index-AIX线程"></a><span><code class="code">set debug aix-thread</code><a class="copiable-link" href="#index-AIX线程"> &para;</a></span></dt>
+<dd><p>显示有关AIX线程模块内部工作的调试消息。
+</p></dd>
+<dt><code class="code">show debug aix-thread</code></dt>

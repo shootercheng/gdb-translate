@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>S/390和System z功能（使用GDB调试）</title>
+
+<meta name="description" content="S/390和System z功能（使用GDB调试）">
+<meta name="keywords" content="S/390和System z功能（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标功能">
+<link href="Sparc-Features.html" rel="next" title="Sparc功能">
+<link href="RX-Features.html" rel="prev" title="RX功能">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="S_002f390和-System-z功能">
+<div class="nav-panel">
+<p>
+下一页：<a href="Sparc-Features.html" accesskey="n" rel="next">Sparc功能</a>，上一页：<a href="RX-Features.html" accesskey="p" rel="prev">RX功能</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标功能</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="S_002f390和-System-z功能-1"><span>G.5.15 S/390和System z功能<a class="copiable-link" href="#S_002f390和-System-z功能-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-目标描述_002c-S_002f390功能"></a>
+<a class="index-entry-id" id="索引-目标描述_002c-System-z功能"></a>
+
+<p>S/390和System z目标需要 &lsquo;<samp class="samp">org.gnu.gdb.s390.core</samp>&rsquo; 功能。它应包含程序状态字（PSW）和16个通用寄存器。特别是，System z目标应提供64位寄存器 &lsquo;<samp class="samp">pswm</samp>&rsquo;、&lsquo;<samp class="samp">pswa</samp>&rsquo; 以及从 &lsquo;<samp class="samp">r0</samp>&rsquo; 到 &lsquo;<samp class="samp">r15</samp>&rsquo;。S/390目标应提供这些寄存器的32位版本。在31位寻址模式下运行的System z目标应提供32位版本的 &lsquo;<samp class="samp">pswm</samp>&rsquo; 和 &lsquo;<samp class="samp">pswa</samp>&rsquo;，以及通用寄存器的上半部分 &lsquo;<samp class="samp">r0h</samp>&rsquo; 到 &lsquo;<samp class="samp">r15h</samp>&rsquo;，及其下半部分 &lsquo;<samp class="samp">r0l</samp>&rsquo; 到 &lsquo;<samp class="samp">r15l</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.fpr</samp>&rsquo; 功能是必需的。它应包含6位寄存器 &lsquo;<samp class="samp">f0</samp>&rsquo; 到 &lsquo;<samp class="samp">f15</samp>&rsquo; 以及 &lsquo;<samp class="samp">fpc</samp>&rsquo;。
+</p>  
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.acr</samp>&rsquo; 功能是必需的。它应包含32位寄存器 &lsquo;<samp class="samp">acr0</samp>&rsquo; 到 &lsquo;<samp class="samp">acr15</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.linux</samp>&rsquo; 功能是可选的。它应包含寄存器 &lsquo;<samp class="samp">orig_r2</samp>&rsquo;，在System z目标上它是64位宽，否则是32位宽。此外，该功能可能包含 &lsquo;<samp class="samp">last_break</samp>&rsquo; 寄存器，其宽度取决于寻址模式，以及始终为32位宽的 &lsquo;<samp class="samp">system_call</samp>&rsquo;寄存器。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.tdb</samp>&rsquo; 功能是可选的。它应包含64位寄存器 &lsquo;<samp class="samp">tdb0</samp>&rsquo;、&lsquo;<samp class="samp">tac</samp>&rsquo;、&lsquo;<samp class="samp">tr0</samp>&rsquo; 到 &lsquo;<samp class="samp">tr15</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.vx</samp>&rsquo; 功能是可选的。它应包含64位宽的寄存器 &lsquo;<samp class="samp">v0l</samp>&rsquo; 到 &lsquo;<samp class="samp">v15l</samp>&rsquo;，GDB将把它们与浮点寄存器 &lsquo;<samp class="samp">f0</samp>&rsquo; 到 &lsquo;<samp class="samp">f15</samp>&rsquo; 组合起来，以呈现128位宽的向量寄存器 &lsquo;<samp class="samp">v0</samp>&rsquo; 到 &lsquo;<samp class="samp">v15</samp>&rsquo;。此外，此功能应包含128位宽的向量寄存器 &lsquo;<samp class="samp">v16</samp>&rsquo; 到 &lsquo;<samp class="samp">v31</samp>&rsquo;。
+</p>  
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.gs</samp>&rsquo; 功能是可选的。它应包含64位宽的保护存储控制寄存器 &lsquo;<samp class="samp">gsd</samp>&rsquo;、&lsquo;<samp class="samp">gssm</samp>&rsquo; 和 &lsquo;<samp class="samp">gsepla</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.s390.gsbc</samp>&rsquo; 功能是可选的。它应包含64位宽的保护存储广播控制寄存器 &lsquo;<samp class="samp">bc_gsd</samp>&rsquo;、&lsquo;<samp class="samp">bc_gssm</samp>&rsquo; 和 &lsquo;<samp class="samp">bc_gsepla</samp>&rsquo;。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Sparc-Features.html">Sparc功能</a>，上一页：<a href="RX-Features.html">RX功能</a>，向上：<a href="Standard-Target-Features.html">标准目标功能</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

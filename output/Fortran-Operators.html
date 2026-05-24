@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Fortran运算符（使用GDB调试）</title>
+
+<meta name="description" content="Fortran运算符（使用GDB调试）">
+<meta name="keywords" content="Fortran运算符（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Fortran.html" rel="up" title="Fortran">
+<link href="Fortran-Intrinsics.html" rel="next" title="Fortran内部函数">
+<link href="Fortran-Types.html" rel="prev" title="Fortran类型">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Fortran-Operators">
+<div class="nav-panel">
+<p>
+下一页：<a href="Fortran-Intrinsics.html" accesskey="n" rel="next">Fortran内部函数</a>，上一页：<a href="Fortran-Types.html" accesskey="p" rel="prev">Fortran类型</a>，向上：<a href="Fortran.html" accesskey="u" rel="up">Fortran</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Fortran-Operators-and-Expressions"><span>15.4.6.2 Fortran运算符和表达式<a class="copiable-link" href="#Fortran-Operators-and-Expressions"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Fortran-operators-and-expressions"></a>
+
+<p>运算符必须在特定类型的值上定义。例如，<code class="code">+</code>在数字上定义，但不在字符或其他非算术类型上定义。运算符通常在一组类型上定义。
+</p>
+<dl class="table">
+<dt><code class="code">**</code></dt>
+<dd><p>指数运算符。它将第一个操作数提升到第二个操作数的幂。
+</p>
+</dd>
+<dt><code class="code">:</code></dt>
+<dd><p>范围运算符。通常以array(low:high)的形式使用，以表示数组的一部分。
+</p>
+</dd>
+<dt><code class="code">%</code></dt>
+<dd><p>访问组件运算符。通常用于访问派生类型中的元素。也适用于联合。由于联合不是常规Fortran的一部分，只有在访问使用gdbarch定义的联合类型的寄存器时才会发生这种情况。
+</p></dd>
+<dt><code class="code">::</code></dt>
+<dd><p>作用域运算符。通常用于访问模块中的变量，或在模块中嵌套的子例程或其他子例程（内部子例程）上设置断点。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

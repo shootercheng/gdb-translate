@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>MiniDebugInfo（使用GDB调试）</title>
+
+<meta name="description" content="MiniDebugInfo（使用GDB调试）">
+<meta name="keywords" content="MiniDebugInfo（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="Index-Files.html" rel="next" title="索引文件加速GDB">
+<link href="Separate-Debug-Files.html" rel="prev" title="单独的调试文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="MiniDebugInfo">
+<div class="nav-panel">
+<p>
+下一页：<a href="Index-Files.html" accesskey="n" rel="next">索引文件加速GDB <small class="sc">GDB</small></a>，上一页：<a href="Separate-Debug-Files.html" accesskey="p" rel="prev">单独文件中的调试信息</a>，向上：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Debugging-information-in-a-special-section"><span>18.4特殊节中的调试信息<a class="copiable-link" href="#Debugging-information-in-a-special-section"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-separate-debug-sections"></a>
+<a class="index-entry-id" id="index-.gnu_debugdata-section"></a>
+
+<p>一些系统提供预构建的可执行文件和库，它们有一个特殊的‘<samp class="samp">.gnu_debugdata</samp>’节。这个特性被称为<em class="dfn">MiniDebugInfo</em>。这个节包含一个LZMA压缩的对象，用于为回溯提供额外的符号。
+</p>
+<p>这个节的目的是提供额外的最小调试信息，用于简单的回溯。它不是用于替代完整的单独调试信息（见<a class="pxref" href="Separate-Debug-Files.html">单独文件中的调试信息</a>）。下面的例子展示了预期的用法；然而，<small class="sc">GDB</small>目前对这个节中可能包含的调试信息类型没有限制。
+</p>
+<p><small class="sc">GDB</small>支持这个扩展。如果这个节存在，那么在找不到其他调试信息源且<small class="sc">GDB</small>配置了LZMA支持的情况下，就会使用它。
+</p>
+<p>可以使用<code class="command">objcopy</code>和其他标准实用工具轻松创建这个节：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"># 从主二进制文件中提取动态符号，不需要在正常符号表中也有这些。
+nm -D <var class="var">binary</var> --format=posix --defined-only \
+  | awk '{ print $1 }' | sort &gt; dynsyms
+
+# 从调试信息中提取所有文本（即函数）符号。
+# （注意，实际上我们也接受“D”符号，这是为了像PowerPC64这样使用函数描述符的平台。）
+nm <var class="var">binary</var> --format=posix --defined-only \
+  | awk '{ if ($2 == &quot;T&quot; || $2 == &quot;t&quot; || $2 == &quot;D&quot;) print $1 }' \
+  | sort &gt; funcsyms
+
+# 保留所有不在动态符号表中的函数符号。
+comm -13 dynsyms funcsyms &gt; keep_symbols
+
+# 将完整的调试信息分离到调试二进制文件中。
+objcopy --only-keep-debug <var class="var">binary</var> debug
+
+# 复制完整的调试信息，只保留一组最小的符号并删除一些不必要的节。
+objcopy -S --remove-section.gdb_index --remove-section.comment \
+  --keep-symbols=keep_symbols debug mini_debuginfo
+
+# 从原始二进制文件中删除完整的调试信息。
+strip --strip-all -R.comment <var class="var">binary</var>
+
+# 将压缩数据注入到原始二进制文件的.gnu_debugdata节中。
+xz mini_debuginfo
+objcopy --add-section.gnu_debugdata=mini_debuginfo.xz <var class="var">binary</var>
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Index-Files.html">索引文件加速GDB</a>，上一页：<a href="Separate-Debug-Files.html">单独文件中的调试信息</a>，向上：<a href="GDB-Files.html">GDB文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

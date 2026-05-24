@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>目标描述（使用GDB调试）</title>
+
+<meta name="description" content="目标描述（使用GDB调试）">
+<meta name="keywords" content="目标描述（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Operating-System-Information.html" rel="next" title="操作系统信息">
+<link href="Agent-Expressions.html" rel="prev" title="代理表达式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Target-Descriptions">
+<div class="nav-panel">
+<p>
+下一页：<a href="Operating-System-Information.html" accesskey="n" rel="next">操作系统信息</a>，上一页：<a href="Agent-Expressions.html" accesskey="p" rel="prev">GDB代理表达式机制</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="Target-Descriptions-1"><span>附录G 目标描述<a class="copiable-link" href="#Target-Descriptions-1"> &para;</a></span></h2>
+<a class="index-entry-id" id="index-target-descriptions"></a>
+
+<p>使用<small class="sc">GDB</small>调试嵌入式系统面临的挑战之一是，每种处理器架构都有许多微小的变体在使用。供应商通常的做法是从一个标准的处理器核心开始 &mdash; 例如ARM、PowerPC或<abbr class="acronym">MIPS</abbr> &mdash; 然后进行修改以使其适应特定的市场细分领域。有些架构有数百种变体，来自数十个供应商。这导致了一些问题：
+</p>
+<ul class="itemize mark-bullet">
+<li>有这么多不同的定制处理器，<small class="sc">GDB</small>维护人员很难跟上这些变化。
+</li><li>由于个别变体的生命周期可能很短或受众有限，在<small class="sc">GDB</small>源代码树中保存每个变体的信息可能不值得。
+</li><li>当<small class="sc">GDB</small>确实支持手头嵌入式系统的架构时，为<code class="command">set architecture</code>命令找到正确的架构名称的任务可能容易出错。
+</li></ul>
+
+<p>为了解决这些问题，<small class="sc">GDB</small>远程协议允许目标系统不仅向<small class="sc">GDB</small>标识自己，还能实际描述其自身的特性。这使得<small class="sc">GDB</small>能够支持它以前从未见过的处理器变体 &mdash; 只要描述准确且<small class="sc">GDB</small>能够理解它们。
+</p>
+<p><small class="sc">GDB</small>必须与Expat库链接以支持XML目标描述。请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Retrieving-Descriptions.html" accesskey="1">获取描述</a></li>
+<li><a href="Target-Description-Format.html" accesskey="2">目标描述格式</a></li>
+<li><a href="Predefined-Target-Types.html" accesskey="3">预定义目标类型</a></li>
+<li><a href="Enum-Target-Types.html" accesskey="4">枚举目标类型</a></li>
+<li><a href="Standard-Target-Features.html" accesskey="5">标准目标特性</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Operating-System-Information.html">操作系统信息</a>，上一页：<a href="Agent-Expressions.html">GDB代理表达式机制</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

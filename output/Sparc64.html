@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Sparc64（使用GDB调试）</title>
+
+<meta name="description" content="Sparc64（使用GDB调试）">
+<meta name="keywords" content="Sparc64（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Architectures.html" rel="up" title="架构">
+<link href="S12Z.html" rel="next" title="S12Z">
+<link href="PowerPC.html" rel="prev" title="PowerPC">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Sparc64">
+<div class="nav-panel">
+<p>
+下一页：<a href="S12Z.html" accesskey="n" rel="next">S12Z</a>，上一页：<a href="PowerPC.html" accesskey="p" rel="prev">PowerPC</a>，向上：<a href="Architectures.html" accesskey="u" rel="up">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Sparc64-1"><span>21.4.7 Sparc64<a class="copiable-link" href="#Sparc64-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Sparc64支持"></a>
+<a class="index-entry-id" id="index-应用数据完整性"></a>
+<ul class="mini-toc">
+<li><a href="#ADI支持" accesskey="1">ADI支持</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="ADI支持">
+<h4 class="subsubsection"><span>21.4.7.1 ADI支持<a class="copiable-link" href="#ADI支持"> &para;</a></span></h4>
+
+<p>M7处理器支持一种应用数据完整性（ADI）功能，用于检测无效的数据访问。当软件分配内存并在分配的内存上启用ADI时，它会选择一个4位版本号，将该版本设置在指向该数据的64位指针的高4位中，并将4位版本存储在该数据的每个缓存行中。硬件将后者保存在缓存和内存层次结构的备用位中。在每次加载和存储时，处理器会将高4位虚拟地址（VA）与缓存行的版本进行比较。如果不匹配，处理器会生成一个版本不匹配陷阱，该陷阱可以是精确的或中断的。该陷阱是一种错误情况，内核会将其作为SIGSEGV信号传递给进程。
+</p>
+<p>请注意，只有64位应用程序可以使用ADI，并且需要在启用ADI的情况下构建。
+</p>
+<p>ADI版本标签的值，其粒度为一个缓存行（64字节），可以查看或修改。
+</p>
+
+<dl class="table">
+<dt><a id="index-adi-examine"></a><span><code class="code">adi (examine | x) [ / <var class="var">n</var> ] <var class="var">addr</var></code><a class="copiable-link" href="#index-adi-examine"> &para;</a></span></dt>
+<dd>
+<p><code class="code">adi examine</code>命令显示每个缓存行的一个ADI版本标签的值。
+</p>
+<p><var class="var">n</var>是一个十进制整数，指定字节数；默认值为1。它指定要显示的ADI版本信息的量，比例为1:ADI块大小。
+</p>
+<p><var class="var">addr</var>是用户地址空间中的地址，你希望GDB从该地址开始显示ADI版本标签。
+</p>
+<p>以下是显示变量“shmaddr”的ADI版本的示例。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) adi x/100 shmaddr
+   0xfff800010002c000:     0 0
+</pre></div>
+
+</dd>
+<dt><a id="index-adi-assign"></a><span><code class="code">adi (assign | a) [ / <var class="var">n</var> ] <var class="var">addr</var> = <var class="var">tag</var></code><a class="copiable-link" href="#index-adi-assign"> &para;</a></span></dt>
+<dd>
+<p><code class="code">adi assign</code>命令用于为一个地址分配新的ADI版本标签。
+</p>
+<p><var class="var">n</var>是一个十进制整数，指定字节数；默认值为1。它指定要修改的ADI版本信息的量，比例为1:ADI块大小。
+</p>
+<p><var class="var">addr</var>是用户地址空间中的地址，你希望GDB从该地址开始修改ADI版本标签。
+</p>
+<p><var class="var">tag</var>是新的ADI版本标签。
+</p>
+<p>例如，执行以下操作来修改然后验证变量“shmaddr”的ADI版本：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) adi a/

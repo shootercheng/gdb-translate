@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>命令别名的默认参数（使用GDB调试）</title>
+
+<meta name="description" content="命令别名的默认参数（使用GDB调试）">
+<meta name="keywords" content="命令别名的默认参数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Aliases.html" rel="up" title="别名">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Command-aliases-default-args">
+<div class="nav-panel">
+<p>
+上一级：<a href="Aliases.html" accesskey="u" rel="up">命令别名</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Default-Arguments"><span>23.2.1 默认参数<a class="copiable-link" href="#Default-Arguments"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-aliases-for-commands_002c-default-arguments"></a>
+
+<p>在使用用户定义的别名时，你可以告诉GDB始终在用户明确提供的参数列表前预先添加一些默认参数。
+</p>
+<p>如果你反复为某个命令使用相同的参数或选项，你可以为该命令定义一个别名，并告诉GDB在使用该别名时自动将这些参数或选项预先添加到你明确输入的参数列表中<a class="footnote" id="DOCF17" href="#FOOT17"><sup>17</sup></a>。
+</p>
+<p>例如，如果您经常使用命令 <code class="code">thread apply all</code>，并指定按升序处理线程，且在遇到错误时继续执行，您可以通过以下方式告诉GDB自动预先添加 <code class="code">-ascending</code> 和 <code class="code">-c</code> 选项：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias thread apply asc-all = thread apply all -ascending -c
+</pre></div>
+
+<p>一旦你定义了带有默认参数的这个别名，每当你输入 <code class="code">thread apply asc-all</code> 并后跟 <code class="code">一些参数</code> 时，GDB将执行 <code class="code">thread apply all -ascending -c 一些参数</code>。
+</p>
+<p>为了减少输入量，你还可以定义一个单字别名：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias t_a_c = thread apply all -ascending -c
+</pre></div>
+
+<p>与往常一样，对于 <var class="var">alias</var> 和 <var class="var">default-args</var> 可以使用明确的缩写。
+</p>
+<p>一个命令的不同别名不共享它们的默认参数。
+例如，你使用以下方式定义一个新的别名 <code class="code">bt_ALL</code> 来显示所有可能的信息，以及另一个别名 <code class="code">bt_SMALL</code> 来显示非常有限的信息：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias bt_ALL = backtrace -entry-values both -frame-arg all \
+   -past-main -past-entry -full
+(gdb) alias bt_SMALL = backtrace -entry-values no -frame-arg none \
+   -past-main off -past-entry off
+</pre></div>
+
+<p>（有关使用 <code class="code">alias</code> 命令的更多信息，请参阅 <a class="ref" href="Aliases.html">命令别名</a>。）
+</p>
+<p>默认参数不限于 <var class="var">command</var> 的参数和选项，但如果 <var class="var">command</var> 接受这样的嵌套命令作为参数，则可以指定嵌套命令。
+例如，下面定义了 <code class="code">faalocalsoftype</code>，它列出具有特定类型局部变量的帧以及匹配的局部变量：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias faalocalsoftype = frame apply all info locals -q -t
+(gdb) faalocalsoftype int
+#1  0x55554f5e in sleeper_or_burner (v=0xdf50) at sleepers.c:86
+i = 0
+ret = 21845
+</pre></div>
+
+<p>为一组嵌套的 <code class="code">with</code> 命令定义一个别名以获得特定的临时设置组合也非常有用。例如，下面定义了别名 <code class="code">pp10</code>，它以漂亮的格式打印表达式参数，如果表达式是字符串或数组，则最多显示10个元素：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias pp10 = with print pretty -- with print elements 10 -- print
+</pre></div>
+<p>这将别名 <code class="code">pp10</code> 定义为一个由3个命令组成的序列。第一部分 <code class="code">with print pretty --</code> 临时激活设置 <code class="code">set print pretty</code>，然后启动分隔符 <code class="code">--</code> 后面的命令。
+第一部分后面的命令也是一个 <code class="code">with</code> 命令，它将设置 <code class="code">set print elements</code> 临时更改为10，然后启动第二个分隔符 <code class="code">--</code> 后面的命令。
+第三部分 <code class="code">print</code> 是 <code class="code">pp10</code> 别名将使用设置的临时值和用户明确给出的参数启动的命令。
+有关 <code class="code">with</code> 命令用法的更多信息，请参阅 <a class="ref" href="Command-Settings.html">命令设置</a>。 
+</p>
+<p>默认情况下，请求别名的帮助会显示被别名化命令的文档。当别名是一组嵌套命令时，别名的 <code class="code">help</code> 会显示第一个命令的文档。对于像 <code class="code">pp10</code> 这样的别名，此帮助并不是特别有用。
+对于这样的别名，使用 <code class="code">document</code> 命令给出特定的文档是很有用的（请参阅 <a class="pxref" href="Define.html">document</a>）。
+</p>
+
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT17" href="#DOCF17">(17)</a></h5>
+<p>GDB
+可以很容易地接受预定义命令和别名的默认参数，但认为这会造成混淆，因此不允许这样做。</p>
+</div> 
+<hr>
+<div class="nav-panel">
+<p>
+上一级：<a href="Aliases.html">命令别名</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

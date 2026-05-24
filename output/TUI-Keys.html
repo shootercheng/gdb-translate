@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>TUI按键（使用GDB调试）</title>
+
+<meta name="description" content="TUI按键（使用GDB调试）">
+<meta name="keywords" content="TUI按键（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="TUI.html" rel="up" title="TUI">
+<link href="TUI-Single-Key-Mode.html" rel="next" title="TUI单键模式">
+<link href="TUI-Overview.html" rel="prev" title="TUI概述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-Keys">
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Single-Key-Mode.html" accesskey="n" rel="next">TUI单键模式</a>，上一页：<a href="TUI-Overview.html" accesskey="p" rel="prev">TUI概述</a>，向上：<a href="TUI.html" accesskey="u" rel="up"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="TUI-Key-Bindings"><span>25.2 TUI按键绑定<a class="copiable-link" href="#TUI-Key-Bindings"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-TUI-key-bindings"></a>
+
+<p>TUI在readline键映射中安装了几个按键绑定（见<a class="pxref" href="Command-Line-Editing.html">命令行编辑</a>）。
+以下按键绑定在TUI模式和<small class="sc">GDB</small>标准模式下都有安装。
+</p>
+<dl class="table">
+<dt><a id="index-C_002dx-C_002da"></a><span><kbd class="kbd">C-x C-a</kbd><a class="copiable-link" href="#index-C_002dx-C_002da"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-C_002dx-a"></a>
+</dd>
+<dt><kbd class="kbd">C-x a</kbd></dt>
+<dd><a class="index-entry-id" id="index-C_002dx-A"></a>
+</dd>
+<dt><kbd class="kbd">C-x A</kbd></dt>
+<dd><p>进入或离开TUI模式。当离开TUI模式时，可以使用<small class="sc">GDB</small>标准模式，直接在终端上进行操作并且curses窗口管理停止。当重新进入TUI模式时，控制权交还给curses窗口，然后屏幕会被刷新。
+</p>
+<p>这个按键绑定使用了可绑定的Readline函数<code class="code">tui-switch-mode</code>。
+</p>
+</dd>
+<dt><a id="index-C_002dx-1"></a><span><kbd class="kbd">C-x 1</kbd><a class="copiable-link" href="#index-C_002dx-1"> &para;</a></span></dt>
+<dd><p>使用只有一个窗口的TUI布局。布局将是“<samp class="samp">source</samp>”或“<samp class="samp">assembly</samp>”。当TUI模式未激活时，它将切换到TUI模式。
+</p>
+<p>可以将这个按键绑定看作是Emacs的<kbd class="kbd">C-x 1</kbd>绑定。
+</p>
+<p>这个按键绑定使用了可绑定的Readline函数<code class="code">tui-delete-other-windows</code>。
+</p>
+</dd>
+<dt><a id="index-C_002dx-…"></a><span><kbd class="kbd">C-x 2</kbd><a class="copiable-link" href="#index-C_002dx-2"> &para;</a></span></dt>
+<dd><p>使用至少有两个窗口的TUI布局。当当前布局已经有两个窗口时，使用下一个有两个窗口的布局。当选择新的布局时，总会有一个窗口是前一个布局和新布局共有的。
+</p>
+<p>可以将其看作是Emacs的<kbd class="kbd">C-x 2</kbd>绑定。
+</p>
+<p>这个按键绑定使用了可绑定的Readline函数<code class="code">tui-change-windows</code>。
+</p>
+</dd>  
+<dt><a id="index-C_002dx-o"></a><span><kbd class="kbd">C-x o</kbd><a class="copiable-link" href="#index-C_002dx-o"> &para;</a></span></dt>
+<dd><p>切换活动窗口。TUI将几个按键绑定（如滚动和箭头键）与活动窗口相关联。此命令将焦点切换到下一个TUI窗口。
+</p>
+<p>可以将其看作是Emacs的<kbd class="kbd">C-x o</kbd>绑定。
+</p>
+<p>这个按键绑定使用了可绑定的Readline函数<code class="code">tui-other-window</code>。
+</p>
+</dd>
+<dt><a id="index-C_002dx-s"></a><span><kbd class="kbd">C-x s</kbd><a class="copiable-link" href="#index-C_002dx-s"> &para;</a></span></dt>
+<dd><p>切换进出TUI单键模式，该模式将单个键绑定到<small class="sc">GDB</small>命令（见<a class="pxref" href="TUI-Single-Key-Mode.html">TUI单键模式</a>）。
+</p>
+<p>这个按键绑定使用了可绑定的Readline函数<code class="code">next-keymap</code>。
+</p></dd>
+</dl>
+
+<p>以下按键绑定仅在TUI模式下有效：
+</p>
+<dl class="table">
+<dt><a id="index-PgUp"></a><span><kbd class="key">PgUp</kbd><a class="copiable-link" href="#index-PgUp"> &para;</a></span></dt>
+<dd><p>将活动窗口向上滚动一页。
+</p>
+</dd>
+<dt><a id="index-PgDn"></a><span><kbd class="key">PgDn</kbd><a class="copiable-link" href="#index-PgDn"> &para;</a></span></dt>
+<dd><p>将活动窗口向下滚动一页。
+</p>
+</dd>
+<dt><a id="index-Up"></a><span><kbd class="key">Up</kbd><a class="copiable-link" href="#index-Up"> &para;</a></span></dt>
+<dd><p>将活动窗口向上滚动一行。
+</p>
+</dd>
+<dt><a id="index-Down"></a><span><kbd class="key">Down</kbd><a class="copiable-link" href="#index-Down"> &para;</a></span></dt>
+<dd><p>将活动窗口向下滚动一行。
+</p>
+</dd>
+<dt><a id="index-Left"></a><span><kbd class="key">Left</kbd><a class="copiable-link" href="#index-Left"> &para;</a></span></dt>
+<dd><p>将活动窗口向左滚动一列。
+</p>
+</dd>
+<dt><a id="index-Right"></a><span><kbd class="key">Right</kbd><a class="copiable-link" href="#index-Right"> &para;</a></span></dt>
+<dd><p>将活动窗口向右滚动一列。
+</p>
+</dd>
+<dt><a id="index-C_…"></a><span><kbd class="kbd">C-L</kbd><a class="copiable-link" href="#index-C_00_2dL"> &para;</a></span></dt>
+<dd><p>刷新屏幕。
+</p></dd>
+</dl>
+
+<p>因为在TUI模式下箭头键用于滚动活动窗口，所以除非命令窗口获得焦点，否则readline无法正常使用它们。当另一个窗口处于活动状态时，必须使用其他readline按键绑定，如<kbd class="kbd">C-p</kbd>、<kbd class="kbd">C-n</kbd>、<kbd class="kbd">C-b</kbd>和<kbd class="kbd">C-f</kbd>来控制命令窗口</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI-Single-Key-Mode.html">TUI单键模式</a>上一页：<a href="TUI-Overview.html">TUI概述</a>，向上：<a href="TUI.html"><small class="sc">GDB</small>文本用户界面</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

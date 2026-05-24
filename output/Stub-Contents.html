@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>存根内容（使用GDB调试）</title>
+
+<meta name="description" content="存根内容（使用GDB调试）">
+<meta name="keywords" content="存根内容（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Stub.html" rel="up" title="远程存根">
+<link href="Bootstrapping.html" rel="next" title="引导程序">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Stub-Contents">
+<div class="nav-panel">
+<p>
+下一页：<a href="Bootstrapping.html" accesskey="n" rel="next">你必须为存根做的事情</a>，上一级：<a href="Remote-Stub.html" accesskey="u" rel="up">实现远程存根</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+<hr>
+<h4 class="subsection" id="存根能为你做什么"><span>20.5.</span><span>1存根能为你做什么<a class="copiable-link" href="#存根能为你做什么"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-远程串行存根"></a>
+<p>针对你的架构的调试存根提供了以下三个子例程：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-set_005fdebug_005ftraps"></a>
+<a id="索引-远程串行存根_002c初始化"></a><span><code class="code">set_debug_traps</code><a class="copiable-link" href="#索引-远程串行存根_002c初始化"> &para;</a></span></dt>
+<dd><p>这个例程用于安排当你的程序停止时运行 <code class="code">handle_exception</code>。你必须在程序的启动代码中显式调用这个子例程。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-handle_005fexception"></a>
+<a id="索引-远程串行存根_002c主例程"></a><span><code class="code">handle_exception</code><a class="copiable-link" href="#索引-远程串行存根_002c主例程"> &para;</a></span></dt>
+<dd><p>这是核心的工作例程，但你的程序从不显式调用它——设置代码安排在触发陷阱时运行 <code class="code">handle_exception</code>。
+</p>
+<p>当你的程序在执行过程中停止（例如，在断点处）时，<code class="code">handle_exception</code> 接管控制权，并与主机上的 <small class="sc">GDB</small> 进行通信协调。通信协议就是在这里实现的；<code class="code">handle_exception</code> 在目标机器上充当 <small class="sc">GDB</small> 的代表。它首先发送关于你的程序状态的摘要信息，然后继续执行，检索并传输 <small class="sc">GDB</small> 需要的任何信息，直到你执行一个使你的程序恢复的 <small class="sc">GDB</small> 命令；此时，<code class="code">handle_exception</code> 将控制权返回给目标机器上你自己的代码。
+</p>
+</dd>
+<dt><a id="索引-断点子例程_002c远程"></a><span><code class="code">breakpoint</code><a class="copiable-link" href="#索引-断点子例程_002c远程"> &para;</a></span></dt>
+<dd><p>使用这个辅助子例程使你的程序包含一个断点处。根据具体情况，这可能是 <small class="sc">GDB</small> 获取控制权的唯一方法。例如，如果你的目标机器有某种中断按钮，你就不需要调用这个；按下中断按钮会将控制权转移到 <code class="code">handle_exception</code>——实际上就是转移到 <small class="sc">GDB</small>。在某些机器上，简单地在串行端口接收字符也可能触发一个陷阱；同样，在那种情况下，你不需要从你自己的程序中调用 <code class="code">breakpoint</code>——只需在主机 <small class="sc">GDB</small> 会话中运行 &lsquo;<samp class="samp">target remote</samp>&rsquo; 就能获得控制权。
+</p>
+<p>如果上述情况都不成立，或者如果你只是想确保你的程序在调试会话开始时停在预定的点上，就调用 <code class="code">breakpoint</code>。
+</p></dd>
+</dl>
+
+</div>
+
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Bootstrapping.html">你必须为存根做的事情</a>，上一级：<a href="Remote-Stub.html">实现远程存根</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

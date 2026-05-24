@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Go（使用GDB调试）</title>
+
+<meta name="description" content="Go（使用GDB调试）">
+<meta name="keywords" content="Go（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Supported-Languages.html" rel="up" title="支持的语言">
+<link href="Objective_002dC.html" rel="next" title="Objective-C">
+<link href="D.html" rel="prev" title="D">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Go">
+<div class="nav-panel">
+<p>
+下一页：<a href="Objective_002dC.html" accesskey="n" rel="next">Objective-C</a>，上一页：<a href="D.html" accesskey="p" rel="prev">D</a>，向上：<a href="Supported-Languages.html" accesskey="u" rel="up">支持的语言</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p> 
+</div>
+<hr>
+<h4 class="subsection" id="Go-1"><span>15.4.3 Go<a class="copiable-link" href="#Go-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Go-_0028编程语言_0029"></a>
+<p><small class="sc">GDB</small>可用于调试用Go编写并使用<samp class="file">gccgo</samp>或<samp class="file">6g</samp>编译器编译的程序。
+</p>
+<p>以下是特定于Go的功能和限制的总结：
+</p>
+<dl class="table">
+<dt><a id="index-current-Go-package"></a><span><code class="code">当前的Go包</code><a class="copiable-link" href="#index-current-Go-package"> &para;</a></span></dt>
+<dd><p>指定全局变量和函数时无需指定当前包的名称。
+</p>
+<p>例如，给定程序：
+</p>
+<div class="example">
+<pre class="example-preformatted">package main
+var myglob = &quot;Shall we?&quot;
+func main () {
+  // ...
+}
+</pre></div>
+
+<p>在<code class="code">main</code>内部停止时，以下任何一个都可行：
+</p>
+<div class="example">
+<pre class="example-preformatted">(gdb)p myglob
+(gdb)p main.myglob
+</pre></div>
+
+</dd>
+<dt><a id="index-builtin-Go-types"></a><span><code class="code">Go内置类型</code><a class="copiable-link" href="#index-builtin-Go-types"> &para;</a></span></dt>
+<dd><p><small class="sc">GDB</small>可识别<code class="code">string</code>类型，并将其作为字符串打印。
+</p>
+</dd>
+<dt><a id="index-builtin-Go-functions"></a><span><code class="code">Go内置函数</code><a class="copiable-link" href="#index-builtin-Go-functions"> &para;</a></span></dt>
+<dd><p><small class="sc">GDB</small>表达式解析器可识别<code class="code">unsafe.Sizeof</code>函数并在内部进行处理。
+</p>
+</dd>
+<dt><a id="index-restrictions-on-Go-expressions"></a><span><code class="code">Go表达式的限制</code><a class="copiable-link" href="#index-restrictions-on-Go-expressions"> &para;</a></span></dt>
+<dd><p>除了<code class="code">&amp;^</code>之外，所有Go运算符均受支持。
+Go的<code class="code">_</code>“空白标识符”不受支持。
+不支持指针的自动解引用。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html> 

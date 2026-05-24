@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>输入/输出（使用GDB调试）</title>
+
+<meta name="description" content="输入/输出（使用GDB调试）">
+<meta name="keywords" content="输入/输出（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Attach.html" rel="next" title="附加">
+<link href="Working-Directory.html" rel="prev" title="工作目录">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="输入/输出">
+<div class="nav-panel">
+<p>
+下一个：<a href="Attach.html" accesskey="n" rel="next">调试一个已经运行的进程</a>，上一个：<a href="Working-Directory.html" accesskey="p" rel="prev">你的程序的工作目录</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="你的程序的输入和输出"><span>4.6你的程序的输入和输出<a class="copiable-link" href="#你的程序的输入和输出"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-重定向"></a>
+<a class="index-entry-id" id="索引-i/o"></a>
+<a class="index-entry-id" id="索引-终端"></a>
+<p>默认情况下，你在GDB下运行的程序对输入和输出使用与GDB相同的终端。GDB会将终端切换到它自己的终端模式来与你交互，但它会记录你的程序正在使用 的终端模式，并在你继续运行程序时切换回这些模式。
+</p>
+<dl class="table">
+<dt><a id="索引-info-terminal"></a><span><code class="code">info terminal</code><a class="copiable-link" href="#索引-info-terminal"> &para;</a></span></dt>
+<dd><p>显示GDB记录的关于你的程序正在使用的终端模式的信息。
+</p></dd>
+</dl>
+
+<p>你可以使用带有 <code class="code">run</code> 命令的 shell 重定向来重定向你的程序的输入和/或输出。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">run &gt; outfile
+</pre></div>
+
+<p>启动你的程序，将其输出重定向到文件 <samp class="file">outfile</samp>。
+</p>
+<a class="index-entry-id" id="索引-tty"></a>
+<a class="index-entry-id" id="索引-控制终端"></a>
+<p>指定你的程序应该在哪里进行输入和输出的另一种方法是使用 <code class="code">tty</code> 命令。这个命令接受一个文件名作为参数，并使这个文件成为未来 <code class="code">run</code> 命令的默认值。它还会为子进程重置控制终端，用于未来的 <code class="code">run</code> 命令。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">tty /dev/ttyb
+</pre></div>
+
+<p>指示后续使用 <code class="code">run</code> 命令启动的进程默认在终端 <samp class="file">/dev/ttyb</samp> 上进行输入和输出，并将其作为控制终端。
+</p>
+<p><code class="code">run</code> 中的显式重定向会覆盖 <code class="code">tty</code> 命令对输入/输出设备的影响，但不会影响其对控制终端的影响。
+</p>
+<p>当你使用 <code class="code">tty</code> 命令或在 <code class="code">run</code> 命令中重定向输入时，只有你的程序的输入会受到影响。GDB的输入仍然来自你的终端。<code class="code">tty</code> 是 <code class="code">set inferior-tty</code> 的别名。
+</p>
+<a class="index-entry-id" id="索引-下级-tty"></a>
+<a class="index-entry-id" id="索引-设置下级控制终端"></a>
+<p>你可以使用 <code class="code">show inferior-tty</code> 命令来告诉GDB显示将用于你未来运行程序的终端的名称。
+</p>
+<dl class="table">
+<dt><a id="索引-设置下级-tty"></a><span><code class="code">set inferior-tty [ <var class="var">tty</var> ]</code><a class="copiable-link" href="#索引-设置下级-tty"> &para;</a></span></dt>
+<dd><p>将正在调试 的程序的tty设置为 <var class="var">tty</var>。省略 <var class="var">tty</var> 会恢复默认行为，即使用与GDB相同的终端。
+</p></dd>
+<dt><a id="索引-显示下级-tty"></a><span><code class="code">show inferior-tty</code><a class="copiable-link" href="#索引-显示下级-tty"> &para;</a></span></dt>
+<dd><p>显示正在调试的程序的当前tty。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Attach.html">调试一个已经运行的进程</a>，上一个：<a href="Working-Directory.html">你的程序的工作目录</a>，向上：<a href="Running.html">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

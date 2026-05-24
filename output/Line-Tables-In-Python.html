@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的行表（使用GDB调试）</title>
+
+<meta name="description" content="Python中的行表（使用GDB调试）">
+<meta name="keywords" content="Python中的行表（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Breakpoints-In-Python.html" rel="next" title="Python中的断点">
+<link href="Symbol-Tables-In-Python.html" rel="prev" title="Python中的符号表">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的行表">
+<div class="nav-panel">
+<p>
+下一页：<a href="Breakpoints-In-Python.html" accesskey="n" rel="next">使用Python操作断点</a>，上一页：<a href="Symbol-Tables-In-Python.html" accesskey="p" rel="prev">Python中的符号表表示</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="使用Python操作行表"><span>23.3.2.32 使用Python操作行表<a class="copiable-link" href="#使用Python操作行表"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python中的行表"></a>
+<a class="index-entry-id" id="index-gdb_002eLineTable"></a>
+
+<p>Python代码可以从加载到<small class="sc">GDB</small>中的符号表请求并检查行表信息。行表是源行到其在内存中可执行位置的映射。要获取特定符号表的行表信息，请使用<code class="code">linetable</code>函数（见 <a class="pxref" href="Symbol-Tables-In-Python.html">Python中的符号表表示</a>）。
+</p>
+<p><code class="code">gdb.LineTable</code>是可迭代的。迭代器返回与每个行表条目的源行和地址相对应的<code class="code">LineTableEntry</code>对象。<code class="code">LineTableEntry</code>对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LineTableEntry_002eline"><span class="category-def">变量： </span><span><strong class="def-name">LineTableEntry.line</strong><a class="copiable-link" href="#index-LineTableEntry_002eline"> &para;</a></span></dt>
+<dd><p>此行表条目的源行号。此编号对应于实际的源行。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-LineTableEntry_002epc"><span class="category-def">变量： </span><span><strong class="def-name">LineTableEntry.pc</strong><a class="copiable-link" href="#index-LineTableEntry_002epc"> &para;</a></span></dt>
+<dd><p>与源行的可执行代码在内存中所在的行表条目相关联的地址。此属性不可写。
+</p></dd></dl>
+
+<p>由于单个源行可能有多个地址，您可能会收到多个具有匹配<code class="code">line</code>属性但具有不同<code class="code">pc</code>属性的<code class="code">LineTableEntry</code>对象。迭代器按<code class="code">pc</code>升序排序。这里有一个小示例说明如何遍历行表。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">symtab = gdb.selected_frame().find_sal().symtab
+linetable = symtab.linetable()
+for line in linetable:
+   print (&quot;行： &quot;+str(line.line)+&quot; 地址： &quot;+hex(line.pc))
+</pre></div>
+
+<p>这将产生以下输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">行： 第33行 地址： 0x4005c8L
+行： 第37行 地址： 0x4005caL
+行： 第39行 地址： 0x4005d2L
+行： 第40行 地址： 0x4005f8L
+行：第42行 地址： 0x4005ffL
+行：第44行 地址： 0x400608L
+行：第42行 地址： 0x4,0060cL
+行：第45行 地址： 0x400615L
+</pre></div>
+
+<p>除了能够遍历<code class="code">LineTable</code>之外，它还有以下直接访问方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002eline"><span class="category-def">函数： </span><span><strong class="def-name">LineTable.line</strong> <var class="def-var-arguments">(行)</var><a class="copiable-link" href="#index-LineTable_002eline"> &para;</a></span></dt>
+<dd><p>对于给定的指定源代码行的<var class="var">行</var>，返回行表中任何条目的<code class="code">LineTableEntry</code>对象的Python <code class="code">Tuple</code>。如果该源代码<var class="var">行</var>没有条目，则返回Python <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002ehas_005fline"><span class="category-def">函数： </span><span><strong class="def-name">LineTable.has_line</strong> <var class="def-var-arguments">(行)</var><a class="copiable-link" href="#index-LineTable_002ehas_005fline"> &para;</a></span></dt>
+<dd><p>返回一个Python <code class="code">布尔值</code>，指示此行表中是否有该源代码行的条目。如果找到条目，则返回<code class="code">True</code>，否则返回<code class="code">False</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-LineTable_002esource_005flines"><span class="category-def">函数： </span><span><strong class="def-name">LineTable.source_lines</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-LineTable_ver_002esource_005flines"> &para;</a></span></dt>
+<dd><p>返回符号表中源行号的Python <code class="code">List</code>。只返回具有可执行代码位置的行。<code class="code">List</code>的内容将只是表示为Python <code class="code">Long</code>值的源行条目。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Breakpoints-In-Python.html">使用Python操作断点</a>，上一页：<a href="Symbol-Tables-In-Python.html">Python中的符号表表示</a>，向上：<a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

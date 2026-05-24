@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>源路径（使用GDB调试）</title>
+
+<meta name="description" content="源路径（使用GDB调试）">
+<meta name="keywords" content="源路径（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Source.html" rel="up" title="源文件">
+<link href="Machine-Code.html" rel="next" title="机器码">
+<link href="Search.html" rel="prev" title="搜索">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="源路径">
+<div class="nav-panel">
+<p>
+下一页：<a href="Machine-Code.html" accesskey="n" rel="next">源文件和机器码</a>，上一页：<a href="Search.html" accesskey="p" rel="prev">搜索源文件</a>，向上：<a href="Source.html" accesskey="u" rel="up">检查源文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="指定源目录"><span>9.5 指定源目录<a class="copiable-link" href="#指定源目录"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-源路径"></a>
+<a class="index-entry-id" id="索引-源文件目录"></a>
+<p>可执行程序有时不会记录它们所编译的源文件的目录，只记录文件名而已。即便记录了目录，在编译和调试会话期间，这些目录也可能会被移动。GDB有一个用于搜索源文件的目录列表；这被称为<em class="dfn">源路径</em>。每次GDB需要一个源文件时，它会按照列表中目录出现的顺序尝试列表中的所有目录，直到找到具有所需名称的文件。
+</p>
+<p>例如，假设有一个可执行文件引用了文件<samp class="file">/usr/src/foo-1.0/lib/foo.c</samp>，没有记录编译目录，并且<em class="dfn">源路径</em>是<samp class="file">/mnt/cross</samp>。GDB会在以下位置查找源文件：
+</p>
+<ol class="enumerate">
+<li> <samp class="file">/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/foo.c</samp>
+
+</li></ol>
+
+<p>如果在上述任何位置都没有找到源文件，则会打印错误信息。GDB不会查找源文件名的各个部分，例如<samp class="file">/mnt/cross/src/foo-1.0/lib/foo.c</samp>。同样，也不会搜索源路径的子目录：如果源路径是<samp class="file">/mnt/cross</samp>，并且二进制文件引用了<samp class="file">foo.c</samp>，GDB不会在<samp class="file">/mnt/cross/usr/src/foo-1.0/lib</samp>下找到它。
+</p>
+<p>普通文件名、带有前导目录的相对文件名、包含点的文件名等，都按上述方式处理，只是非绝对文件名不会按字面意思查找。如果<em class="dfn">源路径</em>是<samp class="file">/mnt/cross</samp>，源文件记录为<samp class="file">../lib/foo.c</samp>，并且没有记录编译目录，那么GDB将在以下位置进行搜索：
+</p>
+<ol class="enumerate">
+<li> <samp class="file">/mnt/cross/../lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/foo.c</samp>
+
+</li></ol>
+
+<a class="index-entry-id" id="索引-cdir"></a>
+<a class="index-entry-id" id="索引-cwd"></a>
+<a class="index-entry-id" id="索引-_0024cdir_002c便利变量"></a>
+<a class="index-entry-id" id="索引-_0024cwd_002c便利变量"></a>
+<a class="index-entry-id" id="索引-编译目录"></a>
+<a class="index-entry-id" id="索引-当前目录"></a>
+<a class="index-entry-id" id="索引-工作目录"></a>
+<a class="index-entry-id" id="索引-目录_002c当前"></a>
+<a class="index-entry-id" id="索引-目录_002c编译"></a>
+<p><em class="dfn">源路径</em>总是会包含两个特殊条目“<samp class="samp">$cdir</samp>”和“<samp class="samp">$cwd</samp>”，它们分别指编译目录（如果记录了的话）和当前工作目录。
+</p>
+<p>“<samp class="samp">$cdir</samp>”会使GDB在编译目录中进行搜索，如果调试信息中记录了编译目录的话。如果调试信息中没有记录编译目录，那么“<samp class="samp">$cdir</samp>”将被忽略。
+</p>
+<p>“<samp class="samp">$cwd</samp>”与“<samp class="samp">.</samp>”不同——前者会跟踪在GDB会话期间变化的当前工作目录，而后者在你向源路径中添加条目时会立即扩展为当前目录。
+</p>
+<p>如果调试信息中记录了编译目录，并且GDB在使用<em class="dfn">源路径</em>进行首次搜索后没有找到源文件，那么GDB会将编译目录和文件名组合起来，然后再次使用<em class="dfn">源路径</em>搜索源文件。
+</p>
+<p>例如，如果可执行文件将源文件记录为<samp class="file">/usr/src/foo-1.0/lib/foo.c</samp>，编译目录记录为<samp class="file">/project/build</samp>，<em class="dfn">源路径</em>是<samp class="file">/mnt/cross:$cdir:$cwd</samp>，而GDB会话的当前工作目录是<samp class="file">/home/user</samp>，那么GDB将在以下位置搜索源文件：
+</p>
+<ol class="enumerate">
+<li> <samp class="file">/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/project/build/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/home/user/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/project/build/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/project/build/project/build/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/home/user/project/build/usr/src/foo-1.0/lib/foo.c</samp>
+</li><li> <samp class="file">/mnt/cross/foo.c</samp>
+</li><li> <samp class="file">/project/build/foo.c</samp>
+</li><li> <samp class="file">/home/user/foo.c</samp>
+
+</li></ol>
+
+<p>如果上例中的文件名在可执行文件中记录为相对路径而不是绝对路径，那么第一次查找就不会发生，但其余步骤会类似。
+</p>
+<p>在MS-DOS和MS-Windows上搜索源文件时，绝对路径以驱动器字母开头（例如<samp class="file">C:/project/foo.c</samp>），GDB在将文件名附加到<em class="dfn">源路径</em>中的搜索目录之前，会从文件名中删除驱动器字母；例如，如果可执行文件引用源文件<samp class="file">C:/project/foo.c</samp>，并且<em class="dfn">源路径</em>设置为<samp class="file">D:/mnt/cross</samp>，那么GDB将在以下位置搜索源文件：
+</p>
+<ol class="enumerate">
+<li> <samp class="file">C:/project/foo.c</samp>
+</li><li><samp class="file">D:/mnt/cross/project/foo.c</samp>
+</li><li> <samp class="file">D:/mnt/cross/foo.c</samp>
+
+</li></ol>
+
+<p>请注意，可执行文件搜索路径<em class="emph">不</em>用于定位源文件。
+</p>
+<p>每当你重置或重新排列源路径时，GDB会清除它缓存的有关源文件位置和文件中每行位置的任何信息。
+</p>
+<a class="index-entry-id" id="索引-目录"></a>
+<a class="index-entry-id" id="索引-dir"></a>
+<p>当你启动GDB时，它的源路径仅按顺序包含“<samp class="samp">$cdir</samp>”和“<samp class="samp">$cwd</samp>”。要添加其他目录，请使用<code class="code">directory</code>命令。
+</p>
+<p>搜索路径用于查找程序源文件和GDB脚本文件（使用“<samp class="samp">-command</samp>”选项和“<samp class="samp">source</samp>”命令读取））。
+</p>
+<p>除了源路径之外GDB还提供了一组管理源路径替换规则列表的命令。<em class="dfn">替换规则</em>指定了在编译和调试之间源文件被移动到不同目录的情况下，如何重写程序调试信息中存储的源目录。一条规则由两个字符串组成，第一个指定路径中需要重写的内容，第二个指定应该如何重写。在<a class="ref" href="#set-substitute_002dpath">set substitute-path</a>中，我们将这两个部分分别命名为<var class="var">from</var>和<var class="var">to</var>。GDB在源文件名的目录部分开头，用<var class="var">to</var>对<var class="var">from</var>进行简单的字符串替换，并使用该结果代替原始文件名来查找源文件。
+</p>
+<p>使用前面的例子，假设<samp class="file">foo-1.0</samp>目录树已从<samp class="file">/usr/src</samp>移动到<samp class="file">/mnt/cross</samp>，那么你可以告诉GDB将所有源路径名中的<samp class="file">/usr/src</samp>替换为<samp class="file">/mnt/cross</samp>。那么第一次查找将是<samp class="file">/mnt/cross/foo-1.0/lib/foo.c</samp>，而不是原来的<samp class="file">/usr/src/foo-1.

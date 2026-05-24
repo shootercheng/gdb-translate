@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>GDB/MI线程命令（使用GDB调试）</title>
+
+<meta name="description" content="GDB/MI线程命令（使用GDB调试）">
+<meta name="keywords" content="GDB/MI线程命令（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI">
+<link href="GDB_002fMI-Ada-Tasking-Commands.html" rel="next" title="GDB/MI Ada任务命令">
+<link href="GDB_002fMI-Program-Context.html" rel="prev" title="GDB/MI程序上下文">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-线程命令">
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Ada-Tasking-Commands.html" accesskey="n" rel="next"><small class="sc">GDB/MI</small> Ada任务命令</a>，上一个：<a href="GDB_002fMI-Program-Context.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> 程序上下文</a>，向上：<a href="GDB_002fMI.html" accesskey="u" rel="up"> <small class="sc">GDB/MI</small> 接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div> 
+<hr>
+<h3 class="section" id="gdb_002fmi-线程命令"><span>27.11 <small class="sc">GDB/MI</small> 线程命令<a class="copiable-link" href="#gdb_002fmi-线程命令"> &para;</a></span></h3>
+
+
+<a class="index-entry-id" id="索引-_002dthread_002dinfo"></a>
+<h4 class="subheading" id="The-_002dthread_002dinfo命令"><span>The <code class="code">-thread-info</code> 命令<a class="copiable-link" href="#The-_002dthread_002dinfo命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-第26条"><span>概要<a class="copiable-link" href="#概要-第26条"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-info [ <var class="var">线程ID</var> ]
+</pre></div>
+
+<p>如果存在 <var class="var">线程ID</var> 参数，则报告有关特定线程的信息，否则报告有关所有线程的信息。<var class="var">线程ID</var> 是线程的全局线程ID。当打印有关所有线程的信息时，还会报告当前线程的全局ID。
+</p>
+<h4 class="subsubheading" id="gdb命令-第25条"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb命令-第25条"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">info thread</samp>&rsquo; 命令打印有关所有线程的相同信息。
+</p>
+<h4 class="subsubheading" id="结果-第3条"><span>结果<a class="copiable-link" href="#结果-第3条"> &para;</a></span></h4>
+
+<p>结果包含以下属性：
+</p>
+<dl class="table">
+<dt>&lsquo;<samp class="samp">threads</samp>&rsquo;</dt>
+<dd><p>线程列表。列表元素的格式在 <a class="ref" href="GDB_002fMI-Thread-Information.html"><small class="sc">GDB/MI</small> 线程信息</a> 中描述。
+</p>
+</dd>
+<dt>&lsquo;<samp class="samp">current-thread-id</samp>&rsquo;</dt>
+<dd><p>当前选定线程的全局ID。如果没有选定线程（例如，当选定的进程没有运行，因此没有线程时），或者如果向命令传递了 <var class="var">线程ID</var> 参数，则此字段将被省略。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="示例-第25条"><span>示例<a class="copiable-link" href="#示例-第25条"> &para;</a></span></h4>
+
+<div class="example smallexample"> 
+<pre class="example-preformatted">-thread-info<br>^done,threads=[<br>{id=&quot;2&quot;,target-id=&quot;Thread 0xb7e14b90 (LWP 21257)&quot;,<br>   frame={level=&quot;0&quot;,addr=&quot;0xffffe410&quot;,func=&quot;__kernel_vsyscall&quot;,<br>           args=[]},state=&quot;running&quot;},<br>{id=&quot;1&quot;,target-id=&quot;Thread 0xb7e156b0 (LWP 21254)&quot;,<br>   frame={level=&quot;0&quot;,addr=&quot;0x0804891f&quot;,func=&quot;foo&quot;,<br>           args=[{name=&quot;i&quot;,value=&quot;10&quot;}],<br>           file=&quot;/tmp/a.c&quot;,fullname=&quot;/tmp/a.c&quot;,line=&quot;158&quot;,arch=&quot;i386:x86_64&quot;},<br>           state=&quot;running&quot;}],<br>current-thread-id=&quot;1&quot;<br>(gdb)<br></pre></div>
+
+<a class="index-entry-id" id="索引-_002dthread_002dlist_002dids"></a>
+<h4 class="subheading" id="The-_002dthread_002dlist_002dids命令"><span>The <code class="code">-thread-list-ids</code> 命令<a class="copiable-link" href="#The-_002dthread_002dlist_002dids命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-第27条"><span>概要<a class="copiable-link" href="#概要-第27条"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-list-ids
+</pre></div>
+
+<p>生成当前已知的全局 <small class="sc">GDB</small> 线程ID列表。在列表末尾还会打印此类线程的总数。
+</p>
+<p>出于历史原因保留了此命令，应改用 <code class="code">-thread-info</code> 命令。
+</p>
+<h4 class="subsubheading" id="gdb命令-第26条"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb命令-第26条"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">info threads</samp>&rsquo; 的一部分提供相同的信息。
+</p>
+<h4 class="subsubheading" id="示例-第26条"><span>示例<a class="copiable-link" href="#示例-第26条"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)<br>-thread-list-ids<br>^done,thread-ids={thread-id=&quot;3&quot;,thread-id=&quot;2&quot;,thread-id=&quot;1&quot;},<br>current-thread-id=&quot;1&quot;,number-of-threads=&quot;3&quot;<br>(gdb)<br></pre></div>
+
+
+<a class="index-entry-id" id="索引-_002dthread_002dselect"></a>
+<h4 class="subheading" id="The-_002dthread_002dselect命令"><span>The <code class="code">-thread-select</code> 命令<a class="copiable-link" href="#The-_002dthread_002dselect命令"> &para;</a></span></h4>
+
+<h4 class="subsubheading" id="概要-第28条"><span>概要<a class="copiable-link" href="#概要-第28条"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-select <var class="var">线程ID</var>
+</pre></div>
+
+<p>将全局线程编号为 <var class="var">线程ID</var> 的线程设为当前线程。它会打印新的当前线程编号以及该线程的最顶层帧。
+</p>
+<p>此命令已被弃用，建议改为为每个命令显式使用 &lsquo;<samp class="samp">--thread</samp>&rsquo; 选项。
+</p>
+<h4 class="subsubheading" id="gdb命令-第27条"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb命令-第27条"> &para;</a></span></h4>
+
+<p>相应的 <small class="sc">GDB</small> 命令是 &lsquo;<samp class="samp">thread</samp>&rsquo;。
+</p>
+<h4 class="subsubheading" id="示例-第27条"><span>示例<a class="copiable-link" href="#示例-第27条"> &para;</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)<br>-exec-next<br>^running<br>(gdb)<br>*stopped,reason=&quot;end-stepping-range&quot;,thread-id=&quot;2&quot;,line=&quot;id=&quot;187&quot;,&quot;,<br>file=&quot;../../../devo/gdb/testsuite/gdb.threads/linux-dp.c&quot;<br>(gdb)<br>-thread-list-ids<br>^done,<br>thread-ids={thread-id=&quot;thread-id=&quot;3&quot;,&quot;thread-id=&quot;2&quot;,&quot;thread-id=&quot;1&quot;},<br>number-of-threads=&quot;3&quot;<br>(gdb)<br>-thread-select 3<br>^done,new-thread-id=&quot;3&quot;,<br>frame={level=&quot;0&quot;,func=&quot;vprintf&quot;,<br>args=[{name=&quot;format&quot;,value=&quot;0x8048e9c \&quot;%*s%c %d %c\\n\&quot;&quot;},<br>{name=&quot;arg&quot;,value=&quot;0x2&quot;}],file=&quot;vprintf.c&quot;,line=&quot;31&quot;,arch=&quot;i386:x86_64&quot;}<br>(gdb)<br></pre></div>
+
+</div><hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="GDB_002fMI-Ada-Tasking-Commands.html"><small class="sc">GDB/MI</small> Ada任务命令</a>，上一个：<a href="GDB_002fMI-Program-Context.html"><small class="sc">GDB/MI</small> 程序上下文</a>，向上：<a href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

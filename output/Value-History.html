@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>值历史记录（使用GDB调试）</title>
+
+<meta name="description" content="值历史记录（使用GDB调试）">
+<meta name="keywords" content="值历史记录（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Convenience-Vars.html" rel="next" title="便利变量">
+<link href="Pretty-Printing.html" rel="prev" title="漂亮打印">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="值历史记录">
+<div class="nav-panel">
+<p>
+下一个：<a href="Convenience-Vars.html" accesskey="n" rel="next">便利变量</a>，上一个：<a href="Pretty-Printing.html" accesskey="p" rel="prev">漂亮打印</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="值历史记录-1"><span>10.11 值历史记录<a class="copiable-link" href="#值历史记录-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-值历史记录"></a>
+<a class="index-entry-id" id="索引-GDB打印的值的历史记录"></a>
+<p><code>print</code>命令打印的值保存在GDB的<em>值历史记录</em>中。这使你能够在其他表达式中引用它们。值会一直保留，直到重新读取或丢弃符号表（例如使用<code>file</code>或<code>symbol-file</code>命令）。当符号表发生变化时，值历史记录会被丢弃，因为这些值可能包含指向符号表中定义的类型的指针。
+</p>
+<a class="index-entry-id" id="索引-$"></a>
+<a class="index-entry-id" id="索引-$$"></a>
+<a class="index-entry-id" id="索引-历史编号"></a>
+<p>打印出的值会被赋予<em>历史编号</em>，你可以通过这些编号来引用它们。这些编号是从1开始的连续整数。<code>print</code>命令通过在值之前打印“<samp class="samp">$<var>num</var> = </samp>”来向你显示分配给一个值的历史编号；这里的<var>num</var>就是历史编号。
+</p>
+<p>要引用任何先前的值，使用“<samp class="samp">$</samp>”后跟该值的历史编号。<code>print</code>命令标记其输出的方式就是为了提醒你这一点。单独的“<code>$</code>”指的是历史记录中的最新值，“<code>$$</code>”指的是它之前的值。“<code>$$<var>n</var></code>”指的是从末尾数第<var>n</var>个值；“<code>$$2</code>”是紧挨着“<code>$$</code>”之前的值，“<code>$$1</code>”等同于“<code>$$</code>”，“<code>$$0</code>”等同于“<code>$</code>”。
+</p>
+<p>例如，假设你刚刚打印了一个指向结构体的指针，想要查看该结构体的内容。只需输入
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *$
+</pre></div>
+
+<p>如果你有一串结构体，其中的组件<code>next</code>指向下一个结构体，你可以用这个命令打印下一个结构体的内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *$.next
+</pre></div>
+
+<p>你可以通过重复这个命令来打印链表中的后续链接——你只需按下<kbd class="key">RET</kbd>键就能做到。
+</p>
+<p>请注意，历史记录记录的是值，而不是表达式。如果<code>x</code>的值是4，你输入这些命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">print x
+set x=5
+</pre></div>
+
+<p>那么即使<code>x</code>的值已经改变，<code>print</code>命令记录在值历史记录中的值仍然是4。
+</p>
+<dl class="table">
+<dt><a id="索引-显示值"></a><span><code>show values</code><a class="copiable-link" href="#索引-显示值"> &para;</a></span></dt>
+<dd><p>打印值历史记录中的最后十个值及其项目编号。这就像是重复十次“<samp class="samp">p&nbsp;$$9</samp>”，只是“<code>show values</code>”不会改变历史记录。
+</p>
+</dd>
+<dt><code>show values <var>n</var></code></dt>
+<dd><p>打印以历史项目编号<var>n</var>为中心的十个历史值。
+</p>
+</dd>
+<dt><code>show values +</code></dt>
+<dd><p>在最近打印的值之后打印十个历史值。如果没有更多可用值，“<code>show values +</code>”不会产生显示。
+</p></dd>
+</dl>
+
+<p>按下<kbd class="key">RET</kbd>键重复“<code>show values <var>n</var></code>”与“<samp class="samp">show values +</samp>”具有完全相同的效果。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Convenience-Vars.html">便利变量</a>，上一个：<a href="Pretty-Printing.html">漂亮打印</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

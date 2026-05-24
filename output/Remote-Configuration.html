@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>远程配置（使用GDB调试）</title>
+
+<meta name="description" content="远程配置（使用GDB调试）">
+<meta name="keywords" content="远程配置（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Debugging.html" rel="up" title="远程调试">
+<link href="Remote-Stub.html" rel="next" title="实现远程存根">
+<link href="Server.html" rel="prev" title="服务器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Configuration">
+<div class="nav-panel">
+<p>
+下一页：<a href="Remote-Stub.html" accesskey="n" rel="next">实现远程存根</a>，上一页：<a href="Server.html" accesskey="p" rel="prev">使用<code class="code">gdbserver</code>程序</a>，向上：<a href="Remote-Debugging.html" accesskey="u" rel="up">调试远程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Remote-Configuration-1"><span>20.4远程配置<a class="copiable-link" href="#Remote-Configuration-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-set-remote"></a>
+<a class="index-entry-id" id="index-show-remote"></a>
+<p>本节记录了调试远程程序时可用的配置选项。有关远程协议的文件I/O扩展的选项，请参阅 <a class="ref" href="system.html">系统调用允许</a>。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-bits-in-remote-address"></a>
+<a id="index-address-size-for-remote-targets"></a><span><code class="code">set remoteaddresssize <var class="var">bits</var></code><a class="copiable-link" href="#index-address-size-for-remote-targets"> &para;</a></span></dt>
+<dd><p>将内存包中地址的最大大小设置为指定的位数。当 <small class="sc">GDB</small> 将地址传递给远程目标时，它会屏蔽该数字以上的地址位。默认值是目标地址中的位数。
+</p>
+</dd>
+<dt><code class="code">show remoteaddresssize</code></dt>

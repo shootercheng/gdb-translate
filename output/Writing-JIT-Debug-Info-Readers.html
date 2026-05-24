@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“您可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>编写即时调试信息读取器（使用GDB调试）</title>
+
+<meta name="description" content="编写即时调试信息读取器（使用GDB调试）">
+<meta name="keywords" content="编写即时调试信息读取器（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Custom-Debug-Info.html" rel="up" title="自定义调试信息">
+<link href="Using-JIT-Debug-Info-Readers.html" rel="prev" title="使用即时调试信息读取器">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="编写即时调试信息读取器">
+<div class="nav-panel">
+<p>
+上一个：<a href="Using-JIT-Debug-Info-Readers.html" accesskey="p" rel="prev">使用即时调试信息读取器</a>，向上：<a href="Custom-Debug-Info.html" accesskey="u" rel="up">自定义调试信息</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="编写即时调试信息读取器-1"><span>30.4.2编写即时调试信息读取器<a class="copiable-link" href="#编写即时调试信息读取器-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-编写即时调试信息读取器"></a>
+
+<p>如前所述，读取器本质上是一个符合特定ABI的共享对象。此ABI在<samp class="file">jit-reader.h</samp>中描述。
+</p>
+<p><samp class="file">jit-reader.h</samp>定义了编写读取器所需的结构、宏和函数。它（与<small class="sc">GDB</small>一起）安装在<samp class="file"><var class="var">includedir</var>/gdb</samp>中，其中<var class="var">includedir</var>是系统包含目录。
+</p>
+<p>读取器需要在GPL兼容许可证下发布。通过在源文件中放置宏<code class="code">GDB_DECLARE_GPL_COMPATIBLE_READER</code>，可以声明读取器是在这样的许可证下发布的。
+</p>
+<p>读取器的入口点是符号<code class="code">gdb_init_reader</code>，它应该是一个具有以下原型的函数
+</p>
+<a class="index-entry-id" id="index-gdb_005finit_005freader"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">extern struct gdb_reader_funcs *gdb_init_reader (void);
+</pre></div>
+
+<a class="index-entry-id" id="index-struct-gdb_005freader_005ffuncs"></a>
+
+<p><code class="code">struct gdb_reader_funcs</code>包含一组指向回调函数的指针。这些函数用于读取JIT编译器生成的调试信息(<code class="code">read</code>)、展开堆栈帧(<code class="code">unwind</code>)以及创建规范的帧ID (<code class="code">get_frame_id</code>)。它还有一个在读取器卸载时调用的回调函数(<code class="code">destroy</code>)。该结构体如下所示
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct gdb_reader_funcs
+{
+  /* 必须设置为GDB_READER_INTERFACE_VERSION。 */
+  int reader_version;
+
+  /* 供读取器使用。 */
+  void *priv_data;
+
+  gdb_read_debug_info *read;
+  gdb_unwind_frame *unwind;
+  gdb_get_frame_id *get_frame_id;
+  gdb_destroy_reader *destroy;
+};
+</pre></div>
+
+<a class="index-entry-id" id="index-struct-gdb_005fsymbol_005fcallbacks"></a>
+<a class="index-entry-id" id="index-struct-gdb_�05funwind_005fcallbacks"></a>
+
+<p><small class="sc">GDB</small>会为回调函数提供另一组回调函数来完成它们的工作。对于<code class="code">read</code>，这些回调函数通过一个<code class="code">struct gdb_symbol_callbacks</code>传递，对于<code class="code">unwind</code>和<code class="code">get_frame_id</code>，则通过一个<code class="code">struct gdb_unwind_callbacks</code>传递。<code class="code">struct gdb_symbol_callbacks</code>具有在对象文件中创建新对象文件和新符号表的回调函数。<code class="code">struct gdb_unwind_callbacks</code>具有从当前帧读取寄存器并写出前一帧寄存器值的回调函数。两者都有一个用于从目标地址空间读取字节的回调函数(<code class="code">target_read</code>)。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Using-JIT-Debug-Info-Readers.html">使用即时调试信息读取器</a>，向上：<a href="Custom-Debug-Info.html">自定义调试信息</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

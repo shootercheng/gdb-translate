@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>选择Guile漂亮打印机（使用GDB调试）</title>
+
+<meta name="description" content="选择Guile漂亮打印机（使用GDB调试）">
+<meta name="keywords" content="选择Guile漂亮打印机（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Writing-a-Guile-Pretty_002dPrinter.html" rel="next" title="编写Guile漂亮打印机">
+<link href="Guile-Pretty-Printing-API.html" rel="prev" title="Guile漂亮打印API">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="选择-Guile-漂亮打印机">
+<div class="nav-panel">
+<p>
+下一个：<a href="Writing-a-Guile-Pretty_002dPrinter.html" accesskey="n" rel="next">编写Guile漂亮打印机</a>，上一个：<a href="Guile-Pretty-Printing-API.html" accesskey="p" rel="prev">Guile漂亮打印API</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="选择-Guile-漂亮打印机-1"><span>23.4.3.9选择Guile漂亮打印机<a class="copiable-link" href="#选择-Guile-漂亮打印机-1"> &para;</a></span></h><a class="index-entry-id" id="index-选择-guile-漂亮打印机"></a>
+
+<p>GDB会搜索三组漂亮打印机：
+</p>
+<ul class="itemize mark-bullet">
+<li>每个目标文件对应的漂亮打印机列表（见<a class="pxref" href="Objfiles-In-Guile.html">Guile中的目标文件</a>）。
+</li><li>每个程序空间对应的漂亮打印机列表（见<a class="pxref" href="Progspaces-In-Guile.html">Guile中的程序空间</a>）。
+</li><li>全局漂亮打印机列表（见<a class="pxref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>）。这些打印机在调试任何下级进程时都可用。
+</li></ul>
+
+<p>漂亮打印机查找是通过将待打印的值依次传递给每个启用对象的查找函数来完成的。
+当查找函数返回非<code>#f</code>值或列表耗尽时，查找停止。
+查找函数必须返回一个<code>&lt;gdb:pretty-printer-worker&gt;</code>对象或<code>#f</code>。否则会抛出异常。
+</p>
+<p>GDB首先检查当前程序空间中每个<code>&lt;gdb:objfile&gt;</code>的<code>objfile-pretty-printers</code>结果，并迭代调用该<code>&lt;gdb:objfile&gt;</code>列表中每个启用的查找函数，直到返回一个非<code>#f</code>对象。
+如果在目标文件列表中未找到漂亮打印机，GDB然后搜索当前程序空间的<code>progspace-pretty-printers</code>结果，调用每个启用的函数，直到返回一个非<code>#f</code>对象。
+在这些列表耗尽后，它会尝试使用<code>pretty-printers</code>获得的全局漂亮打印机列表，再次调用每个启用的函数，直到返回一个非<code>#f</code>对象。
+</p>
+<p>搜索目标文件的顺序未指定。对于给定的列表，函数总是从列表头部调用，并按顺序迭代，直到列表末尾，或者返回一个<code>&lt;gdb:pretty-printer-worker&gt;</code>对象。
+</p>
+<p>由于各种原因，漂亮打印机可能无法正常工作。
+例如，底层数据结构可能已更改，漂亮打印机已过时。
+</p>
+<p>损坏的漂亮打印机的后果非常严重，以至于GDB提供了启用和禁用单个打印机的支持。例如，如果<code>print frame-arguments</code>开启，并且任何参数使用损坏的打印机打印，回溯可能会变得非常难以阅读。
+</p>
+<p>通过调用<code>set-pretty-printer-enabled!</code>可以在Scheme中启用和禁用漂亮打印机。
+见<a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Writing-a-Guile-Pretty_002dPrinter.html">编写Guile漂亮打印机</a>，上一个：<a href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

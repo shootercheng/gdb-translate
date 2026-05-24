@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>解释器（使用GDB调试）</title>
+
+<meta name="description" content="解释器（使用GDB调试）">
+<meta name="keywords" content="解释器（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="TUI.html" rel="next" title="TUI">
+<link href="Extending-GDB.html" rel="prev" title="扩展GDB">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Interpreters"> 
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI.html" accesskey="n" rel="next"><small class="sc">GDB</small>文本用户界面</a>，上一页：<a href="Extending-GDB.html" accesskey="p" rel="prev">扩展<small class="sc">GDB</small></a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Command-Interpreters"><span>24命令解释器<a class="copiable-link" href="#Command-Interpreters"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-command-interpreters"></a>
+
+<p><small class="sc">GDB</small>支持多个命令解释器，以及一些命令基础设施，允许用户或用户界面编写者在解释器之间切换或在其他解释器中运行命令。
+</p>
+<p><small class="sc">GDB</small>目前支持两个命令解释器：控制台解释器（有时称为命令行解释器或<small class="sc">CLI</small>）和机器接口解释器（或<small class="sc">GDB/MI</small>）。本手册将详细描述这两种接口。
+</p>
+<p>默认情况下，<small class="sc">GDB</small>将以控制台解释器启动。但是，用户可以通过指定<samp class="option">-i</samp>或<samp class="option">--interpreter</samp>启动选项来选择使用另一个解释器启动<small class="sc">GDB</small>。定义的解释器包括：
+</p>
+<dl class="table">
+<dt><a id="index-console-interpreter"></a><span><code class="code">console</code><a class="copiable-link" href="#index-console-interpreter"> ¶</a></span></dt>
+<dd><p>传统的控制台或命令行解释器。这是<small class="sc">GDB</small>最常用的解释器。在运行时未指定解释器的情况下，<small class="sc">GDB</small>将使用此解释器。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Debugger-Adapter-Protocol"></a>
+<a id="index-DAP"></a><span><code class="code">dap</code><a class="copiable-link" href="#index-DAP"> ¶</a></span></dt>
+<dd><p>当<small class="sc">GDB</small>构建时支持Python时，它还支持调试器适配器协议。此协议可被调试器GUI或IDE用于与<small class="sc">GDB</small>通信。该协议的文档位于<a class="url" href="https://microsoft.github.io/debug-adapter-protocol/">https://microsoft.github.io/debug-adapter-protocol/</a>。有关<small class="sc">GDB</small>对该协议的扩展信息，请参阅<a class="xref" href="Debugger-Adapter-Protocol.html">调试器适配器协议</a>。
+</p>
+</dd>
+<dt><a id="index-mi-interpreter"></a><span><code class="code">mi</code><a class="copiable-link" href="#index-mi-interpreter"> ¶</a></span></dt>
+<dd><p>最新的<small class="sc">GDB/MI</small>接口（当前为<code class="code">mi3</code>）。主要由希望将<small class="sc">GDB</small>用作调试器GUI或IDE后端的程序使用。有关更多信息，请参阅<a class="ref" href="GDB_002fMI.html">GDB/MI接口</a>。
+</p>
+</dd>
+<dt><a id="index-mi3-interpreter"></a><span><code class="code">mi3</code><a class="copiable-link" href="#index-mi3-interpreter"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 9.1中引入的<small class="sc">GDB/MI</small>接口。
+</p>
+</dd>
+<dt><a id="index-mi2-interpreter"></a><span><code class="code">mi2</code><a class="copiable-link" href="#index-mi2-interpreter"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 6.0中引入的<small class="sc">GDB/MI</small>接口。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-invoke-another-interpreter"></a>
+
+<a class="index-entry-id" id="index-interpreter_002dexec"></a>
+<p>你可以使用适当命令从当前解释器在任何解释器中执行命令。如果你正在运行控制台解释器，只需使用<code class="code">interpreter-exec</code>命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">interpreter-exec mi &quot;-data-list-register-names&quot;
+</pre></div>
+
+<p><small class="sc">GDB/MI</small>有一个类似的命令，不过它仅在支持<small class="sc">GDB/MI</small>版本2（或更高版本）的<small class="sc">GDB</small>版本中可用。
+</p>
+<p>请注意，<code class="code">interpreter-exec</code>仅在指定命令的持续时间内更改解释器。它不会永久更改解释器。
+</p>
+<a class="index-entry-id" id="index-start-a-new-independent-interpreter"></a>
+
+<p>虽然你在启动时只能选择一个解释器，但可以在指定的输入/输出设备（通常是一个tty）上运行一个独立的解释器。
+</p>
+<p>例如，考虑一个调试器GUI或IDE，它想要提供一个<small class="sc">GDB</small>控制台视图。它可以通过在其GUI中嵌入一个终端模拟器小部件，以传统命令行模式启动<small class="sc">GDB</small>，将标准输入/标准输出/标准错误重定向到该终端，然后在指定的输入/输出设备上创建一个运行的MI解释器来实现。<small class="sc">GDB</small>在启动时创建的控制台解释器处理用户在终端小部件中输入的命令，而GUI使用单独的MI解释器与<small class="sc">GDB</small>进行控制和状态同步。
+</p>
+<p>要启动一个新的运行MI的辅助<em class="dfn">用户界面</em>，使用<code class="code">new-ui</code>命令：
+</p>
+<a class="index-entry-id" id="index-new_002dui"></a>
+<a class="index-entry-id" id="index-new-user-interface"></a>
+<div class="example smallexample"> 
+<pre class="example-preformatted">new-ui <var class="var">interpreter</var> <var class="var">tty</var>
+</pre></div>
+
+<p><var class="var">interpreter</var>参数指定要运行的解释器。它接受与<code class="code">interpreter-exec</code>命令相同的值。例如，&lsquo;<samp class="samp">console</samp>&rsquo;、&lsquo;<samp class="samp">mi</samp>&rsquo;、&lsquo;<samp class="samp">mi2</samp>&rsquo;等。<var class="var">tty</var参数指定解释器用于输入/输出的双向文件的名称，通常是Unix系统上伪终端从设备的名称。例如：
+</p>
+<div class="example smallexample"> 
+<pre class="example-preformatted">(gdb) new-ui mi /dev/pts/9
+</pre></div>
+
+<p>在<samp class="file">/dev/pts/9</samp>上运行一个MI解释器。 
+</p>
+</div>
+<hr> 
+<div class="nav-panel">
+<p>
+下一页：<a href="TUI.html"><small class="sc">GDB</small>文本用户界面</a>，上一页：<a href="Extending-GDB.html">扩展<small class="sc">GDB</small></a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

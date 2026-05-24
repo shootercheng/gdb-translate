@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文件（使用GDB进行调试）</title>
+
+<meta name="description" content="文件（使用GDB进行调试）">
+<meta name="keywords" content="文件（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Files.html" rel="up" title="GDB文件">
+<link href="File-Caching.html" rel="next" title="文件缓存">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="文件">
+<div class="nav-panel">
+<p>
+下一页：<a href="File-Caching.html" accesskey="n" rel="next">文件缓存</a>，上一级：<a href="GDB-Files.html" accesskey="u" rel="up"><small class="sc">GDB</small>文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="指定文件的命令"><span>18.1 指定文件的命令<a class="copiable-link" href="#指定文件的命令"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-符号表"></a>
+<a class="index-entry-id" id="索引-核心转储文件"></a>
+
+<p>你可能需要指定可执行文件和核心转储文件名。通常的做法是在启动时，使用GDB启动命令的参数（见<a class="pxref" href="Invocation.html">进入和退出GDB</a>）。
+</p>
+<p>偶尔，在GDB会话期间需要切换到不同的文件。或者你运行GDB时忘记指定想要使用的文件。又或者你正在通过<code class="code">gdbserver</code>调试远程目标（见<a class="pxref" href="Server.html">使用<code class="code">gdbserver</code>程序</a>）。在这些情况下，GDB中用于指定新文件的命令就很有用了。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-file"></a>
+<a id="索引-可执行文件"></a><span><code class="code">file <var class="var">filename</var></code><a class="copiable-link" href="#索引-可执行文件"> &para;</a></span></dt>
+<dd><p>使用<var class="var">filename</var>作为要调试的程序。读取它的符号和纯内存内容。它也是你使用<code class="code">run</code>命令时执行的程序。如果你没有指定目录，并且在GDB工作目录中没有找到该文件，GDB会使用环境变量<code class="env">PATH</code>作为搜索目录列表，就像 shell 在寻找要运行的程序时那样。你可以使用<code class="code">path</code>命令更改此变量的值，这对GDB和你的程序都有效。
+</p>
+<p><var class="var">filename</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+<a class="index-entry-id" id="索引-未链接的目标文件"></a>
+<a class="index-entry-id" id="索引-修补目标文件"></a>  
+<p>你可以使用<code class="code">file</code>命令将未链接的目标<samp class="file">.o</samp>文件加载到GDB中。你将无法 “运行” 目标文件，但可以反汇编函数并检查变量。此外，如果底层的BFD功能支持，你可以使用<kbd class="kbd">gdb -write</kbd>通过此技术修补目标文件。请注意，在这种情况下，GDB既不能解释也不能修改重定位，因此分支和一些初始化变量可能会指向错误的位置。但这个功能偶尔仍然很方便。
+</p>
+</dd>
+<dt><code class="code">file</code></dt>
+<dd><p>不带参数的<code class="code">file</code>命令会使GDB丢弃它所拥有的关于可执行文件和符号表的任何信息。
+</p>
+</dd>
+<dt><a id="索引-exec_002dfile"></a><span><code class="code">exec-file <span class="r">[</span> <var class="var">filename</var> <span class="r">]</span></code><a class="copiable-link" href="#索引-exec_002dfile"> &para;</a></span></dt>
+<dd><p>指定要运行的程序（但不是符号表）在<var class="var">filename</var>中。如有必要，GDB会搜索环境变量<code class="env">PATH</code>来定位你的程序。省略<var class="var">filename</var>意味着丢弃关于可执行文件的信息。
+</p>
+<p><var class="var">filename</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+</dd>
+<dt><a id="索引-symbol_002dfile"></a><span><code class="code">symbol-file <span class="r">[</span> <var class="var">filename</var> <span class="r">[</span> -o <var class="var">offset</var> <span class="r">]]</span></code><a class="copiable-link" href="#索引-symbol_002dfile"> &para;</a></span></dt>
+<dd><p>从文件<var class="var">filename</var>中读取符号表信息。必要时会搜索<code class="env">PATH</code>。使用<code class="code">file</code>命令可以从同一个文件中获取符号表和要运行的程序。
+</p>
+<p>如果指定了可选的<var class="var">offset</var>，它会被添加到符号文件中每个节的起始地址。这在程序在运行时被重定位的情况下很有用，例如启用了kASLR的Linux内核。
+</p>
+<p>不带参数的<code class="code">symbol-file</code>命令会清除GDB中关于你程序符号表的信息。
+</p>
+<p><code class="code">symbol-file</code>命令会使GDB忘记一些断点和自动显示表达式的内容。这是因为它们可能包含指向记录符号和数据类型的内部数据的指针，而这些是GDB内部正在丢弃的旧符号表数据的一部分。
+</p>
+<p>执行一次<code class="code">symbol-file</code>命令后，再次按下<kbd class="key">RET</kbd>它不会重复执行。
+</p>
+<p><var class="var">filename</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+<p>当GDB针对特定环境进行配置时，它会理解为该环境生成的标准格式的调试信息；你可以使用GNU编译器，或其他遵循本地约定的编译器。
+通常使用GNU编译器能获得最佳结果；例如，使用<code class="code"><small class="sc">GCC</small></code>你可以为优化后的代码生成调试信息。
+</p>
+<p>对于大多数类型的目标文件，除了使用COFF的旧SVR3系统外，<code class="code">symbol-file</code>命令通常不会立即读取完整的符号表。相反，它会快速扫描符号表以查找存在哪些源文件和符号。细节会在稍后根据需要逐个源文件读取。
+</p>
+<p>这种两阶段读取策略的目的是使GDB启动更快。在大多数情况下，除了在读取特定源文件的符号表细节时偶尔会有停顿外，它是不可见的。（如果需要，<code class="code">set verbose</code>命令可以将这些停顿转换为消息。见<a class="xref" href="Messages_002fWarnings.html">可选的警告和消息</a>。）
+</p>
+<p>我们尚未为COFF实现两阶段策略。当符号表以COFF格式存储时，<code class="code">symbol-file</code>会立即读取完整的符号表数据。请注意，“COFF中的stabs” 仍然采用两阶段策略，因为调试信息实际上是stabs格式。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-立即读取符号"></a>
+<a class="index-entry-id" id="索引-符号，立即读取"></a>
+<a id="索引-readnow"></a><span><code class="code">symbol-file <span class="r">[</span> -readnow <span class="r">]</span> <var class="var">filename</var></code><a class="copiable-link" href="#索引-readnow"> &para;</a></span></dt>
+<dt><code class="code">file <span class="r">[</span> -readnow <span class="r">]</span> <var class="var">filename</var></code></dt>
+<dd><p>如果你想确保GDB拥有完整的符号表，可以使用任何加载符号表信息命令的 “<samp class="samp">-readnow</samp>” 选项来覆盖GDB读取符号表的两阶段策略。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-从不读取符号"></a>
+<a class="index-entry-id" id="索引-符号，从不读取"></a>
+<a id="索引-_002dreadnever_002c-symbol_002dfile命令的选项"></a><span><code class="code">symbol-file <span class="r">[</span> -readnever <span class="r">]</span> <var class="var">filename</var></code><a class="copiable-link" href="#索引-_002dreadnever_002c-symbol_002dfile命令的选项"> &para;</a></span></dt>
+<dt><code class="code">file <span class="r">[</span> -readnever <span class="r">]</span> <var class="var">filename</var></code></dt>
+<dd><p>你可以使用 “<samp class="samp">-readnever</samp>” 选项指示GDB永远不读取<var class="var">filename</var>中包含的符号信息。见<a class="xref" href="File-Options.html#ga_t_002d_002dreadnever">--readnever</a>。
+</p>
+
+<a class="anchor" id="core_002dfile命令"></a></dd>
+<dt><a id="索引-core_002dfile"></a><span><code class="code">core-file <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code><a class="copiable-link" href="#索引-core_002dfile"> &para;</a></span></dt>
+<dt><code class="code">core</code></dt>
+<dd><p>指定用作 “内存内容” 的核心转储文件的位置。传统上，核心文件只包含生成它们的进程的地址空间的某些部分；GDB可以访问可执行文件本身以获取其他部分。
+</p>
+<p>不带参数的<code class="code">core-file</code>命令指定不使用核心文件。
+</p>
+<p>请注意，当你的程序在GDB下实际运行时，核心文件会被忽略。因此，如果你的程序一直在运行，而你希望调试核心文件，你必须杀死程序正在运行的子进程。为此，使用<code class="code">kill</code>命令（见<a class="pxref" href="Kill-Process.html">杀死子进程</a>）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-动态链接"></a>
+<a id="索引-add_002dsymbol_002dfile"></a><span><code class="code">add-symbol-file <var class="var">filename</var> <span class="r">[</span> -readnow <span class="r">|</span> -readnever <span class="r">]</span> <span class="r">[</span> -o <var class="var">offset</var> <span class="r">]</span> <span class="r">[</span> <var class="var">textaddress</var> <span class="r">]</span> <span class="r">[</span> -s <var class="var">section</var> <var class="var">address</var> &hellip; <span class="r">]</span></code><a class="copiable-link" href="#索引-add_002dsymbol_002dfile"> &para;</a></span></dt>
+<dd><p><code class="code">add-symbol-file</code>命令从文件<var class="var">filename</var>中读取额外的符号表信息。当<var class="var">filename</var>已通过其他方式动态加载到正在运行得程序中时，你会使用此命令。<var class="var">textaddress</var>参数给出文件的文本段已加载到得内存地址。你可以使用任意数量的 “<samp class="samp">-s <var class="var">section</var> <var class="var">address</var></samp>” 对来指定其他节的基地址。如果省略一个节，GDB将使用在<var class="var">filename</var>中找到的默认地址。任何<var class="var">address</var>或<var class="var">textaddress</var>都可以作为表达式给出。
+</p>
+<p>如果指定了可选的<var class="var">offset</var>，它会被添加到每个节的起始地址，但那些已明确指定地址的节除外。
+</p>
+<p>文件<var class="var">filename</var>的符号表会被添加到最初使用<code class="code">symbol-file</code>命令读取的符号表中。你可以多次使用<code class="code">add-symbol-file</code>命令；这样读取的新符号数据会与旧数据一起保留。
+</p>
+<p><var class="var">filename</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>
+<p>可以使用命令<code class="code">remove-symbol-file</code>撤销更改。
+</p>
+<a class="index-entry-id" id="索引-从可重定位目标文件读取符号"></a>
+<a class="index-entry-id" id="索引-目标文件，可重定位，从其读取符号"></a>
+<a class="index-entry-id" id="索引-从可重定位目标文件读取符号"></a>
+<a class="index-entry-id" id="索引-符号，从可重定位目标文件读取"></a>
+<a class="index-entry-id" id="索引-_002eo文件，从其读取符号"></a>
+<p>虽然<var class="var">filename</var>通常是共享库文件、可执行文件或其他已完全重定位以加载到进程中的目标文件，但只要满足以下条件，你也可以从可重定位的<samp class="file">.o</samp>文件加载符号信息：
+</p>
+<ul class="itemize mark-bullet">
+<li>文件的符号信息仅引用该文件中定义的链接器符号，而不引用其他目标文件定义的符号，
+</li><li>文件的符号信息引用的每个节实际上都已按文件中出现的方式加载到下级进程中，
+</li><li>你可以确定每个节加载到的地址，并将这些地址提供给<code class="code">add-symbol-file</code>命令。
+</li></ul>
+
+<p>一些嵌入式操作系统，如Sun Chorus和VxWorks，可以将可重定位文件加载到正在运行的程序中；这样的系统通常很容易满足上述要求。然而，重要的是要认识到，许多原生系统使用复杂的链接过程（例如<code class="code">.linkonce</code>节分解和C<code class="t">++</code>构造函数表汇编），这使得满足这些要求变得困难。一般来说，不能假设使用<code class="code">add-symbol-file</code>读取可重定位目标文件的符号信息会与以正常方式将可重定位目标文件链接到程序中具有相同的效果。
+</p>
+<p>使用<code class="code">add-symbol-file</code>后按下<kbd class="key">RET</kbd>它不会重复执行。
+</p>
+</dd>
+<dt><a id="索引-remove_002dsymbol_002dfile"></a><span><code class="code">remove-symbol-file <var class="var">filename</var></code><a class="copiable-link" href="#索引-remove_002dsymbol_002dfile"> &para;</a></span></dt>
+<dt><code class="code">remove-symbol-file -a <var class="var">address</var></code></dt>
+<dd><p>删除通过<code class="code">add-symbol-file</code>命令添加的符号文件。要删除的文件可以通过其<var class="var">filename</var>或内存中该符号文件边界内的<var class="var">address</var>来标识。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) add-symbol-file /home/user/gdb/mylib.so 0x7ffff7ff9480
+add symbol table from file &quot;/home/user/gdb/mylib.so&quot; at
+   .text_addr = 0x7ffff7ff9480
+(y or n) y
+Reading symbols from /home/user/gdb/mylib.so...
+(gdb) remove-symbol-file -a 0x7ffff7ff9480
+Remove symbol table from file &quot;/home/user/gdb/mylib.so&quot;? (y or n) y
+(gdb)
+</pre></div>
+
+<p><var class="var">address</var>可以是任何求值为地址的表达式。
+</p>
+<p>使用<code class="code">remove-symbol-file</code>后按下<kbd class="key">RET</kbd>它不会重复执行。
+</p>
+<p><var class="var">filename</var>参数支持转义字符和引号，见<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>。
+</p>  
+</dd>
+<dt><a class="index-entry-id" id="索引-syscall-DSO"></a>
+<a class="index-entry-id" id="索引-从内存加载符号"></a>
+<a id="索引-add_002dsymbol_002dfile_002dfrom_002dmemory"></a><span><code class="code">add-symbol-file-from-memory <var class="var">address</var></code><a class="copiable-link" href="#索引-add_002dsymbol_00

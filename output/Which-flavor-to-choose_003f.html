@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)所示。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>选择哪种方式？(使用GDB调试)</title>
+
+<meta name="description" content="选择哪种方式？(使用GDB调试)">
+<meta name="keywords" content="选择哪种方式？(使用GDB调试)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">  
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading-extensions.html" rel="up" title="自动加载扩展">
+<link href="dotdebug_005fgdb_005fscripts-section.html" rel="prev" title="dotdebug_gdb_scripts部分">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="选择哪种方式？">
+<div class="nav-panel">
+<p>
+上一个：<a href="dotdebug_005fgdb_005fscripts-section.html" accesskey="p" rel="prev">“<code class="code">.debug_gdb_scripts</code>”部分</a>，向上：<a href="Auto_002dloading-extensions.html" accesskey="u" rel="up">自动加载扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="选择哪种方式？-1"><span>23.5.3选择哪种方式？<a class="copiable-link" href="#选择哪种方式？-1"> &para;</a></span></h4>
+
+<p>鉴于自动加载扩展有多种方式，可能并不总是清楚该选择哪种。本节提供一些指导。
+</p>
+<p><samp class="file">-gdb.<var class="var">ext</var></samp>方式的优点：
+</p>
+<ul class="itemize mark-bullet">
+<li>可用于不支持多个节的文件格式。
+
+</li><li>便于查找公共库的脚本。
+
+<p>在源搜索路径中搜索“<code class="code">.debug_gdb_scripts</code>”部分中指定的脚本。
+对于公开安装的库，例如<samp class="file">libstdc++</samp>，通常没有可找到脚本的源目录。
+</p>
+</li><li>不需要添加源代码。
+</li></ul>
+
+<p>“<code class="code">.debug_gdb_scripts</code>”方式的优点：
+</p>
+<ul class="itemize mark-bullet">
+<li>适用于静态链接。
+
+<p>以<samp class="file">-gdb.<var class="var">ext</var></samp>方式处理的库的脚本需要一个目标文件来触发其加载。当应用程序静态链接时，唯一可用的目标文件是可执行文件，并且将所有输入库的所有脚本附加到可执行文件的<samp class="file">-gdb.<var class="var">ext</var></samp>脚本很麻烦。
+</p>
+</li><li>适用于完全内联定义的类。
+
+<p>有些类可以完全内联定义，因此可能没有相关的共享库来附加<samp class="file">-gdb.<var class="var">ext</var></samp>脚本。
+</p>
+</li><li>脚本无需从源树中复制出来。
+
+<p>在某些情况下，应用程序可能由大量内部库构建而成，在GDB能够找到的地方安装<samp class="file">-gdb.<var class="var">ext</var></samp>脚本所需的构建基础设施很麻烦。将脚本在“<code class="code">.debug_gdb_scripts</code>”部分中指定为相对路径，并将源树顶部的路径添加到源搜索路径中可能会更容易。
+</p></li></ul>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="dotdebug_005fgdb_005fscripts-section.html">“<code class="code">.debug_gdb_scripts</code>”部分</a>，向上：<a href="Auto_002dloading-extensions.html">自动加载扩展</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

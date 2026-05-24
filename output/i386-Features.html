@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>i386特性（使用GDB调试）</title>
+
+<meta name="description" content="i386特性（使用GDB调试）">
+<meta name="keywords" content="i386特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="LoongArch-Features.html" rel="next" title="龙芯架构特性">
+<link href="ARM-Features.html" rel="prev" title="ARM特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="i386-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="LoongArch-Features.html" accesskey="n" rel="next">龙芯架构特性</a>，上一页：<a href="ARM-Features.html" accesskey="p" rel="prev">ARM特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>    
+</div>
+<hr>
+<h4 class="subsection" id="i386-Features-1"><span>G.5.5 i386特性<a class="copiable-link" href="#i386-Features-1"> &para;</span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-i386-features"></a>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.core</samp>&rsquo;特性是i386/amd64目标所必需的。它应该描述以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>对于i386，从&lsquo;<samp class="samp">eax</samp>&rsquo;到&lsquo;<samp class="samp">edi</samp>&rsquo;加上&lsquo;<samp class="samp">eip</samp>&rsquo;
+</li><li>对于amd64，从&lsquo;<samp class="samp">rax</samp>&rsquo;到&lsquo;<samp class="samp">r15</samp>&rsquo;加上&lsquo;<samp class="samp">rip</samp>&rsquo;
+</li><li>&lsquo;<samp class="samp">eflags</samp>&rsquo;、&lsquo;<samp class="samp">cs</samp>&rsquo;、&lsquo;<samp class="samp">ss</samp>&rsquo;、&lsquo;<samp class="samp">ds</samp>&rsquo;、&lsquo;<samp class="samp">es</samp>&rsquo;、&lsquo;<samp class="samp">fs</samp>&rsquo;、&lsquo;<samp class="samp">gs</samp>&rsquo; 
+</li><li>&lsquo;<samp class="samp">st0</samp>&rsquo;到&lsquo;<samp class="samp">st7</samp>&rsquo;
+</li><li>&lsquo;<samp class="samp">fctrl</samp>&rsquo;、&lsquo;<samp class="samp">fstat</samp>&rsquo;、&lsquo;<samp class="samp">ftag</samp>&rsquo;、&lsquo;<samp class="samp">fiseg</samp>&rsquo;、&lsquo;<samp class="samp">fioff</samp>&rsquo;、&lsquo;<samp class="samp">foseg</samp>&rsquo;、&lsquo;<samp class="samp">fooff</samp>&rsquo;和&lsquo;<samp class="samp">fop</samp>&rsquo;
+</li></ul>
+
+<p>寄存器集可能因目标而异。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.sse</samp>&rsquo;特性是可选的。它应该描述寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>对于i386，从&lsquo;<samp class="samp">xmm0</samp>&rsquo;到&lsquo;<samp class="samp">xmm7</samp>&rsquo;
+</li><li>对于amd64，从&lsquo;<samp class="samp">xmm0</samp>&rsquo;到&lsquo;<samp class="samp">xmm15</samp>&rsquo;
+</li><li>&lsquo;<samp class="samp">mxcsr</samp>&rsquo;
+</li></ul>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.avx</samp>&rsquo;特性是可选的，并且需要&lsquo;<samp class="samp">org.gnu.gdb.i386.sse</samp>&rsquo;特性。它应该描述<small class="sc">YMM</small>寄存器的高128位：
+</p>
+<ul class="itemize mark-minus">
+<li>对于i386，从&lsquo;<samp class="samp">ymm0h</samp>&rsquo;到&lsquo;<samp class="samp">ymm7h</samp>&rsquo;
+</li><li>对于amd64，从&lsquo;<samp class="samp">ymm0h</samp>&rsquo;到&lsquo;<samp class="samp">ymm_15h</samp>&rsquo;
+</li></ul>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.linux</samp>&rsquo;特性是可选的。它应该描述单个寄存器&lsquo;<samp class="samp">orig_eax</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.segments</samp>&rsquo;特性是可选的。它应该描述两个系统寄存器：&lsquo;<samp class="samp">fs_base</samp>&rsquo;和&lsquo;<samp class="samp">gs_base</samp>&rsquo;。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.avx512</samp>&rsquo;特性是可选的，并且需要&lsquo;<samp class="samp">org.gnu.gdb.i386.avx</samp>&rsquo;特性。它应该描述额外的<small class="sc">XMM</small>寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>&lsquo;<samp class="samp">xmm16</samp>&rsquo;到&lsquo;<samp class="samp">xmm31</samp>&rsquo;，仅对amd64有效。
+</li></ul>
+
+<p>它应该描述额外的<small class="sc">YMM</small>寄存器的高128位：
+</p>
+<ul class="itemize mark-minus">
+<li>&lsquo;<samp class="samp">ymm16h</samp>&rsquo;到&lsquo;<samp class="samp">ymm31h</samp>&rsquo;，仅对amd64有效。
+</li></ul>
+
+<p>它应该
+描述<small class="sc">ZMM</small>寄存器的高256位：
+</p>
+<ul class="itemize mark-minus">
+<li>对于i386，从&lsquo;<samp class="samp">zmm0h</samp>&rsquo;到&lsquo;<samp class="samp">zmm7h</samp>&rsquo;。
+</li><li>对于amd64，从&lsquo;<samp class="samp">zmm0h</samp>&rsquo;到&lsquo;<samp class="samp">zmm15h</samp>&rsquo;。
+</li></ul>
+
+<p>它应该
+描述额外的<small class="sc">ZMM</small>寄存器：
+</p>    
+<ul class="itemize mark-minus">
+<li>&lsquo;<samp class="samp">zmm16h</samp>&rsquo;到&lsquo;<samp class="samp">zmm31h</samp>&rsquo;，仅对amd64有效。
+</li></ul>
+
+<p>它应该
+描述额外的64位<small class="sc">K</small>寄存器：
+</p>
+<ul class="itemize mark-minus">    
+<li>&lsquo;<samp class="samp">k0</samp>&rsquo;到&lsquo;<samp class="samp">k7</samp>&rsquo;，对amd64和i386有效。
+</li></ul>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i__386.pkeys</samp>&rsquo;特性是可选的。它应该描述单个寄存器&lsquo;<samp class="samp">pkru</samp>&rsquo;。它是一个32位寄存器，对i386和amd64有效。
+</p>
+<p>&lsquo;<samp class="samp">org.gnu.gdb.i386.pl3_ssp</samp>&rsquo;特性是可选的。它应该描述用户模式寄存器&lsquo;<samp class="samp">pl3_ssp</samp>&rsquo;，在amd64上有64位，在具有32位指针大小（X32）的amd64上有32位，在i386上有32位。遵循Linux内核的限制，目前只有针对amd64目标的<small class="sc">GDB</small>使用此特性。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="LoongArch-Features.html">龙芯架构特性</a>，上一页：<a href="ARM-Features.html">ARM特性</a>，向上：<a href="Standard-Target-Features.html">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

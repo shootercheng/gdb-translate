@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>IPA协议对象（使用GDB调试）</title>
+
+<meta name="description" content="IPA协议对象（使用GDB调试）">
+<meta name="keywords" content="IPA协议对象（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="In_002dProcess-Agent-Protocol.html" rel="up" title="进程内代理协议">
+<link href="IPA-Protocol-Commands.html" rel="next" title="IPA协议命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="IPA-协议对象">
+<div class="nav-panel">
+<p>
+下一页：<a href="IPA-协议命令.html" accesskey="n" rel="next">IPA协议命令</a>，上一级：<a href="进程内代理协议.html" accesskey="u" rel="up">进程内代理协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="概念索引.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="IPA-协议对象-1"><span>31.1.1 IPA协议对象<a class="copiable-link" href="#IPA-协议对象-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-ipa-协议对象"></a>
+
+<p>发送到代理以及从代理接收的命令可能包含一些称为<em class="dfn">对象</em>的复杂数据类型。
+</p>
+<p>进程内代理与GDB或GDBserver在同一台机器上运行，因此它不必像远程协议（见 <a class="pxref" href="远程协议.html"><small class="sc">GDB</small> 远程串行协议</a>）那样处理两端之间的诸多差异。
+然而，两个进程的两端仍存在一些差异：
+</p>
+<ol class="enumerate">
+<li> 字长。在一些64位机器上，GDB或GDBserver可以编译为64位可执行文件，而进程内代理是32位的。
+</li><li> ABI。一些机器可能有多种类型的ABI，GDB或GDBserver使用一种进行编译，而进程内代理使用另一种进行编译。
+</li></ol>
+
+<p>以下是IPA协议对象：
+</p>
+<ol class="enumerate">
+<li> 代理表达式对象。它表示一个代理表达式（见 <a class="pxref" href="代理表达式.html">GDB代理表达式机制</a>）。
+<a class="anchor" id="代理表达式对象"></a></li><li> 跟踪点操作对象。它表示一个跟踪点操作（见 <a class="pxref" href="跟踪点操作.html">跟踪点操作列表</a>），用于收集寄存器、内存、静态跟踪数据并评估表达式。
+<a class="anchor" id="跟踪点操作对象"></a></li><li> 跟踪点对象。它表示一个跟踪点（见 <a class="pxref" href="跟踪点.html">跟踪点</a>）。
+<a class="anchor" id="跟踪点对象"></a>
+</li></ol>
+
+<p>下表描述了每个IPA协议对象的重要属性：
+</p>
+<table class="multitable">
+<thead><tr><th width="30%">名称</th><th width="20%">大小</th><th width="50%">描述</th></tr></thead>
+<tbody><tr><td width="30%"><em class="emph">代理表达式对象</em></td><td width="20%"></td><td width="50%"></td></tr>
+<tr><td width="30%">长度</td><td width="20%">4</td><td width="50%">字节码的长度</td></tr>
+<tr><td width="30%">字节码</td><td width="20%"><var class="var">长度</var></td><td width="50%">字节码的内容</td></tr>
+<tr><td width="30%"><em class="emph">用于收集内存的跟踪点操作</em></td><td width="

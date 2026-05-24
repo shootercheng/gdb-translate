@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>服务器前缀（使用GDB调试）</title>
+
+<meta name="description" content="服务器前缀（使用GDB调试）">
+<meta name="keywords" content="服务器前缀（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Annotations.html" rel="up" title="注释">
+<link href="Prompting.html" rel="next" title="提示">
+<link href="Annotations-Overview.html" rel="prev" title="注释概述">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="服务器前缀">
+<div class="nav-panel">
+<p>
+下一个：<a href="Prompting.html" accesskey="n" rel="next">GDB输入的注释</a>，上一个：<a href="Annotations-Overview.html" accesskey="p" rel="prev">什么是注释？</a>，向上：<a href="Annotations.html" accesskey="u" rel="up">GDB注释</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][ <a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="服务器前缀"><span>28.2 服务器前缀<a class="copiable-link" href="#服务器前缀"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-server-prefix"></a>
+
+<p>如果你在一个命令前加上‘<samp class="samp">server </samp>’，那么它将不会影响命令历史记录，也不会影响当单独在一行上按下<kbd class="key">RET</kbd>时GDB对要重复哪个命令的认知。这意味着命令可以由前端以透明的方式在用户背后运行。
+</p>
+<p>‘<code class="code">server </code>’前缀不会影响将值记录到值历史记录中；要打印一个值而不将其记录到值历史记录中，请使用‘<code class="code">output</code>’命令而不是‘<code class="code">print</code>’命令。
+</p>
+<p>使用这个前缀还会禁用确认请求（见 <a class="pxref" href="Messages_002fWarnings.html#confirmation-requests">确认请求</a>）。
+</p>
+</div>
+
+
+
+</body>
+</html>

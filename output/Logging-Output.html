@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>日志输出（使用GDB调试）</title>
+
+<meta name="description" content="日志输出（使用GDB调试）">
+<meta name="keywords" content="日志输出（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Invocation.html" rel="up" title="调用">
+<link href="Shell-Commands.html" rel="prev" title="Shell命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="日志输出">
+<div class="nav-panel">
+<p>
+上一个：<a href="Shell-Commands.html" accesskey="p" rel="prev">Shell命令</a>，向上：<a href="Invocation.html" accesskey="u" rel="up">进入和退出GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="日志输出-1"><span>2.4日志输出<a class="copiable-link" href="#日志输出-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-记录gdb输出"></a>
+<a class="index-entry-id" id="索引-将gdb输出保存到文件"></a>
+
+<p>你可能想将GDB命令的输出保存到一个文件中。有几个命令可以控制GDB的日志记录。
+</p>
+<dl class="table">
+<dt><a id="索引-set-logging-enabled"></a><span><code class="code">set logging enabled [on|off]</code><a class="copiable-link" href="#索引-set-logging-enabled"> &para;</a></span></dt>
+<dd><p>启用或禁用日志记录。
+<a class="index-entry-id" id="索引-日志文件名"></a>
+</p></dd>
+<dt><code class="code">set logging file <var class="var">file</var></code></dt>
+<dd><p>更改当前日志文件的名称。默认的日志文件是<samp class="file">gdb.txt</samp>。
+</p></dd>
+<dt><code class="code">set logging overwrite [on|off]</code></dt>
+<dd><p>默认情况下，GDB会追加到日志文件中。如果你希望<code class="code">set logging enabled on</code>覆盖日志文件，请设置<code class="code">overwrite</code>。
+</p></dd>
+<dt><code class="code">set logging redirect [on|off]</code></dt>
+<dd><p>默认情况下，GDB输出会同时发送到终端和日志文件。如果你希望输出只发送到日志文件，请设置<code class="code">redirect</code>。
+</p></dd>
+<dt><code class="code">set logging debugredirect [on|off]</code></dt>
+<dd><p>默认情况下，GDB调试输出会同时发送到终端和日志文件。如果你希望调试输出只发送到日志文件，请设置<code class="code">debugredirect</code>。
+<a class="index-entry-id" id="索引-show-logging"></a>
+</p></dd>
+<dt><code class="code">show logging</code></dt>
+<dd><p>显示日志记录设置的当前值。
+</p></dd>
+</dl>
+
+<p>你也可以将GDB命令的输出重定向到一个shell命令。请参阅 <a class="xref" href="Shell-Commands.html#pipe">管道</a>。
+</p></div>
+
+
+
+</body>
+</html>

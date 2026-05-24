@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>gdb.types（使用GDB调试）</title>
+
+<meta name="description" content="gdb.types（使用GDB调试）">
+<meta name="keywords" content="gdb.types（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-modules.html" rel="up" title="Python模块">
+<link href="gdb_002eprompt.html" rel="next" title="gdb.prompt">
+<link href="gdb_002eprinting.html" rel="prev" title="gdb.printing">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="gdb_002etypes">
+<div class="nav-panel">
+<p>
+下一个：<a href="gdb_002eprompt.html" accesskey="n" rel="next">gdb.prompt</a>，上一个：<a href="gdb_002eprinting.html" accesskey="p" rel="prev">gdb.printing</a>，向上：<a href="Python-modules.html" accesskey="u" rel="up">Python模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb_002etypes-1"><span>23.3.4.2 gdb.types<a class="copiable-link" href="#gdb_002etypes-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-gdb_002etypes"></a>
+
+<p>本模块提供了一组用于处理 <code class="code">gdb.Type</code> 对象的实用工具。
+</p>
+<dl class="table">
+<dt><code class="code">get_basic_type (<var class="var">type</var>)</code></dt>
+<dd><p>返回去除了const和volatile限定符的 <var class="var">type</var>，并将typedef和C++引用转换为底层类型。
+</p>
+<p>C++示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">typedef const int const_int;
+const_int foo (3);
+const_int&amp; foo_ref (foo);
+int main () { return 0; }
+</pre></div>
+
+<p>然后在gdb中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) start
+(gdb) python import gdb.types
+(gdb) python foo_ref = gdb.parse_and_eval(&quot;foo_ref&quot;)
+(gdb) python print gdb.types.get_basic_type(foo_ref.type)
+int
+</pre></div>
+
+</dd>
+<dt><code class="code">has_field (<var class="var">type</var>, <var class="var">field</var>)</code></dt>
+<dd><p>如果 <var class="var">type</var>（假定为具有字段的类型，例如结构体或联合体）具有字段 <var class="var">field</var> 返回 <code class="code">True</code>。
+</p>
+</dd>
+<dt><code class="code">make_enum_dict (<var class="var">enum_type</var>)</code></dt>
+<dd><p>返回从 <var class="var">enum_type</var> 生成的Python <code class="code">字典</code> 类型。
+</p>
+</dd>
+<dt><code class="code">deep_items (<var class="var">type</var>)</code></dt>
+<dd><p>返回一个类似于标准 <code class="code">gdb.Type.iteritems</code> 方法的Python迭代器，不同之处在于 <code class="code">deep_items</code> 返回的迭代器将递归遍历匿名结构体或联合体字段。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct A
+{
+    int a;
+    union {
+        int b0;
+        int b1;
+    };
+};
+</pre></div>
+
+<p>然后在GDB中：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) python import gdb.types
+(gdb) python struct_a = gdb.lookup_type(&quot;struct A&quot;)
+(gdb_python print struct_a.keys ()
+{['a', '']}](gdb) python print [k for k,v in gdb.types.deep_items(struct_a)]
+{['a', 'b0', 'b1']}
+</pre></div>
+
+</dd>
+<dt><code class="code">get_type_recognizers ()</code></dt>
+<dd><p>返回当前上下文中启用的类型识别器列表。这在GDB的类型打印过程中被调用（见 <a class="pxref" href="Type-Printing-API.html">类型打印API</a>）。
+</p>
+</dd>
+<dt><code class="code">apply_type_recognizers (recognizers, type_obj)</code></dt>
+<dd><p>将类型识别器 <var class="var">recognizers</var> 应用于类型对象 <var class="var">type_obj</var>。如果任何识别器返回一个字符串，则返回该字符串。否则，返回 <code class="code">None</code>。这在GDB的类型打印过程中被调用（见 <a class="pxref" href="Type-Printing-API.html">类型打印API</a>）。
+</p>
+</dd>
+<dt><code class="code">register_type_printer (locus, printer)</code></dt>
+<dd><p>这是一个用于注册类型打印机 <var class="var">printer</var> 的便利函数。打印机必须实现类型打印机协议。<var class="var">locus</var> 参数可以是一个 <code class="code">gdb.Objfile</code>，在这种情况下，打印机将注册到该目标文件；一个 <code class="code">gdb.Progspace</code>，在这种情况下，打印机将注册到该程序空间；或者 <code class="code">None</code>，在这种情况下，打印机将全局注册。
+</p>
+</dd>
+<dt><code class="code">TypePrinter</code></dt>
+<dd><p>这是一个实现类型打印机协议的基类。鼓励但不要求类型打印机派生自这个类。它定义了一个构造函数：
+</p>
+<dl class="first-defop first-defmethod-alias-first-defop">
+<dt class="defop defmethod-alias-defop" id="index-_005f_005finit_005f_005f-on-TypePrinter"><span class="category-def">TypePrinter上的方法： </span><span><strong class="def-name">__init__</strong> <var class="def-var-arguments">(self, name)</var><a class="copiable-link" href="#index-_005f_005finit_005f_005f-on-TypePrinter"> &para;</a></span></dt>
+<dd><p>使用给定的名称初始化类型打印机。新打印机从启用状态开始。
+</p></dd></dl>
+
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="gdb_002eprompt.html">gdb.prompt</a>，上一个：<a href="gdb_002eprinting.html">gdb.printing</a>，向上：<a href="Python-modules.html">Python模块</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

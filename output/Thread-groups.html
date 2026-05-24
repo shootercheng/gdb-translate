@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”以及封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册*。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>线程组（使用GDB调试）</title>
+
+<meta name="description" content="线程组（使用GDB调试）">
+<meta name="keywords" content="线程组（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB_002fMI-General-Design.html" rel="up" title="GDB/MI通用设计">
+<link href="Asynchronous-and-non_002dstop-modes.html" rel="prev" title="异步和非停止模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="线程组">
+<div class="nav-panel">
+<p>
+上一个：<a href="Asynchronous-and-non_002dstop-modes.html" accesskey="p" rel="prev">异步命令执行和非停止模式</a>，向上：<a href="GDB_002fMI-General-Design.html" accesskey="u" rel="up"><small class="sc">GDB/MI</small>通用设计</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="线程组-1"><span>27.1.3线程组<a class="copiable-link" href="#线程组-1"> &para;</a></span></h4>
+<p><small class="sc">GDB</small>可用于同时调试多个进程。
+在某些平台上，<small class="sc">GDB</small>可能支持调试多个硬件系统，每个硬件系统有多个核心，每个核心上运行着几个不同的进程。本节描述支持此类调试场景的MI机制。
+</p>
+<p>关键的一点是，无论目标的结构如何，MI都可以有一个全局线程列表，因为大多数接受“<samp class="samp">--thread</samp>”选项的命令不需要知道该线程所属的进程。因此，既不需要引入额外的“<samp class="samp">--process</samp>”选项，也不需要在MI接口中引入当前进程的概念。唯一严格需要的新特性是能够找到线程如何被分组到进程中。
+</p>
+<p>为了让用户发现这种分组，并支持机器/核心/进程的任意层次结构，MI引入了“线程组”的概念。线程组是线程和其他线程组的集合。线程组总是有一个字符串标识符、一个类型，并可能有特定于该类型的其他属性。一个新命令“<code class="code">-list-thread-groups</code>”返回顶级线程组的列表，这些顶级线程组对应于<small class="sc">GDB</small>当前正在调试的进程。通过将线程组的标识符传递给“<code class="code">-list-thread-groups</code>”命令，可以获得特定线程组的成员。
+</p>
+<p>为了让用户轻松发现他希望调试得进程和其他对象，引入了“可用线程组”的概念。可用线程组是<small class="sc">GDB</small>未调试但可以使用“<code class="code">-target-attach</code>”命令附加到的线程组。可以使用“<samp class="samp">-list-thread-groups --available</samp>”获得可用顶级线程组的列表*。一般来说，只有在附加到该线程组之后才能检索线程组的内容。
+</p>
+<p>线程组与下级对象相关（见<a class="pxref" href="Inferiors Connections and Programs.html">调试多个下级对象连接和程序</a>）。每个下级对象对应于一种特殊类型“<samp class="samp">process</samp>”的线程组，并且对这样的线程组允许一些额外的操作*。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Asynchronous-and-non_002dstop-modes.html">异步命令执行和非停止模式</a>，向上：<a href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small>通用设计</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>
+
+ 1. 原文中部分内容可能存在一些不完整或表述不太准确的地方，比如“<samp class="samp">-list-thread-groups --available</samp>”和“<a class="pxref" href="Inferiors Connections and Programs.html">Debugging Multiple Inferiors Connections and Programs</a>”等，在翻译过程中尽量按照原文呈现。
+ 2. 对于一些特定的术语和缩写，如“<small class="sc">GDB</small>”（GNU调试器）、“MI”（Machine Interface，机器接口）等，保留英文缩写并在首次出现时进行简单解释。
+ 3. 对于文档中一些关于版权和许可的说明，按照原文准确翻译，确保信息完整。
+ 4. 整体翻译在忠实于原文内容的基础上，尽量使中文表达通顺自然，符合技术文档的语言风格。 

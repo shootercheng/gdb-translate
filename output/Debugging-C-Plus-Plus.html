@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>调试C++（使用GDB调试）</title>
+
+<meta name="description" content="调试C++（使用GDB调试）">
+<meta name="keywords" content="调试C++（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="C.html" rel="up" title="C">
+<link href="Decimal-Floating-Point.html" rel="next" title="十进制浮点格式">
+<link href="Debugging-C.html" rel="prev" title="调试C">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="调试-C-Plus-Plus">
+<div class="nav-panel">
+<p>
+下一页：<a href="Decimal-Floating-Point.html" accesskey="n" rel="next">十进制浮点格式</a>，上一页：<a href="Debugging-C.html" accesskey="p" rel="prev"><small class="sc">GDB</small>和C</a>，向上：<a href="C.html" accesskey="u" rel="up">C和C<code class="t">++</code></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="gdb-特性-用于-C_002b_002b"><span>15.4.1.7 <small class="sc">GDB</small>用于C<code class="t">++</code>的特性<a class="copiable-link" href="#gdb-特性-用于-C_002b_002b"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-命令-用于-C_002b_002b"></a>
+
+<p>一些<small class="sc">GDB</small>命令在C<code class="t">++</code>中特别有用，有些是专门为与C<code class="t">++</code>一起使用而设计的。以下是一个总结：
+</p>
+<dl class="table">
+<dt><a id="索引-断点-在-重载函数中"></a><span><code class="code"><span class="r">断点菜单</span></code><a class="copiable-link" href="#索引-断点-在-重载函数中"> &para;</a></span></dt>
+<dd><p>当你想在一个名字被重载的函数中设置断点时，<small class="sc">GDB</small>有能力显示一个可能的断点位置菜单，以帮助你指定你想要的函数定义。
+请参阅 <a class="xref" href="Ambiguous-Expressions.html">模糊表达式</a>。
+</p>
+</dd>
+<dt><a id="索引-重载-在-C_002b_002b中"></a><span><code class="code">rbreak <var class="var">regex</var></code><a class="copiable-link" href="#索引-重载-在-C_002b_002b中"> &para;</a></span></dt>
+<dd><p>使用正则表达式设置断点有助于在不是任何特殊类的成员的重载函数上设置断点。
+请参阅 <a class="xref" href="Set-Breaks.html">设置断点</a>。
+</p>
+</dd>
+<dt><a id="索引-C_002b_002b-异常处理"></a><span><code class="code">catch throw</code><a class="copiable-link" href="#索引-C_002b_002b-异常处理"> &para;</a></span></dt>
+<dt><code class="code">catch rethrow</code></dt>
+<dt><code class="code">catch catch</code></dt>
+<dd><p>使用这些命令调试C<code class="t">++</code>异常处理。请参阅 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</dd>
+<dt><a id="索引-继承"></a><span><code class="code">ptype <var class="var">typename</var></code><a class="copiable-link" href="#索引-继承"> &para;</a></span></dt>
+<dd><p>打印类型<var class="var">typename</var>的继承关系以及其他信息。
+请参阅 <a class="xref" href="Symbols.html">检查符号表</a>。
+</p>
+</dd>
+<dt><code class="code">info vtbl <var class="var">expression</var>.</code></dt>
+<dd><p><code class="code">info vtbl</code>命令可用于显示由<var class="var">expression</var>计算出的对象的虚方法表。每个虚表显示一个条目；当使用多重继承时可能有多个虚表。
+</p>
+</dd>
+<dt><a id="索引-C_002b_002b-去混淆"></a><span><code class="code">demangle <var class="var">name</var></code><a class="copiable-link" href="#索引-C_002b_002b-去混淆"> &para;</a></span></dt>
+<dd><p>对<var class="var">name</var>进行去混淆。
+有关<code class="code">demangle</code>命令的更完整描述，请参阅 <a class="xref" href="Symbols.html">检查符号表</a>。
+</p>
+</dd>
+<dt><a id="索引-C__002b_002b-符号显示"></a><span><code class="code">set print demangle</code><a class="copiable-link" href="#索引-C__002b_002b-符号显示"> &para;</a></span></dt>
+<dt><code class="code">show print demangle</code></dt>
+<dt><code class="code">set print asm-demangle</code></dt>
+<dt><code class="code">show print asm-demangle</code></dt>
+<dd><p>控制在将代码显示为C<code class="t">++</code>源以及显示反汇编时，C<code class="t">++</code>符号是否以其源形式显示。
+请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>。
+</p>
+</dd>
+<dt><code class="code">set print object</code></dt>
+<dt><code class="code">show print object</code></dt>
+<dd><p>选择是打印对象的派生（实际）类型还是声明类型。请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>。
+</p>
+</dd>

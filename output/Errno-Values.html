@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Errno值（使用GDB调试）</title>
+
+<meta name="description" content="Errno值（使用GDB调试）">
+<meta name="keywords" content="Errno值（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Constants.html" rel="up" title="常量">
+<link href="Lseek-Flags.html" rel="next" title="Lseek标志">
+<link href="mode_005ft-Values.html" rel="prev" title="mode_t值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="Errno-值">
+<div class="nav-panel">
+<p>
+下一个：<a href="Lseek-Flags.html" accesskey="n" rel="next">Lseek标志</a>，上一个：<a href="mode_005ft-Values.html" accesskey="p" rel="prev">mode_t值</a>，向上：<a href="Constants.html" accesskey="u" rel="up">常量</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="unnumberedsubsubsec" id="Errno-值-1"><span>Errno值<a class="copiable-link" href="#Errno-值-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-errno值_002c在文件_002di_002fo协议中"></a>
+
+<p>所有值均以十进制表示。
+</p>
+<div class="example smallexample"> 
+<pre class="example-preformatted">  EPERM           1
+  ENOENT          2
+  EINTR           4
+  EBADF           9
+  EACCES         13
+  EFAULT         14
+  EBUSY          16
+  EEXIST         17
+  ENODEV         19
+  ENOTDIR        20
+  EISDIR         21
+  EINVAL         22
+  ENFILE         23
+  EMFILE         24
+  EFBIG          27
+  ENOSPC         28
+  ESPIPE         29
+  EROFS          30
+  ENAMETOOLONG   91
+  EUNKNOWN       9999
+</pre></div>
+
+<p><code class="code">EUNKNOWN</code>用作备用错误值，如果主机系统返回的任何错误值不在支持的错误编号列表中。
+</p>
+</div>
+
+
+
+</body>
+</html> 

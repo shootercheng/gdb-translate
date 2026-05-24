@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>注销代码（使用GDB调试）</title>
+
+<meta name="description" content="注销代码（使用GDB调试）">
+<meta name="keywords" content="注销代码（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="JIT-Interface.html" rel="up" title="JIT接口">
+<link href="Custom-Debug-Info.html" rel="next" title="自定义调试信息">
+<link href="Registering-Code.html" rel="prev" title="注册代码">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="注销代码">
+<div class="nav-panel">
+<p>
+下一页：<a href="Custom-Debug-Info.html" accesskey="n" rel="next">自定义调试信息</a>，上一页：<a href="Registering-Code.html" accesskey="p" rel="prev">注册代码</a>，向上：<a href="JIT-Interface.html" accesskey="u" rel="up">JIT编译接口</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="注销代码-1"><span>30.3注销代码<a class="copiable-link" href="#注销代码-1"> &para;</a></span></h3>
+
+<p>如果代码被释放，那么JIT应该使用以下协议：
+</p>
+<ul class="itemize mark-bullet">
+<li>从链表中移除与该代码对应的代码条目。
+
+</li><li>将描述符的<code class="code">relevant_entry</code>字段指向该代码条目。
+
+</li><li>将<code class="code">action_flag</code>设置为<code class="code">JIT_UNREGISTER</code>并调用
+<code class="code">__jit_debug_register_code</code>。
+</li></ul>
+
+<p>如果JIT在未注销代码的情况下释放或重新编译代码，那么GDB和JIT将泄漏用于关联符号文件的内存。
+</p>
+</div>
+
+
+
+</body>
+</html>

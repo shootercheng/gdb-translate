@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>跟踪点条件（使用GDB调试）</title>
+
+<meta name="description" content="跟踪点条件（使用GDB调试）">
+<meta name="keywords" content="跟踪点条件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Set-Tracepoints.html" rel="up" title="设置跟踪点">
+<link href="Trace-State-Variables.html" rel="next" title="跟踪状态变量">
+<link href="Tracepoint-Passcounts.html" rel="prev" title="跟踪点通过计数">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="跟踪点条件">
+<div class="nav-panel">
+<p>
+下一个：<a href="Trace-State-Variables.html" accesskey="n" rel="next">跟踪状态变量</a>，上一个：<a href="Tracepoint-Passcounts.html" accesskey="p" rel="prev">跟踪点通过计数</a>，向上：<a href="Set-Tracepoints.html" accesskey="u" rel="up">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="跟踪点条件-1"><span>13.1.4跟踪点条件<a class="copiable-link" href="#跟踪点条件-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-条件跟踪点"></a>
+<a class="index-entry-id" id="索引-跟踪点条件"></a>
+
+<p>最简单的一种跟踪点会在你的程序每次到达指定位置时收集数据。你也可以为跟踪点指定一个<em class="dfn">条件</em>。条件就是用你的编程语言表示的一个布尔表达式（见<a class="pxref" href="Expressions.html">表达式</a>）。带有条件的跟踪点会在你的程序每次到达它时评估该表达式，并且只有当条件为真时才会进行数据收集。
+</p>
+<p>可以在设置跟踪点时指定跟踪点条件，方法是在<code class="code">trace</code>命令的参数中使用&lsquo;<samp class="samp">if</samp>&rsquo;。见<a class="xref" href="Create-and-Delete-Tracepoints.html">设置跟踪点</a>。也可以像设置断点一样，随时使用<code class="code">condition</code>命令来设置或更改跟踪点条件。
+</p>
+<p>与断点条件不同，<small class="sc">GDB</small>实际上并不评估条件表达式本身。相反，<small class="sc">GDB</small>会将该表达式编码为一个适合在目标上独立于<small class="sc">GDB</small>执行的代理表达式（见<a class="pxref" href="Agent-Expressions.html">GDB代理表达式机制</a>）。全局变量会变成原始内存位置，局部变量会变成栈访问等等。
+</p>
+<p>例如，假设你有一个函数通常会被频繁调用，但在发生错误后不应再被调用。你可以使用以下跟踪点命令来收集在错误代码在程序中传播时对该函数的调用数据；一个无条件的跟踪点最终可能会收集到数千个无用的跟踪帧，你将不得不逐一查看。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <kbd class="kbd">trace normal_operation if errcode &gt; 0</kbd>
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Trace-State-Variables.html">跟踪状态变量</a>，上一个：<a href="Tracepoint-Passcounts.html">跟踪点通过计数</a>，向上：<a href="Set-Tracepoints.html">设置跟踪点的命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

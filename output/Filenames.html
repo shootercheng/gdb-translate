@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文件名（使用GDB调试）</title>
+
+<meta name="description" content="文件名（使用GDB调试）">
+<meta name="keywords" content="文件名（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Setting.html" rel="up" title="设置">
+<link href="Manually.html" rel="next" title="手动设置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="文件名">
+<div class="nav-panel">
+<p>
+下一页：<a href="Manually.html" accesskey="n" rel="next">设置工作语言</a>，上一级：<a href="Setting.html" accesskey="u" rel="up">在源语言之间切换</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="文件名扩展名和语言列表"><span>15.1.1文件名扩展名和语言列表<a class="copiable-link" href="#文件名扩展名和语言列表"> &para;</a></span></h4>
+
+<p>如果源文件名以以下扩展名之一结尾，那么GDB推断其语言为所指示的语言。
+</p>
+<dl class="table">
+<dt><samp class="file">.ada</samp></dt>
+<dt><samp class="file">.ads</samp></dt>
+<dt><samp class="file">.adb</samp></dt>
+<dt><samp class="file">.a</samp></dt>
+<dd><p>Ada源文件。
+</p>
+</dd>
+<dt><samp class="file">.c</samp></dt>
+<dd><p>C源文件
+</p>
+</dd>
+<dt><samp class="file">.C</samp></dt>
+<dt><samp class="file">.cc</samp></dt>
+<dt><samp class="file">.cp</samp></dt>
+<dt><samp class="file">.cpp</samp></dt>
+<dt><samp class="file">.cxx</samp></dt>
+<dt><samp class="file">.c++</samp></dt>
+<dd><p>C++源文件
+</p>
+</dd>
+<dt><samp class="file">.d</samp></dt>
+<dd><p>D源文件
+</p>
+</dd>
+<dt><samp class="file">.m</samp></dt>
+<dd><p>Objective-C源文件
+</p>
+</dd>
+<dt><samp class="file">.f</samp></dt>
+<dt><samp class="file">.F</samp></dt>
+<dd><p>Fortran源文件
+</p>
+</dd>
+<dt><samp class="file">.mod</samp></dt>
+<dd><p>Modula-2源文件
+</p>
+</dd>
+<dt><samp class="file">.s</samp></dt>
+<dt><samp class="file">.S</samp></dt>
+<dd><p>汇编源文件。实际上它的行为几乎像C，但GDB在单步执行时不会跳过函数序言。
+</p></dd>
+</dl>
+
+<p>此外，你可以设置与文件名扩展名相关联的语言。请参阅 <a class="xref" href="Show.html">显示语言</a>。
+</p>
+</div>
+
+
+
+</body>
+</html>

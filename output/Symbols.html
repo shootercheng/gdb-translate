@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>符号（使用GDB调试）</title>
+
+<meta name="description" content="符号（使用GDB调试）">
+<meta name="keywords" content="符号（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Altering.html" rel="next" title="改变执行">
+<link href="Languages.html" rel="prev" title="使用GDB与不同语言">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Symbols">
+<div class="nav-panel">
+<p>
+下一个：<a href="Altering.html" accesskey="n" rel="next">改变执行</a>，上一个：<a href="Languages.html" accesskey="p" rel="prev">使用GDB与不同语言</a>，向上：<a href="index.html" accesskey="u" rel="up">使用GDB调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Examining-the-Symbol-Table"><span>16 检查符号表<a class="copiable-link" href="#Examining-the-Symbol-Table"> &para;</a></span></h2>
+
+<p>本章中描述的命令允许你查询程序中定义的符号（变量、函数和类型）。此信息是程序文本中固有的，并且不会随着程序的执行而改变。GDB在你启动GDB时指定的文件（见<a class="pxref" href="File-Options.html">选择文件</a>）或通过文件管理命令之一（见<a class="pxref" href="Files.html">指定文件的命令</a>）找到的程序符号表中查找此信息。
+</p>
+<a class="index-entry-id" id="index-symbol-names"></a>
+<a class="index-entry-id" id="index-names-of-symbols"></a>
+<a class="index-entry-id" id="index-quoting-names"></a>
+<a class="anchor" id="quoting-names"></a><p>偶尔，你可能需要引用包含特殊字符的符号，而GDB通常将这些字符视为单词分隔符。最常见的情况是引用其他源文件中的静态变量（见<a class="pxref" href="Variables.html">程序变量</a>）。文件名作为调试符号记录在目标文件中，但GDB通常会将典型的文件名（如<samp class="file">foo.c</samp>）解析为三个单词：“<samp class="samp">foo</samp>”、“<samp class="samp">.</samp>”、“<samp class="samp">c</samp>”。为了让GDB将“<samp class="samp">foo.c</samp>”识别为单个符号，请将其用单引号括起来；例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p 'foo.c'::x
+</pre></div>
+
+<p>在文件<samp class="file">foo.c</samp>的作用域中查找变量<code class="code">x</code>的值。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-case-sensitivity-in-symbol-names"></a>
+<a class="index-entry-id" id="index-set-case_002dsensitive"></a>
+<a id="index-case_002dinsensitive-symbol-names"></a><span><code class="code">set case-sensitive on</code><a class="copiable-link" href="#index-case_00%2dinsensitive-symbol-names"> &para;</a></span></dt>
+<dt><code class="code">set case-sensitive off</code></dt>
+<dt><code class="code">set case-sensitive auto</code></dt>
+<dd><p>通常，当GDB查找符号时，它会根据当前源语言确定的大小写敏感性来匹配符号名称。偶尔，你可能希望控制这一点。命令<code class="code">set case-sensitive</code>允许你通过指定<code class="code">on</code>进行大小写敏感匹配，或指定<code class="code">off</code>进行大小写不敏感匹配。如果你指定<code class="code">auto</code>，大小写敏感性将重置为适合源语言的默认值。除了Fortran语言默认大小写不敏感匹配外，所有语言的默认值都是大小写敏感匹配。
+</p>
+</dd>
+<dt><a id="index-show-case_002dsensitive"></a><span><code class="code">show case-sensitive</code><a class="copiable-link" href="#index-show-case_0%2dsensitive"> &para;</a></span></dt>
+<dd><p>此命令显示符号查找的当前大小写敏感性设置。
+</p>
+</dd>
+<dt><a id="index-set-print-type-methods"></a><span><code class="code">set print type methods</code><a class="copiable-link" href="#index-set-print-type-methods"> &para;</a></span></dt>
+<dt><code class="code">set print type methods on</code></dt>
+<dt><code class="code">set print type methods off</code></dt>
+<dd><p>通常，当GDB打印一个类时，它会显示该类中声明的任何方法。你可以通过将适当的标志传递给<code class="code">ptype</code>，或使用命令<code class="command">set print type methods</code>来控制此行为。指定<code class="code">on</code>将导致GDB显示方法；这是默认设置。指定<code class="code">off</code>将导致GDB省略方法。
+</p>
+</dd>
+<dt><a id="index-show-print-type-methods"></a><span><code class="code">show print type methods</code><a class="copiable-link" href="#index-show-print-type-methods"> &para;</a></span></dt>
+<dd><p>此命令显示打印类时方法显示的当前设置。
+</p>
+</dd>
+<dt><a id="index-set-print-type-nested_002dtype_002dlimit"></a><span><code class="code">set print type nested-type-limit <var class="var">limit</var></code><a class="copiable-link" href="#index-set-print-type-nested_0%2dtype_%.2dlimit"> &para;</a></span></dt>
+<dt><code class="code">set print type nested-type-limit unlimited</code></dt>
+<dd><p>设置类型打印机将显示的嵌套类型的显示限制。限制为“unlimited”或“-1”将显示所有嵌套定义。默认情况下，类型打印机不会显示类中定义的任何嵌套类型。
+</p>
+</dd>
+<dt><a id="index-show-print-type-nested_002dtype_002dlimit"></a><span><code class="code">show print type nested-type-limit</code><a class="copiable-link" href="#index-show-print-type-nested_%2dtype_%.2dlimit"> &para;</a></span></dt>
+<dd><p>此命令显示打印类时嵌套类型的当前显示限制。
+</p>
+</dd>
+<dt><a id="index-set-print-type-typedefs"></a><span><code class="code">set print type typedefs</code><a class="copiable-link" href="#index-set-print-type-typedefs"> &para;</a></span></dt>
+<dt><code class="code">set print type typedefs on</code></dt>
+<dt><code class="code">set print type typedefs off</code></dt>

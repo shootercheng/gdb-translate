@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Xmethod API（使用GDB进行调试）</title>
+
+<meta name="description" content="Xmethod API（使用GDB进行调试）">
+<meta name="keywords" content="Xmethod API（使用GDB进行调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Writing-an-Xmethod.html" rel="next" title="编写一个Xmethod">
+<link href="Xmethods-In-Python.html" rel="prev" title="Python中的Xmethods">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Xmethod-API">
+<div class="nav-panel">
+<p>
+下一页：<a href="Writing-an-Xmethod.html" accesskey="n" rel="next">编写一个Xmethod</a>，上一页：<a href="Xmethods-In-Python.html" accesskey="p" rel="prev">Python中的Xmethods</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Xmethod-API-1"><span>23.3.2.15 Xmethod API<a class="copiable-link" href="#Xmethod-API-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-xmethod-API"></a>
+
+<p>GDB Python API提供了用于实现、注册和操作x方法的类接口和函数。
+请参阅 <a class="xref" href="Xmethods-In-Python.html">Python中的Xmethods</a>。
+</p>
+<p>一个x方法匹配器应该是从 <code class="code">gdb.xmethod</code> 模块中定义的 <code class="code">XMethodMatcher</code> 类派生的类的实例，或者是具有类似接口和属性的对象。 <code class="code">XMethodMatcher</code> 的实例具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-name"><span class="category-def">变量： </span><span><strong class="def-name">name</strong><a class="copiable-link" href="#index-name"> &para;</a></span></dt>
+<dd><p>匹配器的名称。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-enabled"><span class="category-def">变量： </span><span><strong class="def-name">enabled</strong><a class="copiable-link" href="#index-enabled"> &para;</a></span></dt>
+<dd><p>一个布尔值，表示匹配器是启用还是禁用。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-methods"><span class="category-def">变量： </span><span><strong class="def-name">methods</strong><a class="copiable-link" href="#index-methods"> &para;</a></span></dt>
+<dd><p>由匹配器管理的命名方法列表。 列表中的每个对象都是 <code class="code">gdb.xmethod</code> 模块中定义的 <code class="code">XMethod</code> 类的实例，或者是具有以下属性的任何对象：
+
+<dl class="table">
+<dt><code class="code">name</code></dt>
+<dd><p>x方法的名称，对于由匹配器管理的每个x方法，该名称应该是唯一的。
+</p>
+</dd>
+<dt><code class="code">enabled</code></dt>
+<dd><p>一个布尔值，表示x方法是启用还是禁用。
+</p>
+</dd>
+</dl>
+
+<p><code class="code">XMethod</code> 类是一个方便类具有与上述相同的属性以及以下构造函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethod_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">XMethod.__init__</strong> <var class="def-var-arguments">(self, name)</var><a class="copiable-link" href="#index-XMethod_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>构造一个名称为 <var class="var">name</var> 的启用的x方法。
+</p></dd></dl>
+</dd></dl>
+
+<p><code class="code">XMethodMatcher</code> 类具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodMatcher_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">XMethodMatcher.__init__</strong> <var class="def-var-arguments">(self, name)</var><a class="copiable-link" href="#index-XMethodMatcher_002e_005f_005finit_005f_005f"> &para;</a></span></dt>

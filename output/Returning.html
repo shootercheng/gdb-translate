@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>返回（使用GDB调试）</title>
+
+<meta name="description" content="返回（使用GDB调试）">
+<meta name="keywords" content="返回（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">  
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Altering.html" rel="up" title="改变">
+<link href="Calling.html" rel="next" title="调用">
+<link href="Signaling.html" rel="prev" title="发信号">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="返回">
+<div class="nav-panel">
+<p>
+下一个：<a href="Calling.html" accesskey="n" rel="next">调用程序函数</a>，上一个：<a href="Signaling.html" accesskey="p" rel="prev">给你的程序发送信号</a>，向上：<a href="Altering.html" accesskey="u" rel="up">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="从函数返回"><span>17.4 从函数返回<a class="copiable-link" href="#从函数返回"> &para;</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-返回"></a>
+<a id="索引-从函数返回"></a><span><code class="code">return</code><a class="copiable-link" href="#索引-从函数返回"> &para;</a></span></dt>
+<dt><code class="code">return <var class="var">表达式</var></code></dt>
+<dd><p>你可以使用<code class="code">return</code>命令取消函数调用的执行。如果你给出一个
+<var class="var">表达式</var>参数，其值将被用作函数的返回值。
+</p></dd>
+</dl>
+
+<p>当你使用<code class="code">return</code>时，<small class="sc">GDB</small>会丢弃选定的栈帧（以及其中的所有帧）。你可以认为这是使被丢弃的帧过早返回。如果你希望指定一个要返回的值，将该值作为<code class="code">return</code>的参数给出。
+</p>
+<p>这会弹出选定的栈帧（见 <a class="pxref" href="Selection.html">选择一个帧</a>），以及其中的任何其他帧，使调用者成为剩余的最内层帧。该帧将被选中。指定的值将被存储在用于函数返回值的寄存器中。
+</p>
+<p><code class="code">return</code>命令不会恢复执行；它会使程序停留在函数刚刚返回时应有的状态。相比之下，<code class="code">finish</code>命令（见 <a class="pxref" href="Continuing-and-Stepping.html">继续和单步执行</a>）会恢复执行直到选定的栈帧自然返回。
+</p>
+<p><small class="sc">GDB</small>需要知道如何为下级设置<var class="var">表达式</var>参数。具体的寄存器分配取决于操作系统应用二进制接口（OS ABI）以及选定栈帧返回的类型。例如，对于OS ABI来说，在FPU寄存器中返回浮点值而在CPU寄存器中返回整数值是很常见的。不过，有些ABI甚至在CPU寄存器中返回浮点值。更大的整数宽度（如 <code class="code">long long int</code>）也有特定的放置规则。<small class="sc">GDB</small>已经从其当前目标中知道了OS ABI，所以它还需要找出返回的类型，以便将值分配到正确的寄存器中。
+</p>
+<p>通常，选定的栈帧有调试信息。当有调试信息时，<small class="sc">GDB</small>总是会使用调试信息而不是<var class="var">表达式</var>的隐式类型。例如，如果您输入 <kbd class="kbd">return -1</kbd>，并且当前栈帧中的函数被声明返回一个 <code class="code">long long
+int</code>，<small class="sc">GDB</small>会将隐式的 <code class="code">int</code> 值 -1 透明地转换为 <code class="code">long long int</code>：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">断点1，func () 位于gdb.base/return-nodebug.c:29
+29        return 31;
+(gdb) return -1
+现在让func返回？(y或n) y
+#0  0x004004f6 in main () 位于gdb.base/return-nodebug.c:43
+43        printf (&quot;result=%lld\n&quot;, func ());
+(gdb)
+</pre></div>
+
+<p>然而，如果选定的栈帧没有调试信息，例如，如果函数是在没有调试信息的情况下编译的，<small class="sc">GDB</small>必须从用户那里找出要返回的类型。错误地指定不同的类型可能会在下级寄存器中设置与调用者代码预期不同的值。例如，在没有调试信息的函数（在32位架构上）中输入 <kbd class="kbd">return -1</kbd> 及其隐式类型 <code class="code">int</code> 只会设置 <code class="code">long long int</code> 结果的一部分。因此，要求用户通过适当的强制类型转换显式指定返回类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">断点2，位于func () 的0x0040050b处
+(gdb) return -1
+选定栈帧的返回值类型不可用。
+请使用要返回值的显式强制类型转换。
+(gdb) return (long long int) -1
+现在让选定的栈帧返回？(y或n) y
+#0  0x00400526 in main ()
+(gdb)
+</pre></div>
+
+</div>  
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Calling.html">调用程序函数</a>，上一个：<a href="Signaling.html">给你的程序发送信号</a>，向上：<a href="Altering.html">改变执行</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

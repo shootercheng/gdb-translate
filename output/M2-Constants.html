@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>M2常量（使用GDB调试）</title>
+
+<meta name="description" content="M2常量（使用GDB调试）">
+<meta name="keywords" content="M2常量（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Modula_002d2.html" rel="up" title="Modula-2">
+<link href="M2-Types.html" rel="next" title="M2类型">
+<link href="Built_002dIn-Func_002fProc.html" rel="prev" title="内置函数/过程">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-常量">
+<div class="nav-panel">
+<p>
+下一个：<a href="M2-Types.html" accesskey="n" rel="next">Modula-2类型</a>，上一个：<a href="Built_002dIn-Func_002fProc.html" accesskey="p" rel="prev">内置函数和过程</a>，向上：<a href="Modula_002d2.html" accesskey="u" rel="up">Modula-2</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="常量-"><span>15.4.9.3常量<a class="copiable-link" href="#常量-">&para;</a></span></h4>
+
+<p><small class="sc">GDB</small> 允许你用以下方式表示Modula-2的常量：
+</p>
+<ul class="itemize mark-bullet">
+<li>整数常量就是一串数字。当在表达式中使用时，常量被解释为与表达式的其余部分类型兼容。十六进制整数由尾随的 &lsquo;<samp class="samp">H</samp>&rsquo; 指定，八进制整数由尾随的 &lsquo;<samp class="samp">B</samp>&rsquo; 指定。
+
+</li><li>浮点常量表现为一串数字，后面跟着一个小数点和另一串数字。然后可以指定一个可选的指数，形式为 &lsquo;<samp class="samp">E<span class="r">[</span>+<span class="r">|</span>-<span class="r">]</span><var class="var">nnn</var></samp>&rsquo;，其中 &lsquo;<samp class="samp"><span class="r">[</span>+<span class="r">|</span>-<span class="r">]</span><var class="var">nnn</var></samp>&rsquo; 是所需的指数。浮点常量的所有数字都必须是有效的十进制（基数为10）数字。
+
+</li><li>字符常量由一对相同的引号（单引号 <code class="code">'</code> 或双引号 <code class="code">&quot;</code>）括起来的单个字符组成。它们也可以用其序号值（通常是其 <small class="sc">ASCII</small> 值）后跟一个 &lsquo;<samp class="samp">C</samp>&rsquo; 来表示。
+
+</li><li>字符串常量由一对相同的引号（单引号 <code class="code">'</code> 或双引号 <code class="code">&quot;</code>）括起来的一串字符组成。也允许使用C风格的转义序列。有关转义序列的简要解释，请参阅 <a class="xref" href="C-Constants.html">C和C<code class="t">++</code>常量</a>。
+
+</li><li>枚举常量由一个枚举标识符组成。
+
+</li><li>布尔常量由标识符 <code class="code">TRUE</code> 和 <code class="code">FALSE</code> 组成。
+
+</li><li>指针常量仅由整数值组成。
+
+</li><li>集合常量目前尚不支持。
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

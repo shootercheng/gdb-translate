@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>线程特定断点（使用GDB调试）</title>
+
+<meta name="description" content="线程特定断点（使用GDB调试）">
+<meta name="keywords" content="线程特定断点（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Interrupted-System-Calls.html" rel="next" title="中断的系统调用">
+<link href="Background-Execution.html" rel="prev" title="后台执行">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="线程特定断点">
+<div class="nav-panel">
+<p>
+下一页：<a href="Interrupted-System-Calls.html" accesskey="n" rel="next">中断的系统调用</a>，上一页：<a href="Background-Execution.html" accesskey="p" rel="prev">后台执行</a>，向上：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序 </a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="线程特定断点-1"><span>5.5.4线程特定断点<a class="copiable-link" href="#线程特定断点-1"> &para;</a></span></h4>
+
+<p>当你的程序有多个线程时（见 <a class="pxref" href="Threads.html">调试多线程程序</a>），你可以选择是在所有线程上设置断点，还是在特定线程上设置断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-线程断点"></a>
+<a class="index-entry-id" id="索引-断点_2026线程-线程ID"></a>
+<a id="索引-断点和线程"></a><span><code class="code">break <var class="var">位置规格</var> thread <var class="var">线程ID</var></code><a class="copiable-link" href="#索引-断点和线程"> &para;</a></span></dt>
+<dt><code class="code">break <var class="var">位置规格</var> thread <var class="var">线程ID</var> if &hellip;</code></dt>
+<dd><p><var class="var">位置规格</var> 指定程序中的一个或多个代码位置。
+有关详细信息，请参阅 <a class="xref" href="Location-Specifications.html">位置规格</a>。
+</p>
+<p>在断点命令中使用限定符 &lsquo;<samp class="samp">thread <var class="var">线程ID</var></samp>&rsquo; 来指定只有当特定线程到达此断点时才希望GDB停止程序。<var class="var">线程ID</var> 说明符是GDB分配的线程标识符之一，显示在 &lsquo;<samp class="samp">info threads</samp>&rsquo; 显示的第一列中。 
+</p>
+<p>如果你在设置断点时未指定 &lsquo;<samp class="samp">thread <var class="var">线程ID</var></samp>&rsquo;，则该断点适用于程序的 <em class="emph">所有</em> 线程。
+</p>
+<p>你也可以在条件断点上使用 <code class="code">thread</code> 限定符；在这种情况下，将 &lsquo;<samp class="samp">thread <var class="var">线程ID</var></samp>&rsquo; 放在断点条件之前或之后，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break frik.c:13 thread 28 if bartab &gt; lim
+</pre></div>
+
+</dd>
+</dl>
+
+<p>当GDB检测到相应线程不再在线程列表中时，线程特定断点将自动删除。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) c
+线程特定断点3已删除 - 线程28不再在线程列表中。
+</pre></div>
+
+<p>线程消失有几种方式，例如正常线程退出，但当你使用 <code class="code">detach</code> 命令从进程分离时（见 <a class="pxref" href="Attach.html">调试正在运行的进程</a>），或者如果GDB失去远程连接（见 <a class="pxref" href="Remote-Debugging.html">调试远程程序</a>）等。请注意，对于某些目标，只有当用户使用 <code class="code">info threads</code> 命令明确请求线程列表时，GDB才能检测到线程已退出。
+</p>
+<p>一个断点不能同时是线程特定的和进程特定的（见 <a class="pxref" href="Inferior_002dSpecific-Breakpoints.html">进程特定断点</a>），也不能是任务特定的（见 <a class="pxref" href="Ada-Tasks.html">Ada任务扩展</a>）；在创建断点时使用多个 <code class="code">thread</code>、<code class="code">inferior</code> 或 <code class="code">task</code> 关键字将导致错误。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Interrupted-System-Calls.html">中断的系统调用</a>，上一页：<a href="Background-Execution.html">后台执行</a>，向上：<a href="Thread-Stops.html">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>
