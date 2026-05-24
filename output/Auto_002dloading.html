@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>自动加载（使用GDB调试）</title>
+
+<meta name="description" content="自动加载（使用GDB调试）">
+<meta name="keywords" content="自动加载（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Messages_002fWarnings.html" rel="next" title="消息/警告">
+<link href="ABI.html" rel="prev" title="ABI">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="自动加载">
+<div class="nav-panel">
+<p>
+下一页：<a href="Messages_002fWarnings.html" accesskey="n" rel="next">可选警告和消息</a>，上一页：<a href="ABI.html" accesskey="p" rel="prev">配置当前ABI</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制GDB</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="自动加载关联文件"><span>22.8自动加载关联文件<a class="copiable-link" href="#自动加载关联文件"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-自动加载"></a>
+
+<p>GDB有时会自动读取包含命令和设置的文件，而无需用户明确告知。我们将此功能称为<em class="dfn">自动加载</em>。虽然自动加载有助于GDB自动适应项目需求，但有时可能会产生意外结果或带来安全风险（例如，如果文件来自不受信任的来源）。
+</p>
+<p>GDB可以自动加载各种类型的文件。除了这些文件，GDB还支持自动加载用各种扩展语言编写的代码。请参阅 <a class="xref" href="Auto_002dloading-extensions.html">自动加载扩展</a>。
+</p>
+<p>请注意，加载这些关联文件（包括本地的<samp class="file">.gdbinit</samp>文件）需要相应配置的<code class="code">auto-load safe-path</code>（请参阅 <a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）。
+</p>
+<p>出于这些原因，GDB提供了命令和选项，让您可以控制何时自动加载文件以及哪些文件应该自动加载。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-off"></a></dd>
+<dt><a id="索引-set-auto_002dload-off"></a><span><code class="code">set auto-load off</code><a class="copiable-link" href="#索引-set-auto_002dload-off"> &para;</a></span></dt>
+<dd><p>全局禁用所有自动加载文件的加载。
+您可能希望将此命令与“<samp class="samp">-iex</samp>”选项一起使用（请参阅 <a class="pxref" href="Startup.html#Option-_002dinit_002deval_002dcommand">选项-init-eval-command</a>），例如：
+</p><div class="example smallexample">
+<pre class="example-preformatted">$ <kbd class="kbd">gdb -iex &quot;set auto-load off&quot; untrusted-executable corefile</kbd>
+</pre></div>
+
+<p>请注意，系统初始化文件（请参阅 <a class="pxref" href="System_002dwide-configuration.html">系统范围的配置和设置</a>）以及您主目录中的初始化文件（请参阅 <a class="pxref" href="Initialization-Files.html#Home-Directory-Init-File">主目录初始化文件</a>）仍会被读取（因为它们来自通常受信任的目录）。
+要防止GDB自动加载这些初始化文件，除了使用<code class="code">set auto-load no</code>之外，还可以使用<samp class="option">-nx</samp>选项（请参阅 <a class="pxref" href="Mode-Options.html">选择模式</a>）。
+</p>
+<a class="anchor" id="show-auto_002dload"></a></dd>
+<dt><a id="索引-show-auto_002dload"></a><span><code class="code">show auto-load</code><a class="copiable-link" href="#索引-show-auto_002dload"> &para;</a></span></dt>
+<dd><p>显示每个特定的“<samp class="samp">auto-load</samp>”文件的自动加载是否启用。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) show auto-load
+gdb-scripts: 自动加载命令脚本序列已启用。
+libthread-db: 自动加载特定于进程的libthread_db已启用。
+local-gdbinit: 从当前目录自动加载.gdbinit脚本已启用。
+python-scripts: 自动加载Python脚本已启用。
+safe-path: 可安全自动加载文件的目录列表为$debugdir:$datadir/auto-load。
+scripts-directory: 用于加载自动加载脚本的目录列表为$debugdir:$datadir/auto-load。
+</pre></div>
+
+<a class="anchor" id="info-auto_002dload"></a></dd>
+<dt><a id="索引-info-auto_002dload"></a><span><code class="code">info auto-load</code><a class="copiable-link" href="#索引-info-auto_002dload"> &para;</a></span></dt>
+<dd><p>打印每个特定的“<samp class="samp">auto-load</samp>”文件是否已自动加载。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info auto-load
+gdb-scripts:
+已加载 脚本
+是     /home/user/gdb/gdb-gdb.gdb  
+libthread-db: 没有自动加载的libthread-db。
+local-gdbinit: 本地.gdbinit文件“/home/user/gdb/.gdbinit”已加载。
+python-scripts:
+已加载 脚本
+是     /home/user/gdb/gdb-gdb.py  
+</pre></div>
+</dd>
+</dl>
+
+<p>这些是用于自动加载的GDB控制命令：
+</p>
+<table class="multitable">
+<tbody><tr><td width="50%">请参阅 <a class="xref" href="#set-auto_002dload-off">set auto-load off</a>。</td><td width="50%">全局禁用自动加载。</td></tr>
+<tr><td width="50%">请参阅 <a class="xref" href="#show-auto_002dload">show auto-load</a>。</td><td width="50%">显示各种文件的设置。</td></tr>
+<tr><td width="5

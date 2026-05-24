@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。” -->
+<title>Guile中的断点（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的断点（使用GDB调试）">
+<meta name="keywords" content="Guile中的断点（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录"> 
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Lazy-Strings-In-Guile.html" rel="next" title="Guile中的惰性字符串">
+<link href="Symbol-Tables-In-Guile.html" rel="prev" title="Guile中的符号表">
+<style type="text/css">
+<!-- 
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的断点">
+<div class="nav-panel">
+<p>
+下一页：<a href="Lazy-Strings-In-Guile.html" accesskey="n" rel="next">Guile中惰性字符串的表示。</a>，上一页：<a href="Symbol-Tables-In-Guile.html" accesskey="p" rel="prev">Guile中符号表的表示。</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="使用Guile操作断点"><span>23.4.3.19 使用Guile操作断点<a class="copiable-link" href="#使用Guile操作断点"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Guile中的断点"></a>
+<a class="index-entry-id" id="index-_cgdb_breakpoint_"></a>
+
+<p>Guile中的断点由类型为<code class="code">&lt;gdb:breakpoint&gt;</code>的对象表示。可以使用Guile函数<code class="code">make-breakpoint</code>创建新的断点，然后使用Guile函数<code class="code">register-breakpoint!</code>将其添加到GDB中。
+采用这种两步法是为了将把断点添加到GDB的副作用与<code class="code">make-breakpoint</code>分开。
+</p>
+<p>还提供了对在Guile外部创建的断点进行查看和操作的支持。
+</p>
+<p><code class="code">(gdb)</code>模块提供了以下与断点相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dbreakpoint"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-breakpoint</strong> <var class="def-var-arguments">位置 <span class="r">[</span>#:类型&nbsp;类型<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:wp类&nbsp;wp类<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:内部&nbsp;内部<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:临时&nbsp;临时<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dbreakpoint"> &para;</a></span></dt>
+<dd><p>在<var class="var">位置</var>创建一个新的断点，<var class="var">位置</var>是一个命名断点位置的字符串，或者是一个定义观察点的表达式。内容可以是<code class="code">break</code>命令识别的任何位置，如果是观察点，则可以是<code class="code">watch</code>命令识别的位置。
+</p>
+<p>断点最初被标记为“<samp class="samp">无效</samp>”。在使用<code class="code">register-breakpoint!</code>将其注册到GDB之前，该断点不可用，注册后它将变为“<samp class="samp">有效</samp>”。结果是表示该断点的<code class="code">&lt;gdb:breakpoint&gt;</code>对象。
+</p>
+<p>可选的<var class="var">类型</var>表示要创建的断点类型。此参数可以是<code class="code">BP_BREAKPOINT</code>或<code class="code">BP_WATCHPOINT</code>，默认值为<code class="code">BP_BREAKPOINT</code>。
+</p>
+<p>如果<var class="var">类型</var>是<code class="code">BP_WATCHPOINT</code>，则可选的<var class="var">wp类</var>参数定义要创建的观察点类型。如果未提供观察点类型，则假定为<code class="code">WP_WRITE</code>类。
+</p>
+<p>可选的<var class="var">内部</var>参数允许断点对用户不可见。该断点在注册时不会被报告，也不会在<code class="code">info breakpoints</code>的输出中列出（但会在<code class="code">maint info breakpoints</code>命令中列出）。如果未提供内部标志，则断点是可见的（非内部）。
+</p>
+<p>可选的<var class="var">临时</var>参数使断点成为临时断点。临时断点在被命中后会被删除，之后Guile断点将不再可用（尽管它可以使用<code class="code">register-breakpoint!</code>重新注册）。
+</p>
+<p>创建观察点时，GDB将尝试创建硬件辅助观察点。如果成功，观察点的类型将根据不同的观察点类型进行如下更改：对于<code class="code">WP_WRITE</code>，从<code class="code">BP_WATCHPOINT</code>变为<code class="code">BP_HARDWARE_WATCHPOINT</code>；对于<code class="code">WP_READ</code>，变为<code class="code">BP_READ_WATCHPOINT</code>；对于<code class="code">WP_ACCESS</code>，变为<code class="code">BP_ACCESS_WATCHPOINT</code>。如果不成功，观察点的类型将保持为<code class="code">WP_WATCHPOINT</code>。
+</p>
+<p>可用的类型由<code class="code">gdb</code>模块中定义的常量表示：
+</p>
+<dl class="vtable"> 
+<dt><a id="index-BP_005fBREAKPOINT-1"></a><span><code class="code">BP_BREAKPOINT</code><a class="copiable-link" href="#index-BP_005fBREAKPOINT-?"> &para;</a></span></dt>
+<dd><p>普通代码断点。
+</p>
+</dd>
+<dt><a id="index-BP_005fWATCHPOINT-1"></a><span><code class="code">BP_WATCHPOINT</code><a class="copiable-link" href="#index-BP_005fWATCHPOINT-1"> &para;</a></span></dt>
+<dd><p>观察点断点。
+</p>
+</dd>
+<dt><a id="index-BP_005fHARDWARE_005fWATCHPOINT-1"></a><span><code class="code">BP_HARDWARE_WATCHPOINT</code><a class="copiable-link" href="#index-BP_005fHARDWARE_005fWATCHPOINT-1"> &para;</a></span></dt>
+<dd><p>硬件辅助观察点。创建断点时不能指定此值。
+</p>
+</dd>
+<dt><a id="index-BP_005fREAD_005fWATCHPOINT-1"></a><span><code class="code">BP_READ_WATCHPOINT</code><a class="copiable-link" href="#index-BP_005fREAD_005fWATCHPOINT-1"> &para;</a></span></dt>
+<dd><p>硬件辅助读观察点。创建断点时不能指定此值。
+</p>
+</dd>
+<dt><a id="index-BP_005fACCESS_005fWATCHPOINT-1"></a><span><code class="code">BP_ACCESS_WATCHPOINT</code><a class="copiable-link" href="#index-BP_005fACCESS_005fWATCHPOINT-1"> &para;</a></span></dt>
+<dd><p>硬件辅助访问观察点。创建断点时不能指定此值。
+</p>
+</dd>
+<dt><a id="index-BP_005fCATCHPOINT-1"></a><span><code class="code">BP_CATCHPOINT</code><a class="copiable-link" href="#index-BP_005fCATCHPOINT-1"> &para;</a></span></dt>
+<dd><p>捕获点。创建断点时不能指定此值。</p></dd>
+</dl>
+
+<p>可用的观察点类型由<code class="code">(gdb)</code>模块中定义的常量表示：
+</p>
+<dl class="vtable"> 
+<dt><a id="index-WP_005fREAD-1"></a><span><code class="code">WP_READ</code><a class="copiable-link" href="#index-WP_005fREAD-1"> &para;</a></span></dt>
+<dd><p>只读观察点。
+</p>
+</dd>
+<dt><a id="index-WP_005fWRITE-1"></a><span><code class="code">WP_WRITE</code><a class="copiable-link" href="#index-WP_005fWRITE-1"> &para;</a></span></dt> 
+<dd><p>只写观察点。
+</p>
+</dd>
+<dt><a id="index-WP_005fACCESS-?"></a><span><code class="code">WP_ACCESS</code><a class="copiable-link" href="#index-WP_005fACCESS-1"> &para;</a></span></dt>
+<dd><p>读写观察点。
+</p></dd>
+</dl>
+
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-register_002dbreakpoint_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">register-breakpoint!</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-register_002dbreakpoint_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>（一个<code class="code">&lt;gdb:breakpoint&gt;</code>对象）添加到GDB的断点列表中。该断点必须使用<code class="code">make-breakpoint</code>创建。不能注册在Guile外部创建的断点。一旦断点被注册，它就会变为“<samp class="samp">有效</samp>”。注册已经注册的断点是错误的。结果未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-delete_002dbreakpoint_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">delete-breakpoint!</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-delete_002dbreakpoint_0021"> &para;</a></span></dt>
+<dd><p>从GDB的断点列表中删除<var class="var">断点</var>。这也会使Guile的<var class="var">断点</var>对象无效。任何进一步访问该对象的尝试都会抛出异常。
+</p>
+<p>如果断点是使用Guile的<code class="code">make-breakpoint</code>创建的，则可以将其重新注册到GDB，此时断点将再次变为有效。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoints-1"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoints</strong><a class="copiable-link" href="#index-breakpoints-1"> &para;</a></span></dt>
+<dd><p>返回所有断点的列表。列表中的每个元素都是一个<code class="code">&lt;gdb:breakpoint&gt;</code>对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-breakpoint_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是一个<code class="code">&lt;gdb:breakpoint&gt;</code>对象，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dvalid_00?"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-valid?</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_00?dvalid_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">断点</var>有效，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。使用<code class="code">make-breakpoint</code>创建的断点在使用<code class="code">register-breakpoint!</code>注册到GDB之前被标记为无效。如果用户删除了断点，<code class="code">&lt;gdb:breakpoint&gt;</code>对象可能会变为无效。在这种情况下，对象仍然存在，但底层断点不存在。在观察点范围的情况下，即使下级进程的执行离开该观察点的范围，观察点仍然有效。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dnumber"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-number</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dnumber"> &para;</a></span></dt>
+<dd><p>返回断点的编号 —— 用户用于操作断点的标识符。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dtemporary_00?"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-temporary?</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dtemporary_003f"> &para;</a></span></dt>
+<dd><p>如果断点是作为临时断点创建的，则返回<code class="code">#t</code>。临时断点在被命中后会自动删除。在断点被命中后调用此过程以及除<code class="code">breakpoint-valid?</code>和<code class="code">register-breakpoint!</code>之外的所有其他过程都会导致错误（因为它已被自动删除）。
+</p></dd></dl>
+
+<dl class="first-deffn"> 
+<dt class="deffn" id="index-breakpoint_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-type</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dtype"> &para;</a></span></dt>
+<dd><p>返回断点的类型 —— 用于确定实际断点类型或用例的标识符。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dvisible_00?"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-visible?</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dvisible_003f"> &para;</a></span></dt>
+<dd><p>如果断点在被命中时对用户可见，或者在运行<code class="code">info breakpoints</code>命令时可见，则返回<code class="code">#t</code>；否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dlocation"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-location</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dlocation"> &para;</a></span></dt>
+<dd><p>返回用户指定的断点位置。它是一个字符串。如果断点没有位置（即它是一个观察点），则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_?02dexpression"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-expression</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dexpression"> &para;</a></span></dt>
+<dd><p>返回用户指定的断点表达式。它是一个字符串。如果断点没有表达式（即断点不是观察点），则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002denabled_00?"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-enabled?</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002denabled_003f"> &para;</a></span></dt>
+<dd><p>如果断点启用，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002denabled_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-enabled!</strong> <var class="def-var-arguments">断点 标志</var><a class="copiable-link" href="#index-set_002dbreakpoint_002denabled_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的启用状态设置为<var class="var">标志</var>。如果标志为<code class="code">#f</code>，则禁用它，否则启用它。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dsilent_00?"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-silent?</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dsilent_003f"> &para;</a></span></dt>
+<dd><p>如果断点是静默断点，则返回<code class="code">#t</code>，否则返回<code class="code">#f</code>。
+</p>
+<p>请注意，如果断点有命令且第一个命令是<code class="code">silent</code>，则该断点也可以是静默的。此情况不会通过<code class="code">silent</code>属性报告。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dsilent_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-silent!</strong> <var class="def-var-arguments">断点 标志</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dsilent_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的静默状态设置为<var class="var">标志</var>。如果标志为<code class="code">#f</code>，则使断点变为静默，否则使其变为非静默（或有噪音）。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dignore_002dcount"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-ignore-count</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_0?2dignore_002dcount"> &para;</a></span></dt>
+<dd><p>返回<var class="var">断点</var>的忽略计数。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dignore_002dcount_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-ignore-count!</strong> <var class="def-var-arguments">断点 计数</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dignore_002dcount_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的忽略计数设置为<var class="var">计数</var>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dhit_002dcount"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-hit-count</strong> <var class= "def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dhit_002dcount"> &para;</a></span></dt>
+<dd><p>返回<var class="var">断点</var>的命中计数。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dhit_002dcount_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-hit-count!</strong> <var class="def-var-arguments">断点 计数</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dhit_002dcount_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的命中计数设置为<var class="var">计数</var>。目前，<var class="var">计数</var>必须为零。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dthread"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-thread</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dthread"> &para;</a></span></dt>
+<dd><p>返回特定于线程的断点<var class="var">断点</var>的全局线程ID。如果<var class="var">断点</var>不是特定于线程的，则返回#f。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dthread_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-thread!</strong> <var class="def-var-arguments">断点 全局线程ID|#f</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dthread_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的线程ID设置为<var class="var">全局线程ID</var>。如果设置为<code class="code">#f</code>，则断点不再是特定于线程的。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dtask"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-task</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dtask"> &para;</a></span></dt>
+<dd><p>如果断点是特定于Ada任务的，则返回Ada任务ID。如果断点不是特定于任务的（或者底层语言不是Ada），则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dtask_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-task!</strong> <var class="def-var-arguments">断点 任务</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dtask_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的Ada任务设置为<var class="var">任务</var>。如果设置为<code class="code">#f</code>，则断点不再是特定于任务的。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dcondition"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-condition</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dcondition"> &para;</a></span></dt>
+<dd><p>返回用户指定的<var class="var">断点</var>条件。它是一个字符串。如果没有条件，则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dcondition_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-condition!</strong> <var class="def-var-arguments">断点 条件</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dcondition_0021"> &para;</a></span></dt>
+<dd><p>将<var class="var">断点</var>的条件设置为<var class="var">条件</var>，<var class="var">条件</var>必须是一个字符串。如果设置为<code class="code">#f</code>，则断点变为无条件的。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dstop"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-stop</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dstop"> &para;</a></span></dt>
+<dd><p>返回<var class="var">断点</var>的停止谓词。请参阅本节下面的<code class="code">set-breakpoint-stop!</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dbreakpoint_002dstop_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">set-breakpoint-stop!</strong> <var class="def-var-arguments">断点 过程|#f</var><a class="copiable-link" href="#index-set_002dbreakpoint_002dstop_0021"> &para;</a></span></dt>
+<dd><p>设置<var class="var">断点</var>的停止谓词。谓词<var class="var">过程</var>接受一个参数：<code class="code">&lt;gdb:breakpoint&gt;</code>对象。如果将此谓词设置为一个过程，则每当下级进程到达此断点时都会调用它。如果它返回<code class="code">#t</code>或任何非<code class="code">#f</code>值，则下级进程将停止，否则下级进程将继续。
+</p>
+<p>如果在同一位置有多个带有<code class="code">stop</code>谓词的断点，无论前一个的返回状态如何，每个断点都会被调用。这确保了所有<code class="code">stop</code>谓词都有机会在该位置执行。在这种情况下，如果其中一个方法返回<code class="code">#t</code>而其他方法返回<code class="code">#f</code>，下级进程仍将停止。
+</p>
+<p>你不应更改下级进程的执行状态（即单步执行、下一步等），更改当前帧上下文（即更改当前活动帧），或更改、添加或删除任何断点。一般来说，此时你不应更改GDB或下级进程中的任何数据。
+</p>
+<p>示例<code class="code">stop</code>实现：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (my-stop? bkpt)
+  (let ((int-val (parse-and-eval &quot;foo&quot;)))
+    (value=? int-val 3)))
+(define bkpt (make-breakpoint &quot;main.c:42&quot;))
+(register-breakpoint! bkpt)
+(set-breakpoint-stop! bkpt my-stop?)
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-breakpoint_002dcommands"><span class="category-def">Scheme过程： </span><span><strong class="def-name">breakpoint-commands</strong> <var class="def-var-arguments">断点</var><a class="copiable-link" href="#index-breakpoint_002dcommands"> &para;</a></span></dt>
+<dd><p>返回附加到<var class="var">断点</var>的命令作为字符串，如果没有命令，则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Lazy-Strings-In-Guile.html">Guile中惰性字符串的表示。</a>，上一页：<a href="Symbol-Tables-In-Guile.html">Guile中符号表的表示。</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

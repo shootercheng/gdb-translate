@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>AArch64特性（使用GDB调试）</title>
+
+<meta name="description" content="AArch64特性（使用GDB调试）">
+<meta name="keywords" content="AArch64特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="Alpha-Features.html" rel="next" title="Alpha特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AArch64-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="Alpha-Features.html" accesskey="n" rel="next">Alpha特性</a>，上一级：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="AArch64-Features-1"><span>G.5.1 AArch64特性<a class="copiable-link" href="#AArch64-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-AArch64-features"></a>
+
+<ul class="mini-toc">
+<li><a href="#AArch64-core-registers-feature" accesskey="1">AArch64核心寄存器特性</a></li>
+<li><a href="#AArch64-floating_002dpoint-registers-feature" accesskey="2">AArch64浮点寄存器特性</a></li>
+<li><a href="#AArch64-SVE-registers-feature" accesskey="3">AArch64 SVE寄存器特性</a></li>
+<li><a href="#AArch64-Pointer-Authentication-registers-feature" accesskey="4">AArch64指针认证寄存器特性</a></li>
+<li><a href="#AArch64-TLS-registers-feature" accesskey="5">AArch64 TLS寄存器特性</a></li>
+<li><a href="#AArch64-MTE-registers-feature" accesskey="6">AArch64 MTE寄存器特性</a></li>
+<li><a href="#AArch64-SME-registers-feature" accesskey="7">AArch64 SME寄存器特性</a></li>
+<li><a href="#AArch64-SME2-registers-feature" accesskey="8">AArch64 SME2寄存器特性</a></li>
+<li><a href="#AArch64-GCS-registers-feature" accesskey="9">AArch64 GCS寄存器特性</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AArch64-core-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.1 AArch64核心寄存器特性<a class="copiable-link" href="#AArch64-core-registers-feature"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">org.gnu.gdb.aarch64.core</samp>&rsquo;特性是AArch64目标所必需的。它必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>&lsquo;<samp class="samp">x0</samp>&rsquo;到&lsquo;<samp class="samp">x30</samp>&rsquo;，通用寄存器组，大小为64位。寄存器&lsquo;<samp class="samp">x30</samp>&rsquo;也被称为<em class="dfn">链接寄存器</em>，或&lsquo;<samp class="samp">lr</samp>&rsquo;。
+</li><li>&lsquo;<samp class="samp">sp</samp>&rsquo;，栈指针寄存器，即&lsquo;<samp class="samp">x31</samp>&rsquo;。它的大小为64位，类型为&lsquo;<samp class="samp">data_ptr</samp>&rsquo;。
+</li><li>&lsquo;<samp class="samp">pc</samp>&rsquo;，程序计数器寄存器。它的大小为64位，类型为&lsquo;<samp class="samp">code_ptr</samp>&rsquo;。
+</li><li>&lsquo;<samp class="samp">cpsr</samp>&rsquo;

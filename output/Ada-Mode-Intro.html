@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Ada模式介绍（使用GDB调试）</title>
+
+<meta name="description" content="Ada模式介绍（使用GDB调试）">
+<meta name="keywords" content="Ada模式介绍（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Omissions-from-Ada.html" rel="next" title="Ada中的遗漏">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Mode-Intro">
+<div class="nav-panel">
+<p>
+下一个：<a href="Omissions-from-Ada.html" accesskey="n" rel="next">Ada中的遗漏</a>，上一个：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Introduction"><span>15.4.10.1 引言<a class="copiable-link" href="#Introduction"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Ada模式_002c-general"></a>
+
+<p><small class="sc">GDB</small>的Ada模式支持相当一部分Ada表达式语法，并带有一些扩展。
+这个子集设计背后的理念是
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small>应该提供基本字面量，并能访问算术运算、解引用、字段选择、索引和子程序调用等操作，将更复杂的计算留给编写在程序中的子程序（因此可以从<small class="sc">GDB</small>调用）。
+
+</li><li>类型安全和严格遵守Ada语言限制对<small class="sc">GDB</small>用户来说并不是特别重要。
+
+</li><li>简洁性对<small class="sc">GDB</small>用户很重要。
+</li></ul>
+
+<p>因此，为了简洁起见，调试器的行为就好像在用户编写的包中声明的所有名称都是直接可见的，即使根据Ada规则它们不可见，这样就无需在大多数情况下用包名来完全限定名称，无论上下文如何。当这导致歧义时，<small class="sc">GDB</small>会询问用户的意图。
+</p>
+<p>如果调试器检测到一个Ada主程序，它将以Ada模式启动。与其他语言一样，当在从Ada源文件翻译而来的程序中停止时，它将进入Ada模式。
+</p>
+<p>在Ada模式下，你可以使用‘<code class="t">--</code>’进行注释。这主要用于记录命令文件。标准的<small class="sc">GDB</small>注释（‘<samp class="samp">#</samp>’）在Ada模式下仍然可以在一行的开头使用，但不能在中间使用（以允许基于字面量）。
+</p>
+</div>
+
+
+
+</body>
+</html>

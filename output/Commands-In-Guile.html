@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，公司
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的命令（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的命令（使用GDB调试）">
+<meta name="keywords" content="Guile中的命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Parameters-In-Guile.html" rel="next" title="Guile中的参数">
+<link href="Writing-a-Guile-Pretty_002dPrinter.html" rel="prev" title="编写Guile漂亮打印机">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的命令">
+<div class="nav-panel">
+<p>
+下一个：<a href="Parameters-In-Guile.html" accesskey="n" rel="next">Guile中的参数</a>    ，上一个：<a href="Writing-a-Guile-Pretty_002dPrinter.html" accesskey="p" rel="prev">编写Guile漂亮打印机</a>    ，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中的命令-1"><span>23.4.3.11 Guile中的命令<a class="copiable-link" href="#Guile中的命令-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile中的命令"></a>
+<a class="index-entry-id" id="index-guile命令-1"></a>
+<p>你可以在Guile中实现新的GDB CLI命令。CLI命令对象通过Guile函数 <code class="code">make-command</code> 创建，并通过Guile函数 <code class="code">register-command!</code> 添加到GDB中。采取这种两步走的方法是为了将把命令添加到GDB的副作用与 <code class="code">make-command</code> 分离开来。
+</p>
+<p>不支持多行命令，即由多行组成并以 <code class="code">end</code> 结尾的命令。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dcommand"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-command</strong> <var class="def-var-arguments">name <span class="r">[</span>#:invoke&nbsp;invoke<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:command-class&nbsp;command-class<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:completer-class&nbsp;completer<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:prefix?&nbsp;prefix<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:doc&nbsp;doc-string<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dcommand"> &para;</a></span></dt>
+<dd>
+<p>参数 <var class="var">name</var> 是命令的名称。如果 <var class="var">name</var> 由多个单词组成，那么开头的单词会被视为前缀命令。在这种情况下，如果其中一个前缀命令不存在，就会引发异常。
+</p>
+<p>结果是表示该命令的 <code class="code">&lt;gdb:command&gt;</code> 对象。在使用 <code class="code">register-command!</code> 将该命令注册到GDB之前，它是不可用的。
+</p>
+<p>其余参数是可选的。
+</p>
+<p>参数 <var class="var">invoke</var> 是一个有三个参数的过程：<var class="var">self</var>、<var class="var">args</var> 和 <var class="var">from-tty</var>。参数 <var class="var">self</var> 是表示该命令的 <code class="code">&lt;gdb:command&gt;</code> 对象。参数 <var class="var">args</var> 是一个字符串，表示传递给命令的参数，去除了前后的空白字符。参数 <var class="var">from-tty</var> 是一个布尔标志，指定命令是否应认为自己是由用户交互式调用产生的。如果这个函数抛出异常，它会被转换为GDB的 <code class="code">error</code> 调用。否则，返回值将被忽略。
+</p>
+<p>对于非前缀命令，<var class="var">invoke</var> 是必需的。对于前缀命令，<var class="var">invoke</var> 是可选的。只有需要处理未知子命令的前缀命令才应提供 <var class="var">invoke</var>。
+</p>

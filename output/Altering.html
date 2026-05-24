@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>改变（使用GDB调试）</title>
+
+<meta name="description" content="改变（使用GDB调试）">
+<meta name="keywords" content="改变（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="GDB-Files.html" rel="next" title="GDB文件">
+<link href="Symbols.html" rel="prev" title="符号">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Altering">
+<div class="nav-panel">
+<p>
+下一页：<a href="GDB-Files.html" accesskey="n" rel="next"><small class="sc">GDB</small>文件</a>，上一页：<a href="Symbols.html" accesskey="p" rel="prev">检查符号表</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="chapter" id="Altering-Execution"><span>17 改变执行<a class="copiable-link" href="#Altering-Execution"> &para;</a></span></h2>
+
+<p>一旦你认为在程序中发现了错误，可以通过某些方法确定纠正这个明显的错误是否会在程序的后续运行中产生正确的结果。你可以通过实验，利用<small class="sc">GDB</small>中改变程序执行的功能来找到答案。
+</p>
+<p>例如，你可以将新值存储到变量或内存位置，向程序发送一个信号，在不同的地址重新启动程序或者甚至从一个函数中提前返回。
+</p>
+
+<ul class="mini-toc">
+<li><a href="Assignment.html" accesskey="1">给变量赋值</a></li>
+<li><a href="Jumping.html" accesskey="2">在不同地址继续执行</a></li>
+<li><a href="Signaling.html" accesskey="3">给程序发送信号</a></li>
+<li><a href="Returning.html" accesskey="4">从函数返回</a></li>
+<li><a href="Calling.html" accesskey="5">调用程序函数</a></li>
+<li><a href="Patching.html" accesskey="6">修补程序</a></li>
+<li><a href="Compiling-and-Injecting-Code.html" accesskey="7">在<small class="sc">GDB</small>中编译和注入代码</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

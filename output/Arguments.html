@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>参数（使用GDB调试）</title>
+
+<meta name="description" content="参数（使用GDB调试）">
+<meta name="keywords" content="参数（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Environment.html" rel="next" title="环境">
+<link href="Starting.html" rel="prev" title="启动">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="参数">
+<div class="nav-panel">
+<p>
+下一页：<a href="Environment.html" accesskey="n" rel="next">你的程序的环境</a>，上一页：<a href="Starting.html" accesskey="p" rel="prev">启动你的程序</a>，向上：<a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="你的程序的参数"><span>4.3你的程序的参数<a class="copiable-link" href="#你的程序的参数"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-参数-（到你的程序）"></a>
+<p>你的程序的参数可以通过<code>run</code>命令的参数来指定。
+这些参数会传递给一个 shell，它会展开通配符并执行I/O重定向，然后再传递给你的程序。你的<code>SHELL</code>环境变量（如果存在）指定了GDB使用的 shell。如果你没有定义<code>SHELL</code>，GDB会使用默认的 shell（在Unix上是<samp>/bin/sh</samp>）。
+</p>
+<p>在非Unix系统上，程序通常由GDB直接调用，GDB通过适当的系统调用模拟I/O重定向，通配符由程序的启动代码展开，而不是由 shell 展开。
+</p>
+<p>不带参数的<code>run</code>使用上一个<code>run</code>使用的参数，或者由<code>set args</code>命令设置的参数。
+</p>
+<dl class="table">
+<dt><a id="索引-set-args"></a><span><code>set args</code><a class="copiable-link" href="#索引-set-args"> &para;</a></span></dt>
+<dd><p>指定下次运行程序时要使用的参数。如果<code>set args</code>没有参数，<code>run</code>会在没有参数的情况下执行你的程序。一旦你使用参数运行了你的程序，在下一次<code>run</code>之前使用<code>set args</code>是再次在没有参数的情况下运行它的唯一方法。
+</p>
+</dd>
+<dt><a id="索引-show-args"></a><span><code>show args</code><a class="copiable-link" href="#索引-show-args"> &para;</a></span></dt>
+<dd><p>显示启动程序时要给它的参数。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

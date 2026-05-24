@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>数组（使用GDB调试）</title>
+
+<meta name="description" content="数组（使用GDB调试）">
+<meta name="keywords" content="数组（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Output-Formats.html" rel="next" title="输出格式">
+<link href="Variables.html" rel="prev" title="变量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="数组">
+<div class="nav-panel">
+<p>
+下一页：<a href="Output-Formats.html" accesskey="n" rel="next">输出格式</a>，上一页：<a href="Variables.html" accesskey="p" rel="prev">程序变量</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="人工数组"><span>10.4人工数组<a class="copiable-link" href="#人工数组"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-人工数组"></a>
+<a class="index-entry-id" id="索引-数组"></a>
+<a class="index-entry-id" id="索引-@，将内存引用为数组"></a>
+<p>将内存中几个连续的相同类型对象打印出来通常很有用；可以是数组的一部分，或者是一个动态确定大小且程序中只有指针的数组部分。
+</p>
+<p>你可以通过使用二元运算符‘<samp>@</samp>’将一段连续的内存视为一个<em class="dfn">人工数组</em>来实现。‘<samp>@</samp>’的左操作数应该是所需数组的第一个元素，并且是一个单独的对象。右操作数应该是数组的所需长度。结果是一个数组值，其元素都是左操作数的类型。第一个元素实际上就是左操作数；第二个元素来自紧接着第一个元素所占用内存的字节，依此类推。下面是一个例子。如果一个程序中有：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int *array = (int *) malloc (len * sizeof (int));
+</pre></div>
+
+<p>你可以使用以下命令打印‘array’的内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *array@len
+</pre></div>
+
+<p>‘<samp>@</samp>’的左操作数必须驻留在内存中。以这种方式用‘<samp>@</samp>’创建的值在进行下标操作时的行为与其他数组一样，并且在表达式中使用时会被强制转换为指针。人工数组最常通过值历史记录（见 <a class="pxref" href="Value-History.html">值历史记录</a>）在表达式中出现，即在打印出一个人工数组之后。
+</p>
+<p>创建人工数组的另一种方法是使用强制类型转换。这会将一个值重新解释为好像它是一个数组。该值不一定在内存中：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) p/x (short[2])0x12345678
+$1 = {0x1234, 0x5678}
+</pre></div>
+
+<p>为了方便起见，如果省略数组长度（如‘<samp>(<var>type</var>[])<var>value</var></samp>’），<small class="sc">GDB</small>会计算填充该值所需的大小（如‘<samp>sizeof(<var>value</var>)/sizeof(<var>type</var>)</samp>’）：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) p/x (short[])0x12345678
+$2 = {0x1234, 0x5678}
+</pre></div>
+
+<p>有时人工数组机制还不够；在中等复杂的数据结构中，感兴趣的元素可能实际上并不相邻 —— 例如，如果您对数组中指针的值感兴趣就会出现这种情况。在这种情况下，一个有用的解决方法是使用一个便利变量（见 <a class="pxref" href="Convenience-Vars.html">便利变量</a>）作为表达式中的计数器，该表达式打印出第一个感兴趣的值，然后通过<kbd class="key">RET</kbd>重复该表达式。例如，假设你有一个指向结构体的指针数组‘dtab’，并且你对每个结构体中的一个字段‘fv’的值感兴趣。下面是你可能输入的内容示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $i = 0
+p dtab[$i++]-&gt;fv
+<kbd class="key">RET</kbd>
+<kbd class="key">RET</kbd>
+...
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Output-Formats.html">输出格式</a>，上一页：<a href="Variables.html">程序变量</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

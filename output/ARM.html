@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>ARM（使用GDB调试）</title>
+
+<meta name="description" content="ARM（使用GDB调试）">
+<meta name="keywords" content="ARM（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="BPF.html" rel="next" title="BPF">
+<link href="ARC.html" rel="prev" title="ARC">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARM">
+<div class="nav-panel">
+<p>
+下一页：<a href="BPF.html" accesskey="n" rel="next">BPF</a>，上一页：<a href="ARC.html" accesskey="p" rel="prev">Synopsys ARC</a>，向上：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="ARM-1"><span>21.3.2 ARM<a class="copiable-link" href="#ARM-1"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small>提供了以下特定于ARM的命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-arm"></a><span><code class="code">set arm disassembler</code><a class="copiable-link" href="#index-set-arm"> ¶</a></span></dt>
+<dd><p>此命令从反汇编样式列表中进行选择。<code class="code">&quot;std&quot;</code>样式是标准样式。
+</p>
+</dd>
+<dt><a id="index-show-arm"></a><span><code class="code">show arm disassembler</code><a class="copiable-link" href="#index-show-arm"> ¶</a></span></dt>
+<dd><p>显示当前的反汇编样式。
+</p>
+</dd>
+<dt><a id="index-ARM-32_002dbit-mode"></a><span><code class="code">set arm apcs32</code><a class="copiable-link" href="#index-ARM-32_002dbit-mode"> ¶</a></span></dt>
+<dd><p>此命令在32位和26位之间切换ARM操作模式。
+</p>
+</dd>
+<dt><code class="code">show arm apcs32</code></dt>
+<dd><p>显示ARM 32位模式的当前使用情况。
+</p>
+</dd>
+<dt><code class="code">set arm fpu <var class="var">fputype</var></code></dt>
+<dd><p>此命令设置ARM浮点单元（FPU）类型。参数<var class="var">fputype</var>可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">auto</code></dt>
+<dd><p>通过查询操作系统ABI来确定FPU类型。
+</p></dd>
+<dt><code class="code">softfpa</code></dt>
+<dd><p>软件FPU，在小端ARM处理器上具有混合字节序的双精度数。
+</p></dd>
+<dt><code class="code">fpa</code></dt>
+<dd><p>GCC编译的FPA协处理器。
+</p></dd>
+<dt><code class="code">softvfp</code></dt>
+<dd><p>具有纯字节序双精度数的软件FPU。
+</p></dd>
+<dt><code class="code">vfp</code></dt>
+<dd><p>VFP协处理器。
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">show arm fpu</code></dt>
+<dd><p>显示FPU的当前类型。
+</p>
+</dd>
+<dt><code class="code">set arm abi</code></dt>
+<dd><p>此命令强制<small class="sc">GDB</small>使用指定的ABI。
+</p>
+</dd>
+<dt><code class="code">show arm abi</code></dt>
+<dd><p>显示当前使用的ABI。
+</p>
+</dd>
+<dt><code class="code">set arm fallback-mode (arm|thumb|auto)</code></dt>
+<dd><p><small class="sc">GDB</small>在可用时使用符号表来确定指令是ARM还是Thumb。此命令控制<small class="sc">GDB</small>在符号表不可用时的默认行为。默认值是&lsquo;<samp class="samp">auto</samp>&rsquo;，这会导致<small class="sc">GDB</small>使用当前执行模式（来自<code class="code">CPSR</code>寄存器中的<code class="code">T</code>位）。
+</p>
+</dd>
+<dt><code class="code">show arm fallback-mode</code></dt>
+<dd><p>显示当前的备用指令模式。
+</p>
+</dd>
+<dt><code class="code">set arm force-mode (arm|thumb|auto)</code></dt>
+<dd><p>此命令覆盖使用符号表来确定指令是ARM还是Thumb。默认值是&lsquo;<samp class="samp">auto</samp>&rsquo;，这会导致<small class="sc">GDB</small>使用符号表，然后是&lsquo;<samp class="samp">set arm fallback-mode</samp>&rsquo;的设置。
+</p>
+</dd>
+<dt><code class="code">show arm force-mode</code></dt>
+<dd><p>显示当前的强制指令模式。
+</p>
+</dd>
+<dt><code class="code">set arm unwind-secure-frames</code></dt>
+<dd><p>此命令在具有安全扩展的Cortex-M上启用从非安全模式到安全模式的展开。
+这在展开异常堆栈时可能会触发安全异常。
+它默认启用。
+</p>
+</dd>
+<dt><code class="code">show arm unwind-secure-frames</code></dt>
+<dd><p>显示是否启用从非安全模式到安全模式的展开。
+</p>
+</dd>
+<dt><code class="code">set debug arm</code></dt>
+<dd><p>切换是否显示来自ARM目标支持子系统的特定于ARM的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug arm</code></dt>
+<dd><p>显示是否启用特定于ARM的调试消息。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><code class="code">target sim <span class="r">[</span><var class="var">simargs</var><span class="r">]</span> &hellip;</code></dt>
+<dd><p><small class="sc">GDB</small> ARM模拟器接受以下可选参数。
+</p>
+<dl class="table">
+<dt><code class="code">--swi-support=<var class="var">type</var></code></dt>
+<dd><p>告诉模拟器支持哪些SWI接口。参数<var class="var">type</var>可以是以下值的逗号分隔列表。
+默认值是<code class="code">all</code>。
+</p>
+<dl class="table">
+<dt><code class="code">none</code></dt>
+<dt><code class="code">demon</code></dt>
+<dt><code class="code">angel</code></dt>
+<dt><code class="code">redboot</code></dt>
+<dt><code class="code">all</code></dt>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="BPF.html">BPF</a>，上一页：<a href="ARC.html">Synopsys ARC</a>，向上：<a href="Embedded-Processors.html">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” --> 
+<title>回溯（使用GDB调试）</title>
+
+<meta name="description" content="回溯（使用GDB调试）">
+<meta name="keywords" content="回溯（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">  
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Stack.html" rel="up" title="栈">
+<link href="Selection.html" rel="next" title="选择">
+<link href="Frames.html" rel="prev" title="栈帧">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 	0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="回溯">
+<div class="nav-panel">
+<p>
+下一页：<a href="Selection.html" accesskey="n" rel="next">选择一个栈帧</a>，上一页：<a href="Frames.html" accesskey="p" rel="prev">栈帧</a>，向上：<a href="Stack.html" accesskey="u" rel="up">检查栈</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="回溯"><span>8.2 回溯<a class="copiable-link" href="#回溯"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-回溯"></a>
+<a class="index-entry-id" id="索引-调用栈跟踪"></a>
+<p>回溯是对程序如何到达当前位置的总结。它为许多栈帧中的每一个显示一行，从当前正在执行的栈帧（栈帧零）开始，接着是它的调用者（栈帧一），并一直向上到栈顶。
+</p>
+<a class="anchor" id="回溯命令"></a><a class="index-entry-id" id="索引-回溯"></a>
+<a class="index-entry-id" id="索引-bt（回溯）"></a>
+<p>要打印整个栈的回溯，使用 <code class="code">backtrace</code> 命令，或其别名 <code class="code">bt</code>。这个命令将为栈中的每个栈帧打印一行。默认情况下，会打印所有栈帧。你可以在任何时候通过输入系统中断字符（通常是 <kbd class="kbd">Ctrl-c</kbd>）来停止回溯。
+</p>
+<dl class="table">
+<dt><code class="code">backtrace [<var class="var">选项</var>]&hellip; [<var class="var">限定符</var>]&hellip; [<var class="var">计数</var>]</code></dt>
+<dt><code class="code">bt [<var class="var">选项</var>]&hellip; [<var class="var">限定符</var>]&hellip; [<var class="var">计数</var>]</code></dt>
+<dd><p>打印整个栈的回溯。
+</p>
+<p>可选的 <var class="var">计数</var> 可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">n</var></code></dt>
+<dt><code class="code"><var class="var">n</var></code></dt>
+<dd><p>只打印最内层的 <var class="var">n</var> 个栈帧，其中 <var class="var">n</var> 是一个正数。
+</p>
+</dd>
+<dt><code class="code">-<var class="var">n</var></code></dt>
+<dt><code class="code">-<var class="var">n</var></code></dt>
+<dd><p>只打印最外层的 <var class="var">n</var> 个栈帧，其中 <var class="var">n</var> 是一个正数。
+</p></dd>
+</dl>
+
+<p>选项：
+</p>
+<dl class="table">
+<dt><code class="code">-full</code></dt>
+<dd><p>也打印局部变量的值。这可以与可选的 <var class="var">计数</var> 结合使用，以限制显示的栈帧数。
+</p>
+</dd>
+<dt><code class="code">-no-filters</code></dt>
+<dd><p>不对这个回溯运行Python栈帧过滤器。有关更多信息，请参阅 <a class="xref" href="Frame-Filter-API.html">过滤栈帧</a>。此外，使用 <a class="ref" href="Frame-Filter-Management.html#disable-frame_002dfilter-all">禁用所有栈帧过滤器</a> 来关闭所有栈帧过滤器。这仅在 <small class="sc">GDB</small> 配置了 <code class="code">Python</code> 支持时才相关。
+</p>
+</dd>
+<dt><code class="code">-hide</code></dt>
+<dd><p>Python栈帧过滤器可能会决定 “省略” 一些栈帧。通常，这些被省略的栈帧仍然会被打印，但它们相对于导致它们被省略的已过滤栈帧会缩进显示。<code class="code">-hide</code> 选项会导致被省略的栈帧根本不被打印。
+</p></dd>
+</dl>
+
+<p><code class="code">backtrace</code> 命令还支持许多选项，这些选项允许覆盖由 <code class="code">set backtrace</code> 和 <code class="code">set print</code> 子命令设置的相关全局打印设置：
+</p>
+<dl class="table">
+<dt><code class="code">-past-main [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置回溯是否应继续越过 <code class="code">main</code> 函数。相关设置：<a class="ref" href="#set-backtrace-past_002dmain">设置回溯越过main函数</a>。
+</p>
+</dd>
+<dt><code class="code">-past-entry [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置回溯是否应继续越过程序的入口点。相关设置：<a class="ref" href="#set-backtrace-past_002dentry">设置回溯越过入口点</a>。
+</p>
+</dd>
+<dt><code class="code">-entry-values <code class="code">no</code>|<code class="code">only</code>|<code class="code">preferred</code>|<code class="code">if-needed</code>|<code class="code">both</code>|<code class="code">compact</code>|<code class="code">default</code></code></dt>
+<dd><p>设置在函数入口处打印函数参数。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-entry_002dvalues">设置打印入口值</a>。
+</p>
+</dd>
+<dt><code class="code">-frame-arguments <code class="code">all</code>|<code class="code">scalars</code>|<code class="code">none</code></code></dt>
+<dd><p>设置打印非标量栈帧参数。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-frame_002darguments">设置打印帧参数</a>。
+</p>
+</dd>
+<dt><code class="code">-raw-frame-arguments [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否以原始形式打印栈帧参数。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-raw_002dframe_002darguments">设置打印原始帧参数</a>。
+</p>
+</dd>
+<dt><code class="code">-frame-info <code class="code">auto</code>|<code class="code">source-line</code>|<code class="code">location</code>|<code class="code">source-and-location</code>|<code class="code">location-and-address</code>|<code class="code">short-location</code></code></dt>
+<dd><p>设置打印栈帧信息。
+相关设置：<a class="ref" href="Print-Settings.html#set-print-frame_002dinfo">设置打印帧信息</a>。
+</p></dd>
+</dl>
+
+<p>可选的 <var class="var">限定符</var> 是为了向后兼容而保留的。它可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">full</code></dt>
+<dd><p>等同于 <code class="code">-full</code>选项。
+</p>
+</dd>
+<dt><code class="code">no-filters</code></dt>
+<dd><p>等同于 <code class="code">-no-filters</code>选项。
+</p>
+</dd>
+<dt><code class="code">hide</code></dt>
+<dd><p>等同于 <code class="code">-hide</code>选项。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<a class="index-entry-id" id="索引-where"></a>
+<a class="index-entry-id" id="索引-info-stack"></a>
+<p>名称 <code class="code">where</code> 和 <code class="code">info stack</code>（缩写为 <code class="code">info s</code>）是 <code class="code">backtrace</code> 的另外两个别名。
+</p>
+<a class="index-entry-id" id="索引-多线程，回溯"></a>
+<p>在多线程程序中，<small class="sc">GDB</small> 默认只显示当前线程的回溯。要显示几个或所有线程的回溯，请使用命令 <code class="code">thread apply</code>（见 <a class="pxref" href="Threads.html">线程应用</a>）。例如，如果输入 <kbd class="kbd">thread apply all backtrace</kbd>，<small class="sc">GDB</small> 将显示所有线程的回溯；当调试多线程程序的核心转储时，这很方便。
+</p>
+<p>回溯中的每一行显示栈帧编号和函数名。程序计数器值也会显示 —— 除非使用 <code class="code">set print address off</code>。回溯还会显示源文件名和行号，以及函数的参数。如果程序计数器值在该行代码的开头，则会省略。
+</p>
+<p>这是一个回溯的示例。它是用命令 &lsquo;<samp class="samp">bt 3</samp>&rsquo; 生成的，所以它显示了最内层的三个栈帧。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">#0  m4_traceon (obs=0x24eb0, argc=1, argv=0x2b8c8)
+    at builtin.c:993
+#1  0x6e38 in expand_macro (sym=0x2b600, data=...) at macro.c:242
+#2  0x6840 in expand_token (obs=0x0, t=177664, td=0xf7fffb08)
+    at macro.c:71
+(更多栈帧如下...)
+</pre></div></div>
+
+<p>栈帧零的显示没有以程序计数器值开头，这表明你的程序在 <code class="code">builtin.c</code> 文件的第 <code class="code">993</code> 行代码的开头停止。
+</p>
+<p>栈帧1中参数 <code class="code">data</code> 的值已被替换为 <code class="code">&hellip;</code>。默认情况下，<small class="sc">GDB</small> 只在参数是标量（整数、指针、枚举等）时才打印其值。有关如何配置函数参数值打印方式的更多详细信息，请参阅 <a class="ref" href="Print-Settings.html">打印设置</a> 中的 <kbd class="kbd">set print frame-arguments</kbd> 命令。<kbd class="kbd">set print frame-info</kbd> 命令（见 <a class="pxref" href="Print-Settings.html">打印设置</a>）控制打印哪些栈帧信息。
+</p>
+<a class="index-entry-id" id="索引-优化掉，在回溯中"></a>
+<a class="index-entry-id" id="索引-函数调用参数，优化掉"></a>
+<p>如果你的程序是用优化选项编译的，一些编译器会在函数调用后如果参数不再使用就将其优化掉。这种优化会生成通过寄存器传递参数但不在栈帧中存储这些参数的代码。<small class="sc">GDB</small> 除了最内层的栈帧外，无法在其他栈帧中显示这些参数。这样的回溯可能如下所示：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">#0  m4_traceon (obs=0x24eb0, argc=1, argv=0x2b8c8)
+    at builtin.c:993
+#1  0x6e38 in expand_macro (sym=&lt;优化掉&gt;) at macro.c:242
+#2  0x6840 in expand_token (obs=0x0, t=&lt;优化掉&gt;, td=0xf7fffb08)
+    at macro.c:71
+(更多栈帧如下...)
+</pre></div></div>
+
+<p>未保存在其栈帧中的参数值显示为 &lsquo;<samp class="samp">&lt;优化掉&gt;</samp>&rsquo;。
+</p>
+<p>如果你需要显示这些被优化掉的参数的值，可以从其他值依赖于你感兴趣的值的变量中推断出来，或者不使用优化选项重新编译。
+</p>
+<a class="index-entry-id" id="索引-回溯超越main函数"></a>
+<a class="index-entry-id" id="索引-程序入口点"></a>
+<a class="index-entry-id" id="索引-启动代码，和回溯"></a>
+<p>大多数程序都有一个标准的用户入口点 —— 系统库和启动代码转换为用户代码的地方。对于C语言来说，这是 <code class="code">main</code><a class="footnote" id="DOCF9" href="#FOOT9"><sup>9</sup></a>。当 <small class="sc">GDB</small> 在回溯中找到入口函数时，它将终止回溯，以避免跟踪到高度特定于系统的（通常无趣的）代码。
+</p>
+<p>如果你需要检查启动代码，或限制回溯的层数，可以更改此行为：
+</p>
+<dl class="table">
+<dt><code class="code">set backtrace past-main</code></dt>
+<dt><code class="code">set backtrace past-main on</code></dt>
+<dd><a class="anchor" id="set-backtrace-past_002dmain"></a><a class="index-entry-id" id="索引-set-backtrace"></a>
+<p>回溯将继续越过用户入口点。
+</p>
+</dd>
+<dt><code class="code">set backtrace past-main off</code></dt>
+<dd><p>回溯在遇到用户入口点时将停止。这是默认设置。
+</p>
+</dd>
+<dt><a id="索引-show-backtrace"></a><span><code class="code">show backtrace past-main</code><a class="copiable-link" href="#索引-show-backtrace"> &para;</a></span></dt>
+<dd><p>显示当前用户入口点的回溯策略。
+</p>
+</dd>
+<dt><code class="code">set backtrace past-entry</code></dt>
+<dt><code class="code">set backtrace past-entry on</code></dt>
+<dd><a class="anchor" id="set-backtrace-past_002dentry"></a><p>回溯将继续越过应用程序的内部入口点。这个入口点在应用程序构建时由链接器编码，并且可能在调用用户入口点 <code class="code">main</code> (或等效函数) 之前。
+</p>
+</dd>
+<dt><code class="code">set backtrace past-entry off</code></dt>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>错误标准（使用GDB调试）</title>
+
+<meta name="description" content="错误标准（使用GDB调试）">
+<meta name="keywords" content="错误标准（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Bugs.html" rel="up" title="GDB错误">
+<link href="Bug-Reporting.html" rel="next" title="错误报告">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="错误标准">
+<div class="nav-panel">
+<p>
+下一页：<a href="Bug-Reporting.html" accesskey="n" rel="next">如何报告错误</a>，上一级：<a href="GDB-Bugs.html" accesskey="u" rel="up">报告GDB中的错误</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="你发现错误了吗？"><span>32.1你发现错误了吗？<a class="copiable-link" href="#你发现错误了吗？"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-错误标准"></a>
+
+<p>如果你不确定自己是否发现了错误，这里有一些指导原则：
+</p>
+<ul class="itemize mark-bullet">
+<li><a class="index-entry-id" id="索引-致命信号"></a>
+<a class="index-entry-id" id="索引-调试器崩溃"></a>
+<a class="index-entry-id" id="索引-调试器的崩溃"></a>
+如果调试器对于任何输入都收到致命信号，那就是一个GDB错误。可靠的调试器永远不会崩溃。
+
+</li><li><a class="index-entry-id" id="索引-有效输入上的错误"></a>
+如果GDB对于有效输入产生错误消息，那就是一个错误。（注意，如果您正在进行交叉调试，问题也可能出在与目标的连接中。）
+
+</li><li><a class="index-entry-id" id="索引-无效输入"></a>
+如果GDB对于无效输入没有产生错误消息，那就是一个错误。然而，你应该注意到，你所认为的“无效输入”可能是我们所认为的“一种扩展”或“对传统做法的支持”。
+
+</li><li>如果你是调试工具的有经验用户，无论如何都欢迎你对改进GDB提出建议。
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

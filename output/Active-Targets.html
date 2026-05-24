@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>活动目标（使用GDB调试）</title>
+
+<meta name="description" content="活动目标（使用GDB调试）">
+
+<meta name="keywords" content="活动目标（使用GDB调试）">
+
+<meta name="resource-type" content="文档">
+
+<meta name="distribution" content="全球">
+
+<meta name="Generator" content="makeinfo">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+
+<link href="Concept-Index.html" rel="index" title="概念索引">
+
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+
+<link href="Targets.html" rel="up" title="目标">
+
+<link href="Target-Commands.html" rel="next" title="目标命令">
+
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="活动目标">
+<div class="nav-panel">
+<p>
+下一页：<a href="Target-Commands.html" accesskey="n" rel="next">管理目标的命令</a>，上一级：<a href="Targets.html" accesskey="u" rel="up">指定调试目标</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="活动目标-1"><span>19.1活动目标<a class="copiable-link" href="#活动目标-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="索引-堆叠目标"></a>
+
+<a class="index-entry-id" id="索引-活动目标"></a>
+
+<a class="index-entry-id" id="索引-多个目标"></a>
+
+<p>有多种类型的目标，例如：进程、可执行文件或记录会话。核心文件属于进程类，这使得核心文件和进程相互排斥。否则，<small class="sc">GDB</small>可以在多个活动目标上并发工作，每个类一个。这允许你（例如）启动一个进程并检查其活动，同时在进程结束后仍可访问可执行文件。或者如果你开始进程记录（见 <a class="pxref" href="Reverse-Execution.html">反向执行程序</a>）并在那里执行 <code class="code">reverse-step</code>，你会看到记录目标的虚拟层，而进程目标仍停留在进程执行的按时间顺序的最后一点。
+</p>
+<p>使用 <code class="code">core-file</code> 和 <code class="code">exec-file</code> 命令选择新的核心文件或可执行目标（见 <a class="pxref" href="Files.html">指定文件的命令</a>）。要将已经在运行的进程指定为目标，使用 <code class="code">attach</code> 命令（见 <a class="pxref" href="Attach.html">调试已经在运行的进程</a>）。
+</p>
+</div>
+
+
+
+</body>
+</html>

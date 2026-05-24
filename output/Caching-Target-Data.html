@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>缓存目标数据（使用GDB调试）</title>
+
+<meta name="description" content="缓存目标数据（使用GDB调试）">
+<meta name="keywords" content="缓存目标数据（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Searching-Memory.html" rel="next" title="搜索内存">
+<link href="Character-Sets.html" rel="prev" title="字符集">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Caching-Target-Data">
+<div class="nav-panel">
+<p>
+下一页：<a href="Searching-Memory.html" accesskey="n" rel="next">搜索内存</a>，上一页：<a href="Character-Sets.html" accesskey="p" rel="prev">字符集</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Caching-Data-of-Targets"><span>10.22 缓存目标数据<a class="copiable-link" href="#Caching-Data-of-Targets"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-caching-data-of-targets"></a>
+
+<p><small class="sc">GDB</small>会缓存调试器与目标之间交换的数据。
+每个缓存都与子进程的地址空间相关联。
+有关子进程和地址空间，请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个子进程、连接和程序</a>。
+这种缓存通常可以提高远程调试的性能（请参阅 <a class="pxref" href="Remote-Debugging.html">调试远程程序</a>），因为它通过将内存读写捆绑成大块来减少远程协议的开销。
+不幸的是，简单地缓存所有内容会导致不正确的结果，
+因为 <small class="sc">GDB</small> 不一定了解易失性值、内存映射I/O地址等。此外，在非停止模式下（请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>），在执行gdb命令 <em class="emph">期间</em> 内存可能会被更改。
+因此，默认情况下，<small class="sc">GDB</small> 只缓存已知在堆栈上的数据<a class="footnote" id="DOCF13" href="#FOOT13"><sup>13</sup></a> 或代码段中的数据。
+内存的其他区域可以显式标记为可缓存；请参阅 <a class="pxref" href="Memory-Region-Attributes.html">内存区域属性</a>。
+</p> 
+<dl class="table">
+<dt><a id="index-set-remotecache"></a><span><code class="code">set remotecache on</code><a class="copiable-link" href="#index-set-remotecache"> &para;</a></span></dt>
+<dt><code class="code">set remotecache off</code></dt> 
+<dd><p>此选项不再起任何作用；它存在是为了与旧脚本兼容。
+</p>
+</dd>
+<dt><a id="index-show-remotecache"></a><span><code class="code">show remotecache</code><a class="copiable-link" href="#index-show-remotecache"> &para;</a></span></dt> 
+<dd><p>显示过时的remotecache标志的当前状态。 
+</p>
+</dd>
+<dt><a id="index-set-stack_002dcache"></a><span><code class="code">set stack-cache on</code><a class="copiable-link" href="#index-set-stack_002dcache"> &para;</a></span></dt>
+<dt><code class="code">set stack-cache off</code></dt> 
+<dd><p>启用或禁用堆栈访问的缓存。当设置为 <code class="code">on</code> 时，使用缓存。默认情况下，此选项为 <code class="code">on</code>。
+</p>
+</dd>
+<dt><a id="index-show-stack_002dcache"></a><span><code class="code">show stack-cache</code><a class="copiable-link" href="#index-show-stack_002dcache"> &para;</a></span></dt> 
+<dd><p>显示内存访问数据缓存的当前状态。 
+</p>
+</dd>
+<dt><a id="index-set-code_002dcache"></a><span><code class="code">set code-cache on</code><a class="copiable-link" href="#index-set-code_002dcache"> &para;</a></span></dt>
+<dt><code class="code">set code-cache off</code></dt> 
+<dd><p>启用或禁用代码段访问的缓存。当设置为 <code class="code">on</code> 时，使用缓存。默认情况下，此选项为 <code class="code">on</code>。这可以提高远程调试中反汇编的性能。
+</p> 
+</dd>
+<dt><a id="index-show-code_002dcache"></a><span><code class="code">show code-cache</code><a class="copiable-link" href="#index-show-code_002dcache"> &para;</a></span></dt> 
+<dd><p>显示代码段访问的目标内存缓存的当前状态。 
+</p>
+</dd>
+<dt><a id="index-info-dcache"></a><span><code class="code">info dcache <span class="r">[</span>line<span class="r">]</span></code><a class="copiable-link" href="#index-info-dcache"> &para;</a></span></dt> 
+<dd><p>打印有关当前子进程地址空间数据缓存性能的信息。显示的信息包括数据缓存的宽度和深度，以及每个缓存行的编号、地址和被引用的次数。此命令对于调试数据缓存操作很有用。
+</p>
+<p>如果指定了行号，则该行的内容将以十六进制打印。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-dcache-size"></a>
+<a id="index-dcache-size"></a><span><code class="code">set dcache size <var class="var">size</var></code><a class="copiable-link" href="#index-dcache-size"> &para;</a></span></dt> 
+<dd><p>设置数据缓存中的最大条目数（即上述数据缓存深度）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-dcache-line_002dsize"></a>
+<a id="index-dcache-line_002dsize"></a><span><code class="code">set dcache line-size <var class="var">line-size</var></code><a class="copiable-link" href="#index-dcache-line_002dsize"> &para;</a></span></dt> 
+<dd><p>设置每个数据缓存条目缓存的字节数（即上述数据缓存宽度）。必须是2的幂。
+</p>
+</dd>
+<dt><a id="index-show-dcache-size"></a><span><code class="code">show dcache size</code><a class="copiable-link" href="#index-show-dcache-size"> &para;</a></span></dt> 
+<dd><p>显示数据缓存条目的最大数量。请参阅 <a class="xref" href="#Caching-Target-Data">info dcache</a>。
+</p><dd>
+<dt><a id="index-show-dcache-line_002dsize"></a><span><code class="code">show dcache line-size</code><a class="copiable-link" href="#index-show-dcache-line_002dsize"> &para;</a></span></dt> 
+<dd><p>显示数据缓存行的默认大小。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-flush-dcache"></a>
+<a id="index-dcache_002c-flushing"></a><span><code class="code">maint flush dcache</code><a class="copiable-link" href="#index-dcache_002c-flushing"> &para;</a></span></dt> 
+<dd><p>清除数据缓存的内容（如果有）。此维护命令在调试数据缓存实现时很有用。
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT13" href="#DOCF13">(13)</a></h5>
+<p>在非停止模式下，运行中的线程以干扰回溯跟踪的方式修改已停止线程的堆栈的情况相当罕见，并且堆栈读取的缓存显著加快了远程回溯跟踪的速度。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Searching-Memory.html">搜索内存</a>，上一页：<a href="Character-Sets.html">字符集</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

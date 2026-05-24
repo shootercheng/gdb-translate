@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>命令设置（使用GDB调试）</title>
+
+<meta name="description" content="命令设置（使用GDB调试）">
+<meta name="keywords" content="命令设置（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Commands.html" rel="up" title="命令">
+<link href="Completion.html" rel="next" title="命令补全">
+<link href="Command-Syntax.html" rel="prev" title="命令语法">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="命令设置">
+<div class="nav-panel">
+<p>
+下一个：<a href="Completion.html" accesskey="n" rel="next">命令补全</a>，上一个：<a href="Command-Syntax.html" accesskey="p" rel="prev">命令语法</a>，向上：<a href="Commands.html" accesskey="u" rel="up"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令设置-1"><span>3.2命令设置<a class="copiable-link" href="#命令设置-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-命令的默认行为_002c-更改"></a>
+<a class="index-entry-id" id="index-默认设置_002c-更改"></a>
+
+<p>许多命令会根据特定于命令的变量或设置来改变其行为。这些设置可以使用<code class="code">set</code>子命令进行更改。例如，<code class="code">print</code>命令（见 <a class="pxref" href="Data.html">检查数据</a>）根据可通过命令<code class="code">set print elements NUMBER - OF - ELEMENTS</code>和<code class="code">set print array - indexes</code>等更改的设置，以不同方式打印数组。
+</p>
+<p>你可以在GDB启动时加载的gdbinit文件中根据自己的偏好更改这些设置。见 <a class="xref" href="Startup.html">GDB启动时的操作</a>。
+</p>
+<p>这些设置也可以在调试会话期间交互式地更改。例如，要更改要打印的数组元素的限制，你可以执行以下操作：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) set print elements 10
+(gdb) print some_array
+$1 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90...}
+</pre></div>
+
+<p>上述<code class="code">set print elements 10</code>命令将要打印的元素数量从默认的200更改为10。如果你只想将此限制为10用于打印<code class="code">some_array</code>，那么你必须使用<code class="code">set print elements 200</code>将限制恢复为200。
+</p>
+<p>一些命令允许使用命令选项覆盖设置。例如，<code class="code">print</code>命令支持许多选项，这些选项允许覆盖由<code class="code">set print</code>子命令设置的相关全局打印设置。见 <a class="xref" href="Data.html#print-options">打印选项</a>。上面的示例可以改写为：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -elements 10 -- some_array
+$1 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90...}
+</pre></div>
+
+<p>或者，你可以使用<code class="code">with</code>命令临时更改设置，在命令调用期间生效。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-w-_0028with_0029"></a>
+<a class="index-entry-id" id="index-设置"></a>
+<a class="index-entry-id" id="index-临时更改设置"></a>
+<a id="index-with命令"></a><span><code class="code">with <var class="var">设置</var> [<var class="var">值</var>] [-- <var class="var">命令</var>]</code><a class="copiable-link" href="#index-with命令"> &para;</a></span></dt>
+<dt><code class="code">w <var class="var">设置</var> [<var class="var">值</var>] [-- <var class="var">命令</var>]</code></dt>
+<dd><p>在<var class="var">命令</var>执行期间，将<var class="var">设置</var>临时设置为 <var class="var">值</var>。
+</p>
+<p><var class="var">设置</var>是任何你可以使用<code class="code">set</code>子命令更改的设置。<var class="var">值</var>是在运行<code class="code">命令</code>时分配给<code class="code">设置</code>的值。
+</p>
+<p>如果未提供<var class="var">命令</var>，则重复执行最后执行的命令。
+</p>
+<p>如果提供了<var class="var">命令</var>，则它必须前面有一个双破折号（<code class="code">--</code>）分隔符。这是必需的，因为一些设置接受自由格式的参数，如表达式或文件名。
+</p>
+<p>例如，命令
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) with print array on -- print some_array
+</pre></div>
+<p>等同于以下3个命令：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) set print array on
+(gdb) print some_array
+(gdb) set print array off
+</pre></div>
+
+<p><code class="code">with</code>命令在你想要在运行用户定义的命令或在Python或Guile中定义的命令时覆盖设置时特别有用。见 <a class="xref" href="Extending-GDB.html">扩展GDB</a>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) with print pretty on -- my_complex_command
+</pre></div>
+
+<p>要为同一个命令更改多个设置，你可以嵌套<code class="code">with</code>命令。例如，<code class="code">with language ada -- with print elements 10</code>临时将语言更改为Ada，并为数组和字符串设置要打印的元素限制为10。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Completion.html">命令补全</a>，上一个：<a href="Command-Syntax.html">命令语法</a>，向上：<a href="Commands.html"><small class="sc">GDB</small>命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

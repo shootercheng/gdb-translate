@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>C Plus Plus表达式（使用GDB调试）</title>
+
+<meta name="description" content="C Plus Plus表达式（使用GDB调试）">
+<meta name="keywords" content="C Plus Plus表达式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="C.html" rel="up" title="C">
+<link href="C-Defaults.html" rel="next" title="C默认值">
+<link href="C-Constants.html" rel="prev" title="C常量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-Plus-Plus-Expressions">
+<div class="nav-panel">
+<p>
+下一页：<a href="C-Defaults.html" accesskey="n" rel="next">C和C++默认值</a>，上一页：<a href="C-Constants.html" accesskey="p" rel="prev">C和C++常量</a>，向上：<a href="C.html" accesskey="u" rel="up">C和C++</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="C_002b_002b-Expressions"><span>15.4.1.3 C++表达式<a class="copiable-link" href="#C_002b_002b-Expressions"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-expressions-in-C_002b_002b"></a>
+<p><small class="sc">GDB</small>表达式处理可以解释大多数C++表达式。
+</p>
+<a class="index-entry-id" id="index-debugging-C_002b_002b-programs"></a>
+<a class="index-entry-id" id="index-C_002b_002b-compilers"></a>
+<a class="index-entry-id" id="index-debug-formats-and-C_002b_002b"></a>
+<a class="index-entry-id" id="index-gcc-and-C_002b_002b"></a>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em>只有在使用适当的编译器和适当的调试格式时，<small class="sc">GDB</small>才能调试C++代码。目前，在调试用尽可能新的<small class="sc">GCC</small>版本编译的C++代码时，<small class="sc">GDB</small>工作得最好。首选DWARF调试格式；在大多数流行平台上，<small class="sc">GCC</small>默认使用此格式。当使用<small class="sc">GDB</small>调试C++代码时，其他编译器和/或调试格式可能运行不佳或根本无法工作。请参阅<a class="xref" href="Compilation.html">编译用于调试</a>。
+</p></blockquote>
+
+<ol class="enumerate">
+<li> <a class="index-entry-id" id="index-member-functions"></a>
+允许进行成员函数调用；你可以使用如下表达式
+
+<div class="example smallexample">
+<pre class="example-preformatted">count = aml-&gt;GetOriginal(x, y)
+</pre></div>
+
+</li><li> <a class="index-entry-id" id="index-this_002c-inside-C_002b_002b-member-functions"></a>
+<a class="index-entry-id" id="index-namespace-in-C_002b_002b"></a>
+当一个成员函数处于活动状态时（在选定的堆栈帧中），你的表达式具有与该成员函数相同的命名空间；也就是说，<small class="sc">GDB</small>允许按照与C++相同的规则隐式引用类实例指针<code class="code">this</code>。<small class="sc">GDB</small>也尊重当前作用域中的<code class="code">using</code>声明。
+
+</li><li> <a class="index-entry-id" id="index-call-overloaded-functions"></a>
+<a class="index-entry-id" id="index-overloaded-functions_002c-calling"></a>
+<a class="index-entry-id" id="index-type-conversions-in-C_002b_002b"></a>
+你可以调用重载函数；<small class="sc">GDB</small>会将函数调用解析为正确的定义，但有一些限制。<small class="sc">GDB</small>不会执行涉及用户定义类型转换、对构造函数的调用或程序中不存在的模板实例化的重载解析。它也无法处理省略号参数列表或默认参数。
+
+<p>它会执行整数转换和提升、浮点提升、算术转换、指针转换、类对象到基类的转换以及标准转换，如函数或数组到指针的转换；它要求函数参数数量完全匹配。
+</p>
+<p>除非你指定了<code class="code">set overload-resolution off</code>，否则总是会执行重载解析。请参阅<a class="xref" href="Debugging-C-Plus-Plus.html"><small class="sc">GDB</small>的C++特性</a>。
+</p>
+<p>为了使用显式函数签名调用重载函数，你必须指定<code class="code">set overload-resolution off</code>，如下所示
+</p><div class="example smallexample">
+<pre class="example-preformatted">p 'foo(char,int)'('x', 13)
+</pre></div>
+
+<p><small class="sc">GDB</small>命令完成功能可以简化此操作；请参阅<a class="ref" href="Completion.html">命令完成</a>。
+</p>
+</li><li> <a class="index-entry-id" id="index-reference-declarations"></a>
+<small class="sc">GDB</small>理解声明为C++左值或右值引用的变量；你可以在表达式中像在C++源文件中一样使用它们&mdash;它们会自动解引用。
+
+<p>在<small class="sc">GDB</small>显示一个帧时显示的参数列表中，引用变量的值不会显示（与其他变量不同）；这避免了混乱，因为引用通常用于大型结构。除非你指定了&lsquo;<samp class="samp">set print address off</samp>&rsquo;，否则总是会显示引用变量的<em class="emph">地址</em>。
+</p>
+</li><li> <small class="sc">GDB</small>支持C++名称解析运算符<code class="code">::</code>&mdash;你的表达式可以像程序中的表达式一样使用它。由于一个作用域可以在另一个作用域中定义，如果必要，你可以重复使用<code class="code">::</code>，例如在像&lsquo;<samp class="samp"><var class="var">scope1</var>::<var class="var">scope2</var>::&lt;var class="var">name</var>&gt;</samp>&rsquo;这样的表达式中。<small class="sc">GDB</small>还允许在C和C++调试中通过引用源文件来解析名称作用域（请参阅<a class="pxref" href="Variables.html">程序变量</a>）。
+
+</li><li> <small class="sc">GDB</small>按照C++规范执行依赖于参数的查找。
+</li></ol>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="C-Defaults.html">C和C++默认值</a>，上一页：<a href="C-Constants.html">C和C++常量</a>，向上：<a href="C.html">C和C++</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>分支跟踪格式（使用GDB调试）</title>
+
+<meta name="description" content="分支跟踪格式（使用GDB调试）">
+<meta name="keywords" content="分支跟踪格式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo"> 
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Branch-Trace-Configuration-Format.html" rel="next" title="分支跟踪配置格式">
+<link href="Traceframe-Info-Format.html" rel="prev" title="跟踪帧信息格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="分支跟踪格式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Branch-Trace-Configuration-Format.html" accesskey="n" rel="next">分支跟踪配置格式</a>，上一页：<a href="Traceframe-Info-Format.html" accesskey="p" rel="prev">跟踪帧信息格式</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>  
+<hr>
+<h3 class="section" id="分支跟踪格式-1"><span>E.20分支跟踪格式<a class="copiable-link" href="#分支跟踪格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-分支跟踪格式"></a>
+
+<p>为了显示一个被调试进程线程的分支跟踪，<small class="sc">GDB</small>需要获取分支列表。这个列表表示为通过分支连接的连续代码块的列表。每个块中的代码是按顺序执行的。
+</p>
+<p>这个列表是使用‘<samp class="samp">qXfer:btrace:read</samp>’（见 <a class="pxref" href="General-Query-Packets.html#qXfer-btrace-read">qXfer btrace read</a>）数据包获取的，并且是一个XML文档。
+</p>
+<p><small class="sc">GDB</small>必须与Expat库链接以支持XML跟踪帧信息发现。见 <a class="xref" href="Requirements.html#Expat">Expat</a>。
+</p>
+<p>文档顶层结构如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE btrace
+          PUBLIC &quot;+//IDN gnu.org//DTD GDB Branch Trace V1.0//EN&quot;
+                 &quot;http://sourceware.org/gdb/gdb-btrace.dtd&quot;&gt;
+&lt;btrace&gt;
+   block...
+&lt;/btrace&gt;
+</pre></div>
+
+<ul class="itemize mark-bullet">
+<li>从<var class="var">begin</var>开始并在<var class="var">end</var>结束的连续执行指令块：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;block begin=&quot;<var class="var">begin</var>&quot; end=&quot;<var class="var">end</var>&quot;/&gt;
+</pre></div>
+
+</li></ul>
+
+<p>分支跟踪格式的正式DTD如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!ELEMENT btrace  (block* | pt) &gt;
+&lt;!ATTLIST btrace  version CDATA   #FIXED &quot;1..&quot;&gt;
+
+&lt;!ELEMENT block        EMPTY&gt;
+&lt;!ATTLIST block        begin  CDATA   #REQUIRED
+                       end    CDATA   #REQUIRED&gt;
+
+&lt;!ELEMENT pt (pt-config?, raw?)&gt;
+
+&lt;!ELEMENT pt-config (cpu?)&gt;
+
+&lt;!ELEMENT cpu EMPTY&gt;
+&lt;!ATTLIST cpu vendor   CDATA #REQUIRED
+              family   CDATA #REQUIRED
+              model    CDATA #REQUIRED
+              stepping CDATA #REQUIRED&gt;
+
+&lt;!ELEMENT raw (#PCDATA)&gt;
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html> 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>ABI（使用GDB调试）</title>
+
+<meta name="description" content="ABI（使用GDB调试）">
+<meta name="keywords" content="ABI（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Controlling-GDB.html" rel="up" title="控制GDB">
+<link href="Auto_002dloading.html" rel="next" title="自动加载">
+<link href="Numbers.html" rel="prev" title="数字">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="ABI">
+<div class="nav-panel"> 
+<p>
+下一页：<a href="Auto_002dloading.html" accesskey="n" rel="next">自动加载关联文件</a>，上一页：<a href="Numbers.html" accesskey="p" rel="prev">数字</a>，向上：<a href="Controlling-GDB.html" accesskey="u" rel="up">控制<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title ="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Configuring-the-Current-ABI"><span>22.7配置当前ABI<a class="copiable-link" href="#Configuring-the-Current-ABI"> &para;</a></span></h3>
+
+<p><small class="sc">GDB</small>可以自动确定应用程序的<em class="dfn">ABI</em>（应用程序二进制接口）。但是，有时你需要覆盖它的结论。使用这些命令来管理<small class="sc">GDB</small>对当前ABI的视图。
+</p>
+<a class="index-entry-id" id="index-OS-ABI"></a>
+<a class="index-entry-id" id="index-set-osabi"></a>
+<a class="index-entry-id" id="index-show-osabi"></a>
+<a class="index-entry-id" id="index-Newlib-OS-ABI-and-its-influence-on-the-longjmp-handling"></a>
+
+<p>一个<small class="sc">GDB</small>配置可以通过远程调试或本机仿真来调试针对多个操作系统目标的二进制文件。<small class="sc">GDB</small>将自动检测正在使用的<em class="dfn">OS ABI</em>（操作系统ABI），但你可以使用<code class="code">set osabi</code>命令覆盖其结论。一个有用的例子是调试使用替代C库（例如用于<small class="sc">GNU</small>/Linux的<small class="sc">UCLIBC</small>）的二进制文件，该库没有你的平台的标准C库提供的相同标识标记。
+</p>
+<p>当<small class="sc">GDB</small>调试AArch64架构时，它提供了一个“Newlib”OS ABI。这对于调试使用<small class="sc">NEWLIB</small> C库的二进制文件时处理<code class="code">setjmp</code>和<code class="code">longjmp</code>很有用。可以通过<code class="code">set osabi Newlib</code>选择“Newlib”OS ABI。
+</p>
+<dl class="table">
+<dt><code class="code">show osabi</code></dt>
+<dd><p>显示当前正在使用的OS ABI。
+</p>
+</dd>
+<dt><code class="code">set osabi</code></dt>
+<dd><p>不带参数时，显示已注册的可用OS ABI列表。
+</p>
+</dd>
+<dt><code class="code">set osabi <var class="var">abi</var></code></dt>
+<dd><p>将当前OS ABI设置为<var class="var">abi</var>。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-float-promotion"></a>
+
+<p>一般来说，类型为<code class="code">float</code>的参数传递给函数的方式取决于函数是否有原型。对于有原型（即ANSI/ISO风格）的函数，<code class="code">float</code>参数将按架构对<code class="code">float</code>的约定原样传递。对于无原型（即K&R风格）的函数，则先将<code class="code">float</code>参数提升为<code class="code">double</code>类型，然后再传递。
+</p>
+<p>不幸的是，某些形式的调试信息不能可靠地指示函数是否有原型。如果<small class="sc">GDB</small>调用未标记为有原型的函数，它会参考<kbd class="kbd">set coerce-float-to-double</kbd>。
+</p>
+<dl class="table">
+<dt><a id="index-set-coerce_00

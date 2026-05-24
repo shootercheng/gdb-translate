@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>AMD GPU（使用GDB调试）</title>
+
+<meta name="description" content="AMD GPU（使用GDB调试）">
+<meta name="keywords" content="AMD GPU（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Architectures.html" rel="up" title="架构">
+<link href="RISC_002dV.html" rel="next" title="RISC-V">
+<link href="S12Z.html" rel="prev" title="S12Z">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+
+
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AMD-GPU">
+<div class="nav-panel">
+<p>
+下一个：<a href="RISC_002dV.html" accesskey="n" rel="next">RISC-V</a>，上一个：<a href="S12Z.html" accesskey="p" rel="prev">S12Z</a>，向上：<a href="Architectures.html" accesskey="u" rel="up">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="AMD-GPU-1"><span>21.4.9 AMD GPU<a class="copiable-link" href="#AMD-GPU-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AMD-GPU-support"></a>
+
+<p><small class="sc">GDB</small>支持使用 <a class="url" href="https://docs.amd.com/"><abbr class="acronym">AMD ROCm</abbr></a> 平台调试卸载到 <abbr class="acronym">AMD GPU</abbr> 设备上的程序。<small class="sc">GDB</small> 会将主机线程和GPU波前一起显示，允许同时调试程序中的主机部分和设备部分。
+</p>
+<ul class="mini-toc">
+<li><a href="#AMD-GPU-Architectures" accesskey="1">AMD GPU架构</a></li>
+<li><a href="#AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime" accesskey="2">AMD GPU设备驱动和AMD ROCm运行时</a></li>
+<li><a href="#AMD-GPU-Wavefronts" accesskey="3">AMD GPU波前</a></li>
+<li><a href="#AMD-GPU-Code-Objects" accesskey="4">AMD GPU代码对象</a></li>
+<li><a href="#AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables" accesskey="5">AMD GPU实体目标标识符和便利变量</a></li>
+<li><a href="#AMD-GPU-Signals-1" accesskey="6">AMD GPU信号</a></li>
+<li><a href="#AMD-GPU-Memory-Violation-Reporting" accesskey="7">AMD GPU内存违规报告</a></li>
+<li><a href="#AMD-GPU-Logging" accesskey="8">AMD GPU日志记录</a></li>
+<li><a href="#AMD-GPU-Restrictions" accesskey="9">AMD GPU限制</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AMD-GPU-Architectures">
+<h4 class="subsubsection"><span>21.4.9.1 AMD GPU架构<a class="copiable-link" href="#AMD-GPU-Architectures"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> 支持的 <abbr class="acronym">AMD GPU</abbr> 架构列表取决于所使用的AMD调试器API库的版本。有关更多详细信息，请参阅其 <a class="uref" href="https://docs.amd.com/bundle/ROCDebugger_User_and_API">文档</a>。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime">
+<h4 class="subsubsection"><span>21.4.9.2 AMD GPU设备驱动和AMD ROCm运行时<a class="copiable-link" href="#AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime"> &para;</a></span></h4>
+
+<p><small class="sc">GDB</small> 需要安装兼容的 <abbr class="acronym">AMD GPU</abbr> 设备驱动。如果设备驱动版本或其实现的调试支持版本不受支持，将显示一条警告消息。除了无法进行 <abbr class="acronym">AMD GPU</abbr> 调试外，<small class="sc">GDB</small> 将继续运行。
+</p>
+<p><small class="sc">GDB</small> 要求每个代理由设备驱动安装兼容的固件。如果检测到不支持的固件，将显示一条警告消息。除了无法在该代理上进行 <abbr class="acronym">AMD GPU</abbr> 调试外，<small class="sc">GDB</small> 将继续运行。
+</p>
+<p><small class="sc">GDB</small> 需要加载兼容的 <abbr class="acronym">AMD ROCm</abbr> 运行时才能检测 <abbr class="acronym">AMD GPU</abbr> 代码对象和波前。如果检测到不受支持的 <abbr class="acronym">AMD ROCm</abbr> 运行时，或者存在阻止调试的错误或限制，将显示一条警告消息。除了无法进行 <abbr class="acronym">AMD GPU</abbr> 调试外， <small class="sc">GDB</small> 将继续运行。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Wavefronts">
+<h4 class="subsubsection"><span>21.4.9.3 AMD GPU波前<a class="copiable-link" href="#AMD-GPU-Wavefronts"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-wavefronts"></a>
+
+<p>在 <small class="sc">GDB</small> 中，<abbr class="acronym">AMD GPU</abbr> 波前表示为一个线程。
+</p>
+<p>请注意，某些 <abbr class="acronym">AMD GPU</abbr> 架构在提供有关在 <small class="sc">GDB</small> 未附加时创建的 <abbr class="acronym">AMD GPU</abbr> 波前的信息方面可能有限制（请参阅 <a class="pxref" href="#AMD-GPU-Attaching-Restrictions">AMD GPU附加限制</a>）。
+</ p>
+<p>当调度锁定生效时（请参阅 <a class="pxref" href="All_002dStop-Mode.html#set-scheduler_002dlocking">设置调度锁定</a>），恢复的线程（无论是CPU线程还是GPU波前）创建的新波前将保持暂停状态。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Code-Objects">
+<h4 class="subsubsection"><span>21.4.9.4 AMD GPU代码对象<a class="copiable-link" href="#AMD-GPU-Code-Objects"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">info sharedlibrary</samp>&rsquo; 命令将显示 <abbr class="acronym">AMD GPU</abbr> 代码对象，以文件或内存URI的形式，以及主机的共享库。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info sharedlibrary
+From    To      Syms Read   Shared Object Library
+0x1111  0x2222  Yes (*)     /lib64/ld-linux-x86-64.so.2
+...
+0x3333  0x4444  Yes (*)     /opt/rocm-4.5.0/.../libamd_comgr.so
+0x5555  0x6666  Yes (*)     /lib/x86_64-linux-gnu/libtinfo.so.5 
+0x7777  0x8888  Yes         file:///tmp/a.out#offset=6477&amp;size=10832
+0x9999  aaaa  Yes (*).     memory://95557/mem#offset=0x1234&amp;size=100
+(*): Shared library is missing debugging information.
+(gdb)
+</pre></div>
+
+<p>对于 &lsquo;<samp class="samp">file</samp>&rsquo; URI，路径部分是磁盘上包含代码对象的文件。<var class="var">offset</var> 参数是此文件中代码对象开始处的基于0的偏移量。如果省略，它默认为0。<var class="var">size</var> 参数是代码对象的字节大小。如果省略，它默认为文件的大小。
+</p>
+<p>对于 &lsquo;<samp class="samp">memory</samp>&rsquo; URI，路径部分是拥有包含代码对象的内存的进程的进程ID。<var class="var">offset</var> 参数是找到代码对象的内存地址，<var class="var">size</var> 参数是其字节大小。
+</p>
+<p><abbr class="acronym">AMD GPU</abbr> 代码对象分别加载到每个 <abbr class="acronym">AMD GPU</abbr> 设备中。因此，&lsquo;<samp class="samp">info sharedlibrary</samp>&rsquo; 命令可能会多次显示加载的相同代码对象。因此，如果有多个 <abbr class="acronym">AMD GPU</abbr> 设备，在 <abbr class="acronym">AMD GPU</abbr>代码中设置断点将导致多个断点位置。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables">
+<h4 class="subsubsection"><span>21.4.9.5 AMD GPU实体目标标识符和便利变量<a class="copiable-link" href="#AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables"> &para;</a></span></h4>
+
+<p><abbr class="acronym">AMD GPU</abbr> 实体具有以下目标标识符格式：
+</p>
+<dl class="table">
+<dt>线程目标ID</dt>
+<dd><p><abbr class="acronym">AMD GPU</abbr> 线程目标标识符（<var class="var">systag</var>）字符串具有以下格式：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">AMDGPU Wave <var class="var">agent-id</var>:<var class="var">queue-id</var>:<var class="var">dispatch-id</var>:<var class="var">wave-id</var> (<var class="var">work-group-x</var>,<var class="var">work-group-y</var>,<var class="var">work-group-z</var>)/<var class="var">work-group-thread-index</var>
+</pre></div>
+
+</dd>
+</dl>
+
+<a class="anchor" id="AMD-GPU-Signals"></a></div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Signals-1">
+<h4 class="subsubsection"><span>21.4.9.6 AMD GPU信号<a class="copiable-link" href="#AMD-GPU-Signals-1"> &para;</a></span></h4>
+
+<p>对于 <abbr class="acronym">AMD GPU</abbr> 波前，<small class="sc">GDB</small> 按以下方式将目标条件映射到停止信号：
+</p>
+<dl class="table">
+<dt><code class="code">SIGILL</code></dt>
+<dd><p>执行非法指令。
+</p>
+</dd>
+<dt><code class="code">SIGTRAP</code></dt>
+<dd><p>执行 <code class="code">S_TRAP</code> 指令，但不包括：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">S_TRAP 1</code>，它被 <small class="sc">GDB</small> 用于插入断点。
+
+</li><li <code class="code">S_TRAP 2</code>，它会引发 <code class="code">SIGABRT</code>。
+
+</li></ul>
+
+</dd>
+<dt><code class="code">SIGABRT</code></dt>
+<dd><p>执行 <code class="code">S_TRAP 2</code> 指令。
+</p>
+</dd>
+<dt><code class="code">SIGFPE</code></dt>
+<dd><p>执行浮点或整数指令时检测到启用了引发信号的条件。这些条件包括：
+</p>
+<ul class="itemize mark-bullet">
+<li>浮点运算无效。
+
+</li><li>浮点运算有次正规输入并被舍入为零。
+
+</li><li>浮点运算执行了除以零的操作。
+
+</li><li>浮点运算产生了溢出结果。结果被舍入为无穷大。
+
+</li><li>浮点运算产生了下溢结果。次正规结果被舍入为零。
+
+</li><li>浮点运算产生了不精确结果。
+
+</li><li>整数运算执行了除以零的操作。
+
+</li></ul>
+
+<p>默认情况下这些条件不会引发信号。&lsquo;<samp class="samp">set $mode</samp>&rsquo; 命令可用于更改 <abbr class="acronym">AMD GPU</abbr> 波前的寄存器，该寄存器的某些位控制哪些条件会引发信号。&lsquo;<samp class="samp">print $trapsts</samp>&rsquo; 命令可用于检查哪些条件已被检测到，即使它们未被设置为引发信号。
+</p>
+</dd>
+<dt><code class="code">SIGBUS</code></dt>
+<dd><p>执行使用超出虚拟地址范围的地址访问全局内存的指令。
+</p>
+</dd>
+<dt><code class="code">SIGSEGV</code></dt>
+<dd><p>执行访问未映射或权限不兼容的全局内存页面的指令。
+</p>
+</dd>
+</dl>
+
+<p>如果一条指令引发多个信号，每次波前恢复时它们将逐个报告。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Memory-Violation-Reporting">
+<h4 class="subsubsection"><span>21.4.9.7 AMD GPU内存违规报告<a class="copiable-link" href="#AMD-GPU-Memory-Violation-Reporting"> &para;</a></span></h4>
+
+<p>一个波前可以报告内存违规事件。但是，报告这些事件的程序位置可能在导致这些事件的机器指令之后。这可能导致报告的源语句不正确。可以使用以下命令控制此行为：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-AMD-GPU-precise-memory-event-reporting"></a>
+<a id="index-set-amdgpu-precise_002dmemory"></a><span><code class="code">set amdgpu precise-memory <var class="var">mode</var></code><a class="copiable-link" href="#index-set-amdgpu-precise_002dmemory"> &para;</a></span></dt>
+<dd><p>控制 <abbr class="acronym">AMD GPU</abbr> 设备如何检测内存违规，其中 <var class="var">mode</var> 可以是：
+</p>
+<dl class="table">
+<dt><code class="code">off</code></dt>
+<dd><p>程序位置可能不会紧跟在导致内存违规的指令之后。这是默认设置。
+</p> 
+</dd>
+<dt><code class="code">on</code></dt>
+<dd><p>请求程序位置紧跟在导致内存违规的指令之后。启用此模式可能会使 <abbr class="acronym">AMD GPU</abbr> 设备的执行显著变慢，因为它必须等待每个内存操作完成后才能执行下一条指令。
+</p>
+</dd>
+</dl>
+
+<p><code class="code">amdgpu precise-memory</code> 参数是每个下级进程的。当一个下级进程分叉或执行，或者用户使用 <code class="code">clone-inferior</code> 命令并因此创建一个下级进程时，新创建的下级进程继承原始下级进程的参数值。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-AMD-GPU-precise-memory-event-reporting-1"></a>
+<a id="index-show-amdgpu-precise_002dmemory"></a><span><code class="code">show amdgpu precise-memory</code><a class="copiable-link" href="#index-show-amdgpu-precise_002dmemory"> &para;</a></span></dt>
+<dd><p>显示当前请求的AMD GPU精确内存设置。
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Logging">
+<h4 class="subsubsection"><span>21.4.9.8 AMD GPU日志记录<a class="copiable-link" href="#AMD-GPU-Logging"> &para;</a></span></h4>
+
+<p>&lsquo;<samp class="samp">set debug amd-dbgapi</samp>&rsquo; 命令可用于在 &lsquo;<samp class="samp">amd-dbgapi</samp>&rsquo; 目标中启用诊断消息。&lsquo;<samp class="samp">show debug amd-dbgapi</samp>&rsquo; 命令显示当前设置。请参阅 <a class="xref" href="Debugging-Output.html#set-debug-amd_002ddbgapi">设置调试amd-dbgapi</a>。
+</p>
+<p>&lsquo;<samp class="samp">set debug amd-dbgapi-lib log-level <var class="var">level</var></samp>&rsquo; 命令可用于启用来自 &lsquo;<samp class="samp">amd-dbgapi</samp>&rsquo; 库（<small class="sc">GDB</small> 在内部使用）的诊断消息。&lsquo;<samp class="samp">show debug amd-dbgapi-lib log-level</samp>&rsquo; 命令显示当前的 &lsquo;<samp class="samp">amd-dbgapi</samp>&rsquo; 库日志级别。请参阅 <a class="xref" href="Debugging-Output.html#set-debug-amd_002ddbgapi_002dlib">设置调试amd-dbgapi-lib</a>。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Restrictions">
+<h4 class="subsubsection"><span>21.4.9.9 AMD GPU限制<a class="copiable-link" href="#AMD-GPU-Restrictions"> &para;</a></span></h4>
+
+<ol class="enumerate">
+<li> 在非停止模式下，波前可能不会命中在未停止时插入的断点，也不会看到在未停止时进行的内存更新，直到波前下次停止。在波前下次停止之前，未停止的波前更新的内存可能不可见。
+
+</li><li> HIP运行时默认执行延迟代码对象加载。<abbr class="acronym">AMD GPU</abbr> 代码对象直到第一个内核启动时才会加载。在此之前，所有断点都必须设置为待决断点。
+
+<p>如果使用仅对应于未加载代码对象中的源行的源行位置，那么 <small class="sc">GDB</small> 可能无法设置待决断点，而是会在映射到主机代码的下一个源行上设置断点。这可能导致报告意外的断点命中。当包含源行的代码对象加载时，不正确的断点将被删除并替换为正确的断点。通过仅使用符号或函数名称在未加载的代码对象中设置断点，可以避免此问题。
+</p>
+<p>将 <code class="code">HIP_ENABLE_DEFERRED_LOADING</code> 环境变量设置为 <code class="code">0</code> 可用于禁用HIP运行时的延迟代码对象加载。这可确保当下级进程到达 <code class="code">main</code> 函数开头时，所有代码对象都将被加载。
+</p>
+</li><li> 如果没有CPU线程正在运行，那么 &lsquo;<samp class="samp">Ctrl-C</samp>&rsquo; 无法停止 <abbr class="acronym">AMD GPU</abbr> 线程。例如，如果在整个程序停止后启用 <code class="code">scheduler-locking</code>，然后恢复一个 <abbr class="acronym">AMD GPU</abbr> 线程，就可能会发生这种情况。解除这种情况的唯一方法是杀死 <small class="sc">GDB</small> 进程。
+
+<a class="anchor" id="AMD-GPU-Attaching-Restrictions"></a></li><li> 
+默认情况下，对于某些架构，AMD GPU设备驱动会导致在 <small class="sc">GDB</small> 未附加时创建的所有 <abbr class="acronym">AMD GPU</abbr> 波前无法报告与该波前相关的调度或波前的工作组位置。&lsquo;<samp class="samp">info threads</samp>&rsquo; 命令将用 &lsquo;<samp class="samp">?</samp>&rsquo; 显示此缺失信息。
+
+<p>这不会影响在 <small class="sc">GDB</small> 附加时创建的波前，这些波前始终能够报告此信息。
+</p>
+<p>如果在初始化 <abbr class="acronym">AMD ROCm</abbr> 运行时将 <code class="env">HSA_ENABLE_DEBUG</code> 环境变量设置为 &lsquo;<samp class="samp">1</samp>&rsquo;，那么即使对于在 <small class="sc">GDB</small> 未附加时创建的波前，所有架构的此信息也将可用。
+</p>
+</li></ol>
+
+
+</div>
+</div>
+
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="RISC_002dV.html">RISC-V</a>，上一个：<a href="S12Z.html">S12Z</a>，向上：<a href="Architectures.html">架构</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept_Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

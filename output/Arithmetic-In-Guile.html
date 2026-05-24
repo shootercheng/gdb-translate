@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的算术运算（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的算术运算（使用GDB调试）">
+<meta name="keywords" content="Guile中的算术运算（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Types-In-Guile.html" rel="next" title="Guile中的类型">
+<link href="Values-From-Inferior-In-Guile.html" rel="prev" title="来自底层的Guile值">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Arithmetic-In-Guile">
+<div class="nav-panel">
+<p>
+下一页：<a href="Types-In-Guile.html" accesskey="n" rel="next">Guile中的类型</a>，上一页：<a href="Values-From-Inferior-In-Guile.html" accesskey="p" rel="prev">来自底层的Guile值</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Arithmetic-In-Guile-1"><span>23.4.3.6 Guile中的算术运算<a class="copiable-link" href="#Arithmetic-In-Guile-1"> &para;</a></span></h4>
+
+<p><code class="code">(gdb)</code>模块提供了几个用于对<code class="code">&lt;gdb:value&gt;</code>对象进行算术运算的函数。
+这些算术运算的执行方式就好像是由目标执行的一样，因此具有目标语义，不一定是Scheme的语义。例如，操作使用固定精度，而不是Scheme的任意精度。
+</p>
+<p>只要函数将整数或指针作为操作数，<small class="sc">GDB</small>就会转换适当的Scheme值来执行操作。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edadd"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-add</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edadd"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edsub"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-sub</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edsub"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edmul"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-mul</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edmul"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_eddiv"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-div</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_eddiv"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edrem"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-rem</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edrem"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edmod"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-mod</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edmod"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edpow"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-pow</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edpow"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ednot"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-not</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_ednot"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edneg"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-neg</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_edneg"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edpos"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-pos</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_edpos"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edabs"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-abs</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_edabs"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edlsh"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-lsh</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edlsh"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edrsh"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-rsh</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edrsh"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edmin"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-min</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edmin"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edmax"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-max</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edmax"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edlognot"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-lognot</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_edlognot"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edlogand"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-logand</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edlogand"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edlogior"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-logior</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edlogior"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_edlogxor"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value-logxor</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_edlogxor"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ed_3d_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value=?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_ed_3d_3f"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ed_3c_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value&lt;?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_ed_3c_3f"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ed_3c_3d_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value&lt;=?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_ed_3c_3d_3f"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ed_3e_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value&gt;?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_ed_3e_3f"> &para;</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_ed_3e_3d_3f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">value&gt;=?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_ed_3e_3d_3f"> &para;</a></span></dt>
+</dl>
+
+<p>Scheme没有提供<code class="code">not-equal</code>函数，因此<small class="sc">GDB</small>中的Guile支持也没有。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Types-In-Guile.html">Guile中的类型</a>，上一页：<a href="Values-From-Inferior-In-Guile.html">来自底层的Guile值</a>，向上：<a href="Guile-API.html">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

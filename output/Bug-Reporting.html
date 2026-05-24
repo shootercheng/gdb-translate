@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>错误报告（使用GDB调试）</title>
+
+<meta name="description" content="错误报告（使用GDB调试）">
+<meta name="keywords" content="错误报告（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="GDB-Bugs.html" rel="up" title="GDB错误">
+<link href="Bug-Criteria.html" rel="prev" title="错误标准">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="错误报告">
+<div class="nav-panel">
+<p>
+上一个：<a href="Bug-Criteria.html" accesskey="p" rel="prev">你发现错误了吗？</a>，向上：<a href="GDB-Bugs.html" accesskey="u" rel="up">报告GDB中的错误</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="如何报告错误"><span>32.2如何报告错误<a class="copiable-link" href="#如何报告错误"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-错误报告"></a>
+<a class="index-entry-id" id="索引-gdb错误_002c报告"></a>
+
+<p>许多公司和个人提供对GNU产品的支持。
+如果你从支持组织获得GDB，我们建议你首先联系该组织。
+</p>
+<p>你可以在GNU Emacs发行版的<samp class="file">etc/SERVICE</samp>文件中找到许多支持公司和个人的联系信息。
+</p>
+<p>无论如何，我们也建议你将GDB的错误报告提交到 <a class="uref" href="https://www.gnu.org/software/gdb/bugs/">https://www.gnu.org/software/gdb/bugs/</a>。
+</p>
+<p>有效报告错误的基本原则是：
+<strong class="strong">报告所有事实</strong>。如果你不确定是否要陈述某个事实，那就陈述它！
+</p>
+<p>人们常常省略事实，因为他们认为自己知道问题的原因，并假设某些细节无关紧要。因此，你可能会认为你在示例中使用的变量名无关紧要。
+嗯，也许确实无关紧要，但不能确定。也许错误是一个错误的内存引用，恰好从该名称在内存中存储的位置获取数据；也许，如果名称不同，该位置的内容会使调试器做出正确的事情，尽管存在错误。谨慎起见，给出一个具体、完整的示例。这对你来说是最容易做的事情，也是最有帮助的。
+</p>
+<p>请记住，错误报告的目的是使我们能够修复错误。可能该错误之前已经被报告过，但除非你的错误报告完整且独立，否则你和我们都无法知道这一点。
+</p>
+<p>有时人们会给出一些粗略的事实，然后问：“这听起来耳熟吗？ ”那些错误报告是无用的，我们敦促每个人
+<em class="emph">拒绝回复它们</em>，除非斥责发送者正确报告错误。
+</p>
+<p>为了使我们能够修复错误，你应该包括以下所有内容：
+</p>
+<ul class="itemize mark-bullet">
+<li>GDB的版本。如果你在没有参数的情况下启动GDB，它会显示版本号；你也可以在任何时候使用<code class="code">show version</code>打印版本号。
+
+<p>没有这个信息，我们将不知道在当前版本的GDB中查找错误是否有意义。
+</p>
+</li><li>你正在使用的机器类型，以及操作系统名称和版本号。
+
+</li><li>GDB构建时配置的详细信息。如果你使用<samp class="option">--configuration</samp>命令行选项调用GDB，或者在GDB提示符下输入<code class="code">show configuration</code>，GDB会显示这些详细信息。
+
+</li><li>用于编译GDB的编译器（及其版本），例如“gcc–2.8.1”。
+
+</li><li>用于编译你正在调试的程序的编译器（及其版本），例如“gcc–2.8.1”，或“HP92453-01 A.10.32.03 HP C编译器”。对于GCC，你可以输入<kbd class="kbd">gcc --version</kbd>来获取此信息；对于其他编译器，请参阅这些编译器的文档。
+
+</li><li>你给编译器编译示例并观察错误时使用的命令参数列表。例如，你是否使用了‘<samp class="samp">-O</samp>’？为了确保你不会遗漏重要信息，请列出所有参数。一份Makefile副本（或make的输出）就足够了。
+
+<p>如果我们试图猜测参数，很可能会猜错，然后可能无法遇到错误。
+</p>
+</li><li>一个完整的输入脚本，以及所有必要的源文件，可以重现错误。
+
+</li><li>对你观察到的你认为不正确的行为的描述。例如，“它收到一个致命信号。”
+
+<p>当然，如果错误是GDB收到一个致命信号，那么我们肯定会注意到。但如果错误是输出不正确，除非非常明显，我们可能不会注意到。你不妨给我们一个不犯错的机会。
+</p>
+<p>即使你遇到的问题是一个致命信号，你仍然应该明确说明。假设发生了一些奇怪的事情，例如，你的GDB副本不同步，或者你在系统的C库中遇到了一个错误。（这种情况确实发生过！）你的副本可能会崩溃，而我们的不会。如果你告诉我们预期会崩溃，那么当我们的副本没有崩溃时，我们就会知道这个错误对我们来说没有发生。如果你没有告诉我们预期会崩溃，则我们无法从我们的观察中得出任何结论。
+</p>
+<a class="index-entry-id" id="索引-脚本"></a>
+<a class="index-entry-id" id="索引-记录会话脚本"></a>
+<p>为了收集所有这些信息，你可以使用会话记录程序，如<code class="command">script</code>，许多Unix系统都有这个程序。只需在<code class="command">script</code>中运行你的GDB会话，然后在错误报告中包含<samp class="file">typescript</samp>文件。
+</p>
+<p>另一种记录GDB会话 的方法是在Emacs中运行GDB，然后将整个缓冲区保存到一个文件中。
+</p>
+</li><li>如果你希望建议对GDB源代码进行更改，请向我们发送上下文差异。如果你在讨论GDB源代码中的某些内容，请通过上下文引用它，而不是行号。
+
+<p>我们开发源代码中的行号与你的源代码中的行号不匹配。你的行号对我们来说没有传达任何有用的信息。
+</p>
+
+
+</li></ul>
+
+<p>以下是一些不必要的内容：
+</p>
+<ul class="itemize mark-bullet">
+<li>对错误范围的描述。
+
+<p>遇到错误的人通常会花很多时间研究输入文件的哪些更改会使错误消失，哪些更改不会影响它。
+</p>
+<p>这通常很耗时且不太有用，因为我们找到错误的方法是在调试器下运行单个示例并设置断点，而不是通过对一系列示例进行纯粹的推理。我们建议你把时间花在其他事情上。
+</p>
+<p>当然，如果 你能找到一个比原始示例更简单的示例来报告<em class="emph">替代</em>它，那对我们来说会很方便。在调试器下运行时，输出中的错误会更容易发现，花费的时间也会更少，等等。
+</p>
+<p>然而，简化不是关键；如果你不想这样做，无论如何都报告错误，并将你使用的整个测试用例发送给我们。
+</p>
+</li><li>错误的补丁。
+
+<p>如果错误补丁很好，它确实会对我们有帮助。但不要假设补丁就是我们所需要的，而省略必要的信息，如测试用例。我们可能会看到你的补丁存在问题，并决定以另一种方式修复问题，或者我们可能根本不理解它。
+</p>
+<p>有时对于像GDB这样复杂的程序，很难构造一个示例来使程序按照代码中的特定路径执行。如果你不向我们发送示例，我们将无法构造一个，因此我们将无法验证错误是否已修复。
+</p>
+<p>而且，如果我们不明白你试图修复的是什么错误，或者为什么你的补丁应该是一种改进，我们将不会安装它。一个测试用例将有助于我们理解。
+</p>
+</li><li>对错误是什么或它取决于什么的猜测。
+
+<p>这样的猜测通常是错误的。即使我们在没有首先使用调试器找到事实的情况下，也很难猜对这些事情。
+</p></li></ul>
+
+
+
+
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Bug-Criteria.html">你发现错误了吗？</a>，向上：<a href="GDB-Bugs.html">报告GDB中的错误</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

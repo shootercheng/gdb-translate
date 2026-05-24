@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>Ada任务与核心文件（使用GDB调试）</title>
+
+<meta name="description" content="Ada任务与核心文件（使用GDB调试）">
+<meta name="keywords" content="Ada任务与核心文件（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Ravenscar-Profile.html" rel="next" title="Ravenscar配置文件">
+<link href="Ada-Tasks.html" rel="prev" title="Ada任务">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Tasks-and-Core-Files">
+<div class="nav-panel">
+<p>
+下一页: <a href="Ravenscar-Profile.html" accesskey="n" rel="next">使用Ravenscar配置文件时的任务支持</a>, 上一页: <a href="Ada-Tasks.html" accesskey="p" rel="prev">Ada任务的扩展</a>, 向上: <a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Tasking-Support-when-Debugging-Core-Files"><span>15.4.10.8 调试核心文件时的任务支持<a class="copiable-link" href="#Tasking-Support-when-Debugging-Core-Files"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Ada任务与核心文件调试"></a>
+
+<p>与调试正在运行的程序不同，在检查核心文件时，任务支持可能会受到限制甚至不可用，这取决于所使用的平台。
+例如，在x86 - linux上，可以获取任务列表，但不支持任务切换。
+</p>
+<p>在某些平台上，调试器需要执行一些内存写入操作以提供Ada任务支持。在检查核心文件时，这意味着必须使用命令‘<samp class="samp">&quot;set write on&quot;</samp>’以读写权限打开核心文件（见 <a class="pxref" href="Patching.html">修补程序</a>）。
+在这种情况下，在用<small class="sc">GDB</small>检查核心文件之前，应该对其进行备份。
+</p>
+</div>
+
+
+
+</body>
+</html>

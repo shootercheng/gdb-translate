@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下文(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>代理表达式（使用GDB调试）</title>
+
+<meta name="description" content="代理表达式（使用GDB调试）">
+<meta name="keywords" content="代理表达式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="index.html" rel="up" title="顶部">
+<link href="Target-Descriptions.html" rel="next" title="目标描述">
+<link href="Remote-Protocol.html" rel="prev" title="远程协议">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Agent-Expressions">
+<div class="nav-panel">
+<p>
+下一页：<a href="Target-Descriptions.html" accesskey="n" rel="next">目标描述</a>，上一页：<a href="Remote-Protocol.html" accesskey="p" rel="prev"><small class="sc">GDB</small>远程串行协议</a>，向上：<a href="index.html" accesskey="u" rel="up">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h2 class="appendix" id="The-GDB-Agent-Expression-Mechanism"><span>附录F GDB代理表达式机制<a class="copiable-link" href="#The-GDB-Agent-Expression-Mechanism"> &para;</a></span></h2>
+
+<p>在某些应用程序中，调试器中断程序执行的时间过长，以至于开发人员无法了解其行为的任何有用信息，这是不可行的。如果程序的正确性取决于其实时行为，则调试器引入的延迟可能会导致程序失败，即使代码本身是正确的。能够在不中断程序的情况下观察其行为是很有用的。
+</p>
+<p>使用GDB的<code class="code">trace</code>和<code class="code">collect</code>命令，用户可以指定程序中的位置，以及在到达这些位置时要求值的任意表达式。之后，使用<code class="code">tfind</code>命令，她可以检查程序命中跟踪点时这些表达式的值。这些表达式还可以表示内存中的对象（例如结构或数组），GDB应该记录其值；在访问特定的跟踪点时，用户可以检查这些对象，就好像它们当时在内存中一样。
+然而，由于GDB在不与用户交互的情况下记录这些值，因此它可以快速且不显眼地完成此操作，希望不会干扰程序的行为。
+</p>
+<p>当GDB调试远程目标时，在目标上运行的GDB <em class="dfn">代理</em>代码会自行计算表达式的值。为了避免在代理上使用完整的符号表达式求值器，GDB将源语言中的表达式转换为一种更简单的字节码语言，然后将字节码发送到代理；代理然后执行字节码，并记录这些值以供GDB稍后检索。
+</p>
+<p>字节码语言很简单；有四十多个操作码，其中大部分是C操作数的常用词汇（加法、减法、移位等）以及各种大小的字面量和内存引用操作。字节码解释器严格在机器级值（各种大小的整数和浮点数）上运行，并且不需要有关类型或符号的信息；因此，解释器的内部数据结构很简单，每个字节码只需要几条本机机器指令来实现它。解释器很小，并且很容易确定求值表达式所需的内存和时间的严格限制，这使得它适用于实时应用程序中的调试代理。
+</p>
+
+
+
+
+<ul class="mini-toc">
+<li><a href="General-Bytecode-Design.html" accesskey="1">通用字节码设计</a></li>
+<li><a href="Bytecode-Descriptions.html" accesskey="2">字节码描述</a></li>
+<li><a href="Using-Agent-Expressions.html" accesskey="3">使用代理表达式</a></li>
+<li><a href="Varying-Target-Capabilities.html" accesskey="4">不同的目标能力</a></li>
+<li><a href="Rationale.html" accesskey="5">基本原理</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Target-Descriptions.html">目标描述</a>，上一页：<a href="Remote-Protocol.html"><small class="sc">GDB</small>远程串行协议</a>，向上：<a href="index.html">使用<small class="sc">GDB</small>调试</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

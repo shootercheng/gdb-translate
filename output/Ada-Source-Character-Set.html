@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Ada源字符集（使用GDB调试）</title>
+
+<meta name="description" content="Ada源字符集（使用GDB调试）">
+<meta name="keywords" content="Ada源字符集（使用GDB调试）">
+<meta name="resource-type" content="document">  
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Ada-Glitches.html" rel="next" title="Ada故障">
+<link href="Ravenscar-Profile.html" rel="prev" title="Ravenscar配置文件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Source-Character-Set">
+<div class="nav-panel">
+<p>
+下一页：<a href="Ada-Glitches.html" accesskey="n" rel="next">Ada模式的已知特性</a>，上一页：<a href="Ravenscar-Profile.html" accesskey="p" rel="prev">使用Ravenscar配置文件时的任务支持</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Ada-Source-Character-Set-1"><span>15.4.10.10 Ada源字符集<a class="copiable-link" href="#Ada-Source-Character-Set-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-source-character-set"></a>
+
+<p>GNAT编译器支持多种用于源文件的字符集。请参阅 <a data-manual="gnat_ugn" href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Character-Set-Control.html#Character-Set-Control">字符集控制</a>。<small class="sc">GDB</small> 也包含对此的支持。
+</p>
+<dl class="table">
+<dt><a id="index-set-ada-source_00_2dcharset"></a><span><code class="code">set ada source-charset <var class="var">charset</var></code><a class="copiable-link" href="#index-set-ada-source_00_2dcharset"> ¶</a></span></dt>
+<dd><p>设置Ada的源字符集。该字符集必须由GNAT支持。由于此设置会影响程序调试信息中符号的解码，因此应尽早设置。默认值是 <code class="code">ISO-8859-1</code>，因为这也是GNAT的默认值。
+</p>
+</dd>
+<dt><a id="index-show-ada-source_00_2dcharset"></a><span><code class="code">show ada source-charset</code><a class="copiable-link" href="#index-show-ada-source_00_2dcharset"> ¶</a></span></dt>
+<dd><p>显示当前Ada的源字符集。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

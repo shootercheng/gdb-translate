@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>分析收集的数据（使用GDB调试）</title>
+
+<meta name="description" content="分析收集的数据（使用GDB调试）">
+<meta name="keywords" content="分析收集的数据（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Tracepoints.html" rel="up" title="跟踪点">
+<link href="Tracepoint-Variables.html" rel="next" title="跟踪点变量">
+<link href="Set-Tracepoints.html" rel="prev" title="设置跟踪点">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Analyze-Collected-Data">
+<div class="nav-panel">
+<p>
+下一页：<a href="Tracepoint-Variables.html" accesskey="n" rel="next">跟踪点的便利变量</a>，上一页：<a href="Set-Tracepoints.html" accesskey="p" rel="prev">设置跟踪点的命令</a>，向上：<a href="Tracepoints.html" accesskey="u" rel="up">跟踪点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Using-the-Collected-Data"><span>13.2 使用收集的数据<a class="copiable-link" href="#Using-the-Collected-Data"> &para;</a></span></h3>
+
+<p>跟踪点实验结束后，你使用GDB命令来检查跟踪数据。基本思路是，每个跟踪点每次被命中时都会收集一个跟踪<em class="dfn">快照</em>，每次单步执行时也会收集另一个快照。所有这些快照从0开始连续编号，并放入一个缓冲区，你可以稍后检查它们。你检查它们的方式是<em class="dfn">聚焦</em>于一个特定的跟踪快照。当远程存根聚焦于一个跟踪快照时，它将通过从属于该快照的缓冲区读取数据，而不是从被调试程序的<em class="emph">实际</em>内存或寄存器中读取数据，来响应所有GDB对内存和寄存器的请求。这意味着<strong class="strong">所有</strong> GDB命令（<code class="code">print</code>、<code class="code">info registers</code>、<code class="code">backtrace</code>等）的行为就好像我们当前正在调试跟踪点发生时的程序状态一样。对缓冲区中不存在的数据的任何请求都将失败。
+</p>
+
+<ul class="mini-toc">
+<li><a href="tfind.html" accesskey="1"><code class="code">tfind <var class="var">n</var></code></a></li>
+<li><a href="tdump.html" accesskey="2"><code class="code">tdump</code></a></li>
+<li><a href="save-tracepoints.html" accesskey="3"><code class="code">save tracepoints <var class="var">filename</var></code></a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

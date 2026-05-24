@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下，允许复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下所述。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>自动覆盖调试（使用GDB调试）</title>
+
+<meta name="description" content="自动覆盖调试（使用GDB调试）">
+<meta name="keywords" content="自动覆盖调试（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Overlays.html" rel="up" title="覆盖">
+<link href="Overlay-Sample-Program.html" rel="next" title="覆盖示例程序">
+<link href="Overlay-Commands.html" rel="prev" title="覆盖命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="自动覆盖调试">
+<div class="nav-panel">
+<p>
+下一个：<a href="Overlay-Sample-Program.html" accesskey="n" rel="next">覆盖示例程序</a>，上一个：<a href="Overlay-Commands.html" accesskey="p" rel="prev">覆盖命令</a>，向上：<a href="Overlays.html" accesskey="u" rel="up">调试使用覆盖的程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="自动覆盖调试-1"><span>第14.节 自动覆盖调试<a class="copiable-link" href="#自动覆盖调试-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-自动覆盖调试"></a>
+
+<p><small class="sc">GDB</small>可以在被调试程序中的覆盖管理器提供一些简单协作的情况下，自动跟踪哪些覆盖被映射以及哪些没有被映射。如果你使用<code class="code">overlay auto</code>命令启用自动覆盖调试（见 <a class="pxref" href="覆盖命令.html">覆盖命令</a>），<small class="sc">GDB</small>会在被调试程序的内存中查找某些描述覆盖当前状态的变量。
+</p>
+<p>以下是你的覆盖管理器必须定义以支持<small class="sc">GDB</small>自动覆盖调试的变量：
+</p>
+<dl class="table">
+<dt><code class="code">_ovly_table</code>:</dt>
+<dd><p>这个变量必须是一个包含以下结构的数组：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct
+{
+   /* 覆盖的映射地址。  */
+   unsigned long vma;
+
+   /* 覆盖的大小，以字节为单位。  */
+   unsigned long size;
+
+   /* 覆盖的加载地址。  */
+   unsigned long lma;
+
+   /* 如果覆盖当前已映射，则为非零；
+      否则为零。  */
+   unsigned long mapped;
+}
+</pre></div>
+
+</dd>
+<dt><code class="code">_novlys</code>:</dt>
+<dd><p>这个变量必须是一个四字节的有符号整数，保存<code class="code">_ovly_table</code>中的元素总数目。
+</p>
+</dd>
+</dl>
+
+<p>为了确定某个特定的覆盖是否被映射，<small class="sc">GDB</small>会在<code class="code">_ovly_table</code>中查找一个条目，其<code class="code">vma</code>和<code class="code">lma</code>成员等于可执行文件中覆盖部分的虚拟内存地址（VMA）和加载内存地址（LMA）。当<small class="sc">GDB</small>找到一个匹配的条目时，它会查看该条目的<code class="code">mapped</code>成员来确定覆盖当前是否被映射。
+</p>
+<p>此外，你的覆盖管理器可以定义一个名为<code class="code">_ovly_debug_event</code>的函数。如果定义了这个函数，<small class="sc">GDB</small>会在那里默默地设置一个断点。如果覆盖管理器在每次更改覆盖表时调用这个函数，这将使<small class="sc">GDB</small>能够准确跟踪哪些覆盖在程序内存中，并更新可能在覆盖中设置的任何断点。这将允许断点即使在覆盖未执行时保存在ROM或其他不可写内存中时也能正常工作。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Overlay-Sample-Program.html">覆盖示例程序</a>，上一个：<a href="Overlay-Commands.html">覆盖命令</a>，向上：<a href="Overlays.html">调试使用覆盖的程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

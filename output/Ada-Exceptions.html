@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Ada异常（使用GDB调试）</title>
+
+<meta name="description" content="Ada异常（使用GDB调试）">
+<meta name="keywords" content="Ada异常（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录"> 
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Ada-Tasks.html" rel="next" title="Ada任务">
+<link href="Stopping-Before-Main-Program.html" rel="prev" title="在主程序之前停止">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-异常">
+<div class="nav-panel">
+<p>
+下一个：<a href="Ada-Tasks.html" accesskey="n" rel="next">Ada任务扩展</a>，上一个：<a href="Stopping-Before-Main-Program.html" accesskey="p" rel="prev">在最开始停止</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div> 
+<hr>
+<h4 class="subsubsection" id="Ada-异常-1"><span>15.4.10.6 Ada异常<a class="copiable-link" href="#Ada-异常-"> &para;</a></span></h4>
+
+<p>提供了一个命令来列出所有Ada异常：
+</p>
+<dl class="table">
+<dt><a id="index-info-exceptions"></a><span><code class="code">info exceptions</code><a class="copiable-link" href="#index-info-exceptions"> &para;</a></span></dt>
+<dt><code class="code">info exceptions <var class="var">regexp</var></code></dt>
+<dd><p><code class="code">info exceptions</code>命令允许你列出在被调试程序中定义的所有Ada异常及其地址。以正则表达式<var class="var">regexp</var>作为参数时，只列出那些名称与<var class="var">regexp</var>匹配的异常。
+</p></dd>
+</dl>
+
+<p>下面是一个小例子，展示了该命令的使用方法，首先不带参数，然后带一个作为参数传递的正则表达式。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info exceptions
+所有已定义的Ada异常：
+constraint_error: 0x613da0
+program_error: 0x613d20
+storage_error: 0x613ce0
+tasking_error: 0x613ca0
+const.aint_global_e: 0x613b00
+(gdb) info exceptions const.aint
+所有与正则表达式“const.aint”匹配的Ada异常：
+constraint_error: 0x613da0
+const.aint_global_e: 0x613b00
+</pre></div>
+
+<p>也可以要求GDB在引发异常时停止程序的执行。更多细节，请参见 <a class="ref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</div>
+
+
+
+</body>
+</html> 

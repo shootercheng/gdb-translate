@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>全停止模式（使用GDB调试）</title>
+
+<meta name="description" content="全停止模式（使用GDB调试）">
+<meta name="keywords" content="全停止模式（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Non_002dStop-Mode.html" rel="next" title="非停止模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="全停止模式">
+<div class="nav-panel">
+<p>
+下一页：<a href="Non_002dStop-Mode.html" accesskey="n" rel="next">非停止模式</a>，上一级：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="全停止模式-1"><span>5.5.1全停止模式<a class="copiable-link" href="#全停止模式-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-全停止模式"></a>
+
+<p>在全停止模式下，每当你的程序因任何原因在GDB下停止时，<em>所有</em>执行线程都会停止，而不仅仅是当前线程。这使你能够检查程序的整体状态，包括在不同线程之间切换，而不必担心情况会在不知不觉中发生变化。
+</p>
+<p>相反，每当你重新启动程序时，<em>所有</em>线程都会开始执行。<em>即使在使用像<code>step</code>或<code>next</code>这样的命令进行单步调试时也是如此</em>。
+</p>
+<p>特别是，GDB不能以同步方式单步调试所有线程。由于线程调度取决于你正在调试的目标操作系统（不由GDB控制），在当前线程完成单步调试时，其他线程可能会执行多条语句。此外，一般来说，当程序停止时，其他线程会在语句中间停止，而不是在干净的语句边界处停止。
+</p>
+<p>你甚至可能会发现，在继续执行甚至单步调试之后，你的程序在另一个线程中停止了。只要在第一个线程完成你所请求的操作之前其他线程遇到断点、信号或异常，就会发生这种情况。
+</p>
+<a class="index-entry-id" id="索引-自动线程选择"></a>
+<a class="index-entry-id" id="索引-自动切换线程"></a>
+<a class="index-entry-id" id="索引-线程，自动切换"></a>
+<p>每当GDB由于断点或信号而停止你的程序时，它会自动选择发生该断点或信号的线程。GDB会通过一条消息（如“[切换到线程<var>n</var>]”）提醒你上下文切换，以标识该线程。  
+</p>
+<a class="anchor" id="设置调度器锁定"></a>
+<p>在某些操作系统上，你可以通过锁定操作系统调度器来修改GDB的默认行为，以只允许单个线程运行。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-调度器锁定模式"></a>
+<a class="index-entry-id" id="索引-锁定调度器"></a> 
+<a id="索引-调度器锁定"></a><span><code class="code">set scheduler-locking <var>模式</var></code><a class="copiable-link" href="#索引-调度器锁定"> &para;</a></span></dt>
+<dd><p>设置调度器锁定模式。它适用于正常执行、记录模式和重放模式。<var>模式</var>可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">off</code></dt> 
+<dd><p>不锁定，任何线程都可以随时运行。
+</p>
+</dd>
+<dt><code class="code">on</code></dt> 
+<dd><p>当子进程恢复时，只有当前线程可以运行。由恢复的线程创建的新线程在其入口点处保持停止状态，在执行任何指令之前。
+</p>
+</dd>
+<dt><code class="code">step</code></dt> 
+<dd><p>在单步调试时的行为与<code>on</code>相同，否则与<code>off</code>相同。当你单步调试时，除当前线程外的其他线程永远没有机会运行，而当你使用像“<samp class="samp">continue</samp> ”、“<samp class="samp">until</samp> ”或“<samp class="samp">finish</samp> ”这样的命令时，它们可以完全自由地运行。
+</p>
+<p>此模式针对单步调试进行了优化；它可防止其他线程在你单步调试时抢占当前线程，从而使调试焦点不会意外改变。但是，除非另一个线程在其时间片内命中断点，否则GDB不会将当前线程切换到你正在调试的线程之外的其他线程。
+</p>
+</dd>
+<dt><code class="code">replay</code></dt> 
+<dd><p>在重放模式下的行为与<code>on</code>相同，在记录模式或正常执行期间与<code>off</code>相同。这是默认模式。
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">show scheduler-locking</code></dt> 
+<dd><p>显示当前的调度器锁定模式。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-同时恢复多个进程的线程"></a>
+<p>默认情况下，当你发出诸如<code>continue</code>、<code>next</code>或<code>step</code>等执行命令之一时，GDB只允许当前子进程的线程运行。例如，如果GDB附加到两个子进程，每个子进程有两个线程，则<code>continue</code>命令只会恢复当前子进程的两个线程。例如，当你调试一个进行了fork操作的程序，并且你想在调试子进程时使父进程保持停止状态（这样，例如，它不会运行到退出）时，这很有用。在其他情况下，你可能对检查GDB所附加的任何进程的当前状态不感兴趣，并且你可能希望在某个断点被命中之前恢复所有进程的所有线程。在后一种情况下，你可以使用<code>set schedule-multiple</code><!-- /@w -->命令指示GDB允许所有子进程的所有线程运行。
+</p>
+<dl class="table">
+<dt><a id="索引-设置调度多个"></a><span><code class="code">set schedule-multiple</code><a class="copiable-link" href="#索引-设置调度多个"> &para;</a></span></dt>
+<dd><p>设置在发出执行命令时允许恢复多个进程的线程的模式。当设置为<code>on</code>时，允许所有进程的所有线程运行。当设置为<code>off</code>时，只恢复当前进程的线程。默认值为<code>off</code>。当设置为<code>on</code>时，或者当你正在单步调试且设置为<code>step</code>时，<code>scheduler-locking</code>模式具有优先权。
+</p>
+</dd>
+<dt><code class="code">show schedule-multiple</code></dt> 
+<dd><p>显示当前恢复多个进程的线程执行的模式。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Non_002dStop-Mode.html">非停止模式</a>，上一级：<a href="Thread-Stops.html">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

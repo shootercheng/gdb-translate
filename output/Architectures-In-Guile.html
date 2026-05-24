@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Guile中的架构（使用GDB调试）</title>
+
+<meta name="description" content="Guile中的架构（使用GDB调试）">
+<meta name="keywords" content="Guile中的架构（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Guile-API.html" rel="up" title="Guile API">
+<link href="Disassembly-In-Guile.html" rel="next" title="Guile中的反汇编">
+<link href="Lazy-Strings-In-Guile.html" rel="prev" title="Guile中懒字符串的表示">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile中的架构">
+<div class="nav-panel">
+<p>
+下一页：<a href="Disassembly-In-Guile.html" accesskey="n" rel="next">Guile中的反汇编</a>，上一页：<a href="Lazy-Strings-In-Guile.html" accesskey="p" rel="prev">Guile中懒字符串的表示。</a>，向上：<a href="Guile-API.html" accesskey="u" rel="up">Guile API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Guile中架构的表示"><span>23.4.3.21 Guile中架构的表示<a class="copiable-link" href="#Guile中架构的表示"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-架构"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aarch_003e"></a>
+
+<p><small class="sc">GDB</small>在其各种计算中使用特定于架构的参数和工件。架构由<code class="code">&lt;gdb:arch&gt;</code>类的实例表示。
+</p>
+<p><code class="code">(gdb)</code>模块提供了以下与架构相关的过程：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-arch_003f"> &para;</a></span></dt>
+<dd><p>如果<var class="var">对象</var>是<code class="code">&lt;gdb:arch&gt;</code>类型的对象，则返回<code class="code">#t</code>。否则返回<code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-current_002darch"><span class="category-def">Scheme过程： </span><span><strong class="def-name">current-arch</strong><a class="copiable-link" href="#index-current_002darch"> &para;</a></span></dt>
+<dd><p>返回当前架构作为一个<code class="code">&lt;gdb:arch&gt;</code>对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dname"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch-name</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dname"> &para;</a></span></dt>
+<dd><p>返回<code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的名称（字符串值）。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dcharset"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch-charset</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dcharset"> &para;</a></span></dt>
+<dd><p>返回<code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的目标字符集名称。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dwide_002dcharset"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch-wide-charset</strong><a class="copiable-link" href="#index-arch_002dwide_002dcharset"> &para;</a></span></dt>
+<dd><p>返回<code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的目标宽字符集名称。
+</p></dd></dl>
+
+<p>每个架构都提供了一组预定义类型，可通过以下函数获取。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dvoid_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">arch-void-type</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dvoid_002dtype"> &para;</a></span></dt>

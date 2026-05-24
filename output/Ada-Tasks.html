@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并推广软件自由。” -->
+<title>Ada任务（使用GDB调试）</title>
+
+<meta name="description" content="Ada任务（使用GDB调试）">
+<meta name="keywords" content="Ada任务（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Ada-Tasks-and-Core-Files.html" rel="next" title="调试核心文件时的任务支持">
+<link href="Ada-Exceptions.html" rel="prev" title="Ada异常">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Tasks">
+<div class="nav-panel">
+<p>
+下一个：<a href="Ada-Tasks-and-Core-Files.html" accesskey="n" rel="next">调试核心文件时的任务支持</a>，上一个：<a href="Ada-Exceptions.html" accesskey="p" rel="prev">Ada异常</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Extensions-for-Ada-Tasks"><span>15.4.10.7 Ada任务的扩展<a class="copiable-link" href="#Extensions-for-Ada-Tasks"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-tasking"></a>
+
+<p>对Ada任务的支持类似于对线程的支持（见<a class="pxref" href="Threads.html">调试多线程程序</a>）。GDB提供了以下与任务相关的命令：</p>
+<dl class="table">
+<dt><a id="index-info-tasks"></a><span><code class="code">info tasks</code><a class="copiable-link" href="#index-info-tasks"> &para;</a></span></dt>
+<dd><p>此命令显示当前Ada任务的列表，如下例所示：</p>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                 Name
+  

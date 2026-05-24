@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下(a)所示。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>地址位置（使用GDB调试）</title>
+
+<meta name="description" content="地址位置（使用GDB调试）">
+<meta name="keywords" content="地址位置（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Location-Specifications.html" rel="up" title="位置规范">
+<link href="Explicit-Locations.html" rel="prev" title="显式位置">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Address-Locations">
+<div class="nav-panel">
+<p>
+上一个：<a href="Explicit-Locations.html" accesskey="p" rel="prev">显式位置</a>，向上：<a href="Location-Specifications.html" accesskey="u" rel="up">位置规范</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Address-Locations-1"><span>9.2.3 地址位置<a class="copiable-link" href="#Address-Locations-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-address-locations"></a>
+
+<p><em class="dfn">地址位置</em> 表示一个特定的程序地址。它们具有通用形式 *<var class="var">地址</var> </p>
+<p>对于面向行的命令，如 <code class="code">list</code> 和 <code class="code">edit</code>，这指定了包含 <var class="var">地址</var> 的源行。对于 <code class="code">break</code> 以及其他面向断点的命令，这可用于在程序中没有调试信息或源文件的部分设置断点。
+</p>
+<p>这里的 <var class="var">地址</var> 可以是当前工作语言（见 <a class="pxref" href="Languages.html">工作语言</a>）中有效的任何表达式，该表达式指定一个代码地址。此外，为方便起见，<small class="sc">GDB</small> 扩展了在位置中使用的表达式的语义，以涵盖调试期间经常出现的几种情况。以下是 <var class="var">地址</var> 的各种形式：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">表达式</var></code></dt>
+<dd><p>当前工作语言中有效的任何表达式。
+</p>
+</dd>
+<dt><code class="code"><var class="var">funcaddr</var></code></dt>
+<dd><p>从函数或过程名称派生的地址。在C、C++、Objective-C、Fortran、Pascal、Modula-2、minimal和汇编语言中，这只是函数的名称 <var class="var">函数</var> （实际上是有效表达式的一种特殊情况）。在Ada中，则是 <code class="code"><var class="var">函数</var>'Address</code> （尽管 <code class="code">&amp;<var class="var">函数</var></code> 也有效）。
+</p>
+<p>这种形式指定了函数第一条指令的地址，此时堆栈帧和参数尚未设置。
+</p>
+</dd>
+<dt><code class="code">'<var class="var">文件名</var>'::<var class="var">funcaddr</var></code></dt>
+<dd><p>与上面的 <var class="var">funcaddr</var> 类似，但也明确指定了源文件的名称。如果函数名称不能明确指定函数，例如，如果不同源文件中有几个同名函数，这将很有用，见 <a class="ref" href="Variables.html#variable-name-conflict">变量名冲突</a>。并非所有语言都支持此功能，见 <a class="ref" href="Expressions.html">表达式</a>。
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Explicit-Locations.html">显式位置</a>，向上：<a href="Location-Specifications.html">位置规范</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

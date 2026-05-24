@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>ARC（使用GDB调试）</title>
+
+<meta name="description" content="ARC（使用GDB调试）">
+<meta name="keywords" content="ARC（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Embedded-Processors.html" rel="up" title="嵌入式处理器">
+<link href="ARM.html" rel="next" title="ARM">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARC">
+<div class="nav-panel">
+<p>
+下一页：<a href="ARM.html" accesskey="n" rel="next">ARM</a>，上一级：<a href="Embedded-Processors.html" accesskey="u" rel="up">嵌入式处理器</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Synopsys-ARC"><span>21.3.1 Synopsys ARC<a class="copiable-link" href="#Synopsys-ARC"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Synopsys-ARC"></a>
+<a class="index-entry-id" id="index-ARC-specific-commands"></a>
+<a class="index-entry-id" id="index-ARC600"></a>
+<a class="index-entry-id" id="index-ARC700"></a>
+<a class="index-entry-id" id="index-ARC-EM"></a>
+<a class="index-entry-id" id="index-ARC-HS"></a>
+
+<p><small class="sc">GDB</small>提供了以下特定于ARC的命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-debug-arc"></a><span><code class="code">set debug arc</code><a class="copiable-link" href="#index-set-debug-arc"> &para;</a></span></dt>
+<dd><p>控制ARC特定调试消息的级别。使用0表示不显示消息（默认），1表示调试消息，2表示更多调试消息。 
+</p>
+</dd>
+<dt><a id="index-show-debug-arc"></a><span><code class="code">show debug arc</code><a class="copiable-link" href="#index-show-debug-arc"> &para;</a></span></dt>
+<dd><p>显示当前正在运行的ARC特定调试的级别。
+</p>
+</dd>
+<dt><a id="index-maint-print-arc-arc_002dinstruction"></a><span><code class="code">maint print arc arc-instruction <var class="var">address</var></code><a class="copiable-link" href="#index-maint-print-arc-arc_002dinstruction"> &para;</a></span></dt>
+<dd><p>打印给定地址处指令的内部反汇编信息。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

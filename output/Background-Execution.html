@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>后台执行（使用GDB调试）</title>
+
+<meta name="description" content="后台执行（使用GDB调试）">
+<meta name="keywords" content="后台执行（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Thread-Stops.html" rel="up" title="线程停止">
+<link href="Thread_002dSpecific-Breakpoints.html" rel="next" title="特定于线程的断点">
+<link href="Non_002dStop-Mode.html" rel="prev" title="非停止模式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Background-Execution">
+<div class="nav-panel">
+<p>
+下一页：<a href="Thread_002dSpecific-Breakpoints.html" accesskey="n" rel="next">特定于线程 的断点</a>，上一页：<a href="Non_002dStop-Mode.html" accesskey="p" rel="prev">非停止模式</a>，向上：<a href="Thread-Stops.html" accesskey="u" rel="up">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Background-Execution-1"><span>5.5 .3后台执行<a class="copiable-link" href="#Background-Execution-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-前台执行"></a>
+<a class="index-entry-id" id="index-后台执行"></a>
+<a class="index-entry-id" id="index-异步执行"></a>
+<a class="index-entry-id" id="index-执行_002c-前台_002c-后台和异步"></a>
+
+<p><small class="sc">GDB</small>的执行命令有两种变体：正常的前台（同步）行为和后台（异步）行为。在前台执行中，<small class="sc">GDB</small>会等待程序报告某个线程已停止，然后才提示输入另一个命令。在后台执行中，<small class="sc">GDB</small>会立即给出命令提示符，以便你可以在程序运行时发出其他命令。
+</p>
+<p>如果目标不支持异步模式，当你尝试使用后台执行命令时，<small class="sc">GDB</small>会发出错误消息。
+</p>
+<a class="index-entry-id" id="index-_0026_002c-命令的后台执行"></a> 
+<p>要指定后台执行，在命令后添加一个<code class="code">&amp;</code>。例如，<code class="code">continue</code>命令 的后台形式是<code class="code">continue&amp;</code>，或者简写成<code class="code">c&amp;</code>。接受后台执行的执行命令有：
+</p>
+<dl class="table">
+<dt><a id="index-run_0026"></a><span><code class="code">run</code><a class="copiable-link" href="#index-run_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Starting.html">启动你的程序</a>。
+</p>
+</dd>
+<dt><a id="index-attach_0026"></a><span><code class="code">attach</code><a class="copiable-link" href="#index-attach_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Attach.html">调试一个正在运行的进程</a>。
+</p>
+</dd>
+<dt><a id="index-step_0026"></a><span><code class="code">step</code><a class="copiable-link" href="#index-step_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">单步执行</a>。
+</p>
+</dd>
+<dt><a id="index-stepi_0026"></a><span><code class="code">stepi</code><a class="copiable-link" href="#index-stepi_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">机器指令单步执行</a>。
+</p>
+</dd>
+<dt><a id="index-next_0026"></a><span><code class="code">next</code><a class="copiable-link" href="#index-next_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">下一步</a>。
+</p>
+</dd>
+<dt><a id="index-nexti_0026"></a><span><code class="code">nexti</code><a class="copiable-link" href="#index-nexti_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">机器指令下一步</a>。
+</p>
+</dd>
+<dt><a id="index-continue_0026"></a><span><code class="code">continue</code><a class="copiable-link" href="#index-continue_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">继续执行</a>。
+</p>
+</dd>
+<dt><a id="index-finish_0026"></a><span><code class="code">finish</code><a class="copiable-link" href="#index-finish_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">完成</a>。
+</p>
+</dd>
+<dt><a id="index-until_0026"></a><span><code class="code">until</code><a class="copiable-link" href="#index-until_0026"> &para;</a></span></dt>
+<dd><p>见<a class="xref" href="Continuing-and-Stepping.html">直到</a>。
+</p>
+</dd>
+</dl>
+
+<p>后台执行在与非停止模式结合用于调试多线程程序时特别有用；见<a class="ref" href="Non_002dStop-Mode.html">非停止模式</a>。
+然而，你也可以在正常的全停止模式下使用这些命令，但有一个限制，即在前一个命令完成之前，你不能发出另一个执行命令。在程序运行时，在全停止模式下有效的命令示例包括<code class="code">help</code>和<code class="code">info break</code>。
+</p>
+<p>你可以在程序在后台运行时使用<code class="code">interrupt</code>命令中断它。
+</p>
+<dl class="table">
+<dt><a id="index-interrupt-1"></a><span><code class="code">interrupt</code><a class="copiable-link" href="#index-interrupt-1"> &para;</a></span></dt>
+<dt><code class="code">interrupt -a</code></dt>
+<dd>
+<p>暂停正在运行的程序的执行。在全停止模式下，<code class="code">interrupt</code>会停止整个进程，但在非停止模式下，它只会停止当前线程。要在非停止模式下停止整个程序，使用<code class="code">interrupt -a</code>。
+</p></dd>
+</dl>
+
+</div>
+
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Thread_002dSpecific-Breakpoints.html">特定于线程的断点</a>，上一页：<a href="Non_002dStop-Mode.html">非停止模式</a>，向上：<a href="Thread-Stops.html">停止和启动多线程程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html> 

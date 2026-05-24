@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>文本命令（使用GDB调试）</title>
+
+<meta name="description" content="文本命令（使用GDB调试）">
+<meta name="keywords" content="文本命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Bindable-Readline-Commands.html" rel="up" title="可绑定的Readline命令">
+<link href="Commands-For-Killing.html" rel="next" title="删除和粘贴命令">
+<link href="Commands-For-History.html" rel="prev" title="历史操作命令">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="文本命令">
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-For-Killing.html" accesskey="n" rel="next">删除和粘贴</a>，上一页：<a href="Commands-For-History.html" accesskey="p" rel="prev">历史操作命令</a>，向上：<a href="Bindable-Readline-Commands.html" accesskey="u" rel="up">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="更改文本的命令"><span>3".4.3更改文本的命令<a class="copiable-link" href="#更改文本的命令"> &para;</a></span></h4>
+
+<dl class="ftable">
+<dt><a id="index-end_002dof_002dfile-_0028通常为C_002dd_0029"></a><span><code class="code"><i class="i">文件结束</i>（通常为C-d）</code><a class="copiable-link" href="#index-end_002dof_002dfile-_0028通常为C_002dd_0029"> &para;</a></span></dt>
+<dd><p>表示文件结束的字符，例如由<code class="code">stty</code>设置的字符。如果在一行上没有字符时读取到这个字符，并且光标位于行首，Readline会将其解释为输入结束并返回<small class="sc">EOF</small>。
+</p>
+</dd>
+<dt><a id="index-delete_002dchar-_0028C_002dd_0029"></a><span><code class="code">删除字符 (C-d)</code><a class="copiable-link" href="#index-delete_002dchar-_0028C_002dd_0029"> &para;</a></span></dt>
+<dd><p>删除光标处的字符。如果此函数绑定到与终端<small class="sc">EOF</small>字符相同的字符，如通常的<kbd class="kbd">C-d</kbd>，其效果见上文。
+</p>
+</dd>
+<dt><a id="index-backward_002ddelete_002dchar-_0028擦除键_0029"></a><span><code class="code">向后删除字符 (擦除键)</code><a class="copiable-link" href="#index-backward_002ddelete_002dchar-_0028擦除键_0029"> &para;</a></span></dt>
+<dd><p>删除光标后面的字符。带数字参数表示删除多个字符而不是单个字符。
+</p>
+</dd>
+<dt><a id="index-forward_002dbackward_002ddelete_002dchar-_0028_0029"></a><span><code class="code">前后删除字符 ()</code><a class="copiable-link" href="#index-forward_obbward_002ddelete_002dchar-_0028_0029"> &para;</a></span></dt>
+<dd><p>删除光标下的字符，除非光标在行尾，此时删除光标后面的字符。默认情况下，此命令未绑定到任何键。
+</p>
+</dd>
+<dt><a id="index-quoted_002dinsert-_0028C_002dq或C_002dv_0029"></a><span><code class="code">逐字插入 (C-q或C-v)</code><a class="copiable-link" href="#index-quoted_002dinsert-_0028C_002dq或C_002dv_0029"> &para;</a></span></dt>
+<dd><p>将接下来输入的字符逐字添加到行中。例如，这是插入像<kbd class="kbd">C-q</kbd>这样的键序列的方法。
+</p>
+</dd>
+<dt><a id="index-tab_002dinsert-_0028M_002dTAB_0029"></a><span><code class="code">插入制表符 (M-<kbd class="key">TAB</kbd>)</code><a class="copiable-link" href="#index-tab_002dinsert-_0028M_002dTAB_able-link" href="#index-tab_002dinsert-_0028M_able-link" href="#index-tab_002dinsert-_0028M_002dTAB_0029"> &para;</a></span></dt>
+<dd><p>插入一个制表符。
+</p>
+</dd>
+<dt><a id="index-self_002dinsert-_0028a_002c-b_002c-A_002c-!_002c-_2026_0029"></a><span><code class="code">自我插入 (a, b, A, 1,!, &hellip;)</code><a class="copiable-link" href="#index-self_002dinsert-_0028a_002c-b_002c-A_002c-1_002c-_0021_002c-_2026_0029"> &para;</a></span></dt>
+<dd><p>插入输入的字符。
+</p>
+</dd>
+<dt><a id="index-bracketed_002dpaste_002dbegin-_0028_0029"></a><span><code class="code">带括号粘贴开始 ()</code><a class="copiable-link" href="#index-bracketed_002dpaste_002dbegin-_0028_0029"> &para;</a></span></dt>
+<dd><p>此函数旨在绑定到某些终端发送的“带括号粘贴”转义序列，并且默认情况下会分配这样的绑定。它允许Readline将粘贴的文本作为一个整体插入，而不是将每个字符视为从键盘读取的字符。字符的插入方式就好像每个字符都绑定到了<code class="code">自我插入</code>，而不是执行任何编辑命令。
+</p>
+<p>带括号粘贴会将区域（光标和标记之间的字符）设置为插入的文本。它使用“活动标记”的概念：当标记处于活动状态时，Readline重新显示会使用终端的突出显示模式来表示该区域。
+</p>
+</dd>
+<dt><a id="index-transpose_002dchars-_0028C_002dt_0029"></a><span><code class="code">交换字符 (C-t)</code><a class="copiable-link" href="#index-transpose_002dchars-_0028C_002dt_0029"> &para;</a></span></dt>
+<dd><p>将光标前的字符向前移动到光标处，同时光标也向前移动。如果插入点在行尾，则交换行的最后两个字符。负参数无效。
+</p>
+</dd>
+<dt><a id="index-transpose_002dwords-_0028M_002dt_0029"></a><span><code class="code">交换单词 (M-t)</code><a class="copiable-link" href="#index-transpose_002dwords-_0028M_002dt_0029"> &para;</a></span></dt>
+<dd><p>将光标前的单词移动到光标后的单词之后，同时光标也移动到该单词之后。如果插入点在行尾，则交换行的最后两个单词。
+</p>
+</dd>
+<dt><a id="index-upcase_002dword-_0028M_002du_0029"></a><span><code class="code">将单词大写 (M-u)</code><a class="copiable-link" href="#index-upcase_002dword-_0028M_002du_0029"> &para;</a></span></dt>
+<dd><p>将当前（或后续）单词大写。带负参数时，将前一个单词大写，但不移动光标。
+</p>
+</dd>
+<dt><a id="index-downcase_002dword-_0028M_002dl_0029"></a><span><code class="code">将单词小写 (M-l)</code><a class="copiable-link" href="#index-downcase_002dword-_0028M_002dl_0029"> &para;</a></span></dt>
+<dd><p>将当前（或后续）单词小写。带负参数时，将前一个单词小写，但不移动光标。
+</p>
+</dd>
+<dt><a id="index-capitalize_002dword-_0028M_002dc_0029"></a><span><code class="code">将单词首字母大写 (M-c)</code><a class="copiable-link" href="#index-capitalize_002dword-_0028M_002dc_0029"> &para;</a></span></dt>
+<dd><p>将当前（或后续）单词的首字母大写。带负参数时，将前一个单词的首字母大写，但不移动光标。
+</p>
+</dd>
+<dt><a id="index-overwrite_002dmode-_0028_0029"></a><span><code class="code">覆盖模式 ()</code><a class="copiable-link" href="#index-overwrite_002dmode-_0028_0029"> &para;</a></span></dt>
+<dd><p>切换覆盖模式。带显式正数字参数时，切换到覆盖模式。带显式非正数字参数时，切换到插入模式。此命令仅影响<code class="code">emacs</code>模式； <code class="code">vi</code>模式的覆盖方式不同。每次调用<code class="code">readline()</code>时都从插入模式开始。
+</p>
+<p>在覆盖模式下，绑定到<code class="code">自我插入</code>的字符会替换光标处的文本，而不是将文本向右推。绑定到<code class="code">向后删除字符</code>的字符会用空格替换光标前的字符。
+</p>
+<p>默认情况下，此命令未绑定。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Commands-For-Killing.html">删除和粘贴</a>，上一页：<a href="Commands-For-History.html">历史操作命令</a>，向上：<a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

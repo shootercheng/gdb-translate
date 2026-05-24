@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>BSD libkvm接口（使用GDB调试）</title>
+
+<meta name="description" content="BSD libkvm接口（使用GDB调试）">
+<meta name="keywords" content="BSD libkvm接口（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引"> 
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Native.html" rel="up" title="本地">
+<link href="Process-Information.html" rel="next" title="进程信息">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="BSD-libkvm-接口">
+<div class="nav-panel">
+<p>
+下一个：<a href="Process-Information.html" accesskey="n" rel="next">进程信息</a>，上一个：<a href="Native.html" accesskey="u" rel="up">本地</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="BSD-libkvm-接口-1"><span>21.1.1 BSD libkvm接口<a class="copiable-link" href="#BSD-libkvm-接口-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-libkvm"></a>
+<a class="index-entry-id" id="索引-内核内存映像"></a>
+<a class="index-entry-id" id="索引-内核崩溃转储"></a>
+
+<p>源自BSD的系统（FreeBSD/NetBSD/OpenBSD）有一个内核内存接口，它为访问内核虚拟内存映像提供了统一的接口，包括实时系统和崩溃转储。<small class="sc">GDB</small> 使用这个接口，允许你在许多原生BSD配置上调试实时内核和内核崩溃转储。这是作为一个特殊的 <code class="code">kvm</code> 调试目标实现的。对于调试实时系统，将当前运行的内核加载到 <small class="sc">GDB</small> 中并连接到 <code class="code">kvm</code> 目标：
+</p>
+<div class="example smallexample"> 
+<pre class="example-preformatted">(gdb) <b class="b">target kvm</b>
+</pre></div>
+
+<p>对于调试崩溃转储，将崩溃转储的文件名作为参数提供：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">target kvm /var/crash/bsd.0</b>
+</pre></div>
+
+<p>一旦连接到 <code class="code">kvm</code> 目标，以下命令可用：
+</p>
+<dl class="table">
+<dt><a id="索引-kvm"></a><span><code class="code">kvm pcb</code><a class="copiable-link" href="#索引-kvm"> &para;</a></span></dt>
+<dd><p>从 <em class="dfn">进程控制块</em>（PCB）地址设置当前上下文。
+</p>
+</dd>
+<dt><code class="code">kvm proc</code></dt>
+<dd><p>从proc地址设置当前上下文。此命令在现代FreeBSD系统上不可用。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html> 

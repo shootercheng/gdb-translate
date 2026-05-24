@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>基础Python（使用GDB调试）</title>
+
+<meta name="description" content="基础Python（使用GDB调试）">
+<meta name="keywords" content="基础Python（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Threading-in-GDB.html" rel="next" title="GDB中的线程">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="基础Python">
+<div class="nav-panel">
+<p>
+下一页：<a href="Threading-in-GDB.html" accesskey="n" rel="next">GDB中的线程</a>，上一级：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="基础Python-1"><span>23.3.2.1基础Python<a class="copiable-link" href="#基础Python-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="索引-python标准输出"></a>
+<a class="index-entry-id" id="索引-python分页"></a>
+<p>在启动时，GDB会覆盖Python的sys.stdout和sys.stderr，以便使用GDB的输出分页流进行打印。向这些流之一输出的Python程序，其输出可能会被用户中断（请参阅<a class="pxref" href="屏幕大小.html">屏幕大小</a>）。在这种情况下，会抛出Python的KeyboardInterrupt异常。
+</p>
+<p>编写在GDB中运行的Python代码时需要格外小心。特别需要注意两点：
+</p>
+<ul class="itemize mark-bullet">
+<li>GDB会安装SIGCHLD和SIGINT的处理程序。Python代码不能覆盖这些处理程序，甚至不能使用sigaction更改选项。如果你的程序更改了这些信号的处理方式，GDB很可能无法正常工作。请注意，不幸的是，GUI工具包通常会安装SIGCHLD处理程序。在创建新的Python线程时，可以使用gdb.blocked_signals或gdb.Thread来正确处理；请参阅<a class="ref" href="Threading-in-GDB.html">GDB中的线程</a>。
+
+</li><li>GDB会注意将其内部文件描述符标记为在执行时关闭。然而，在所有平台上都无法以线程安全的方式做到这一点。你的Python程序应该意识到这一点，并在创建新文件描述符时设置执行时关闭标志，并在启动子进程之前安排关闭不需要的文件描述符。
+</li></ul>
+
+<a class="index-entry-id" id="索引-python函数"></a>
+<a class="index-entry-id" id="索引-python模块"></a>
+<a class="index-entry-id" id="索引-gdb模块"></a>
+<p>GDB引入了一个新的Python模块，名为gdb。GDB添加的所有方法和类都放在这个模块中。GDB会自动导入gdb模块，以便在python命令评估的所有脚本中使用。
+</p>
+<p>gdb模块的某些类型带有文本表示形式（可通过repr或str函数访问）。这些仅用于调试目的，预计它们会随时间变化。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="索引-gdb_002ePYTHONDIR"><span class="category-def">变量： </span><span><strong class="def-name">gdb.PYTHONDIR</strong><a class="copiable-link" href="#索引-gdb_002ePYTHONDIR"> ¶</a></span></dt>
+<dd><p>一个包含python目录的字符串（请参阅<a class="pxref" href="Python.html">使用Python扩展GDB</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002eexecute"><span class="category-def">函数： </span><span><strong class="def-name">gdb.execute</strong> <var class="def-var-arguments">(命令 <span class="r">[</span>, 来自终端 <span class="r">[</span>, 转换为字符串 <span class="r">[</span>,&nbsp;样式设置&nbsp;<span class="r">]]]</span><!-- /@w -->)</var><a class="copiable-link" href="#索引-gdb_002eexecute"> ¶</a></span></dt>
+<dd><p>将字符串形式的命令作为GDB CLI命令进行评估。
+如果在命令运行时发生GDB异常，它将按照<a class="ref" href="异常处理.html">异常处理</a>中的描述进行转换。
+</p>
+<p>来自终端标志指定GDB是否应将此命令视为由用户交互式调用产生的。
+它必须是一个布尔值，如果省略，默认值为False。
+</p>
+<p>默认情况下，命令产生的任何输出都会发送到GDB的标准输出（如果启用了日志记录，则会发送到日志输出）。如果转换为字符串参数为True，则输出将由gdb.execute收集并作为字符串返回。默认值为False，在这种情况下返回值为None。如果转换为字符串为True，GDB虚拟终端将临时设置为无限宽度和高度，并且其分页将被禁用；请参阅<a class="pxref" href="屏幕大小.html">屏幕大小</a>。
+</p>
+<p>当样式设置为True时，如果GDB的标准输出支持样式设置，并且“显示样式启用”为“开”，则无论输出是发送到标准输出还是字符串，都会应用样式设置。当样式设置为False时，则不应用样式设置。当转换为字符串为False时，样式设置的默认值为True，当转换为字符串为True时，样式设置的默认值为False。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002ebreakpoints"><span class="category-def">函数： </span><span><strong class="def-name">gdb.breakpoints</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#索引-gdb_002ebreakpoints"> ¶</a></span></dt>
+<dd><p>返回一个包含GDB所有断点的序列。
+有关更多信息，请参阅<a class="xref" href="Breakpoints-In-Python.html">使用Python操作断点</a>。在GDB 7.11及更早版本中，如果没有断点，此函数返回None。此特性随后得到修复，现在在这种情况下gdb.breakpoints返回一个空序列。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002erbreak"><span class="category-def">函数： </span><span><strong class="def-name">gdb.rbreak</strong> <var class="def-var-arguments">(正则表达式 <span class="r">[</span>, 最小符号数 <span class="r">[</span>, 节流阀, <span class="r">[</span>, 符号表 <span class="r">]]]</span>)</var><a class="copiable-link" href="#索引-gdb_002erbreak"> ¶</a></span></dt>
+<dd><p>返回一个Python列表，其中包含一组新设置的gdb.Breakpoint对象，这些对象与由正则表达式模式定义的函数名称匹配。如果最小符号数关键字为True，则所有系统函数（那些未在下级明确定义的函数）也将包含在匹配中。节流阀关键字接受一个整数，该整数定义了与正则表达式模式匹配的函数最多的模式匹配数。如果匹配数超过节流阀的整数值，将引发RuntimeError并且不会创建断点。如果未定义节流阀，则对要创建的最大匹配数和断点没有限制。符号表关键字接受一个Python可迭代对象，该对象产生一组gdb.Symtab对象，并将搜索限制为仅包含在gdb.Symtab对象中的那些函数。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002eparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.parameter</strong> <var class="def-var-arguments">(参数)</var><a class="copiable-link" href="#索引-gdb_002eparameter"> ¶</a></span></dt>
+<dd><p>返回由其名称（一个字符串）给出的GDB参数的值；如果参数具有多部分名称，则参数名称字符串可能包含空格。例如，‘打印对象’是一个有效的参数名称。
+</p>
+<p>如果命名的参数不存在，此函数将引发gdb.error（请参阅<a class="pxref" href="异常处理.html">异常处理</a>）。否则，参数的值将转换为适当类型的Python值并返回。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002eset_005fparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.set_parameter</strong> <var class="def-var-arguments">(名称, 值)</var><a class="copiable-link" href="#索引-gdb_002eset_005fparameter"> ¶</a></span></dt>
+<dd><p>将gdb参数名称设置为值。与gdb.parameter一样，如果参数具有多部分名称，则参数名称字符串可能包含空格。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002ewith_005fparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.with_parameter</strong> <var class="def-var-arguments">(名称, 值)</var><a class="copiable-link" href="#索引-gdb_002ewith_005fparameter"> ¶</a></span></dt>
+<dd><p>创建一个Python上下文管理器（用于与Python with语句一起使用），该管理器将gdb参数名称临时设置为值。在退出上下文时，将恢复先前的值。
+</p>
+<p>此函数在其实现中使用gdb.parameter，因此它可能会引发与该函数相同的异常。
+</p>
+<p>例如，有时使用特定的gdb语言评估一些Python代码很有用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">with gdb.with_parameter('language', 'pascal'):
+ ... 特定语言的操作
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002ehistory"><span class="category-def">函数： </span><span><strong class="def-name">gdb.history</strong> <var class="def-var-arguments">(编号)</var><a class="copiable-link" href="#索引-gdb_002ehistory"> ¶</a></span></dt>
+<dd><p>从GDB的值历史记录中返回一个值（请参阅<a class="pxref" href="值历史记录.html">值历史记录</a>）。编号参数指示返回哪个历史元素。
+如果编号为负数，则GDB将取其绝对值并从最后一个元素（即最近的元素）开始向后计数以找到要返回的值。如果编号为零，则GDB将返回最近的元素。如果编号指定的元素在值历史记录中不存在，将引发gdb.error异常。
+</p>
+<p>如果没有引发异常，返回值始终是gdb.Value的实例（请参阅<a class="pxref" href="来自下级的值.html">来自下级的值</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002eadd_005fhistory"><span class="category-def">函数： </span><span><strong class="def-name">gdb.add_history</strong> <var class="def-var-arguments">(值)</var><a class="copiable-link" href="#索引-gdb_002eadd_005fhistory"> ¶</a></span></dt>
+<dd><p>接受一个gdb.Value的实例（请参阅<a class="pxref" href="来自下级的值.html">来自下级的值</a>），并将该对象表示的值附加到GDB的值历史记录中（请参阅<a class="pxref" href="值历史记录.html">值历史记录</a>），并返回一个整数，即其历史编号。如果值不是gdb.Value，则使用gdb.Value构造函数进行转换。如果值无法转换为gdb.Value，则引发TypeError。
+</p>
+<p>当用Python实现的命令将单个gdb.Value作为结果打印时，将该值放入历史记录中将允许用户通过CLI历史记录工具方便地访问这些值。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002ehistory_005fcount"><span class="category-def">函数： </span><span><strong class="def-name">gdb.history_count</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#索引-gdb_002ehistory_005fcount"> ¶</a></span></dt>
+<dd><p>返回一个整数，指示GDB值历史记录中的值的数量（请参阅<a class="pxref" href="值历史记录.html">值历史记录</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="索引-gdb_002econvenience_

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>断点命令（使用GDB调试）</title>
+
+<meta name="description" content="断点命令（使用GDB调试）">
+<meta name="keywords" content="断点命令（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Breakpoints.html" rel="up" title="断点">
+<link href="Dynamic-Printf.html" rel="next" title="动态打印">
+<link href="Conditions.html" rel="prev" title="条件">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="断点命令">
+<div class="nav-panel">
+<p>
+下一个：<a href="Dynamic-Printf.html" accesskey="n" rel="next">动态打印</a>，上一个：<a href="Conditions.html" accesskey="p" rel="prev">断点条件</a>，向上：<a href="Breakpoints.html" accesskey="u" rel="up">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="断点命令列表"><span>5.1.7断点命令列表<a class="copiable-link" href="#断点命令列表"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="索引-断点命令"></a>
+<p>你可以为任何断点（或观察点或捕获点）指定一系列命令，当你的程序因该断点而停止时执行这些命令。例如，你可能想要打印某些表达式的值，或者启用其他断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-end-_0028断点命令_0029"></a>
+<a id="索引-命令"></a><span><code class="code">commands <span class="r">[</span><var class="var">列表</var>&hellip;<span class="r">]</span></code><a class="copiable-link" href="#索引-命令"> &para;</a></span></dt>
+<dt><code class="code">&hellip; <var class="var">命令列表</var> &hellip;</code></dt>
+<dt><code class="code">end</code></dt>
+<dd><p>为给定的断点指定一个命令列表。命令本身出现在接下来的行中。输入一行只包含<code class="code">end</code>的行来终止命令。
+</p>
+<p>要从一个断点中删除所有命令，输入<code class="code">commands</code>并立即跟一个<code class="code">end</code>；也就是说，不输入任何命令。
+</p>
+<p>不带参数时，<code class="code">commands</code>指的是最后设置的断点、观察点或捕获点（不是最近遇到的断点）。如果最近的断点是用一个命令设置的，那么<code class="code">commands</code>将应用于该命令设置的所有断点。这适用于由<code class="code">rbreak</code>设置的断点，也适用于当一个单一的<code class="code">break</code>命令创建多个断点时（见 <a class="pxref" href="Ambiguous-Expressions.html">模糊表达式</a>）。
+</p></dd>
+</dl>
+
+<p>在一个<var class="var">命令列表</var>中，按下<kbd class="key">RET</kbd>作为重复上一个<small class="sc">GDB</small>命令的方式是被禁用的。
+</p>
+<p>在命令列表中，你可以使用命令<kbd class="kbd">disable $_hit_bpnum</kbd>来禁用遇到的断点。
+</p>
+<p>如果你的断点有多个代码位置，命令<kbd class="kbd">disable $_hit_bpnum.$_hit_locno</kbd>将禁用遇到的特定断点代码位置。如果断点只有一个位置，这个命令将禁用遇到的断点。
+</p>z<p>你可以使用断点命令再次启动你的程序。只需使用<code class="code">continue</code>命令，或<code class="code">step</code>，或任何其他恢复执行的命令。
+</p>
+<p>在恢复执行的命令之后，命令列表中的任何其他命令都将被忽略。这是因为每当你恢复执行（即使是使用简单的<code class="code">next</code>或<code class="code">step</code>）时，你可能会遇到另一个断点&mdash;它可能有自己的命令列表，这会导致关于执行哪个列表的歧义。
+</p>
+<a class="index-entry-id" id="索引-silent"></a>
+<p>如果你在命令列表中指定的第一个命令是<code class="code">silent</code>，则不会打印通常关于在断点处停止的消息。对于要打印特定消息然后继续的断点，这可能是可取的。如果其余命令都不打印任何内容，你将看不到断点被命中的迹象。<code class="code">silent</code>仅在断点命令列表的开头有意义。
+</p>
+<p><code class="code">echo</code>、<code class="code">output</code>和<code class="code">printf</code>命令允许你打印精确控制的输出，并且在静默断点中通常很有用。见 <a class="xref" href="Output.html">用于控制输出的命令</a>。
+</p>
+<p>例如，这是你如何使用断点命令在每次<code class="code">x</code>为正时在进入<code class="code">foo</code>时打印<code class="code">x</code>的值。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break foo if x&gt;0
+commands
+silent
+printf &quot;x is %d\n&quot;,x
+cont
+end
+</pre></div>
+
+<p>断点命令的一个应用是弥补一个错误，以便你可以测试另一个错误。在错误的代码行之后设置一个断点，给它一个条件来检测错误发生的情况，并给它命令来为任何需要的变量赋正确的值。以<code class="code">continue</code>命令结束，这样你的程序就不会停止，并以<code class="code">silent</code>命令开始，这样就不会产生输出。这是一个例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">break 403
+commands
+silent
+set x = y + 4
+cont
+end
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Dynamic-Printf.html">动态打印</a>，上一个：<a href="Conditions.html">断点条件</a>，向上：<a href="Breakpoints.html">断点、观察点和捕获点</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

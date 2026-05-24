@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>AArch64（使用GDB调试）</title>
+
+<meta name="description" content="AArch64（使用GDB调试）">
+<meta name="keywords" content="AArch64（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Architectures.html" rel="up" title="架构">
+<link href="x86.html" rel="next" title="x86">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: null}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AArch64">
+<div class="nav-panel">
+<p>
+下一页：<a href="x86.html" accesskey="n" rel="next">x86</a>，上一级：<a href="Architectures.html" accesskey="u" rel="up">架构</a> &nbsp; [<a href="index.html?#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="AArch64-"><span>21.4.1 AArch64<a class="copiable-link" href="#AArch64-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-AArch64支持"></a>
+
+<p>当GDB调试AArch64架构时，它提供以下特殊命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-debug-aarch64"></a><span><code class="code">set debug aarch64</code><a class="copiable-link" href="#index-set-debug-aarch64"> &para;</a></span></dt>
+<dd><p>此命令确定是否显示AArch64架构特定的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug aarch64</code></dt>
+<dd><p>显示是否显示AArch64调试消息。
+</p>
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a href="#AArch64-Scalable-Vector-Extension" accesskey="1">AArch64可扩展向量扩展</a></li>
+<li><a href="#AArch64-Scalable-Matrix-Extension" accesskey="2">AArch64可扩展矩阵扩展</a></li>
+<li><a href="#AArch64-Scalable-Matrix-Extension" accesskey="3">AArch64可扩展矩阵扩展2</a></li>
+<li><a href="#AArch64-Pointer-Authentication" accesskey="4">AArch64指针认证</a></li>
+<li><a href="#AArch64-Memory-Tagging-Extension" accesskey="5">AArch64内存标记扩展</a></li>
+<li><a href="#AArch64-Guarded-Control-Stack" accesskey="6">AArch64保护控制栈</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AArch64-Scalable-Vector-Extension">
+<h4 class="subsubsection"><span>21.4.1.1 AArch64可扩展向量扩展<a class="copiable-link" href="#AArch64-Scalable-Vector-Extension"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-可扩展向量扩展_002c-AArch64"></a>
+<a class="index-entry-id" id="index-SVE_002c-AArch64"></a>
+
+<p>当GDB调试AArch64架构时，如果存在可扩展向量扩展（SVE），那么GDB将提供向量寄存器<code class="code">$z0</code>到<code class="code">$z31</code>、向量谓词寄存器<code class="code">$p0</code>到<code class="code">$p15</code>以及<code class="code">$ffr</code>寄存器。此外，还将提供伪寄存器<code class="code">$vg</code>。这是当前线程的向量粒度，表示SVE <code class="code">z</code>寄存器中的64位块数。
+</p>
+<p>如果向量长度发生变化，<code class="code">$vg</code>寄存器将更新，但<code class="code">z</code>和<code class="code">p</code>寄存器的长度不会改变。这是GDB的一个已知限制，不影响目标进程的执行。
+</p>
+<p>对于SVE, 在GDB的源代码和本文档中使用以下定义：
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">vl</var>：向量长度，以字节为单位。它定义了每个<code class="code">Z</code>寄存器的大小。
+<a class="anchor" id="vl"></a><a class="index-entry-id" id="index-vl"></a>
+
+</li><li><var class="var">vq</var>：<var class="var">vl</var>中的128位单元数。这主要由GDB和Linux内核在内部使用。
+<a class="anchor" id="vq"></a><a class="index-entry-id" id="index-vq"></a>
+
+</li><li><var class="var">vg</var>：<var class="var">vl</var>中的64位单元数。这主要由GDB和Linux内核在内部使用。
+<a class="anchor" id="vg"></a><a class="index-entry-id" id="index-vg"></a>
+
+</li></ul>
+
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Scalable-Matrix-Extension">
+<h4 class="subsubsection"><span>2..1.2 AArch64可扩展矩阵扩展<a class="copiable-link" href="#AArch64-Scalable-Matrix-Extension"> &para;</a></span></h4>
+<a class="anchor" id="AArch64-SME"></a><a class="index-entry-id" id="index-可扩展矩阵扩展_002c-AArch64"></a>
+<a class="index-entry-id" id="index-SME_002c-AArch64"></a>
+
+<p>可扩展矩阵扩展（<a class="url" href="https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/scalable-matrix-extension-armv9-a-architecture"><abbr class="acronym">SME</abbr></a>）是AArch64架构的一个扩展，它通过提供二维寄存器<code class="code">ZA</code>扩展了可扩展向量扩展（<a class="url" href="https://developer.arm.com/documentation/101726/4-0/Learn-about-the-Scalable-Vector-Extension--SVE-/What-is-the-Scalable-Vector-Extension-"><abbr class="acronym">SVE</abbr></a>）的概念，<code class="code">ZA</code>是一个大小可变的方阵，就像SVE提供一组大小可变的向量寄存器一样。
+</p>
+<p>与SVE类似，每个<code class="code">Z</code>寄存器的大小与向量长度（简称为<var class="var">vl</var>）直接相关。<abbr class="acronym">SME</abbr> <code class="code">ZA</code>矩阵寄存器的大小与流向量长度（简称为<var class="var">svl</var>）直接相关。见 <a class="xref" href="#vl">vl</a>。见 <a class="xref" href="#svl">svl</a>。
+</p>
+<p>如果<code class="code">ZA</code>寄存器未被使用，其状态可以是活动的或非活动的。
+</p>
+<p><abbr class="acronym">SME</abbr>还引入了一种新的执行模式，称为流SVE模式（简称为流模式）。当流模式启用时，程序支持执行<abbr class="acronym">SVE2</abbr>指令，并且SVE寄存器的向量长度将为<var class="var">svl</var>。当流模式禁用时，SVE寄存器的向量长度为<var class="var">vl</var>。
+</p>
+<p>有关<abbr class="acronym">SME</abbr>和<abbr class="acronym">SVE</abbr>的更多信息，请参考官方的 <a class="url" href="https://developer.arm.com/documentation/ddi0487/latest">架构文档</a>。
+</p>
+<p>在GDB的源代码和本文档中使用以下定义：
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">svl</var>：流向量长度，以字节为单位。它定义了二维方阵<code class="code">ZA</code>的每个维度的大小。因此，<code class="code">ZA</code>的总大小为<var class="var">svl</var>乘以<var class="var">svl</var>。
+
+<p>当流模式启用时，它也定义了SVE寄存器的大小。
+<a class="anchor" id="svl"></a><a class="index-entry-id" id="index-svl"></a>
+</p>
+</li><li><var class="var">svq</var>：<var class="var">svl</var>中的128位单元数，也称为流向量粒度。这主要由GDB和Linux内核在内部使用。
+<a class="anchor" id="svq"></a><a class="index-entry-id" id="index-svq"></a>
+
+</li><li><var class="var">svg</var>：<var class="var">svl</var>中的64位单元数。这主要由GDB和Linux内核在内部使用。
+<a class="anchor" id="svg"></a><a class="index-entry-id" id="index-svg"></a>
+
+</li></ul>
+
+<p>当GDB调试AArch64架构时，如果存在可扩展矩阵扩展（<abbr class="acronym">SME</abbr>），那么GDB将使<code class="code">ZA</code>寄存器可用。GDB还将使<code class="code">SVG</code>寄存器和<code class="code">SVCR</code>伪寄存器可用。
+</p>
+<p><code class="code">ZA</code>寄存器是一个大小为<var class="var">svl</var>乘以<var class="var">svl</var>的二维字节方阵。为了简化在GDB中对<code class="code">ZA</code>寄存器的表示和访问，它被定义为一个大小为<var class="var">svl</var>x<var class="var">svl</var>字节的向量。
+</p>
+<p>如果用户想将<code class="code">ZA</code>寄存器作为矩阵进行索引，可以将<code class="code">ZA</code>引用为<code class="code">ZA[<var class="var">i</var>][<var class="var">j</var>]</code>，其中<var class="var">i</var>是行号，<var class="var">j</var>是列号。
+</p>
+<p><code class="code">SVG</code>寄存器始终包含当前线程的流向量粒度（<var class="var">svg</var>）。从寄存器<code class="code">SVG</code>的值我们可以很容易地推导出<var class="var">svl</var>的值。
+</p>
+<a class="anchor" id="aarch64-sme-svcr"></a><p><code class="code">SVCR</code>伪寄存器（流向量控制寄存器）是一个状态寄存器，它包含两个状态位：第0位的<small class="sc">SM</small>和第1位的<small class="sc">ZA</small>。
+</p>
+<p>如果<small class="sc">SM</small>位为1，表示当前线程处于流模式，SVE寄存器的大小将使用<var class="var">svl</var>。如果<small class="sc">SM</small>位为0，当前线程不处于流模式，SVE寄存器的大小将使用<var class="var">vl</var>。见 <a class="xref" href="#vl">vl</a>。
+</p>
+<p>如果<small class="sc">ZA</small>位为1，表示<code class="code">ZA</code>寄存器正在被使用并且有有意义的内容。如果<small class="sc">ZA</small>位为0，<code class="code">ZA</code>寄存器不可用，其内容未定义。
+</p>
+<p>为了方便和简单起见，如果<small class="sc">ZA</small>位为0，<code class="code">ZA</code>寄存器及其所有伪寄存器将读取为零。
+</p>
+<p>如果在程序执行期间<var class="var">svl</var>发生变化，那么<code class="code">ZA</code>寄存器的大小和<code class="code">SVCR</code>伪寄存器中的位将被更新以反映这一点。
+</p>
+<p>用户可以在程序执行期间通过修改<code class="code">SVG</code>寄存器的值来更改<var class="var">svl</var>。
+</p>
+<p>每当用新值修改<code class="code">SVG</code>寄存器时，将观察到以下情况：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">SVCR</code>伪寄存器中的<small class="sc">ZA</small>和<small class="sc">SM</small>位将被清除。
+
+</li><li><code class="code">ZA</code>寄存器将具有新的大小，其状态将被清除，迫使其内容和所有伪寄存器的内容都回到零。
+
+</li><li>如果<small class="sc">SM</small>位为1，SVE寄存器将被重置为基于<var class="var">vl</var>而不是<var class="var">svl</var>的大小。如果在修改<code class="code">SVG</code>寄存器之前<small class="sc">SM</small>位为0，则对SVE寄存器没有可观察到的影响。
+
+</li></ul>
+
+<p><code class="code">SVG</code>寄存器的可能值为2, , 8, 16, 32。这些数字分别对应于流向量长度（<var class="var">svl</var>）值16字节、32字节、64字节、128字节和256字节。
+</p>
+<p><code class="code">ZA</code>寄存器的最小大小为16 x 16（256）字节, 最大大小为256 x 256（66536）字节。在流模式下，当<small class="sc">SM</small>位置1时，<code class="code">ZA</code>寄存器的大小是所有SVE <code class="code">Z</code>寄存器大小的总和。
+</p>
+<p><code class="code">ZA</code>寄存器也可以使用平铺（tile）和切片（tile slice）进行访问。
+</p>
+<p>平铺伪寄存器是<code class="code">ZA</code>寄存器内的方形二维子元素数组。
+</p>
+<p>平铺伪寄存器具有以下命名模式：
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">qualifier</var>&gt;</code>
+
+<p>总共有31个<code class="code">ZA</code>平铺伪寄存器。它们是
+<code class="code">ZA0B</code>, <code class="code">ZA0H</code>到<code class="code">ZA1H</code>, <code class="code">ZA0S</code>到<code class="code">ZA3S</code>,
+<code class="code">ZA0D</code>到<code class="code">ZA7D</code>和<code class="code">ZA0Q</code>到<code class="code">ZA15Q</code>。
+</p>
+<p>切片伪寄存器是<code class="code">ZA</code>寄存器内水平或垂直相邻元素的向量。
+</p>
+<p>切片伪寄存器具有以下命名模式：
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">direction</var>&gt;&lt;<var class="var">qualifier</var>&gt;
+&lt;<var class="var">slice number</var>&gt;</code>
+
+<p>最多有16个平铺（0 ~ 15），方向可以是<code class="code">v</code>（垂直）或<code class="code">h</code>（水平），限定符可以是<code class="code">b</code>（字节）、
+<code class="code">h</code>（半字）、<code class="code">s</code>（字）、<code class="code">d</code>（双字）和<code class="code">q</code>
+（四字），并且根据<var class="var">svl</var>的值最多有256个切片（0 ~ 255）。切片的数量与<var class="var">svl</var>的值相同。
+</p>
+<p>可用的切片伪寄存器数量可能很大。对于最小<var class="var">svl</var>为16字节，有5个（限定符数量）x 
+2个（方向数量）x 16个（<var class="var">svl</var>）伪寄存器。对于最大<var class="var">svl</var>为256字节，有5 x 2 x 256个伪寄存器。
+</p>
+<p>当列出所有可用寄存器时, 用户将看到当前可用的<code class="code">ZA</code>伪寄存器。对于给定的<var class="var">svl</var>值不存在的伪寄存器将不会显示。
+</p>
+<p>有关<abbr class="acronym">SME</abbr>及其术语的更多信息，请参考
+<a class="url" href="https://developer.arm.com/documentation/ddi0616/aa/">《Arm架构参考手册补编》，可扩展矩阵扩展（<abbr class="acronym">SME</abbr>），适用于Armv9-A》。
+</p>
+<p>一些功能仍在开发中，依赖于
+<a class="url" href="https://github.com/ARM-software/acle/releases/latest">ACLE</a>和
+<a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst">ABI</a> 
+定义，因此当前GDB对<abbr class="acronym">SME</abbr>的支持存在已知限制
+
+<p>一个这样的例子是在GDB调试的程序中调用函数。这样的调用不了解<abbr class="acronym">SME</abbr>，因此不会考虑<code class="code">SVCR</code>伪寄存器位或<code class="code">ZA</code>寄存器内容。见 <a class="xref" href="Calling.html">调用程序函数</a>。
+</p>
+<p>涉及<code class="code">TPIDR2</code>寄存器的 <a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs6

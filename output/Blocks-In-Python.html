@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>Python中的块（使用GDB调试）</title>
+
+<meta name="description" content="Python中的块（使用GDB调试）">
+<meta name="keywords" content="Python中的块（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Symbols-In-Python.html" rel="next" title="Python中符号的表示">
+<link href="Frames-In-Python.html" rel="prev" title="从Python访问下级堆栈帧">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Python中的块">
+<div class="nav-panel">
+<p>
+下一页：<a href="Symbols-In-Python.html" accesskey="n" rel="next">Python中符号的表示</a>，上一页：<a href="Frames-In-Python.html" accesskey="p" rel="prev">从Python访问下级堆栈帧</a>，向上：<a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="从Python访问块"><span>23.3.2.29从Python访问块<a class="copiable-link" href="#从Python访问块"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-python中的块"></a>
+<a class="index-entry-id" id="index-gdb_002eBlock"></a>
+
+<p>在GDB中，符号存储在块中。一个块大致对应于源代码中的一个作用域。块是分层组织的，在Python中分别表示为一个<code class="code">gdb.Block</code>。块依赖于可用的调试信息。
+</p>
+<p>一个帧有一个块。有关帧的更深入讨论，请参阅<a class="ref" href="Frames-In-Python.html">从Python访问下级堆栈帧</a>。
+</p>
+<p>最外层的块称为<em class="dfn">全局块</em>。全局块通常包含公共全局变量和函数。
+</p>
+<p>嵌套在全局块内部的块是<em class="dfn">静态块</em>。静态块通常包含文件作用域的变量和函数。
+</p>
+<p>GDB提供了一种获取块的父块的方法，但目前没有办法检查块的子块，也无法遍历符号表中的所有块（请参阅<a class="pxref" href="Symbol-Tables-In-Python.html">Python中的符号表表示</a>）_。
+</p>
+<p>下面是一个简短的示例，应该有助于解释块：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* 这在全局块中。 */
+int global;
+
+/* 这在静态块中。 */
+static int file_scope;
+
+/* 'function' 在全局块中，'argument' 在 'function' 内部嵌套的块中。 */
+int function (int argument)
+{
+  /* 'local' 在 'function' 内部的块中。它可能与 'argument' 在同一个块中，也可能不在。 */ 
+  int local;
+
+  {
+     /* 'inner' 在一个块中，其父块是包含 'local' 的块。 */
+     int inner;
+
+     /* 如果此调用被编译器展开，你可能会在这里看到一个嵌套块，其函数是 'inline_function'，其父块是包含 'inner' 的块。 */
+     inline_function ();
+  }
+}
+</pre></div>
+
+<p>一个<code class="code">gdb.Block</code>是可迭代的。迭代器返回该块本地的符号（请参阅<a class="pxref" href="Symbols-In-Python.html">符号的Python表示</a>）。Python程序不应假设特定的块对象总是包含给定的符号，因为GDB功能和基础结构的变化可能会导致符号在符号表中的块之间移动。你还可以使用Python的<em class="dfn">字典语法</em>来访问此块中的变量，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">symbol = some_block['variable']  # symbol的类型是gdb.Symbol
+</pre></div>
+
+<p>在<code class="code">gdb</code>模块中可以使用以下与块相关的函数：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_00

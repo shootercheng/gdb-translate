@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>ARC特性（使用GDB调试）</title>
+
+<meta name="description" content="ARC特性（使用GDB调试）">
+<meta name="keywords" content="ARC特性（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Standard-Target-Features.html" rel="up" title="标准目标特性">
+<link href="ARM-Features.html" rel="next" title="ARM特性">
+<link href="Alpha-Features.html" rel="prev" title="Alpha特性">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARC-Features">
+<div class="nav-panel">
+<p>
+下一页：<a href="ARM-Features.html" accesskey="n" rel="next">ARM特性</a>，上一页：<a href="Alpha-Features.html" accesskey="p" rel="prev">Alpha特性</a>，向上：<a href="Standard-Target-Features.html" accesskey="u" rel="up">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="ARC-Features-1"><span>G.5.3 ARC特性<a class="copiable-link" href="#ARC-Features-1"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-ARC-Features"></a>
+
+<p>ARC处理器的可配置性非常高，以至于即使是核心寄存器及其数量也没有完全预先确定。此外，对GDB很重要的<em class="emph">标志</em>和<em class="emph">程序计数器（PC）</em>寄存器在ARC中并不是“核心”寄存器。因此，有两个特性是必须存在的：‘<samp class="samp">org.gnu.gdb.arc.core</samp>’和‘<samp class="samp">org.gnu.gdb.arc.aux</samp>’。</p>
+<p>所有目标都需要‘<samp class="samp">org.gnu.gdb.arc.core</samp>’特性。它必须包含以下寄存器：</p>
+<ul class="itemize mark-minus">
+<li>对于普通寄存器文件目标，从‘<samp class="samp">r0</samp>’到‘<samp class="samp">r25</samp>’。</li>
+<li>对于精简寄存器文件目标‘<samp class="samp">r0</samp>’到‘<samp class="samp">r3</samp>’以及‘<samp class="samp">r10</samp>’到‘<samp class="samp">r15</samp>’。</li>
+<li>‘<samp class="samp">gp</samp>’、‘<samp class="samp">fp</samp>’、‘<samp class="samp">sp</samp>’、‘<samp class="samp">r30</samp><a class="footnote" id="DOCF22" href="#FOOT22"><sup>22</sup></a>、‘<samp class="samp">blink</samp>’‘<samp class="samp">lp_count</samp>’、‘<samp class="samp">pcl</samp>’。</li>
+</ul>
+
+<p>对于ARCompact目标（ARCv1 ISA），‘<samp class="samp">org.gnu.gdb.arc.core</samp>’特性可能包含寄存器‘<samp class="samp">ilink1</samp>’和‘<samp class="samp">ilink2</samp>’。而对于ARC EM和ARC HS目标（ARCv2 ISA），可能存在寄存器‘<samp class="samp">ilink</samp>’。ARCv1和ARCv2的区别在于第<em class="emph">29</em>和<em class="emph">30</em>个寄存器的命名。对于ARCv1，它们被称为‘<samp class="samp">ilink1</samp>’和‘<samp class="samp">ilink2</samp>’，并且是可选的。对于ARCv2，它们被称为‘<samp class="samp">ilink</samp>’和‘<samp class="samp">r_30</samp>’，只有‘<samp class="samp">ilink</samp>’是可选的。‘<samp class="samp">ilink*</samp>’寄存器的可选性是因为在用户空间调试会话期间它们不可访问。</p>
+<p>扩展核心寄存器从‘<samp class="samp">r32</samp>’到‘<samp class="samp">r59</samp>’是可选的，它们的存在取决于配置。在调试GNU/Linux应用程序时，即用户空间调试时，这些核心寄存器不可用。</p>
+<p>所有ARC目标都需要‘<samp class="samp">org.gnu.gdb..arc.aux</samp>’特性。以下是与此特性相关的寄存器列表：</p>
+<ul class="itemize mark-minus">
+<li>必需的：‘<samp class="samp">pc</samp>’和‘<samp class="samp">status32</samp>’。</li>
+<li>可选的：‘<samp class="samp">lp_start</samp>’、‘<samp class="samp">lp_end</samp>’和‘<samp class="samp">bta</samp>’。</li>
+</ul>
+
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT22" href="#DOCF22">(22)</a></h5>
+<p>ARCv1不需要。</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="ARM-Features.html">ARM特性</a>，上一页：<a href="Alpha-Features.html">Alpha特性</a>，向上：<a href="Standard-Target-Features.html">标准目标特性</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

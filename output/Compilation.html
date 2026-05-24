@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>编译（使用GDB调试）</title>
+
+<meta name="description" content="编译（使用GDB调试）">
+<meta name="keywords" content="编译（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Starting.html" rel="next" title="启动">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="编译">
+<div class="nav-panel">
+<p>
+下一个：<a href="Starting.html" accesskey="n" rel="next">启动你的程序</a>，上一个：<a href="Running.html" accesskey="u" rel="up">在<small class="sc">GDB</small>下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="为调试而编译"><span>4.1为调试而编译<a class="copiable-link" href="#为调试而编译"> &para;</a></span></h3>
+
+<p>为了有效地调试程序，你需要在编译时生成调试信息。该调试信息存储在目标文件中；它描述了每个变量或函数的数据类型以及源行号与可执行代码中地址之间的对应关系。
+</p>
+<p>要请求调试信息，在运行编译器时指定&lsquo;<samp class="samp">-g</samp>&rsquo;选项。
+</p>
+<p>要交付给客户的程序是使用&lsquo;<samp class="samp">-O</samp>&rsquo;编译器选项进行优化编译的。然而，一些编译器无法同时处理&lsquo;<samp class="samp">-g</samp>&rsquo;和&lsquo;<samp class="samp">-O</samp>&rsquo;选项。使用这些编译器时，你无法生成包含调试信息的优化可执行文件。
+</p>
+<p><small class="sc">GCC</small>，即<small class="sc">GNU</small> C/C<code class="t">++</code>编译器，支持在有或没有&lsquo;<samp class="samp">-O</samp>&rsquo;的情况下使用&lsquo;<samp class="samp">-g</samp>&rsquo;，从而可以调试优化后的代码。我们建议你在编译程序时<em class="emph">始终</em>使用&lsquo;<samp class="samp">-g</samp>&rsquo;。你可能认为你的程序是正确的，但没必要冒险。更多信息，请参阅 <a class="ref" href="Optimized-Code.html">调试优化后的代码</a>。
+</p>
+<p><small class="sc">GNU</small> C编译器的旧版本允许使用变体选项&lsquo;<samp class="samp">-gg</samp>&rsquo;<!-- /@w -->来获取调试信息。<small class="sc">GDB</small>不再支持这种格式；如果你的<small class="sc">GNU</small> C编译器有此选项，请勿使用。
+</p>
+<p><small class="sc">GDB</small>了解预处理器宏，并可以向你展示它们的展开形式（见 <a class="pxref" href="Macros.html">C预处理器宏</a>）。如果你仅指定<samp class="option">-g</samp>标志，大多数编译器不会在调试信息中包含有关预处理器宏的信息。<small class="sc">GNU</small> C编译器的3.1版及更高版本，如果使用DWARF调试格式并指定选项<samp class="option">-g3</samp>，则会提供宏信息。
+</p>
+<p>有关影响调试信息的<small class="sc">GCC</small>选项的更多信息，请参阅<cite class="cite">使用GNU编译器集（GCC）</cite>中的 <a data-manual="gcc" href="https://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html#Debugging-Options">调试你的程序或GCC的选项</a>。
+</p>
+<p>如果你使用编译器支持的最新版本的DWARF调试格式，将获得最佳的调试体验。DWARF是目前<small class="sc">GDB</small>中最具表现力且支持最好的调试格式。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一个：<a href="Starting.html">启动你的程序</a>，上一个：<a href="Running.html">在<small class="sc">GDB</small>下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变的章节是“自由软件”和“自由软件需要自由文档”，封面文字是“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>C运算符（使用GDB调试）</title>
+
+<meta name="description" content="C运算符（使用GDB调试）">
+<meta name="keywords" content="C运算符（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="C.html" rel="up" title="C">
+<link href="C-Constants.html" rel="next" title="C常量">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-Operators">
+<div class="nav-panel">
+<p>
+下一个：<a href="C-Constants.html" accesskey="n" rel="next">C和C++常量</a>，上一级：<a href="C.html" accesskey="u" rel="up">C和C++</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="C-and-C_002b_002b-Operators"><span>15 - 4 - 1 - 1 C和C++运算符<a class="copiable-link" href="#C-and-C_002b_002b-Operators"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-C-and-C_002b_002b-operators"></a>
+
+<p>运算符必须在特定类型的值上定义。例如，<code class="code">+</code>在数字上定义，但不在结构体上定义。运算符通常在一组类型上定义。</p>
+<p>对于C和C++，以下定义适用：</p>
+<ul class="itemize mark-bullet">
+<li><em class="emph">整型类型</em> 包括带有其任何存储类说明符的 <code class="code">int</code>；<code class="code">char</code>；<code class="code">enum</code>；以及对于C++，<code class="code">bool</code>。</li>
+<li><em class="emph">浮点型类型</em>包括 <code class="code">float</code>、<code class="code">double</code> 和 <code class="code">long double</code>（如果目标平台支持）。</li>
+<li><em class="emph">指针类型</em>包括所有定义为 <code class="code">(<var class="var">type</var> *)</code> 的类型。</li>
+<li><em class="emph">标量类型</em>包括上述所有类型。</li>
+</ul>
+<p>支持以下运算符。它们按优先级递增的顺序列出：</p>
+<dl class="table">
+<dt><code class="code">,</code></dt>
+<dd><p>逗号或顺序运算符。逗号分隔列表中的表达式从左到右求值，整个表达式的结果是最后求值的表达式。</p></dd>
+<dt><code class="code">=</code></dt>
+<dd><p>赋值。赋值表达式的值是所赋的值。在标量类型上定义。</p></dd>
+<dt><code class="code"><var class="var">op</var>=</code></dt>
+<dd><p>用于形式为 <code class="code"><var class="var">a</var>&nbsp;<var class="var">op</var>=&nbsp;<var class="var">b</var></code><!-- /@w --> 的表达式，并转换为 <code class="code"><var class="var">a</var>&nbsp;=&nbsp;<var class="var">a&nbsp;op&nbsp;b</var></code><!-- /@w -->。<code class="code"><var class="var">op</var>=</code><!-- /@w --> 和 <code class="code">=</code> 具有相同的优先级。运算符 <var class="var">op</var> 是 <code class="code">|</code>、<code class="code">^</code>、<code class="code">&amp;</code>、<code class="code">&lt;&lt;</code>、<code class="code">&gt;&gt;</code>、<code class="code">+</code>、<code class="code">-</code>、<code class="code">*</code>、<code class="code">/</code>、<code class="code">%</code> 中的任何一个运算符。</p></dd>
+<dt><code class="code">?:</code></dt>
+<dd><p>三元运算符。<code class="code"><var class="var">a</var> ? <var class="var">b</var> : <var class="var">c</var></code> 可以理解为：如果 <var class="var">a</var> 为真，则 <var class="var">b</var>，否则 <var class="var">c</var>。参数 <var class="var">a</var> 应为整型类型。</p></dd>
+<dt><code class="code">||</code></dt>
+<dd><p>逻辑或。在整型类型上定义。</p></dd>
+<dt><code class="code">&amp;&amp;</code></dt>
+<dd><p>逻辑与。在整型类型上定义。</p></dd>
+<dt><code class="code">|</code></dt>
+<dd><p>按位或。在整型类型上定义。</p></dd>
+<dt><code class="code">^</code></dt>
+<dd><p>按位异或。在整型类型上定义。</p></dd>
+<dt><code class="code">&amp;</code></dt>
+<dd><p>按位与。在整型类型上定义。</p></dd>
+<dt><code class="code">==<span class="r">, </span>!=</code></dt>
+<dd><p>相等和不等。在标量类型上定义。这些表达式的值在为假时为0，在为真时为非零。</p></dd>
+<dt><code class="code">&lt;<span class="r">, </span>&gt;<span class="r">, </span>&lt;=<span class="r">, </span>&gt;=</code></dt>
+<dd><p>小于、大于、小于或等于、大于或等于。在标量类型上定义。这些表达式的值在为假时为0，在为真时为非零。</p></dd>
+<dt><code class="code">&lt;&lt;<span class="r">, </span>&gt;&gt;</code></dt>
+<dd><p>左移和右移。在整型类型上定义。</p></dd>
+<dt><code class="code">@</code></dt>
+<dd><p>GDB“人工数组”运算符（见 <a class="pxref" href="Expressions.html">表达式</a>）。</p></dd>
+<dt><code class="code">+<span class="r">, </span>-</code></dt>
+<dd><p>加法和减法。在整型类型、浮点型类型和指针类型上定义。</p></dd>
+<dt><code class="code">*<span class="r">, </span>/<span class="r">, </span>%</code></dt>
+<dd><p>乘法、除法和取模。乘法和除法在整型和浮点型类型上定义。取模在整型类型上定义。</p></dd>
+<dt><code class="code">++<span class="r">, </span>--</code></dt>
+<dd><p>递增和递减。当出现在变量之前时，操作在变量用于表达式之前执行；当出现在变量之后时，变量的值在操作发生之前使用。</p></dd>
+<dt><code class="code">*</code></dt>
+<dd><p>指针解引用。在指针类型上定义。与 <code class="code">++</code> 具有相同的优先级。</p></dd>
+<dt><code class="code">&amp;</code></dt>
+<dd><p>地址运算符。在变量上定义。与 <code class="code">++</code> 具有相同的优先级。
+对于调试C++，GDB实现了一种超出C++语言本身允许范围的 '&amp;' 的用法：你可以使用 '&amp;(&amp;<var class="var">ref</var>)' 来检查C++引用变量（用 '&amp;<var class="var">ref</var>' 声明）存储的地址。</p></dd>
+<dt><code class="code">-</code></dt>
+<dd><p>取负。在整型和浮点型类型上定义。与 <code class="code">++</code> 具有相同的优先级。</p></dd>
+<dt><code class="code">!</code></dt>
+<dd><p>逻辑非。在整型类型上定义。与 <code class="code">++</code> 具有相同的优先级。</p></dd>
+<dt><code class="code">~</code></dt>
+<dd><p>按位取反运算符。在整型类型上定义。与 <code class="code">++</code> 具有相同的优先级。</p></dd>
+<dt><code class="code">.<span class="r">, </span>-&gt;</code></dt>
+<dd><p>结构体成员和指向结构体成员。为方便起见，GDB将两者视为等效，根据存储的类型信息选择是否解引用指针。在 <code class="code">struct</code> 和 <code class="code">union</code> 数据上定义。</p></dd>
+<dt><code class="code">.*<span class="r">, </span>-&gt;*</code></dt>

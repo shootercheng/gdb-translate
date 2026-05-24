@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>运行时的注释（使用GDB调试）</title>
+
+<meta name="description" content="运行时的注释（使用GDB调试）">
+<meta name="keywords" content="运行时的注释（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Annotations.html" rel="up" title="注释">
+<link href="Source-Annotations.html" rel="next" title="源注释">
+<link href="Invalidation.html" rel="prev" title="失效">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="运行时的注释">
+<div class="nav-panel">
+<p>
+下一页：<a href="Source-Annotations.html" accesskey="n" rel="next">显示源文件</a>，上一页：<a href="Invalidation.html" accesskey="p" rel="prev">失效通知</a>，向上：<a href="Annotations.html" accesskey="u" rel="up"><small class="sc">GDB</small>注释</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="运行程序"><span>28.6运行程序<a class="copiable-link" href="#运行程序"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-运行程序的注释"></a>
+
+<a class="index-entry-id" id="索引-开始注释"></a>
+<a class="index-entry-id" id="索引-停止注释"></a>
+<p>当程序由于诸如<code class="code">step</code>或<code class="code">continue</code>这样的<small class="sc">GDB</small>命令开始执行时，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z开始
+</pre></div>
+
+<p>会输出。当程序停止时，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z停止
+</pre></div>
+
+<p>会输出。在<code class="code">停止</code>注释之前，有各种注释描述程序是如何停止的。
+</p>
+<dl class="table">
+<dt><a id="索引-退出注释"></a><span><code class="code">^Z^Z退出 <var class="var">退出状态</var></code><a class="copiable-link" href="#索引-退出注释"> &para;</a></span></dt>
+<dd><p>程序已退出，<var class="var">退出状态</var>是退出状态（成功退出为零，否则为非零）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="索引-信号名注释"></a>
+<a class="index-entry-id" id="索引-信号名结束注释"></a>
+<a class="index-entry-id" id="索引-信号字符串注释"></a>
+<a class="index-entry-id" id="索引-信号字符串结束注释"></a>
+<a id="索引-因信号退出注释"></a><span><code class="code">^Z^Z因信号退出</code><a class="copiable-link" href="#索引-因信号退出注释"> &para;</a></span></dt>
+<dd><p>程序因信号退出。在<code class="code">^Z^Z因信号退出</code>之后，注释继续：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><var class="var">介绍文本</var>
+^Z^Z信号名
+<var class="var">名称</var>
+^Z^Z信号名结束
+<var class="var">中间文本</var>
+^Z^Z信号字符串
+<var class="var">字符串</var>
+^Z^Z信号字符串结束
+<var class="var">结束文本</var>
+</pre></div>
+
+<p>其中<var class="var">名称</var>是信号的名称，如<code class="code">SIGILL</code>或<code class="code">SIGSEGV</code>，<var class="var">字符串</var>是信号的解释，如<code class="code">非法指令</code>或<code class="code">段错误</code>。参数<var class="var">介绍文本</var>、<var class="var">中间文本</var>和<var class="var">结束文本</var>是为了方便用户，没有特定格式。
+</p>
+</dd>
+<dt><a id="索引-信号注释"></a><span><code class="code">^Z^Z信号</code><a class="copiable-link" href="#索引-信号注释"> &para;</a></span></dt>
+<dd><p>此注释的语法与<code class="code">因信号退出</code>相同，但<small class="sc">GDB</small>只是说程序接收到了信号，而不是说它因该信号而终止。
+</p>
+</dd>
+<dt><a id="索引-断点注释"></a><span><code class="code">^Z^Z断点 <var class="var">编号</var></code><a class="copiable-link" href="#索引-断点注释"> &para;</a></span></dt>
+<dd><p>程序命中了断点编号<var class="var">编号</var>。
+</p>
+</dd>
+<dt><a id="索引-观察点注释"></a><span><code class="code">^Z^Z观察点 <var class="var">编号</var></code><a class="copiable-link" href="#索引-观察点注释"> &para;</a></span></dt>
+<dd><p>程序命中了观察点编号<var class="var">编号</var>。

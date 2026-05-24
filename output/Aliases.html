@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 © 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU Manual”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>别名（使用GDB调试）</title>
+
+<meta name="description" content="别名（使用GDB调试）">
+<meta name="keywords" content="别名（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Extending-GDB.html" rel="up" title="扩展GDB">
+<link href="Python.html" rel="next" title="Python">
+<link href="Sequences.html" rel="prev" title="命令的预定义序列">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="别名">
+<div class="nav-panel">
+<p>
+下一页：<a href="Python.html" accesskey="n" rel="next">使用Python扩展<small class="sc">GDB</small></a>，上一页：<a href="Sequences.html" accesskey="p" rel="prev">命令的预定义序列</a>，向上：<a href="Extending-GDB.html" accesskey="u" rel="up">扩展<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="命令别名"><span>23.2命令别名<a class="copiable-link" href="#命令别名"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-命令别名"></a>
+
+<p>别名允许你为现有命令定义替代拼写。
+例如，如果在Python中定义的新<small class="sc">GDB</small>命令（见 <a class="pxref" href="Python.html">使用Python扩展<small class="sc">GDB</small></a>）有一个很长的名字，那么有一个缩写版本会很方便，可以减少输入量。
+</p>
+<p><small class="sc">GDB</small>本身就使用别名。例如，&lsquo;<samp class="samp">s</samp>&rsquo;是&lsquo;<samp class="samp">step</samp>&rsquo;命令的别名，尽管它在其他情况下是&lsquo;<samp class="samp">set</samp>&rsquo;和&lsquo;<samp class="samp">show</samp>&rsquo;等其他命令的模糊缩写。
+</p>
+<p>别名还用于提供多词命令的缩短或更常用版本。例如，<small class="sc">GDB</small>提供了&lsquo;<samp class="samp">tty</samp>&rsquo;作为&lsquo;<samp class="samp">set inferior-tty</samp>&rsquo;命令的别名。
+</p>
+<p>你可以使用&lsquo;<samp class="samp">alias</samp>&rsquo;命令定义新的别名。
+</p>
+<dl class="table">
+<dt><a id="index-alias"></a><span><code class="code">alias [-a] [--] <var class="var">别名</var> = <var class="var">命令</var> [<var class="var">默认参数</var>]</code><a class="copiable-link" href="#index-alias"> &para;</a></span></dt>
+</dl>
+
+<p><var class="var">别名</var>指定新别名的名称。<var class="var">别名</var>的每个单词必须由字母、数字、破折号和下划线组成。
+</p>
+<p><var class="var">命令</var>指定要被别名化的现有命令的名称。
+</p>
+<p><var class="var">命令</var>也可以是现有别名的名称。在这种情况下，<var class="var">命令</var>不能是有默认参数的别名。
+</p>
+<p>&lsquo;<samp class="samp">-a</samp>&rsquo;选项指定新别名是命令的缩写。缩写在命令补全中不使用。
+</p>
+<p>&lsquo;<samp class="samp">--</samp>&rsquo;选项指定选项的结束，当<var class="var">别名</var>以破折号开头时很有用。
+</p>
+<p>你可以为你的别名指定 <var class="var">默认参数</var>。这些<var class="var">默认参数</var>将自动添加到在命令行上明确输入的别名参数之前。
+</p>
+<p>例如，下面定义了一个别名 <code class="code">btfullall</code>，它显示所有局部变量和所有帧参数：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias btfullall = backtrace -full -frame-arguments all</pre></div>
+
+<p>有关<var class="var">默认参数</var>的更多信息，请参阅 <a class="ref" href="Command-aliases-default-args.html">默认参数</a>。
+</p>
+<p>这里有一个简单的例子，展示了如何创建命令的缩写，以便减少输入量。假设你厌倦了输入&lsquo;<samp class="samp">disas</samp>&rsquo;，它是&lsquo;<samp class="samp">disassemble</samp>&rsquo;命令当前最短的明确缩写，而你想要一个更短的版本，名为&lsquo;<samp class="samp">di</samp>&rsquo;。以下操作将实现这一点。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a di = disas</pre></div>
+
+<p>请注意，别名与用户定义的命令不同。对于用户定义的命令，你还需要使用&lsquo;<samp class="samp">document</samp>&rsquo;命令为其编写文档。别名会自动采用现有命令的文档。
+</p>
+<p>这里有一个例子，我们将&lsquo;<samp class="samp">elms</samp>&rsquo;作为&lsquo;<samp class="samp">set print elements</samp>&rsquo;命令中&lsquo;<samp class="samp">elements</samp>&rsquo;的缩写。这是为了展示你可以对命令的任何部分进行缩写。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a set print elms = set print elements
+(gdb) alias -a show print elms = show print elements
+(gdb) set p elms 200
+(gdb) show p elms
+Limit on string chars or array elements to print is 200.</pre></div>
+
+<p>请注意，如果要定义&lsquo;<samp class="samp">set</samp>&rsquo;命令的别名，并且想要为相应的&lsquo;<samp class="samp">show</samp>&rsquo;命令定义别名，则需要分别定义后者。
+</p>
+<p>在 <var class="var">命令</var> 和 <var class="var">别名</var> 中允许使用明确缩写的命令，就像通常一样。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a set pr elms = set p ele</pre></div>
+
+<p>最后，这里有一个例子，展示了为更复杂的命令创建单字别名。
+这创建了&lsquo;<samp class="samp">set print elements</samp>&rsquo;命令的别名&lsquo;<samp class="samp">spe</samp>&rsquo。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias spe = set print elements
+(gdb) spe 20</pre></div>
+
+
+<ul class="mini-toc">
+<li><a href="Command-aliases-default-args.html" accesskey="1">默认参数</a></li>
+</ul>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Python.html">使用Python扩展<small class="sc">GDB</small></a>，上一页：<a href="Sequences.html">命令的预定义序列</a>，向上：<a href="Extending-GDB.html">扩展<small class="sc">GDB</small></a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

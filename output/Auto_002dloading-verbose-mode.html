@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。” -->
+<title>自动加载详细模式（使用GDB调试）</title>
+
+<meta name="description" content="自动加载详细模式（使用GDB调试）">
+<meta name="keywords" content="自动加载详细模式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Auto_002dloading.html" rel="up" title="自动加载">
+<link href="Auto_002dloading-safe-path.html" rel="prev" title="自动加载安全路径">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="自动加载详细模式">
+<div class="nav-panel">
+<p>
+上一个：<a href="Auto_002dloading-safe-path.html" accesskey="p" rel="prev">自动加载的安全限制</a>，向上：<a href="Auto_002dloading.html" accesskey="u" rel="up">自动加载关联文件</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="显示尝试自动加载的文件"><span>22.8.4 显示尝试自动加载的文件<a class="copiable-link" href="#显示尝试自动加载的文件"> &para;</a></span></h4>
+<a class="index-entry-id" id="索引-自动加载详细模式"></a>
+
+<p>为了更清楚地了解可以放置要与下级进程一起自动加载的脚本的所有文件位置 &mdash; 或者为了保护自己免受意外执行不可信脚本的影响 &mdash; <small class="sc">GDB</small> 提供了一个功能，用于打印所有尝试加载的文件。现有文件和不存在的文件都可能会被打印出来。
+</p>
+<p>例如，从其中自动加载文件是安全的目录列表（见 <a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）也适用于规范化的文件名，在设置时可能不太明显。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set debug auto-load on
+(gdb) file ~/src/t/true
+自动加载：正在为目标文件“/tmp/true”加载命令脚本“/tmp/true-gdb.gdb”的预定义序列。
+自动加载：正在更新“/usr:/opt”的目录。
+自动加载：正在使用目录 “/usr”.
+自动加载：正在使用目录 “/opt”.
+警告：文件“/tmp/true-gdb.gdb”的自动加载已被您设置为“/usr:/opt”的“自动加载安全路径”拒绝。
+</pre></div>
+
+<dl class="table">
+<dd><a class="anchor" id="set-debug-auto_002dload"></a></dd>
+<dt><a id="索引-set-debug-auto_002dload"></a><span><code class="code">set debug auto-load [on|off]</code><a class="copiable-link" href="#索引-set-debug-auto_002dload"> &para;</a></span></dt>
+<dd><p>设置是否打印尝试自动加载的文件名。
+</p>
+<a class="anchor" id="show-debug-auto_002dload"></a></dd>
+<dt><a id="索引-show-debug-auto_002dload"></a><span><code class="code">show debug auto-load</code><a class="copiable-link" href="#索引-show-debug-auto_002dload"> &para;</a></span></dt>
+<dd><p>显示是否开启了打印尝试自动加载的文件名的功能。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

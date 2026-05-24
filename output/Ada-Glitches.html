@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“A GNU手册”，封底文字如下（a）。
+
+（a）自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并促进软件自由。”—>
+<title>Ada故障（使用GDB调试）</title>
+
+<meta name="description" content="Ada故障（使用GDB调试）">
+<meta name="keywords" content="Ada故障（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Ada.html" rel="up" title="Ada">
+<link href="Ada-Source-Character-Set.html" rel="prev" title="Ada源字符集">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Glitches">
+<div class="nav-panel">
+<p>
+上一个：<a href="Ada-Source-Character-Set.html" accesskey="p" rel="prev">Ada源字符集</a>，向上：<a href="Ada.html" accesskey="u" rel="up">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Known-Peculiarities-of-Ada-Mode"><span>15.4.10.11 Ada模式的已知特性<a class="copiable-link" href="#Known-Peculiarities-of-Ada-Mode"> &para;</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-problems"></a>
+
+<p>除了前面列出的遗漏之处（见 <a class="pxref" href="Omissions-from-Ada.html">Ada的遗漏</a>），我们还知道GDB中Ada模式存在一些问题和限制，其中一些将在调试器和GNU Ada编译器的未来计划版本中得到修复。
+</p>
+<ul class="itemize mark-bullet">
+<li>编译器选择不在存储中作为对象实现的静态常量对调试器不可见。
+
+</li><li>函数参数列表中的命名参数关联被忽略（参数列表被视为按位置排列）。
+
+</li><li>许多有用的库包目前对调试器不可见。
+
+</li><li>定点算术、转换、输入和输出使用浮点算术进行，可能会给出仅近似主机机器上结果的结果。
+
+</li><li>GNAT编译器从不为Ada语言定义的任何标准符号生成前缀 <code class="code">Standard</code>。GDB知道这一点：当你使用它时，它会从名称中去除前缀，并且永远不会在局部符号中查找你如此限定的名称，也不会与其他包或子程序中的符号进行匹配。如果你在程序中的任何地方定义了除参数和局部变量之外的实体，其简单名称与 <code class="code">Standard</code> 中的名称匹配，GNAT在此处缺乏限定可能会导致混淆。当这种情况发生时，可以通过显式地用包 <code class="code">Standard</code> 限定有问题的名称来解决混淆。  
+</li></ul>
+
+<p>较旧版本的编译器有时会生成错误的调试信息，导致调试器错误地打印受影响实体的值。在某些情况下，调试器能够自动解决问题。在其他情况下，调试器能够解决问题，但必须专门启用解决方法。
+</p>
+<a class="index-entry-id" id="index-set-ada-trust_002dPAD_002dover_002dXVS"></a>
+<a class="index-entry-id" id="index-show-ada-trust_002dPAD_002dover_002dXVS"></a>
+<dl class="table">
+<dt><code class="code">set ada trust-PAD-over-XVS on</code></dt>
+<dd><p>配置GDB在计算Ada实体的值时严格遵循GNAT编码，特别是当涉及 <code class="code">PAD</code> 和 <code class="code">PAD___XVS</code> 类型时（有关GNAT编译器使用的编码的完整描述，请参阅GCC源中的 <code class="code">ada/exp_dbug.ads</code）。这是默认设置。
+</p>
+</dd>
+<dt><code class="code">set ada trust-PAD-over-XVS off</code></dt>
+<dd><p>这与GNAT编译器使用的编码有关。如果GDB有时为某些实体打印错误的值，将 <code class="code">ada trust-PAD-over-XVS</code> 更改为 <code class="code">off</code> 会激活一种解决方法，可能会修复问题。将 <code class="code">ada trust-PAD-over-XVS</code> 设置为 <code class="code">off</code> 始终是安全的，但这会带来轻微的性能损失，因此建议除非必要，否则将此设置保留为 <code class="code">on</code>。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-GNAT-descriptive-types"></a>
+<a class="index-entry-id" id="index-GNAT-encoding"></a>
+<p>在内部，调试器还依赖于编译器遵循一些称为“<samp class="samp">GNAT编码</samp>”的约定，所有这些都记录在GCC源中的 <samp class="file">gcc/ada/exp_dbug.ads</samp> 中。此编码描述了应为某些类型生成调试信息的方式。
+特别是，此约定使用了 <em class="dfn">描述性类型</em>，这些是纯粹为帮助调试器而生成的人工类型。
+</p>
+<p>这些编码是在当时使用的调试信息格式不够强大，无法描述Ada中可用的一些更复杂类型的时候定义的。由于DWARF允许我们表达几乎所有Ada特性，长期目标是慢慢地用它们的纯DWARF等效物替换这些描述性类型。为了促进这种过渡，有一个新的维护选项可用于强制调试器忽略那些描述性类型。它允许用户快速评估没有它们时GDB的工作情况。
+</p>
+<dl class="table">
+<dt><a id="index-maint-ada-set-ignore_002ddescriptive_002dtypes"></a><span><code class="code">maintenance ada set ignore-descriptive-types [on|off]</code><a class="copiable-link" href="#index-maint-ada-set-ignore_002ddescriptive_002dtypes"> &para;</a></span></dt>
+<dd><p>控制调试器是否应忽略描述性类型。默认值是不忽略描述性类型（<code class="code">off</code>）。 
+</p>
+</dd>
+<dt><a id="index-maint-ada-show-ignore_002ddescriptive_002dtypes"></a><span><code class="code">maintenance ada show ignore-descriptive-types</code><a class="copiable-link" href="#index-maint-ada-show-ignore_002ddescriptive_002dtypes"> &para;</a></span></dt>
+<dd><p>显示GDB是否忽略描述性类型。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+上一个：<a href="Ada-Source-Character-Set.html">Ada源字符集</a>，向上：<a href="Ada.html">Ada</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

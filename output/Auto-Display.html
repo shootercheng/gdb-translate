@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>自动显示（使用GDB调试）</title>
+
+<meta name="description" content="自动显示（使用GDB调试）">
+<meta name="keywords" content="自动显示（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Data.html" rel="up" title="数据">
+<link href="Print-Settings.html" rel="next" title="打印设置"> 
+<link href="Memory-Tagging.html" rel="prev" title="内存标记">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="自动显示">
+<div class="nav-panel">
+<p>
+下一页：<a href="Print-Settings.html" accesskey="n" rel="next">打印设置</a>，上一页：<a href="Memory-Tagging.html" accesskey="p" rel="prev">内存标记</a>，向上：<a href="Data.html" accesskey="u" rel="up">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="自动显示"><span>10.8 自动显示<a class="copiable-link" href="#自动显示"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-自动显示"></a>
+<a class="index-entry-id" id="索引-表达式显示"></a>
+
+<p>如果你发现自己经常想要打印一个表达式的值（以查看它是如何变化的），那么你可能想要将它添加到<em class="dfn">自动显示列表</em>中，以便GDB在你的程序每次停止时打印它的值。添加到列表中的每个表达式都被赋予一个数字来标识它；要从列表中删除一个表达式，你指定那个数字。自动显示看起来像这样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">2: foo = 38
+3: bar[5] = (struct hack *) 0x3804
+</pre></div>
+
+<p>这个显示展示了项目编号、表达式及其当前值。与你使用<code class="code">x</code>或<code class="code">print</code>手动请求的显示一样，你可以指定你喜欢的输出格式；实际上，<code class="code">display</code>会根据你的格式规范决定是使用<code class="code">print</code>还是<code class="code">x</code>&mdash;如果你指定了&lsquo;<samp class="samp">i</samp>&rsquo;或&lsquo;<samp class="samp">s</samp>&rsquo;格式，或者一个单位大小，它就使用<code class="code">x</code>；否则它使用<code class="code">print</code>。
+</p>
+<dl class="table">
+<dt><a id="索引-display"></a><span><code class="code">display <var class="var">expr</var></code><a class="copiable-link" href="#索引-display"> &para;</a></span></dt>
+<dd><p>将表达式<var class="var">expr</var>添加到每次程序停止时要显示的表达式列表中。见<a class="xref" href="Expressions.html">表达式</a>。
+</p>
+<p>使用<code class="code">display</code>后再次按下<kbd class="key">RET</kbd>，它不会重复。
+</p>
+</dd>
+<dt><code class="code">display/<var class="var">fmt</var> <var class="var">expr</var></code></dt>
+<dd><p>对于<var class="var">fmt</var>仅指定显示格式而不指定大小或计数的情况，将表达式<var class="var">expr</var>添加到自动显示列表中，但每次显示时都以指定的格式<var class="var">fmt</var>进行显示。见<a class="xref" href="Output-Formats.html">输出格式</a>。
+</p>
+</dd>
+<dt><code class="code">display/<var class="var">fmt</var> <var class="var">addr</var></code></dt>
+<dd><p>对于<var class="var">fmt</var>为&lsquo;<samp class="samp">i</samp>&rsquo;或&lsquo;<samp class="samp">s</samp>&rsquo;，或者包括单位大小或单位数量的情况，将表达式<var class="var">addr</var>作为内存地址添加到每次程序停止时要检查的列表中。检查实际上意味着执行&lsquo;<samp class="samp">x/<var class="var">fmt</var> <var class="var">addr</var></samp>&rsquo;。见<a class="xref" href="Memory.html">检查内存</a>。
+</p></dd>
+</dl>
+
+<p>例如，&lsquo;<samp class="samp">display/i $pc</samp>&rsquo;可能会有帮助，以便在每次执行停止时查看即将执行的机器指令（&lsquo;<samp class="samp">$pc</samp>&rsquo;是程序计数器的常用名称；见<a class="pxref" href="Registers.html">寄存器</a>）。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-undisplay"></a>
+<a id="索引-删除显示"></a><span><code class="code">undisplay <var class="var">dnums</var>&hellip;</code><a class="copiable-link" href="#索引-删除显示"> &para;</a></span></dt><dt><code class="code">delete display <var class="var">dnums</var>&hellip;</code></dt>
+<dd><p>从要显示的表达式列表中删除项目。使用命令参数<var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即&lsquo;<samp class="samp">info display</samp>&rsquo;显示的第一列中显示的编号之一；也可以是显示编号范围，如<code class="code">2 - 4</code>。
+</p>
+<p>使用<code class="code">undisplay</code>后再次按下<kbd class="key">RET</kbd>，它不会重复。
+（否则你只会得到错误&lsquo;<samp class="samp">没有显示编号 &hellip;</samp>&rsquo;。）
+</p>
+</dd>
+<dt><a id="索引-禁用显示"></a><span><code class="code">disable display <var class="var">dnums</var>&hellip;</code><a class="copiable-link" href="#索引-禁用显示"> &para;</a></span></dt>
+<dd><p>禁用项目编号为<var class="var">dnums</var>的显示。被禁用的显示项目不会自动打印，但不会被遗忘。稍后可以再次启用它。使用命令参数<var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即&lsquo;<samp class="samp">info display</samp>&rsquo;显示的第一列中显示的编号之一；也可以是显示编号范围，如<code class="code">2 - 4</code>。
+</p>
+</dd>
+<dt><a id="索引-启用显示"></a><span><code class="code">enable display <var class="var">dnums</var>&hellip;</code><a class="copiable-link" href="#索引-启用显示"> &para;</a></span></dt>
+<dd><p>启用项目编号为<var class="var">dnums</var>的显示。它在自动显示其表达式时再次生效，直到你另行指定。使用命令参数<var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即&lsquo;<samp class="samp">info display</samp>&rsquo;显示的第一列中显示的编号之一；也可以是显示编号范围，如<code class="code">2 - 4</code>。
+</p>
+</dd>
+<dt><code class="code">display</code></dt>
+<dd><p>显示列表中表达式的当前值，就像程序停止时那样。
+</p>
+</dd>
+<dt><a id="索引-info-display"></a><span><code class="code">info display</code><a class="copiable-link" href="#索引-info-display"> &para;</a></span></dt>
+<dd><p>打印先前设置为自动显示的表达式列表，每个表达式都带有其项目编号，但不显示值。这包括被禁用的表达式，它们会被标记出来。它还包括由于引用当前不可用的自动变量而现在不会显示的表达式。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="索引-超出范围时禁用显示"></a>
+<p>如果一个显示表达式引用了局部变量，那么在其设置的词法上下文之外它就没有意义了。当执行进入其变量之一未定义的上下文时，这样的表达式会被禁用。例如，如果在一个有参数<code class="code">last_char</code>的函数内部给出命令<code class="code">display last_char</code>，GDB会在程序继续在该函数内停止时显示这个参数。当它在其他地方停止时&mdash;那里没有变量<code class="code">last_char</code>&mdash;显示会自动禁用。下次程序在<code class="code">last_char</code>有意义的地方停止时，你可以再次启用显示表达式。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页：<a href="Print-Settings.html">打印设置</a>，上一页：<a href="Memory-Tagging.html">内存标记</a>，向上：<a href="Data.html">检查数据</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>

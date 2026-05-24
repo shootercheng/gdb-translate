@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988-2025自由软件基金会，Inc.
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>分支跟踪配置格式（使用GDB调试）</title>
+
+<meta name="description" content="分支跟踪配置格式（使用GDB调试）">
+<meta name="keywords" content="分支跟踪配置格式（使用GDB调试）">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Remote-Protocol.html" rel="up" title="远程协议">
+<link href="Branch-Trace-Format.html" rel="prev" title="分支跟踪格式">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="分支跟踪配置格式">
+<div class="nav-panel">
+<p>
+上一个：<a href="Branch-Trace-Format.html" accesskey="p" rel="prev">分支跟踪格式</a>，向上：<a href="Remote-Protocol.html" accesskey="u" rel="up"><small class="sc">GDB</small>远程串行协议</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="分支跟踪配置格式-1"><span>E.21分支跟踪配置格式<a class="copiable-link" href="#分支跟踪配置格式-1"> &para;</a></span></h3>
+<a class="index-entry-id" id="index-分支跟踪配置格式"></a>
+
+<p>对于每个下级线程，<small class="sc">GDB</small>可以使用‘<samp class="samp">qXfer:btrace-conf:read</samp>’数据包获取分支跟踪配置（见 <a class="pxref" href="General-Query-Packets.html#qXfer-btrace_002dconf-read">qXfer btrace-conf read</a>）。
+</p>
+<p>该配置描述了分支跟踪格式以及该格式的配置设置。 描述了以下信息：
+</p>
+<dl class="table">
+<dt><code class="code">bts</code></dt>
+<dd><p>此线程使用<em class="dfn">分支跟踪存储</em>（<abbr class="acronym">BTS</abbr>）格式。
+</p><dl class="table">
+<dt><code class="code">size</code></dt>
+<dd><p><abbr class="acronym">BTS</abbr>环形缓冲区的大小（以字节为单位）。
+</p></dd>
+</dl>
+</dd>
+<dt><code class="code">pt</code></dt>
+<dd><p>此线程使用<em class="dfn">英特尔处理器跟踪</em>（<abbr class="acronym">Intel PT</abbr>）格式。
+</p><dl class="table">
+<dt><code class="code">size</code></dt> 
+<dd><p><abbr class="acronym">Intel PT</abbr>环形缓冲区的大小（以字节为单位）。
+</p></dd>
+</dl>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small>必须与Expat库链接以支持XML分支跟踪配置发现。 见 <a class="xref" href="Requirements.html#Expat">Expat</a>。
+</p>
+<p>分支跟踪配置格式的正式DTD如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!ELEMENT btrace-conf		(bts?, pt?)&gt;
+&lt;!ATTLIST btrace-conf		version	CDATA	#FIXED &quot;1.0&quot;&gt;
+
+&lt;!ELEMENT bts	EMPTY&gt;
+&lt;!ATTLIST bts	size		CDATA	#IMPLIED&gt;
+
+&lt;!ELEMENT pt	EMPTY&gt;
+&lt;!ATTLIST pt	size		CDATA	#IMPLIED&gt;
+&lt;!ATTLIST pt	ptwrite		(yes | no)	#IMPLIED&gt;
+&lt;!ATTLIST pt	event-tracing	(yes | no)	#IMPLIED&gt;
+</pre></div>
+
+
+
+</div>
+
+
+
+</body>
+</html>

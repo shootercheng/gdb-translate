@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- 由GNU Texinfo 7.1创建，https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 版权所有 &copy; 1988 - 2025自由软件基金会。
+
+允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)。
+
+(a) FSF的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持FSF开发GNU并促进软件自由。” -->
+<title>附加（使用GDB调试）</title>
+
+<meta name="description" content="附加（使用GDB调试）">
+<meta name="keywords" content="附加（使用GDB调试）">
+<meta name="resource-type" content="文档">
+<meta name="distribution" content="全球">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="顶部">
+<link href="Concept-Index.html" rel="index" title="概念索引">
+<link href="index.html#SEC_Contents" rel="contents" title="目录">
+<link href="Running.html" rel="up" title="运行">
+<link href="Kill-Process.html" rel="next" title="终止进程">
+<link href="Input_002fOutput.html" rel="prev" title="输入/输出">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="附加">
+<div class="nav-panel">
+<p>
+下一页: <a href="Kill-Process.html" accesskey="n" rel="next">终止子进程</a>, 上一页: <a href="Input_002fOutput.html" accesskey="p" rel="prev">你的程序的输入和输出</a>, 向上: <a href="Running.html" accesskey="u" rel="up">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="调试一个已经在运行的进程"><span>4.7调试一个已经在运行的进程<a class="copiable-link" href="#调试一个已经在运行的进程"> &para;</a></span></h3>
+<a class="index-entry-id" id="索引-附加-1"></a>
+<a class="index-entry-id" id="索引-附加"></a>
+
+<dl class="table">
+<dt><code class="code">attach <var class="var">进程ID</var></code></dt>
+<dd><p>此命令附加到一个正在运行的进程——一个在GDB外部启动的进程。（<code class="code">info files</code>显示你的活动目标。）该命令将进程ID作为参数。找出Unix进程的<var class="var">进程ID</var>的常用方法是使用<code class="code">ps</code>实用程序，或使用&lsquo;<samp class="samp">jobs -l</samp>&rsquo; shell命令。
+</p>
+<p>执行命令后，如果再次按下<kbd class="key">RET</kbd>，<code class="code">attach</code>不会重复执行。
+</p></dd>
+</dl>
+
+<p>要使用<code class="code">attach</code>，你的程序必须在一个支持进程的环境中运行；例如，<code class="code">attach</code>不适用于缺乏操作系统的裸板目标上的程序。你还必须有权向该进程发送信号。
+</p>
+<p>当你使用<code class="code">attach</code>时，调试器首先在当前工作目录中查找该进程中运行 的程序，然后（如果未找到该程序）使用源文件搜索路径（见 <a class="pxref" href="Source-Path.html">指定源目录</a>）。你也可以使用<code class="code">file</code>命令来加载程序。见 <a class="xref" href="Files.html">指定文件的命令</a>。
+</p>
+<a class="anchor" id="设置可执行文件不匹配"></a><p>如果调试器可以确定它正在附加的进程中运行的可执行文件与GDB当前加载的可执行文件不匹配，<code class="code">exec-file-mismatch</code>选项指定如何处理这种不匹配情况.GDB会尝试通过比较它们的构建ID（见 <a class="pxref" href="Separate-Debug-Files.html#build-ID">构建ID</a>）来比较文件，如果可用的话。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="索引-设置可执行文件不匹配"></a>
+<a id="索引-可执行文件不匹配"></a><span><code class="code">set exec-file-mismatch &lsquo;<samp class="samp">询问|警告|关闭</samp>&rsquo;</code><a class="copiable-link" href="#索引-可执行文件不匹配"> &para;</a></span></dt>
+<dd>
+<p>是否检测GDB当前加载的可执行文件与用于启动进程的可执行文件之间的不匹配。如果是&lsquo;<samp class="samp">询问</samp>&rsquo;（默认值），显示一个警告并询问用户是否加载进程可执行文件；如果是&lsquo;<samp class="samp">警告</samp>&rsquo;，只显示一个警告；如果是&lsquo;<samp class="samp">关闭</samp>&rsquo;，则不尝试检测不匹配。
+如果用户确认加载进程可执行文件，那么它的符号也将被加载。
+</p>
+</dd>
+<dt><a id="索引-显示可执行文件不匹配"></a><span><code class="code">show exec-file-mismatch</code><a class="copiable-link" href="#索引-显示可执行文件不匹配"> &para;</a></span></dt>
+<dd><p>显示<code class="code">exec-file-mismatch</code>的当前值。
+</p>
+</dd>
+</dl>
+
+<p>GDB在安排调试指定进程后首先要做的是停止它。你可以使用所有在使用<code class="code">run</code>启动进程时通常可用的GDB命令来检查和修改附加的进程。你可以插入断点；你可以单步执行和继续执行；你可以修改存储。如果你希望进程继续运行，你可以在将GDB附加到进程后使用<code class="code">continue</code>命令。
+</p>
+<dl class="table">
+<dt><a id="索引-分离"></a><span><code class="code">detach</code><a class="copiable-link" href="#索引-分离"> &para;</a></span></dt>
+<dd><p>当你完成对附加进程的调试后，你可以使用<code class="code">detach</code>命令将其从GDB控制中释放。分离进程后它将继续执行。在执行<code class="code">detach</code>命令后，该进程和GDB再次完全独立，你可以准备附加另一个进程或使用<code class="code">run</code>启动一个进程。
+执行命令后，如果再次按下<kbd class="key">RET</kbd>，<code class="code">detach</code>不会重复执行。
+</p></dd>
+</dl>
+
+<p>如果你在有附加进程时退出GDB，你会分离该进程。如果你使用<code class="code">run</code>命令，你会终止该进程。默认情况下，如果你尝试做这两件事中的任何一件，GDB会要求确认；你可以使用<code class="code">set confirm</code>命令（见 <a class="pxref" href="Messages_002fWarnings.html">可选警告和消息</a>）来控制是否需要确认。
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+下一页: <a href="Kill-Process.html">终止子进程</a>, 上一页: <a href="Input_002fOutput.html">你的程序的输入和输出</a>, 向上: <a href="Running.html">在GDB下运行程序</a> &nbsp; [<a href="index.html#SEC_Contents" title="目录" rel="contents">目录</a>][<a href="Concept-Index.html" title="索引" rel="index">索引</a>]</p>
+</div>
+
+
+
+</body>
+</html>
