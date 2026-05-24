@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-// 定义请求结构体
 type ChatRequest struct {
 	Model       string    `json:"model"`
 	Messages    []Message `json:"messages"`
@@ -24,7 +23,6 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-// 定义响应结构体 (根据提供的 JSON 结果简化)
 type ChatResponse struct {
 	Model   string `json:"model"`
 	Choices []struct {
