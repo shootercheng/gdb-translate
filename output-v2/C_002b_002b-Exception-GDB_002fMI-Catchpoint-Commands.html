@@ -1,0 +1,183 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>C++ 异常 GDB/MI 捕获点命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="C++ Exception GDB/MI Catchpoint Commands (Debugging with GDB)"/>
+<meta name="keywords" content="C++ Exception GDB/MI Catchpoint Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="up" title="GDB/MI Catchpoint Commands"/>
+<link href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="prev" title="Ada Exception GDB/MI Catchpoint Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="C_002b_002b-Exception-GDB_002fMI-Catchpoint-Commands">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="prev">Ada 异常 <small class="sc">GDB/MI</small> 捕获点</a>, 上级： <a accesskey="u" href="GDB_002fMI-Catchpoint-Commands.html" rel="up"><small class="sc">GDB/MI</small> 捕获点命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="C_002b_002b-Exception-gdb_002fmi-Catchpoints"><span>27.9.3 C<code class="t">++</code> 异常 <small class="sc">GDB/MI</small> 捕获点<a class="copiable-link" href="#C_002b_002b-Exception-gdb_002fmi-Catchpoints"> ¶</a></span></h4>
+
+<p>以下 <small class="sc">GDB/MI</small> 命令可用于创建捕获点，当 C<code class="t">++</code> 异常被抛出、重新抛出或捕获时，会停止执行。
+</p>
+<a class="index-entry-id" id="index-_002dcatch_002dthrow"></a>
+<h4 class="subheading" id="The-_002dcatch_002dthrow-Command"><span>该 <code class="code">-catch-throw</code> 命令<a class="copiable-link" href="#The-_002dcatch_002dthrow-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-18"><span>概要<a class="copiable-link" href="#Synopsis-18"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-throw [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当调试程序抛出 C<code class="t">++</code> 异常时停止。 如果 <var class="var">正则表达式</var> 被指定，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+<p>如果指定了 ‘<samp class="samp">-t</samp>’，则捕获点仅在一次停止时启用，在该事件停止一次后，捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-Command-17"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-17"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">catch throw</samp>’
+和 ‘<samp class="samp">tcatch throw</samp>’（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>)。
+</p>
+<h4 class="subsubheading" id="Example-17"><span>示例<a class="copiable-link" href="#Example-17"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-throw -r exception_type
+^完成，断点={编号=&#34;1&#34;,类型=&#34;捕获点&#34;,处置=&#34;保留&#34;,启用=&#34;是&#34;,
+  捕获内容=&#34;异常抛出&#34;,捕获类型=&#34;抛出&#34;,
+  线程组=[&#34;i1&#34;],
+  正则表达式=&#34;exception_type&#34;,触发次数=&#34;0&#34;}
+(gdb)
+-exec-run
+^正在运行
+(gdb)
+~&#34;\n&#34;
+~&#34;捕获点 1（抛出异常），0x00007ffff7ae00ed
+  在 __cxa_throw () 中，来自 /lib64/libstdc++.so.6\n&#34;
+*停止，断点编号=&#34;1&#34;，原因=&#34;断点命中&#34;，处置=&#34;保留&#34;,
+  帧={地址=&#34;0x00007ffff7ae00ed&#34;,函数=&#34;__cxa_throw&#34;,
+  参数=[],来自=&#34;/lib64/libstdc++.so.6&#34;,架构=&#34;i386:x86-64&#34;},
+  线程 ID=&#34;1&#34;，停止的线程=&#34;所有&#34;,核心=&#34;6&#34;
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dcatch_002drethrow"></a>
+<h4 class="subheading" id="The-_002dcatch_002drethrow-Command"><span>该 <code class="code">-catch-rethrow</code> 命令<a class="copiable-link" href="#The-_002dcatch_002drethrow-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-19"><span>概要<a class="copiable-link" href="#Synopsis-19"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-rethrow [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当 C<code class="t">++</code> 异常被重新抛出时停止。 如果 <var class="var">正则表达式</var> 被指定，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+<p>如果指定了 ‘<samp class="samp">-t</samp>’，则捕获点仅在一次停止时启用，在第一次捕获到事件后，捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-Command-18"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-18"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">catch rethrow</samp>’
+和 ‘<samp class="samp">tcatch rethrow</samp>’（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>)。
+</p>
+<h4 class="subsubheading" id="Example-18"><span>示例<a class="copiable-link" href="#Example-18"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-rethrow -r exception_type
+^完成，断点={编号=&#34;1&#34;,类型=&#34;捕获点&#34;,处置=&#34;保留&#34;,启用=&#34;是&#34;,
+  捕获内容=&#34;异常重新抛出&#34;,捕获类型=&#34;重新抛出&#34;,
+  线程组=[&#34;i1&#34;],
+  正则表达式=&#34;exception_type&#34;,触发次数=&#34;0&#34;}
+(gdb)
+-exec-run
+^正在运行
+(gdb)
+~&#34;\n&#34;
+~&#34;捕获点 1（重新抛出异常），0x00007ffff7ae00ed
+  在 __cxa_rethrow () 中，来自 /lib64/libstdc++.so.6\n&#34;
+*停止，断点编号=&#34;1&#34;，原因=&#34;断点命中&#34;，处置=&#34;保留&#34;,
+  帧={地址=&#34;0x00007ffff7ae00ed&#34;,函数=&#34;__cxa_rethrow&#34;,
+  参数=[],来自=&#34;/lib64/libstdc++.so.6&#34;,架构=&#34;i386:x86-64&#34;},
+  线程 ID=&#34;1&#34;，停止的线程=&#34;所有&#34;,核心=&#34;6&#34;
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dcatch_002dcatch"></a>
+<h4 class="subheading" id="The-_002dcatch_002dcatch-Command"><span>该 <code class="code">-catch-catch</code> 命令<a class="copiable-link" href="#The-_002dcatch_002dcatch-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-20"><span>概要<a class="copiable-link" href="#Synopsis-20"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-catch [ -t ] [ -r <var class="var">正则表达式</var>]
+</pre></div>
+
+<p>当调试程序捕获到 C<code class="t">++</code> 异常时停止。 如果 <var class="var">正则表达式</var>
+被指定，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+<p>如果指定了 ‘<samp class="samp">-t</samp>’，则捕获点仅在一次停止时启用，在第一次捕获到事件后，捕获点会自动删除。
+</p>
+<h4 class="subsubheading" id="gdb-Command-19"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-19"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">catch catch</samp>’
+和 ‘<samp class="samp">tcatch catch</samp>’（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>)。
+</p>
+<h4 class="subsubheading" id="Example-19"><span>示例<a class="copiable-link" href="#Example-19"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-catch -r exception_type
+^完成，断点={编号=&#34;1&#34;,类型=&#34;捕获点&#34;,处置=&#34;保留&#34;,启用=&#34;是&#34;,
+  捕获内容=&#34;异常捕获&#34;,捕获类型=&#34;捕获&#34;,
+  线程组=[&#34;i1&#34;],
+  正则表达式=&#34;exception_type&#34;,触发次数=&#34;0&#34;}
+(gdb)
+-exec-run
+^正在运行
+(gdb)
+~&#34;\n&#34;
+~&#34;捕获点 1（捕获到异常），0x00007ffff7ae00ed
+  在 __cxa_begin_catch () 中，来自 /lib64/libstdc++.so.6\n&#34;
+*停止，断点编号=&#34;1&#34;，原因=&#34;断点命中&#34;，处置=&#34;保留&#34;,
+  帧={地址=&#34;0x00007ffff7ae00ed&#34;,函数=&#34;__cxa_begin_catch&#34;,
+  参数=[],来自=&#34;/lib64/libstdc++.so.6&#34;,架构=&#34;i386:x86-64&#34;},
+  线程 ID=&#34;1&#34;，停止的线程=&#34;所有&#34;,核心=&#34;6&#34;
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html">Ada 异常 <small class="sc">GDB/MI</small> 捕获点</a>, 上级： <a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small> 捕获点命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

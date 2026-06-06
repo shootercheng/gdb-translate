@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>标准回复（使用GDB调试）</title>
+
+<meta name="description" content="Standard Replies (Debugging with GDB)"/>
+<meta name="keywords" content="Standard Replies (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Packets.html" rel="next" title="Packets"/>
+<link href="Overview.html" rel="prev" title="Overview"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Standard-Replies">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Packets.html" rel="next">数据包</a>, 上一项： <a accesskey="p" href="Overview.html" rel="prev">概述</a>, 返回上一级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Standard-Replies-1"><span>E.2 标准回复<a class="copiable-link" href="#Standard-Replies-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-standard-responses-for-remote-packets"></a>
+<a class="index-entry-id" id="index-remote-packets_002c-standard-replies"></a>
+
+<p>远程协议指定了一些标准回复。除了在各个命令描述中特别说明的情况外，所有命令都支持这些回复。
+</p>
+<dl class="table">
+<dt>空响应</dt>
+<dd>
+<a class="index-entry-id" id="index-empty-response_002c-for-unsupported-packets"></a>
+<a class="index-entry-id" id="index-unsupported-packets_002c-empty-response-for"></a>
+<p>空响应（原始字符序列 ‘<samp class="samp">$#00</samp>’）表示
+<var class="var">命令</var> 不被存根支持。通过这种方式可以扩展协议。较新的 <small class="sc">GDB</small> 可以根据该响应判断一个命令是否受支持（但也请参阅 <a class="ref" href="General-Query-Packets.html#qSupported">qSupported</a>）。
+</p>
+</dd>
+<dt>‘<samp class="samp">E <var class="var">xx</var></samp>’</dt>
+<dd><p>发生了错误； <var class="var">xx</var> 是一个两位的十六进制错误编号。在几乎所有情况下，协议并未指定错误编号的含义； <small class="sc">GDB</small> 通常会忽略这些编号，或者将它们显示给用户而不做进一步解释。
+</p>
+<a class="anchor" id="textual-error-reply"></a></dd>
+<dt>‘<samp class="samp">E.<var class="var">errtext</var></samp>’</dt>
+<dd><p>发生了错误； <var class="var">errtext</var> 是文本错误消息，以 <small class="sc">ASCII</small>. 编码
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

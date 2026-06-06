@@ -1,0 +1,73 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>线程列表格式（使用 GDB 调试）</title>
+
+<meta name="description" content="Thread List Format (Debugging with GDB)"/>
+<meta name="keywords" content="Thread List Format (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Traceframe-Info-Format.html" rel="next" title="Traceframe Info Format"/>
+<link href="Memory-Map-Format.html" rel="prev" title="Memory Map Format"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Thread-List-Format">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Traceframe-Info-Format.html" rel="next">跟踪帧信息格式</a>, 上一项： <a accesskey="p" href="Memory-Map-Format.html" rel="prev">内存映射格式</a>, 上级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Thread-List-Format-1"><span>E.18 线程列表格式<a class="copiable-link" href="#Thread-List-Format-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-thread-list-format"></a>
+
+<p>为了高效更新线程列表及其属性，
+<small class="sc">GDB</small> 会发送 ‘<samp class="samp">qXfer:threads:read</samp>’ 数据包
+（参见 <a class="pxref" href="General-Query-Packets.html#qXfer-threads-read">qXfer 线程读取</a>) 并获取具有以下结构的 XML 文档：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&#34;1.0&#34;?&gt;
+&lt;threads&gt;
+    &lt;thread id=&#34;id&#34; core=&#34;0&#34; name=&#34;name&#34; id_str=&#34;线程 12.34&#34; handle=&#34;1a2b3c&#34;&gt;
+    ... 描述 ...
+    &lt;/thread&gt;
+&lt;/threads&gt;
+</pre></div>
+
+<p>每个 ‘<samp class="samp">线程</samp>’ 元素必须有 ‘<samp class="samp">id</samp>’ 属性，用于标识线程（参见 <a class="pxref" href="Packets.html#thread_002did-syntax">线程 ID 语法</a>)。 ‘<samp class="samp">核心</samp>’ 属性（如果存在）指定线程最后执行所在的处理器核心。 ‘<samp class="samp">名称</samp>’ 属性（如果存在）指定线程的可读名称。 ‘<samp class="samp">线程</samp>’ 元素的内容被解释为可读的辅助信息。 ‘<samp class="samp">id_str</samp>’ 属性（如果存在）指定 <small class="sc">GDB</small> 应作为线程的目标 ID 打印的内容（例如在 ‘<samp class="samp">info threads</samp>’ 命令中或切换到该线程时）。 ‘<samp class="samp">句柄</samp>’ 属性（如果存在）是线程句柄的十六进制编码表示。
+</p>
+
+</div>
+
+
+
+
+
+</body></html>

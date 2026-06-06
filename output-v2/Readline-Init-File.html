@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Readline 初始化文件（使用 GDB 调试）</title>
+
+<meta name="description" content="Readline Init File (Debugging with GDB)"/>
+<meta name="keywords" content="Readline Init File (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Command-Line-Editing.html" rel="up" title="Command Line Editing"/>
+<link href="Bindable-Readline-Commands.html" rel="next" title="Bindable Readline Commands"/>
+<link href="Readline-Interaction.html" rel="prev" title="Readline Interaction"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Readline-Init-File">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Bindable-Readline-Commands.html" rel="next">可绑定的 Readline 命令</a>, 上一项： <a accesskey="p" href="Readline-Interaction.html" rel="prev">Readline 交互</a>, 返回上一级： <a accesskey="u" href="Command-Line-Editing.html" rel="up">命令行编辑</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Readline-Init-File-1"><span>33.3 Readline 初始化文件<a class="copiable-link" href="#Readline-Init-File-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-initialization-file_002c-readline"></a>
+
+<p>尽管 Readline 库默认安装了一组类似 Emacs 的键绑定，但也可以使用不同的键绑定集。任何用户都可以通过在一个文件中放置命令来定制使用 Readline 的程序， <em class="dfn">inputrc</em> 文件，通常放在他们的主目录中。该文件的名称取自环境变量的值 <code class="env">INPUTRC</code>。如果该变量未设置，默认值是 <samp class="file">~/.inputrc</samp>。如果该文件不存在或无法读取，最终的默认值是
+<samp class="file">/etc/inputrc</samp>.
+</p>
+<p>当使用 Readline 库的程序启动时，会读取初始化文件并设置键绑定。
+</p>
+<p>此外， <code class="code">C-x C-r</code> 命令会重新读取这个初始化文件，从而纳入你可能对其做出的任何更改。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Readline-Init-File-Syntax.html">Readline 初始化文件语法</a></li>
+<li><a accesskey="2" href="Conditional-Init-Constructs.html">条件初始化结构</a></li>
+<li><a accesskey="3" href="Sample-Init-File.html">示例初始化文件</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

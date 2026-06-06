@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>进程内代理协议（使用 GDB 进行调试）</title>
+
+<meta name="description" content="In-Process Agent Protocol (Debugging with GDB)"/>
+<meta name="keywords" content="In-Process Agent Protocol (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="In_002dProcess-Agent.html" rel="up" title="In-Process Agent"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="In_002dProcess-Agent-Protocol">
+<div class="nav-panel">
+<p>
+向上： <a accesskey="u" href="In_002dProcess-Agent.html" rel="up">进程内代理</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="In_002dProcess-Agent-Protocol-1"><span>31.1 进程内代理协议<a class="copiable-link" href="#In_002dProcess-Agent-Protocol-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-in_002dprocess-agent-protocol"></a>
+
+<p>进程内代理能够与两者进行通信 <small class="sc">GDB</small> 以及
+GDB 服务器（请参阅 <a class="pxref" href="In_002dProcess-Agent.html">进程内代理</a>）。本节记录了用于
+之间通信的协议 <small class="sc">GDB</small> 或 GDB 服务器与 IPA 之间的通信。
+一般来说， <small class="sc">GDB</small> 或 GDB 服务器向进程内代理发送命令
+（请参阅 <a class="pxref" href="IPA-Protocol-Commands.html">IPA 协议命令</a>）和数据，然后
+进程内代理用命令的返回结果或
+其他一些信息进行回复。发送给进程内代理的数据由基本数据类型（如 4 字节或 8 字节类型）和复合
+类型组成，这些复合类型称为对象（请参阅 <a class="pxref" href="IPA-Protocol-Objects.html">IPA 协议对象</a>）。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="IPA-Protocol-Objects.html">IPA 协议对象</a></li>
+<li><a accesskey="2" href="IPA-Protocol-Commands.html">IPA 协议命令</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

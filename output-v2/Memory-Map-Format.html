@@ -1,0 +1,134 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>内存映射格式（使用GDB进行调试）</title>
+
+<meta name="description" content="Memory Map Format (Debugging with GDB)"/>
+<meta name="keywords" content="Memory Map Format (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Thread-List-Format.html" rel="next" title="Thread List Format"/>
+<link href="Library-List-Format-for-SVR4-Targets.html" rel="prev" title="Library List Format for SVR4 Targets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Memory-Map-Format">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Thread-List-Format.html" rel="next">线程列表格式</a> <a accesskey="p" href="Library-List-Format-for-SVR4-Targets.html" rel="prev">SVR4目标的库列表格式</a>, 上一项： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Memory-Map-Format-1"><span>E.17 内存映射格式<a class="copiable-link" href="#Memory-Map-Format-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-memory-map-format"></a>
+
+<p>为了能够写入闪存， <small class="sc">GDB</small> 需要从目标设备获取一个内存映射。本节描述了内存映射的格式。
+</p>
+<p>内存映射是使用‘<samp class="samp">qXfer:memory-map:read</samp>’（参见 <a class="pxref" href="General-Query-Packets.html#qXfer-memory-map-read">qXfer内存映射读取</a>)数据包获取的，它是一个列出内存区域的XML文档。
+</p>
+<p><small class="sc">GDB</small> 必须与Expat库链接以支持XML内存映射。参见 <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+<p>文档的顶级结构如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&#34;1.0&#34;?&gt;
+&lt;!DOCTYPE memory-map
+          PUBLIC &#34;+//IDN gnu.org//DTD GDB Memory Map V1.0//EN&#34;
+                 &#34;http://sourceware.org/gdb/gdb-memory-map.dtd&#34;&gt;
+&lt;memory-map&gt;
+    region...
+&lt;/memory-map&gt;
+</pre></div>
+
+<p>每个区域可以是以下两种之一：
+</p>
+<ul class="itemize mark-bullet">
+<li>从 <var class="var">地址</var> 开始的一段RAM， <var class="var">长度</var>
+字节：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;memory type=&#34;ram&#34; start=&#34;<var class="var">地址</var>&#34; length=&#34;<var class="var">长度</var>&#34;/&gt;
+</pre></div>
+
+
+</li><li>一段只读内存：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;memory type=&#34;rom&#34; start=&#34;<var class="var">地址</var>&#34; length=&#34;<var class="var">长度</var>&#34;/&gt;
+</pre></div>
+
+
+</li><li>一段闪存，带有擦除块， <var class="var">块大小</var>
+字节长：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;memory type=&#34;flash&#34; start=&#34;<var class="var">地址</var>&#34; length=&#34;<var class="var">长度</var>&#34;&gt;
+  &lt;property name=&#34;blocksize&#34;&gt;<var class="var">块大小</var>&lt;/property&gt;
+&lt;/memory&gt;
+</pre></div>
+
+</li></ul>
+
+<p>区域不能重叠。  <small class="sc">GDB</small> 假设内存映射未覆盖的内存区域是RAM，并使用普通的‘<samp class="samp">M</samp>’和‘<samp class="samp">X</samp>’数据包来写入这些范围内的地址。
+</p>
+<p>内存映射格式的正式DTD如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!-- ................................................... --&gt;
+&lt;!-- Memory Map XML DTD ................................ --&gt;
+&lt;!-- File: memory-map.dtd .............................. --&gt;
+&lt;!-- .................................... .............. --&gt;
+&lt;!-- memory-map.dtd --&gt;
+&lt;!-- memory-map: Root element with versioning --&gt;
+&lt;!ELEMENT memory-map (memory)*&gt;
+&lt;!ATTLIST memory-map    version CDATA   #FIXED  &#34;1.0.0&#34;&gt;
+&lt;!ELEMENT memory (property)*&gt;
+&lt;!-- memory: Specifies a memory region,
+             and its type, or device. --&gt;
+&lt;!ATTLIST memory        type    (ram|rom|flash) #REQUIRED
+                        start   CDATA   #REQUIRED
+                        length  CDATA   #REQUIRED&gt;
+&lt;!-- property: Generic attribute tag --&gt;
+&lt;!ELEMENT property (#PCDATA | property)*&gt;
+&lt;!ATTLIST property      name    (blocksize) #REQUIRED&gt;
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Thread-List-Format.html">线程列表格式</a>, 上一项： <a href="Library-List-Format-for-SVR4-Targets.html">SVR4目标的库列表格式</a>, 上一项： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

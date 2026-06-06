@@ -1,0 +1,179 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的迭代器（使用 GDB 调试）</title>
+
+<meta name="description" content="Iterators In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Iterators In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Colors-In-Guile.html" rel="next" title="Colors In Guile"/>
+<link href="Memory-Ports-in-Guile.html" rel="prev" title="Memory Ports in Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Iterators-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Colors-In-Guile.html" rel="next"></a>, 上一项： <a accesskey="p" href="Memory-Ports-in-Guile.html" rel="prev"></a> <a accesskey="u" href="Guile-API.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Iterators-In-Guile-1"><span>23.4.3.25 Guile 中的迭代器<a class="copiable-link" href="#Iterators-In-Guile-1"> </a></span></h4>
+
+<a class="index-entry-id" id="index-guile-iterators"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aiterator_003e"></a>
+
+<p>提供了一个简单的迭代器工具，例如，允许在不必首先构造所有程序符号列表的情况下遍历程序符号集。 一个有用的改进是添加对 SRFI 41 和 SRFI 45 的支持。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002diterator"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">创建迭代器</strong> <var class="def-var-arguments">对象 进度 下一个！</var><a class="copiable-link" href="#index-make_002diterator"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">&lt;gdb:iterator&gt;</code> 对象是通过 <code class="code">make-iterator</code>
+过程构造的。 它接受三个参数：要迭代的对象、用于记录迭代进度的对象以及用于返回迭代中的下一个元素的过程，或者一个实现选择的值来表示迭代结束。
+</p>
+<p>按照惯例，迭代结束用 <code class="code">(end-of-iteration)</code>,
+标记，并且可以使用 <code class="code">end-of-iteration?</code> 谓词进行测试。
+ <code class="code">(end-of-iteration)</code> 的结果被选择为不会被 <code class="code">(gdb)</code> 模块以其他方式使用。 如果你在自己的代码中使用
+<code class="code">&lt;gdb:iterator&gt;</code> ，你有责任维护这个不变性。
+</p>
+<p>为了说明目的的一个简单示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb iterator))
+(define my-list (list 1 2 3))
+(define iter
+  (make-iterator my-list my-list
+                 (lambda (iter)
+                   (let ((l (iterator-progress iter)))
+                     (if (eq? l &#39;())
+                         (end-of-iteration)
+                         (begin
+                           (set-iterator-progress! iter (cdr l))
+                           (car l)))))))
+</pre></div>
+
+<p>这里有一个稍微更实际的示例，它计算 <code class="code">my-global-block</code>中所有函数的列表。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb iterator))
+(define this-sal (find-pc-line (frame-pc (selected-frame))))
+(define this-symtab (sal-symtab this-sal))
+(define this-global-block (symtab-global-block this-symtab))
+(define syms-iter (make-block-symbols-iterator this-global-block))
+(define functions (iterator-filter symbol-function? syms-iter))
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">是否为迭代器</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-iterator_003f"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">#t</code>  <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:iterator&gt;</code> 对象，则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dobject"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器对象</strong> <var class="def-var-arguments">迭代器</var><a class="copiable-link" href="#index-iterator_002dobject"> ¶</a></span></dt>
+<dd><p>返回传递给 <code class="code">make-iterator</code>的第一个参数。
+这是正在被迭代的对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dprogress"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器进度</strong> <var class="def-var-arguments">迭代器</var><a class="copiable-link" href="#index-iterator_002dprogress"> ¶</a></span></dt>
+<dd><p>返回跟踪迭代进度的对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002diterator_002dprogress_0021"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">设置迭代器进度！</strong> <var class="def-var-arguments">迭代器 新值</var><a class="copiable-link" href="#index-set_002diterator_002dprogress_0021"> ¶</a></span></dt>
+<dd><p>设置跟踪迭代进度的对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dnext_0021"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 下一个！</strong> <var class="def-var-arguments">迭代器</var><a class="copiable-link" href="#index-iterator_002dnext_0021"> ¶</a></span></dt>
+<dd><p>调用作为第三个参数传递给 <code class="code">make-iterator</code>,
+的过程，并将一个参数，即 <code class="code">&lt;gdb:iterator&gt;</code> 对象传递给它。
+结果要么是迭代中的下一个元素，要么是由 <code class="code">next!</code> 过程实现的结束标记。
+按照惯例，结束标记是 <code class="code">(end-of-iteration)</code>的结果。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-end_002dof_002diteration"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代结束</strong><a class="copiable-link" href="#index-end_002dof_002diteration"> ¶</a></span></dt>
+<dd><p>返回表示迭代结束的 Scheme 对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-end_002dof_002diteration_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">是否为迭代结束</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-end_002dof_002diteration_003f"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">#t</code>  <var class="var">对象</var> 是迭代结束标记，则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<p>这些函数由 <code class="code">(gdb iterator)</code> 模块提供，以帮助使用迭代器。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dlist_002diterator"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">创建列表迭代器</strong> <var class="def-var-arguments">列表</var><a class="copiable-link" href="#index-make_002dlist_002diterator"> ¶</a></span></dt>
+<dd><p>返回一个将遍历 <code class="code">&lt;gdb:iterator&gt;</code>  <var class="var">列表</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002d_003elist"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 列表</strong> <var class="def-var-arguments">迭代器</var><a class="copiable-link" href="#index-iterator_002d_003elist"> ¶</a></span></dt>
+<dd><p>将 <var class="var">迭代器</var> 所指向的元素作为列表返回。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dmap"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 映射</strong> <var class="def-var-arguments">过程迭代器</var><a class="copiable-link" href="#index-iterator_002dmap"> ¶</a></span></dt>
+<dd><p>返回通过将 <var class="var">过程</var> 应用于 <var class="var">迭代器</var> 所指向的对象以及每个后续对象而获得的对象列表。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dfor_002deach"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 遍历</strong> <var class="def-var-arguments">过程 迭代器</var><a class="copiable-link" href="#index-iterator_002dfor_002deach"> ¶</a></span></dt>
+<dd><p>将 <var class="var">过程</var> 应用于 <var class="var">迭代器</var>所指向的每个元素。
+结果未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002dfilter"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 过滤</strong> <var class="def-var-arguments">谓词 迭代器</var><a class="copiable-link" href="#index-iterator_002dfilter"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">迭代器</var> 所指向的满足
+<var class="var">谓词</var>的元素列表。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-iterator_002duntil"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">迭代器 - 直到</strong> <var class="def-var-arguments">谓词 迭代器</var><a class="copiable-link" href="#index-iterator_002duntil"> ¶</a></span></dt>
+<dd><p>运行 <var class="var">迭代器</var> 直到 <code class="code">(pred element)</code> 的结果为真
+并将其作为结果返回。 否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Colors-In-Guile.html">Guile 中的颜色</a>, 上一项： <a href="Memory-Ports-in-Guile.html">Guile 中的内存端口</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

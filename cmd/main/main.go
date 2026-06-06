@@ -1,13 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"sync"
 
-	"github.com/shootercheng/gdb-translate/internal/request"
+	"github.com/shootercheng/gdb-translate/internal/translate"
 )
 
 func main() {
@@ -24,7 +23,7 @@ func main() {
 		fmt.Printf("get pwd error: %s \n", err.Error())
 		return
 	}
-	outputPath := pwd + string(os.PathSeparator) + "output"
+	outputPath := pwd + string(os.PathSeparator) + "output-v2"
 	_, err = os.Stat(outputPath)
 	translatedMap := make(map[string]int)
 	if os.IsNotExist(err) {
@@ -44,7 +43,7 @@ func main() {
 		}
 	}
 
-	inputPath := "/home/scd/code/c-lang/gdb-17.2/gdb/doc/gdb"
+	inputPath := pwd + string(os.PathSeparator) + "input"
 	entities, err := os.ReadDir(inputPath)
 	if err != nil {
 		fmt.Printf("read dir error: %s \n", err.Error())
@@ -70,6 +69,7 @@ func main() {
 	var wg sync.WaitGroup
 	maxConcurrency := 5
 	sem := make(chan int, maxConcurrency)
+	requestBatchSize := 100
 	for index, fileName := range todoFileNames {
 		wg.Go(func() {
 
@@ -78,51 +78,13 @@ func main() {
 				<-sem
 			}()
 
-			fmt.Printf("traneslate %s \n", fileName)
-			htmlPath := inputPath + string(os.PathSeparator) + fileName
-			fileContent, err := os.ReadFile(htmlPath)
-			if err != nil {
-				fmt.Printf("read file error: %s", err.Error())
-				return
+			translateParam := translate.TranslateParam{
+				InputPath:        inputPath,
+				FileName:         fileName,
+				RequestBatchSize: requestBatchSize,
+				OutputPath:       outputPath,
 			}
-			strContent := string(fileContent)
-			reqBody := request.ChatRequest{
-				Model: os.Getenv("LLM_MODEL_ID"),
-				Messages: []request.Message{
-					{
-						Role:    "system",
-						Content: "您是一个专业的翻译引擎。请将用户输入的英文html翻译成中文，不要翻译html标签。保持原来的格式输出html",
-					},
-					{
-						Role:    "user",
-						Content: strContent,
-					},
-				},
-				Stream: false,
-			}
-			response, err := request.RequestLlm(&reqBody)
-			if err != nil {
-				fmt.Printf("reuqest llm error : %s \n", err.Error())
-				return
-			}
-			outputHtmlPath := outputPath + string(os.PathSeparator) + fileName
-			if len(response.Choices) > 0 {
-				res := response.Choices[0].Message.Content
-				err = os.WriteFile(outputHtmlPath, []byte(res), 0644)
-				if err != nil {
-					fmt.Printf("write html file error:%s\n", err.Error())
-				}
-			}
-			outputTokePath := outputHtmlPath + ".json"
-			jsonData, err := json.Marshal(response.Usage)
-			if err != nil {
-				fmt.Println("json Marshal error:", err)
-				return
-			}
-			err = os.WriteFile(outputTokePath, jsonData, 0644)
-			if err != nil {
-				fmt.Printf("write json file error:%s\n", err.Error())
-			}
+			translate.TranslateHtmlFile(translateParam)
 		})
 	}
 

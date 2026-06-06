@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI Ada任务命令（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI Ada Tasking Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Ada Tasking Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Program-Execution.html" rel="next" title="GDB/MI Program Execution"/>
+<link href="GDB_002fMI-Thread-Commands.html" rel="prev" title="GDB/MI Thread Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Ada-Tasking-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Program-Execution.html" rel="next"><small class="sc">GDB/MI</small> 程序执行</a> <a accesskey="p" href="GDB_002fMI-Thread-Commands.html" rel="prev"><small class="sc">GDB/MI</small> 线程命令</a>, 上一项： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Ada-Tasking-Commands"><span>27.12 <small class="sc">GDB/MI</small> Ada任务命令<a class="copiable-link" href="#gdb_002fmi-Ada-Tasking-Commands"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-_002dada_002dtask_002dinfo"></a>
+<h4 class="subheading" id="The-_002dada_002dtask_002dinfo-Command"><span>该 <code class="code">-ada-task-info</code> 命令<a class="copiable-link" href="#The-_002dada_002dtask_002dinfo-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-29"><span>概要<a class="copiable-link" href="#Synopsis-29"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -ada-task-info [ <var class="var">任务ID</var> ]
+</pre></div>
+
+<p>如果存在
+<var class="var">任务ID</var> 参数，则报告特定Ada任务的信息，否则报告所有Ada任务的信息。
+</p>
+<h4 class="subsubheading" id="gdb-Command-28"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-28"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">info tasks</samp>’命令会打印所有Ada任务的相同信息（请参阅 <a class="pxref" href="Ada-Tasks.html">Ada任务扩展</a>)。
+</p>
+<h4 class="subsubheading" id="Result-4"><span>结果<a class="copiable-link" href="#Result-4"> ¶</a></span></h4>
+
+<p>结果是一个Ada任务表。为每个Ada任务定义了以下列：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">当前</samp>’</dt>
+<dd><p>此字段仅存在于当前线程中。其值为‘<samp class="samp">*</samp>’。
+</p>
+</dd>
+<dt>‘<samp class="samp">ID</samp>’</dt>
+<dd><p>用于引用Ada任务的标识符。 <small class="sc">GDB</small> 
+</p>
+</dd>
+<dt>‘<samp class="samp">任务ID</samp>’</dt>
+<dd><p>目标用于引用Ada任务的标识符。
+</p>
+</dd>
+<dt>‘<samp class="samp">线程ID</samp>’</dt>
+<dd><p>与Ada任务对应的线程的全局线程标识符。
+</p>
+<p>此字段应始终存在，因为Ada任务始终在一个线程之上实现。但如果 <small class="sc">GDB</small> 由于任何原因无法找到此对应线程，则省略此字段。
+</p>
+</dd>
+<dt>‘<samp class="samp">父任务ID</samp>’</dt>
+<dd><p>仅当任务由另一个任务创建时，此字段才存在。在这种情况下，它提供父任务的ID。
+</p>
+</dd>
+<dt>‘<samp class="samp">优先级</samp>’</dt>
+<dd><p>任务的基本优先级。
+</p>
+</dd>
+<dt>‘<samp class="samp">状态</samp>’</dt>
+<dd><p>任务的当前状态。有关可能状态的详细描述，请参阅 <a class="ref" href="Ada-Tasks.html">Ada任务扩展</a>.
+</p>
+</dd>
+<dt>‘<samp class="samp">名称</samp>’</dt>
+<dd><p>任务的名称。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-28"><span>示例<a class="copiable-link" href="#Example-28"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-ada-task-info
+^完成，任务={行数=&#34;3&#34;，列数=&#34;8&#34;，
+表头=[{宽度=&#34;1&#34;，对齐方式=&#34;-1&#34;，列名=&#34;当前&#34;，列标题=&#34;&#34;},
+{宽度=&#34;3&#34;，对齐方式=&#34;1&#34;，列名=&#34;ID&#34;，列标题=&#34;ID&#34;},
+{宽度=&#34;9&#34;，对齐方式=&#34;1&#34;，列名=&#34;任务ID&#34;，列标题=&#34;TID&#34;},
+{宽度=&#34;4&#34;，对齐方式=&#34;1&#34;，列名=&#34;线程ID&#34;，列标题=&#34;&#34;},
+{宽度=&#34;4&#34;，对齐方式=&#34;1&#34;，列名=&#34;父任务ID&#34;，列标题=&#34;P-ID&#34;},
+{宽度=&#34;3&#34;，对齐方式=&#34;1&#34;，列名=&#34;优先级&#34;，列标题=&#34;优先级&#34;},
+{宽度=&#34;22&#34;，对齐方式=&#34;-1&#34;，列名=&#34;状态&#34;，列标题=&#34;状态&#34;},
+{宽度=&#34;1&#34;，对齐方式=&#34;2&#34;，列名=&#34;名称&#34;，列标题=&#34;名称&#34;}]，
+表体=[{当前=&#34;*&#34;，ID=&#34;1&#34;，任务ID=&#34;   644010&#34;，线程ID=&#34;1&#34;，优先级=&#34;48&#34;，
+状态=&#34;子任务终止等待&#34;，名称=&#34;主任务&#34;}]}
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small> 程序执行</a>, 上一项： <a href="GDB_002fMI-Thread-Commands.html"><small class="sc">GDB/MI</small> 线程命令</a>, 上一项： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

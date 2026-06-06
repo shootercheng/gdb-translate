@@ -1,0 +1,195 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编写一个漂亮打印机（使用 GDB 调试）</title>
+
+<meta name="description" content="Writing a Pretty-Printer (Debugging with GDB)"/>
+<meta name="keywords" content="Writing a Pretty-Printer (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Type-Printing-API.html" rel="next" title="Type Printing API"/>
+<link href="Selecting-Pretty_002dPrinters.html" rel="prev" title="Selecting Pretty-Printers"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Writing-a-Pretty_002dPrinter">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Type-Printing-API.html" rel="next">类型打印 API</a>，上一项： <a accesskey="p" href="Selecting-Pretty_002dPrinters.html" rel="prev">选择漂亮打印机</a>, 上一级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Writing-a-Pretty_002dPrinter-1"><span>23.3.2.8 编写一个漂亮打印机<a class="copiable-link" href="#Writing-a-Pretty_002dPrinter-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-writing-a-pretty_002dprinter"></a>
+
+<p>一个漂亮打印机由两部分组成：一个用于检测类型是否受支持的查找函数，以及打印机本身。
+</p>
+<p>这里有一个示例，展示了如何 <code class="code">std::string</code> 编写一个打印机。请参阅 <a class="xref" href="Pretty-Printing-API.html">漂亮打印 API</a>，了解该类必须提供的 API 详细信息。请注意，此示例使用了 <code class="code">gdb.ValuePrinter</code>
+基类，并谨慎地为其局部状态使用了前导下划线。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class StdStringPrinter(gdb.ValuePrinter):
+    &#34;打印一个 std::string&#34;
+
+    def __init__(self, val):
+        self.__val = val
+
+    def to_string(self):
+        return self.__val[&#39;_M_dataplus&#39;][&#39;_M_p&#39;]
+
+    def display_hint(self):
+        return &#39;string&#39;
+</pre></div>
+
+<p>这里有一个示例，展示了如何为上述打印机示例编写一个查找函数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def str_lookup_function(val):
+    lookup_tag = val.type.tag
+    if lookup_tag is None:
+        return None
+    regex = re.compile(&#34;^std::basic_string&lt;char,.*&gt;$&#34;)
+    if regex.match(lookup_tag):
+        return StdStringPrinter(val)
+    return None
+</pre></div>
+
+<p>示例查找函数提取值的类型，并尝试将其与可以漂亮打印的类型进行匹配。如果它是打印机可以漂亮打印的类型，它将返回一个打印机对象。如果不是，它将返回 <code class="code">None</code>.
+</p>
+<p>我们建议您将核心漂亮打印机放入一个 Python 包中。如果您的漂亮打印机用于某个库，我们进一步建议在包名中嵌入一个版本号。这种做法将使 <small class="sc">GDB</small> 能够同时加载您的多个版本的漂亮打印机，因为它们将有不同的名称。
+</p>
+<p>您应该编写自动加载代码（请参阅 <a class="pxref" href="Python-Auto_002dloading.html">Python 自动加载</a>)，使其可以多次评估而不改变其含义。一个理想的自动加载文件将仅由 <code class="code">import</code>您的打印机模块的
+</p>
+<p>总体而言，这种方法可以很好地扩展到多个 inferior，每个 inferior 可能使用不同的库版本。在 Python 包名中嵌入版本号将确保
+<small class="sc">GDB</small> 能够同时加载两组打印机。然后，因为漂亮打印机的搜索是按目标文件进行的，并且因为您的自动加载代码小心地将您的库的打印机注册到特定的目标文件， <small class="sc">GDB</small> 将为每个 inferior 使用的特定版本的库找到正确的打印机。
+</p>
+<p>为了继续 <code class="code">std::string</code> 示例（请参阅 <a class="pxref" href="Pretty-Printing-API.html">漂亮打印 API</a>），
+此代码可能出现在 <code class="code">gdb.libstdcxx.v6</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def register_printers(objfile):
+    objfile.pretty_printers.append(str_lookup_function)
+</pre></div>
+
+<p>然后自动加载文件的相应内容将是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">import gdb.libstdcxx.v6
+gdb.libstdcxx.v6.register_printers(gdb.current_objfile())
+</pre></div>
+
+<p>前面的示例展示了一个基本的漂亮打印机。
+有一些方面可以改进。
+打印机没有名称，这使得在已安装的打印机列表中难以识别。查找函数有名称，但查找函数可以有任意甚至相同的名称。
+</p>
+<p>其次，打印机只处理一种类型，而一个库通常有几种类型。可以为库中每个所需的类型安装一个查找函数，但也可以让一个查找函数识别几种类型。后者是处理这种情况的常规方法。
+如果一个漂亮打印机可以处理多种数据类型，那么它的
+<em class="dfn">子打印机</em> 是针对各个数据类型的打印机。
+</p>
+<p> <code class="code">gdb.printing</code> 模块提供了一种正式的方法来解决这些问题（请参阅 <a class="pxref" href="gdb_002eprinting.html">gdb.printing</a>)。
+这里有另一个处理多种类型的示例。
+</p>
+<p>这些是我们要漂亮打印的类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct foo { int a, b; };
+struct bar { struct foo x, y; };
+</pre></div>
+
+<p>这里是打印机：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class fooPrinter(gdb.ValuePrinter):
+    &#34;&#34;&#34;打印一个 foo 对象。&#34;&#34;&#34;
+
+    def __init__(self, val):
+        self.__val = val
+
+    def to_string(self):
+        return (&#34;a=&lt;&#34; + str(self.__val[&#34;a&#34;]) +
+                &#34;&gt; b=&lt;&#34; + str(self.__val[&#34;b&#34;]) + &#34;&gt;&#34;)
+
+class barPrinter(gdb.ValuePrinter):
+    &#34;&#34;&#34;打印一个 bar 对象。&#34;&#34;&#34;
+
+    def __init__(self, val):
+        self.__val = val
+
+    def to_string(self):
+        return (&#34;x=&lt;&#34; + str(self.__val[&#34;x&#34;]) +
+                &#34;&gt; y=&lt;&#34; + str(self.__val[&#34;y&#34;]) + &#34;&gt;&#34;)
+</pre></div>
+
+<p>这个示例不需要查找函数，这由
+<code class="code">gdb.printing</code> 模块处理。相反，提供了一个函数来构建处理查找的对象。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">import gdb.printing
+
+def build_pretty_printer():
+    pp = gdb.printing.RegexpCollectionPrettyPrinter(
+        &#34;my_library&#34;)
+    pp.add_printer(&#39;foo&#39;, &#39;^foo$&#39;, fooPrinter)
+    pp.add_printer(&#39;bar&#39;, &#39;^bar$&#39;, barPrinter)
+    return pp
+</pre></div>
+
+<p>这里是自动加载支持：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">import gdb.printing
+import my_library
+gdb.printing.register_pretty_printer(
+    gdb.current_objfile(),
+    my_library.build_pretty_printer())
+</pre></div>
+
+<p>最后，当这个打印机加载到 <small class="sc">GDB</small>, 这里是
+‘<samp class="samp">info pretty-printer</samp>’的相应输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info pretty-printer
+my_library.so:
+  my_library
+    foo
+    bar
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Type-Printing-API.html">类型打印 API</a>, 上一项： <a href="Selecting-Pretty_002dPrinters.html">选择漂亮打印机</a>, 上一级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

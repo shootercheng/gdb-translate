@@ -1,0 +1,244 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>TUI命令（使用GDB进行调试）</title>
+
+<meta name="description" content="TUI Commands (Debugging with GDB)"/>
+<meta name="keywords" content="TUI Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="TUI.html" rel="up" title="TUI"/>
+<link href="TUI-Configuration.html" rel="next" title="TUI Configuration"/>
+<link href="TUI-Mouse-Support.html" rel="prev" title="TUI Mouse Support"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="TUI-Configuration.html" rel="next">TUI配置变量</a>, 上一项： <a accesskey="p" href="TUI-Mouse-Support.html" rel="prev">TUI鼠标支持</a>, 上级： <a accesskey="u" href="TUI.html" rel="up"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="TUI_002dspecific-Commands"><span><a class="copiable-link" href="#TUI_002dspecific-Commands"> </a></span></h3>
+<a class="index-entry-id" id="index-TUI-commands"></a>
+
+<p>TUI有特定的命令来控制文本窗口。这些命令始终可用，即使在 <small class="sc">GDB</small> 不在TUI模式下时也是如此。当 <small class="sc">GDB</small> 处于标准模式时，大多数这些命令将自动切换到TUI模式。
+</p>
+<p>请注意，如果 <small class="sc">GDB</small>的 <code class="code">stdout</code> 未连接到终端，或者 <small class="sc">GDB</small> 已使用机器接口解释器启动（参见 <a class="pxref" href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a>），大多数这些命令将因错误而失败，因为启用curses窗口管理是不可能或不可取的。
+</p>
+<dl class="table">
+<dt><a id="index-tui-enable"></a><span><code class="code">tui enable</code><a class="copiable-link" href="#index-tui-enable"> ¶</a></span></dt>
+<dd><p>激活TUI模式。如果在当前调试会话中之前使用过TUI模式，则将使用上次活动的TUI窗口布局，否则将使用默认布局。
+</p>
+</dd>
+<dt><a id="index-tui-disable"></a><span><code class="code">tui disable</code><a class="copiable-link" href="#index-tui-disable"> ¶</a></span></dt>
+<dd><p>禁用TUI模式，返回控制台解释器。
+</p>
+<a class="anchor" id="info_005fwin_005fcommand"></a></dd>
+<dt><a id="index-info-win"></a><span><code class="code">info win</code><a class="copiable-link" href="#index-info-win"> ¶</a></span></dt>
+<dd><p>列出所有当前显示窗口的名称和大小。
+</p>
+</dd>
+<dt><a id="index-tui-new_002dlayout"></a><span><code class="code">tui new-layout <var class="var">name</var> <var class="var">window</var> <var class="var">weight</var> <span class="r">[</span><var class="var">window</var> <var class="var">weight</var>…<span class="r">]</span></code><a class="copiable-link" href="#index-tui-new_002dlayout"> ¶</a></span></dt>
+<dd><p>创建一个新的TUI布局。新布局将命名为 <var class="var">名称</var>，并且可以使用 <code class="code">layout</code> 命令（见下文）访问。
+</p>
+<p>每个 <var class="var">窗口</var> 参数要么是要显示的窗口的名称，要么是窗口描述。窗口将按列出的顺序从上到下显示。
+</p>
+<p>窗口的名称与
+<code class="code">focus</code> 命令（见下文）中给出的名称相同；此外，还可以指定 <code class="code">status</code>
+窗口。请注意，由于状态窗口的高度是固定的，因此分配给状态窗口的权重并不重要。通常在此处使用‘<samp class="samp">0</samp>’。
+</p>
+<p>窗口描述看起来有点像 <code class="code">tui
+new-layout</code>的调用，其形式为
+{<span class="r">[</span><code class="code">-horizontal</code><span class="r">]</span><var class="var">窗口</var> <var class="var">权重</var> <span class="r">[</span><var class="var">窗口</var> <var class="var">权重</var>…<span class="r">]</span>}。
+</p>
+<p>这指定了一个子布局。如果 <code class="code">-horizontal</code> 被指定，则此描述中的窗口将并排排列，而不是从上到下排列。
+</p>
+<p>每个 <var class="var">权重</var> 是一个整数。它是此窗口相对于布局中所有其他窗口的权重。这些数字用于计算每个窗口占用屏幕的比例。
+</p>
+<p>例如：
+</p>
+<div class="example">
+<pre class="example-preformatted">(gdb) tui new-layout example src 1 regs 1 status 0 cmd 1
+</pre></div>
+
+<p>这里，新布局名为‘<samp class="samp">example</samp>’。它显示源窗口和寄存器窗口，然后是状态窗口，最后是命令窗口。非状态窗口的权重都相同，因此终端将大致分为三个相等的部分。
+</p>
+<p>这里有一个更复杂的例子，展示了一个水平布局：
+</p>
+<div class="example">
+<pre class="example-preformatted">(gdb) tui new-layout example {-horizontal src 1 asm 1} 2 status 0 cmd 1
+</pre></div>
+
+<p>这将导致源窗口和汇编窗口并排显示；状态窗口和命令窗口位于下方，填满终端的整个宽度。由于源窗口和汇编窗口的权重为2，它们的高度将是命令窗口的两倍。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-layout"></a>
+<a id="index-tui-layout"></a><span><code class="code">tui layout <var class="var">name</var></code><a class="copiable-link" href="#index-tui-layout"> ¶</a></span></dt>
+<dt><code class="code">layout <var class="var">name</var></code></dt>
+<dd><p>更改显示哪些TUI窗口。 <var class="var">名称</var> 参数控制显示哪个布局。它可以是内置布局名称之一，也可以是用户使用
+<code class="code">tui new-layout</code>定义的布局名称。
+</p>
+<p>内置布局如下：
+</p>
+<dl class="table">
+<dt><code class="code">next</code></dt>
+<dd><p>显示下一个布局。
+</p>
+</dd>
+<dt><code class="code">prev</code></dt>
+<dd><p>显示上一个布局。
+</p>
+</dd>
+<dt><code class="code">src</code></dt>
+<dd><p>显示源窗口和命令窗口。
+</p>
+</dd>
+<dt><code class="code">asm</code></dt>
+<dd><p>显示汇编窗口和命令窗口。
+</p>
+</dd>
+<dt><code class="code">split</code></dt>
+<dd><p>显示源窗口、汇编窗口和命令窗口。
+</p>
+</dd>
+<dt><code class="code">regs</code></dt>
+<dd><p>当处于 <code class="code">src</code> 布局时，显示寄存器窗口、源窗口和命令窗口。当处于 <code class="code">asm</code> 或 <code class="code">split</code> 布局时，显示寄存器窗口、汇编窗口和命令窗口。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-focus"></a><span><code class="code">tui focus <var class="var">name</var></code><a class="copiable-link" href="#index-focus"> ¶</a></span></dt>
+<dt><code class="code">focus <var class="var">name</var></code></dt>
+<dd><p>更改当前用于滚动的TUI窗口。
+<var class="var">名称</var> 参数可以是以下任何一个：
+</p>
+<dl class="table">
+<dt><code class="code">next</code></dt>
+<dd><p>使下一个窗口成为滚动活动窗口。
+</p>
+</dd>
+<dt><code class="code">prev</code></dt>
+<dd><p>使上一个窗口成为滚动活动窗口。
+</p>
+</dd>
+<dt><code class="code">src</code></dt>
+<dd><p>使源窗口成为滚动活动窗口。
+</p>
+</dd>
+<dt><code class="code">asm</code></dt>
+<dd><p>使汇编窗口成为滚动活动窗口。
+</p>
+</dd>
+<dt><code class="code">regs</code></dt>
+<dd><p>使寄存器窗口成为滚动活动窗口。
+</p>
+</dd>
+<dt><code class="code">cmd</code></dt>
+<dd><p>使命令窗口成为滚动活动窗口。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-refresh"></a>
+<a id="index-tui-refresh"></a><span><code class="code">tui refresh</code><a class="copiable-link" href="#index-tui-refresh"> ¶</a></span></dt>
+<dt><code class="code">refresh</code></dt>
+<dd><p>刷新屏幕。这类似于键入 <kbd class="kbd">C-L</kbd>。
+</p>
+</dd>
+<dt><a id="index-tui-reg"></a><span><code class="code">tui reg <var class="var">group</var></code><a class="copiable-link" href="#index-tui-reg"> ¶</a></span></dt>
+<dd><p>将tui寄存器窗口中显示的寄存器组更改为
+<var class="var">组</var>  如果当前未显示寄存器窗口，此命令将导致显示寄存器窗口。寄存器组列表及其顺序因目标而异。大多数目标上有以下组可用：
+</p><dl class="table">
+<dt><code class="code">next</code></dt>
+<dd><p>重复选择此组将使显示循环遍历所有可用的寄存器组。
+</p>
+</dd>
+<dt><code class="code">prev</code></dt>
+<dd><p>重复选择此组将使显示以相反顺序循环遍历所有可用的寄存器组。
+<var class="var">下一个</var>。
+</p>
+</dd>
+<dt><code class="code">general</code></dt>
+<dd><p>显示通用寄存器。
+</p></dd>
+<dt><code class="code">float</code></dt>
+<dd><p>显示浮点寄存器。
+</p></dd>
+<dt><code class="code">system</code></dt>
+<dd><p>显示系统寄存器。
+</p></dd>
+<dt><code class="code">vector</code></dt>
+<dd><p>显示向量寄存器。
+</p></dd>
+<dt><code class="code">all</code></dt>
+<dd><p>显示所有寄存器。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-update"></a><span><code class="code">update</code><a class="copiable-link" href="#index-update"> ¶</a></span></dt>
+<dd><p>更新源窗口和当前执行点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-winheight"></a>
+<a id="index-tui-window-height"></a><span><code class="code">tui window height <var class="var">name</var> +<var class="var">count</var></code><a class="copiable-link" href="#index-tui-window-height"> ¶</a></span></dt>
+<dt><code class="code">tui window height <var class="var">name</var> -<var class="var">count</var></code></dt>
+<dt><code class="code">winheight <var class="var">name</var> +<var class="var">count</var></code></dt>
+<dt><code class="code">winheight <var class="var">name</var> -<var class="var">count</var></code></dt>
+<dd><p>更改窗口的高度 <var class="var">名称</var> 按 <var class="var">数量</var> 行。正数量增加高度，负数量减小高度。 <var class="var">名称</var> 参数可以是当前任何可见窗口的名称。可以使用以下命令发现当前可见窗口的名称 <kbd class="kbd">info win</kbd> （参见 <a class="pxref" href="#info_005fwin_005fcommand">info win</a>）。
+</p>
+<p>当前可见窗口集必须始终填满终端，因此，只有当有其他可见窗口可以提供或接收额外的终端空间时，才可以调整一个窗口的大小。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-winwidth"></a>
+<a id="index-tui-window-width"></a><span><code class="code">tui window width <var class="var">name</var> +<var class="var">count</var></code><a class="copiable-link" href="#index-tui-window-width"> ¶</a></span></dt>
+<dt><code class="code">tui window width <var class="var">name</var> -<var class="var">count</var></code></dt>
+<dt><code class="code">winwidth <var class="var">name</var> +<var class="var">count</var></code></dt>
+<dt><code class="code">winwidth <var class="var">name</var> -<var class="var">count</var></code></dt>
+<dd><p>更改窗口的宽度 <var class="var">名称</var> 按 <var class="var">数量</var> 列。正数量增加宽度，负数量减小宽度。 <var class="var">名称</var> 参数可以是当前任何可见窗口的名称。可以使用以下命令发现当前可见窗口的名称 <code class="code">info win</code> （参见 <a class="pxref" href="#info_005fwin_005fcommand">info win</a>）。
+</p>
+<p>当前可见窗口集必须始终填满终端，因此，只有当有其他可见窗口可以提供或接收额外的终端空间时，才可以调整一个窗口的大小。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="TUI-Configuration.html">TUI配置变量</a>，上一项： <a href="TUI-Mouse-Support.html">TUI鼠标支持</a>，上级： <a href="TUI.html"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

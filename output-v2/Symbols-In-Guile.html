@@ -1,0 +1,319 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的符号 (使用 GDB 调试)</title>
+
+<meta name="description" content="Symbols In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Symbols In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Symbol-Tables-In-Guile.html" rel="next" title="Symbol Tables In Guile"/>
+<link href="Blocks-In-Guile.html" rel="prev" title="Blocks In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Symbols-In-Guile">
+<div class="nav-panel">
+<p>
+下一项: <a accesskey="n" href="Symbol-Tables-In-Guile.html" rel="next">Guile 中的符号表表示。</a>, 上一项: <a accesskey="p" href="Blocks-In-Guile.html" rel="prev">从 Guile 访问块。</a>, 上级: <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Guile-representation-of-Symbols_002e"><span>23.4.3.17 符号的 Guile 表示。<a class="copiable-link" href="#Guile-representation-of-Symbols_002e"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-symbols-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003asymbol_003e"></a>
+
+<p><small class="sc">GDB</small> 将每个变量、函数和类型表示为
+符号表中的一个条目。请参阅 <a class="xref" href="Symbols.html">检查符号表</a>.
+Guile 以 <small class="sc">GDB</small> 使用
+<code class="code">&lt;gdb:symbol&gt;</code> 对象中可见的符号。
+</p>
+<p>以下与符号相关的过程由
+<code class="code">(gdb)</code> 模块:
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name"></strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-symbol_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是一个类型为 <code class="code">&lt;gdb:symbol&gt;</code>.
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dvalid_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-valid?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dvalid_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <code class="code">&lt;gdb:symbol&gt;</code> 对象有效，
+<code class="code">#f</code> 如果无效。一个 <code class="code">&lt;gdb:symbol&gt;</code> 对象如果它所引用的符号在 <small class="sc">GDB</small> 中不再存在，则可能会变得无效。
+所有其他 <code class="code">&lt;gdb:symbol&gt;</code> 过程在调用时如果对象无效，则会抛出一个异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dtype"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-type</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 的类型或 <code class="code">#f</code> 如果没有记录类型。
+结果是一个类型为 <code class="code">&lt;gdb:type&gt;</code>.
+请参阅 <a class="xref" href="Types-In-Guile.html">Guile 中的类型</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dsymtab"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-symtab</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dsymtab"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 出现的符号表。
+结果是一个类型为 <code class="code">&lt;gdb:symtab&gt;</code>.
+请参阅 <a class="xref" href="Symbol-Tables-In-Guile.html">Guile 中的符号表表示。</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dline"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-line</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dline"> ¶</a></span></dt>
+<dd><p>返回源代码中 <var class="var">符号</var> 定义的行号。
+这是一个整数。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dname"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dname"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 的名称作为一个字符串。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dlinkage_002dname"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-linkage-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dlinkage_002dname"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">符号</var>, 链接器使用的名称 (即，可能是经过修饰的)。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dprint_002dname"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-print-name</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dprint_002dname"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">符号</var> 适合输出的形式的名称。这是
+<code class="code">name</code> 或 <code class="code">linkage_name</code>, 取决于用户是否要求 <small class="sc">GDB</small> 显示未修饰或修饰后的名称。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002daddr_002dclass"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-addr-class</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002daddr_002dclass"> ¶</a></span></dt>
+<dd><p>返回符号的地址类。这对如何查找符号的值进行分类。每个地址类是在
+<code class="code">(gdb)</code> 模块中定义的常量，并在本章后面描述。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dneeds_002dframe_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-needs-frame?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dneeds_002dframe_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果计算 <var class="var">符号</var>的值需要一个帧
+(请参阅 <a class="pxref" href="Frames-In-Guile.html">从 Guile 访问下级栈帧。</a>) 并且 <code class="code">#f</code> 否则。通常，
+局部变量需要一个帧，但其他符号不需要。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dargument_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-argument?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dargument_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">符号</var> 是一个函数的参数。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dconstant_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-constant?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dconstant_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">符号</var> 是一个常量。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dfunction_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-function?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dfunction_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">符号</var> 是一个函数或方法。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dvariable_003f"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-variable?</strong> <var class="def-var-arguments">符号</var><a class="copiable-link" href="#index-symbol_002dvariable_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">符号</var> 是一个变量。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-symbol_002dvalue"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">symbol-value</strong> <var class="def-var-arguments">符号 <span class="r">[</span>#:frame frame<span class="r">]</span></var><a class="copiable-link" href="#index-symbol_002dvalue"> ¶</a></span></dt>
+<dd><p>计算 <var class="var">符号</var>的值，作为一个 <code class="code">&lt;gdb:value&gt;</code>. 对于
+函数，这会计算函数的地址，并转换为
+适当的类型。如果符号需要一个帧来计算
+其值，那么 <var class="var">帧</var> 必须给出。如果 <var class="var">帧</var> 未给出，或者如果 <var class="var">帧</var> 无效，则会抛出一个异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lookup_002dsymbol"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">lookup-symbol</strong> <var class="def-var-arguments">名称 <span class="r">[</span>#:block 块<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:domain 域<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-lookup_002dsymbol"> ¶</a></span></dt>
+<dd><p>此函数按名称搜索符号。搜索范围可以
+限制为可选的域和块
+参数中定义的参数。
+</p>
+<p><var class="var">名称</var> 是符号的名称。它必须是一个字符串。可选的 <var class="var">块</var> 参数将搜索限制为在该 <var class="var">块</var>.  <var class="var">块</var> 参数必须是一个
+<code class="code">&lt;gdb:block&gt;</code> 对象。如果省略，则使用当前帧的块。可选的 <var class="var">域</var> 参数将搜索限制为域类型。 <var class="var">域</var> 参数必须是在 <code class="code">(gdb)</code> 模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个包含两个元素的列表。
+第一个元素是一个 <code class="code">&lt;gdb:symbol&gt;</code> 对象或 <code class="code">#f</code> 如果未找到符号。
+如果找到符号，第二个元素是 <code class="code">#t</code> 如果符号
+是方法对象的一个字段 (例如， <code class="code">this</code> 在 C 中<code class="t">++</code>)，
+否则它是 <code class="code">#f</code>.
+如果未找到符号，第二个元素是 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lookup_002dglobal_002dsymbol"><span class="category-def">Scheme 过程: </span><span><strong class="def-name">lookup-global-symbol</strong> <var class="def-var-arguments">名称 <span class="r">[</span>#:domain 域<span class="r">]</span></var><a class="copiable-link" href="#index-lookup_002dglobal_002dsymbol"> ¶</a></span></dt>
+<dd><p>此函数按名称搜索全局符号。
+搜索范围可以由域参数限制。
+</p>
+<p><var class="var">名称</var> 是符号的名称。它必须是一个字符串。
+可选的 <var class="var">域</var> 参数将搜索限制为域类型。
+ <var class="var">域</var> 参数必须是在 <code class="code">(gdb)</code>
+模块中定义的域常量，并在本章后面描述。
+</p>
+<p>结果是一个 <code class="code">&lt;gdb:symbol&gt;</code> 对象或 <code class="code">#f</code> 如果未找到符号。
+</p></dd></dl>
+
+<p>在 <code class="code">&lt;gdb:symbol&gt;</code> 中可用的域类别表示为 <code class="code">(gdb)</code> 模块中的常量:
+</p>
+<dl class="vtable">
+<dt><a id="index-SYMBOL_005fUNDEF_005fDOMAIN-1"></a><span><code class="code">SYMBOL_UNDEF_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fUNDEF_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>当一个域未被发现或者以下域都不适用时使用。这通常表示符号信息或 <small class="sc">GDB</small>对符号的处理存在错误。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fVAR_005fDOMAIN-1"></a><span><code class="code">SYMBOL_VAR_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fVAR_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>此域包含变量、函数名、typedef 名和枚举
+类型值。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fFUNCTION_005fDOMAIN-1"></a><span><code class="code">SYMBOL_FUNCTION_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fFUNCTION_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>此域包含函数。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fTYPE_005fDOMAIN-1"></a><span><code class="code">SYMBOL_TYPE_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fTYPE_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>此域包含类型。在类似 C 的语言中，使用标签的类型
+(出现在 <code class="code">struct</code>, <code class="code">union</code>, 或
+<code class="code">enum</code> 关键字之后的名称) 不会出现在这里；在其他语言中，所有
+类型都在这个域中。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fSTRUCT_005fDOMAIN-1"></a><span><code class="code">SYMBOL_STRUCT_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fSTRUCT_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>此域包含结构体、联合体和枚举标签名。此域仅用于类似 C 的语言。例如，在这段代码中:
+</p><div class="example smallexample">
+<pre class="example-preformatted">struct type_one { int x; };
+typedef struct type_one type_two;
+</pre></div>
+<p>这里 <code class="code">type_one</code> 将在 <code class="code">SYMBOL_STRUCT_DOMAIN</code>, 但
+<code class="code">type_two</code> 将在 <code class="code">SYMBOL_TYPE_DOMAIN</code>.
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLABEL_005fDOMAIN-1"></a><span><code class="code">SYMBOL_LABEL_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fLABEL_005fDOMAIN-1"> ¶</a></span></dt>
+<dd><p>此域包含标签名 (用于 goto)。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fVARIABLES_005fDOMAIN"></a><span><code class="code">SYMBOL_VARIABLES_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fVARIABLES_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含 <code class="code">SYMBOLS_VAR_DOMAIN</code>的一个子集；它
+包含除函数和类型之外的所有内容。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fFUNCTIONS_005fDOMAIN"></a><span><code class="code">SYMBOL_FUNCTIONS_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fFUNCTIONS_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含所有函数。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fTYPES_005fDOMAIN"></a><span><code class="code">SYMBOL_TYPES_DOMAIN</code><a class="copiable-link" href="#index-SYMBOL_005fTYPES_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含所有类型。
+</p></dd>
+</dl>
+
+<p>在 <code class="code">&lt;gdb:symbol&gt;</code> 中可用的地址类类别表示为 <code class="code">gdb</code> 模块中的常量:
+</p>
+<p>在搜索符号时，可以将所需的域常量直接传递给查找函数。
+</p>
+<p>对于更复杂的搜索，有一组相应的常量，
+每个常量都以之前的常量命名，但用
+‘<samp class="samp">SEARCH</samp>’ 前缀替换 ‘<samp class="samp">SYMBOL</samp>’ 前缀；例如，
+<code class="code">SEARCH_LABEL_DOMAIN</code>. 这些常量可以进行按位或运算以形成一个
+搜索常量。
+</p>
+<dl class="vtable">
+<dt><a id="index-SYMBOL_005fLOC_005fUNDEF-1"></a><span><code class="code">SYMBOL_LOC_UNDEF</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fUNDEF-1"> ¶</a></span></dt>
+<dd><p>如果地址类返回此值，则表示符号信息或 <small class="sc">GDB</small>对符号的处理存在错误。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fCONST-1"></a><span><code class="code">SYMBOL_LOC_CONST</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fCONST-1"> ¶</a></span></dt>
+<dd><p>值是常量整数。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fSTATIC-1"></a><span><code class="code">SYMBOL_LOC_STATIC</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fSTATIC-1"> ¶</a></span></dt>
+<dd><p>值位于固定地址。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fREGISTER-1"></a><span><code class="code">SYMBOL_LOC_REGISTER</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fREGISTER-1"> ¶</a></span></dt>
+<dd><p>值在寄存器中。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fARG-1"></a><span><code class="code">SYMBOL_LOC_ARG</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fARG-1"> ¶</a></span></dt>
+<dd><p>值是一个参数。此值位于帧的参数列表中符号内存储的偏移量处。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fREF_005fARG-1"></a><span><code class="code">SYMBOL_LOC_REF_ARG</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fREF_005fARG-1"> ¶</a></span></dt>
+<dd><p>值的地址存储在帧的参数列表中。就像
+<code class="code">LOC_ARG</code> 除了值的地址存储在偏移量处，而不是值本身。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fREGPARM_005fADDR-1"></a><span><code class="code">SYMBOL_LOC_REGPARM_ADDR</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fREGPARM_005fADDR-1"> ¶</a></span></dt>
+<dd><p>值是一个指定的寄存器。就像 <code class="code">LOC_REGISTER</code> 除了寄存器保存的是参数的地址而不是参数
+本身。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fLOCAL-1"></a><span><code class="code">SYMBOL_LOC_LOCAL</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fLOCAL-1"> ¶</a></span></dt>
+<dd><p>值是一个局部变量。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fTYPEDEF-1"></a><span><code class="code">SYMBOL_LOC_TYPEDEF</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fTYPEDEF-1"> ¶</a></span></dt>
+<dd><p>值未使用。域中的符号 <code class="code">SYMBOL_STRUCT_DOMAIN</code> 都具有此类别。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fBLOCK-1"></a><span><code class="code">SYMBOL_LOC_BLOCK</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fBLOCK-1"> ¶</a></span></dt>
+<dd><p>值是一个块。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fCONST_005fBYTES-1"></a><span><code class="code">SYMBOL_LOC_CONST_BYTES</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fCONST_005fBYTES-1"> ¶</a></span></dt>
+<dd><p>值是一个字节序列。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fUNRESOLVED-1"></a><span><code class="code">SYMBOL_LOC_UNRESOLVED</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fUNRESOLVED-1"> ¶</a></span></dt>
+<dd><p>值位于固定地址，但每当引用该变量时，必须从最小符号表中确定变量的地址。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fOPTIMIZED_005fOUT-1"></a><span><code class="code">SYMBOL_LOC_OPTIMIZED_OUT</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fOPTIMIZED_005fOUT-1"> ¶</a></span></dt>
+<dd><p>该值实际上在程序中不存在。
+</p>
+</dd>
+<dt><a id="index-SYMBOL_005fLOC_005fCOMPUTED-1"></a><span><code class="code">SYMBOL_LOC_COMPUTED</code><a class="copiable-link" href="#index-SYMBOL_005fLOC_005fCOMPUTED-1"> ¶</a></span></dt>
+<dd><p>值的地址是一个计算得到的位置。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项: <a href="Symbol-Tables-In-Guile.html">Guile 中的符号表表示。</a>, 上一项: <a href="Blocks-In-Guile.html">从 Guile 访问块。</a>, 上级: <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

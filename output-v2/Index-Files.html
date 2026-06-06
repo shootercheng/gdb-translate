@@ -1,0 +1,180 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>索引文件（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Index Files (Debugging with GDB)"/>
+<meta name="keywords" content="Index Files (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB-Files.html" rel="up" title="GDB Files"/>
+<link href="Debug-Names.html" rel="next" title="Debug Names"/>
+<link href="MiniDebugInfo.html" rel="prev" title="MiniDebugInfo"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Index-Files">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Debug-Names.html" rel="next">对 ‘<samp class="samp">.debug_names</samp>’</a>, 上一项： <a accesskey="p" href="MiniDebugInfo.html" rel="prev">特殊节中的调试信息</a>, 上级： <a accesskey="u" href="GDB-Files.html" rel="up"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Index-Files-Speed-Up-gdb"><span>18.5 索引文件加速 <small class="sc">GDB</small><a class="copiable-link" href="#Index-Files-Speed-Up-gdb"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-index-files"></a>
+<a class="index-entry-id" id="index-_002egdb_005findex-section"></a>
+
+<p>当 <small class="sc">GDB</small> 找到符号文件时，它会按顺序扫描文件中的符号以构建内部符号表。这使得大多数
+<small class="sc">GDB</small> 操作能够快速进行 —— 代价是早期会有延迟。对于大型程序，这种延迟可能会相当长，因此
+<small class="sc">GDB</small> 提供了一种构建索引的方法，这可以加快启动速度。
+</p>
+<p>为了方便起见， <small class="sc">GDB</small> 附带了一个程序
+<code class="command">gdb-add-index</code>, 它可用于向符号文件添加索引。它只接受符号文件作为参数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb-add-index symfile
+</pre></div>
+
+<p>参见 <a class="xref" href="gdb_002dadd_002dindex-man.html#gdb_002dadd_002dindex">gdb-add-index</a>.
+</p>
+<p>也可以手动完成这项工作。以下是
+<code class="command">gdb-add-index</code> 在幕后所做的事情。
+</p>
+<p>索引作为一个节存储在符号文件中。  <small class="sc">GDB</small> 可以将索引写入文件，然后您可以使用 <code class="command">objcopy</code>. 将其放入符号文件中
+</p>
+<p>要创建索引文件，请使用 <code class="code">save gdb-index</code> 命令：
+</p>
+<dl class="table">
+<dt><a id="index-save-gdb_002dindex"></a><span><code class="code">save gdb-index [-dwarf-5] <var class="var">directory</var></code><a class="copiable-link" href="#index-save-gdb_002dindex"> ¶</a></span></dt>
+<dd><p>为当前
+<small class="sc">GDB</small>已知的所有符号文件创建索引文件。对于每个已知的 <var class="var">符号文件</var>, 此命令默认生成一个文件 <samp class="file"><var class="var">符号文件</var>.gdb-index</samp>.
+如果您使用 <samp class="option">-dwarf-5</samp> 选项调用此命令，它会生成 2 个文件： <samp class="file"><var class="var">符号文件</var>.debug_names</samp> 和
+<samp class="file"><var class="var">符号文件</var>.debug_str</samp>. 文件将在给定的 <var class="var">目录</var>.
+</p>
+<p>该 <var class="var">目录</var> 参数支持转义和引用，参见
+<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>.
+</p></dd>
+</dl>
+
+<p>一旦您创建了索引文件，就可以将其合并到您的符号文件中，这里命名为 <samp class="file">symfile</samp>, 使用 <code class="command">objcopy</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ objcopy --add-section .gdb_index=symfile.gdb-index \
+    --set-section-flags .gdb_index=readonly symfile symfile
+</pre></div>
+
+<p>或者对于 <code class="code">-dwarf-5</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ objcopy --dump-section .debug_str=symfile.debug_str.new symfile
+$ cat symfile.debug_str &gt;&gt;symfile.debug_str.new
+$ objcopy --add-section .debug_names=symfile.gdb-index \
+    --set-section-flags .debug_names=readonly \
+    --update-section .debug_str=symfile.debug_str.new symfile symfile
+</pre></div>
+
+<p><small class="sc">GDB</small> 通常会忽略较旧版本的 <samp class="file">.gdb_index</samp>
+已被弃用的节。通常它们被弃用是因为缺少新功能或存在性能问题。
+要告诉 <small class="sc">GDB</small> 无论如何都使用已弃用的索引节，请指定 <code class="code">set use-deprecated-index-sections on</code>.
+默认值是 <code class="code">off</code>.
+这可以加快启动速度，但可能会导致一些功能丢失。
+参见 <a class="xref" href="Index-Section-Format.html"><code class="code">.gdb_index</code> 节格式</a>.
+</p>
+<p><em class="emph">警告：</em> 将 <code class="code">use-deprecated-index-sections</code> 设置为 <code class="code">on</code>
+必须在 gdb 读取文件之前完成。以下操作将不起作用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -ex &#34;set use-deprecated-index-sections on&#34; &lt;program&gt;
+</pre></div>
+
+<p>相反，您必须这样做，例如
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -iex &#34;set use-deprecated-index-sections on&#34; &lt;program&gt;
+</pre></div>
+
+<p>索引仅在使用 DWARF 调试信息时有效，而不适用于 stabs。
+</p>
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Automatic-symbol-index-cache">自动符号索引缓存</a></li>
+<li><a accesskey="2" href="#Building-the-index-with-GNU-gold">使用 GNU 构建索引 <code class="command">gold</code></a></li>
+</ul>
+<div class="subsection-level-extent" id="Automatic-symbol-index-cache">
+<h4 class="subsection"><span>18.5.1 自动符号索引缓存<a class="copiable-link" href="#Automatic-symbol-index-cache"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-automatic-symbol-index-cache"></a>
+<p>有可能让 <small class="sc">GDB</small> 自动将此索引的副本保存在磁盘缓存中，并在将来加载相同的二进制文件时从那里检索它。可以使用 <kbd class="kbd">set index-cache enabled on</kbd>. 启用此功能。
+以下命令可用于调整索引缓存的行为。
+</p>
+<dl class="table">
+<dt><a id="index-set-index_002dcache"></a><span><code class="code">set index-cache enabled on</code><a class="copiable-link" href="#index-set-index_002dcache"> ¶</a></span></dt>
+<dt><code class="code">set index-cache enabled off</code></dt>
+<dd><p>启用或禁用符号索引缓存的使用。
+</p>
+</dd>
+<dt><code class="code">set index-cache directory <var class="var">directory</var></code></dt>
+<dd><a class="index-entry-id" id="index-show-index_002dcache"></a>
+</dd>
+<dt><code class="code">show index-cache directory</code></dt>
+<dd><p>设置/显示将保存索引文件的目录。
+</p>
+<p>此目录的默认值取决于主机平台。在大多数系统上，如果定义了 <samp class="file">gdb</samp> 环境变量所指向的目录，则索引会缓存在该目录的 <code class="env">XDG_CACHE_HOME</code> 子目录中，否则会缓存在您主目录的 <samp class="file">.cache/gdb</samp> 子目录中。但是，在某些系统上，默认值可能会根据本地约定有所不同。
+</p>
+<p>索引缓存使用的磁盘空间没有限制。删除该目录的内容以释放磁盘空间是完全安全的。
+</p>
+</dd>
+<dt><code class="code">show index-cache stats</code></dt>
+<dd><p>打印自启动以来缓存命中和未命中的次数 <small class="sc">GDB</small>.
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsection-level-extent" id="Building-the-index-with-GNU-gold">
+<h4 class="subsection"><span>18.5.2 使用 GNU 构建索引 <code class="command">gold</code><a class="copiable-link" href="#Building-the-index-with-GNU-gold"> ¶</a></span></h4>
+
+<p>GNU <code class="command">gold</code> 链接器可以在链接时将索引写入生成的 ELF 文件，通过传递 <code class="command">--gdb-index</code> 标志给
+<code class="command">gold</code>.
+</p>
+<p>如果您打算构建一个程序并立即在 <small class="sc">GDB</small>下运行它，这尤其有用。您可能会发现，总体而言，链接器在内存中已有相关信息时写入索引比使用
+<code class="command">gdb-add-index</code>从磁盘重新加载数据，或者完全不使用索引调试程序要快，特别是对于大型程序。
+</p>
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Debug-Names.html">对 ‘<samp class="samp">.debug_names</samp>’ 的扩展</a>, 上一项： <a href="MiniDebugInfo.html">特殊节中的调试信息</a>, 上级： <a href="GDB-Files.html"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

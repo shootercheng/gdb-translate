@@ -1,0 +1,1005 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>维护命令（使用GDB进行调试）</title>
+
+<meta name="description" content="Maintenance Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Maintenance Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Remote-Protocol.html" rel="next" title="Remote Protocol"/>
+<link href="Installing-GDB.html" rel="prev" title="Installing GDB"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Maintenance-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Remote-Protocol.html" rel="next"><small class="sc">GDB</small> 远程串行协议</a>, 上一项： <a accesskey="p" href="Installing-GDB.html" rel="prev"> <small class="sc">GDB</small></a>, 上一级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="appendix" id="Maintenance-Commands-1"><span>附录D 维护命令<a class="copiable-link" href="#Maintenance-Commands-1"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-maintenance-commands"></a>
+<a class="index-entry-id" id="index-internal-commands"></a>
+
+<p>除了为 <small class="sc">GDB</small> 用户设计的命令外， <small class="sc">GDB</small>
+还包括一些为 <small class="sc">GDB</small> 开发者设计的命令，这些命令在本手册的其他地方未作记录。此处提供这些命令以供参考。（有关开启调试消息的命令，请参阅 <a class="ref" href="Debugging-Output.html">关于内部事件的可选消息</a>.)
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-maint-agent_002deval"></a>
+<a id="index-maint-agent"></a><span><code class="code">maint agent <span class="r">[</span>-at <var class="var">linespec</var><span class="r">,</span><span class="r">]</span> <var class="var">expression</var></code><a class="copiable-link" href="#index-maint-agent"> ¶</a></span></dt>
+<dt><code class="code">maint agent-eval <span class="r">[</span>-at <var class="var">linespec</var><span class="r">,</span><span class="r">]</span> <var class="var">expression</var></code></dt>
+<dd><p>将给定的 <var class="var">表达式</var> 转换为远程代理字节码。
+此命令对于调试代理表达式机制很有用（请参阅 <a class="pxref" href="Agent-Expressions.html">GDB代理表达式机制</a>)。‘<samp class="samp">代理</samp>’版本生成一个对数据收集有用的表达式，例如通过跟踪点，而‘<samp class="samp"></samp>’生成一个直接计算结果的表达式。例如，对于 <code class="code">globa +
+globb</code> 将包含字节码，以记录 <code class="code">globa</code> 和 <code class="code">globb</code>, 同时丢弃加法的结果，而求值表达式将执行加法并返回和。
+如果 <code class="code">-at</code> 被指定，则为 <var class="var">行规范</var> 解析（请参阅 <a class="pxref" href="Linespec-Locations.html">行规范位置</a>).
+如果未指定，则为当前帧的PC地址生成远程代理字节码。
+</p>
+</dd>
+<dt><a id="index-maint-agent_002dprintf"></a><span><code class="code">maint agent-printf <var class="var">format</var>,<var class="var">expr</var>,...</code><a class="copiable-link" href="#index-maint-agent_002dprintf"> ¶</a></span></dt>
+<dd><p>将给定的格式字符串和参数表达式列表转换为远程代理字节码，并将它们显示为反汇编列表。此命令对于调试动态printf的代理版本很有用（请参阅 <a class="pxref" href="Dynamic-Printf.html"></a>)。
+</p>
+</dd>
+<dt><a id="index-maint-canonicalize"></a><span><code class="code">maint canonicalize <var class="var">name</var></code><a class="copiable-link" href="#index-maint-canonicalize"> </a></span></dt>
+<dd><p>打印 <var class="var">名称</var>, 一个C<code class="t">++</code> 名称可能有多种可能的拼写方式，<code class="t">++</code> 因此 <small class="sc">GDB</small>
+
+<code class="code">short int</code> 和 <code class="code">short</code> 是两种命名同一类型的方式。
+</p>
+<a class="index-entry-id" id="index-maint-info-breakpoints"></a>
+<a class="anchor" id="maint-info-breakpoints"></a></dd>
+<dt><code class="code">maint info breakpoints</code></dt>
+<dd><p>使用与‘<samp class="samp"></samp>’相同的格式，显示你明确设置的断点以及 <small class="sc">GDB</small> 用于内部目的的断点。内部断点显示为负的断点编号。类型列标识显示的是哪种类型的断点：
+</p>
+<dl class="table">
+<dt><code class="code">breakpoint</code></dt>
+<dd><p>正常的、明确设置的断点。
+</p>
+</dd>
+<dt><code class="code">watchpoint</code></dt>
+<dd><p>正常的、明确设置的观察点。
+</p>
+</dd>
+<dt><code class="code">longjmp</code></dt>
+<dd><p>用于正确单步执行
+<code class="code">longjmp</code> 
+</p>
+</dd>
+<dt><code class="code">longjmp resume</code></dt>
+<dd><p>调用的内部断点。 <code class="code">longjmp</code>.
+</p>
+</dd>
+<dt><code class="code">until</code></dt>
+<dd><p> <small class="sc">GDB</small> <code class="code">until</code> 
+</p>
+</dd>
+<dt><code class="code">finish</code></dt>
+<dd><p> <small class="sc">GDB</small> <code class="code">finish</code> 命令。
+</p>
+</dd>
+<dt><code class="code">shlib events</code></dt>
+<dd><p>
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-maint-info-btrace"></a><span><code class="code">maint info btrace</code><a class="copiable-link" href="#index-maint-info-btrace"> ¶</a></span></dt>
+<dd><p>打印原始分支跟踪数据的信息。
+</p>
+</dd>
+<dt><a id="index-maint-btrace-packet_002dhistory"></a><span><code class="code">maint btrace packet-history</code><a class="copiable-link" href="#index-maint-btrace-packet_002dhistory"> ¶</a></span></dt>
+<dd><p>打印用于计算‘<samp class="samp">record btrace</samp>’命令。信息和打印格式都取决于btrace记录格式。
+</p>
+<dl class="table">
+<dt><code class="code">bts</code></dt>
+<dd><p>对于BTS记录格式，打印连续代码块的列表。对于每个块，将打印以下信息：
+</p>
+<dl class="table">
+<dt>块编号</dt>
+<dd><p>较新的块编号较高。最旧的块编号为零。
+</p></dd>
+<dt>最低‘<samp class="samp">PC</samp>’</dt>
+<dt>最高‘<samp class="samp">PC</samp>’</dt>
+</dl>
+
+</dd>
+<dt><code class="code">pt</code></dt>
+<dd><p>对于英特尔处理器跟踪记录格式，打印英特尔处理器跟踪包的列表。对于每个包，将打印以下信息：
+</p>
+<dl class="table">
+<dt>包编号</dt>
+<dd><p>较新的包编号较高。最旧的包编号为零。
+</p></dd>
+<dt>跟踪偏移量</dt>
+<dd><p>包在跟踪流中的偏移量。
+</p></dd>
+<dt>包操作码和有效负载</dt>
+</dl>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-maint-btrace-clear_002dpacket_002dhistory"></a><span><code class="code">maint btrace clear-packet-history</code><a class="copiable-link" href="#index-maint-btrace-clear_002dpacket_002dhistory"> ¶</a></span></dt>
+<dd><p>丢弃‘<samp class="samp">maint btrace
+packet-history</samp>’命令打印的缓存包历史记录。需要时将重新计算历史记录。
+</p>
+</dd>
+<dt><a id="index-maint-btrace-clear"></a><span><code class="code">maint btrace clear</code><a class="copiable-link" href="#index-maint-btrace-clear"> ¶</a></span></dt>
+<dd><p>丢弃分支跟踪数据。需要时将重新获取数据并重新计算分支跟踪。
+</p>
+<p>这会隐式地将分支跟踪截断为单个分支跟踪缓冲区。在增量更新分支跟踪时， <small class="sc">GDB</small> 可用的分支跟踪可能比单个分支跟踪缓冲区大。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-set-btrace-pt-skip_002dpad"></a>
+<a id="index-maint-show-btrace-pt-skip_002dpad"></a><span><code class="code">maint set btrace pt skip-pad</code><a class="copiable-link" href="#index-maint-show-btrace-pt-skip_002dpad"> ¶</a></span></dt>
+<dt><code class="code">maint show btrace pt skip-pad</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 在计算包历史记录时是否跳过PAD包。
+</p>
+</dd>
+<dt><a id="index-maint-info-jit"></a><span><code class="code">maint info jit</code><a class="copiable-link" href="#index-maint-info-jit"> ¶</a></span></dt>
+<dd><p>打印当前目标进程中加载的JIT代码对象的信息。
+</p>
+<a class="anchor" id="maint-info-python_002ddisassemblers"></a></dd>
+<dt><a id="index-maint-info-python_002ddisassemblers"></a><span><code class="code">maint info python-disassemblers</code><a class="copiable-link" href="#index-maint-info-python_002ddisassemblers"> ¶</a></span></dt>
+<dd><p>此命令在 <code class="code">gdb.disassembler</code> Python
+模块中定义（请参阅 <a class="pxref" href="Disassembly-In-Python.html">Python中的指令反汇编</a>），并且只有在导入该模块后才会存在。要强制导入该模块，请执行以下操作：
+</p>
+</dd>
+<dt><a id="index-maint-info-linux_002dlwps"></a><span><code class="code">maint info linux-lwps</code><a class="copiable-link" href="#index-maint-info-linux_002dlwps"> ¶</a></span></dt>
+<dd><p>打印由Linux原生目标控制的LWP（轻量级进程）的信息。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python import gdb.disassembler
+</pre></div>
+
+<p>此命令列出当前已注册反汇编器的所有架构，以及反汇编器的名称。如果为所有架构都注册了一个反汇编器，则最后会将其列在‘<samp class="samp">全局</samp>’架构下。
+</p>
+<p>如果其中一个反汇编器将被选用于当前目标进程的架构，则该反汇编器将被标记。
+</p>
+<p>以下示例展示了注册了两个反汇编器的情况，最初‘<samp class="samp">i386</samp>’反汇编器与当前架构匹配，然后更改了架构，现在‘<samp class="samp">全局</samp>’
+反汇编器匹配。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) show architecture
+目标架构设置为 &#34;auto&#34;（当前为 &#34;i386&#34;）。
+(gdb) maint info python-disassemblers
+架构                反汇编器名称
+i386                Disassembler_1	（匹配当前架构）
+全局              Disassembler_2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) set architecture arm
+目标架构设置为 &#34;arm&#34;。
+(gdb) maint info python-disassemblers
+quit
+架构                反汇编器名称
+i386                Disassembler_1
+全局              Disassembler_2	（匹配当前架构）
+</pre></div></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-show-displaced_002dstepping"></a>
+<a class="index-entry-id" id="index-displaced-stepping-support"></a>
+<a class="index-entry-id" id="index-out_002dof_002dline-single_002dstepping"></a>
+<a id="index-set-displaced_002dstepping"></a><span><code class="code">set displaced-stepping</code><a class="copiable-link" href="#index-set-displaced_002dstepping"> ¶</a></span></dt>
+<dt><code class="code">show displaced-stepping</code></dt>
+<dd><a class="anchor" id="displaced_002dstepping"></a><p>控制是否 <small class="sc">GDB</small> 将执行 <em class="dfn">位移步进</em>
+如果目标支持的话。位移步进是一种单步跳过断点而不将其从目标进程中移除的方法，通过执行原本位于断点位置的指令的一个离线副本。它也被称为离线单步执行。
+</p>
+<dl class="table">
+<dt><code class="code">set displaced-stepping on</code></dt>
+<dd><p>如果目标架构支持， <small class="sc">GDB</small> 将使用位移步进跳过断点。
+</p>
+</dd>
+<dt><code class="code">set displaced-stepping off</code></dt>
+<dd><p><small class="sc">GDB</small> 即使目标架构支持，也不会使用位移步进跳过断点。
+</p>
+</dd>
+<dt><a id="index-non_002dstop-mode_002c-and-set-displaced_002dstepping"></a><span><code class="code">set displaced-stepping auto</code><a class="copiable-link" href="#index-non_002dstop-mode_002c-and-set-displaced_002dstepping"> ¶</a></span></dt>
+<dd><p>这是默认模式。  <small class="sc">GDB</small> 仅在非停止模式激活时（请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>）且目标架构支持位移步进时，才会使用位移步进。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-maint-check-psymtabs"></a><span><code class="code">maint check psymtabs</code><a class="copiable-link" href="#index-maint-check-psymtabs"> ¶</a></span></dt>
+<dd><p>检查当前展开的psymtab（局部符号表）与symtab（符号表）的一致性。例如，使用此命令检查一个符号是否存在于其中一个表中而不在另一个表中。
+</p>
+</dd>
+<dt><a id="index-maint-check-symtabs"></a><span><code class="code">maint check symtabs</code><a class="copiable-link" href="#index-maint-check-symtabs"> ¶</a></span></dt>
+<dd><p>检查当前展开的符号表的一致性。
+</p>
+</dd>
+<dt><a id="index-maint-expand_002dsymtabs"></a><span><code class="code">maint expand-symtabs [<var class="var">regexp</var>]</code><a class="copiable-link" href="#index-maint-expand_002dsymtabs"> ¶</a></span></dt>
+<dd><p>展开符号表。
+如果 <var class="var">正则表达式</var> 被指定，则仅展开与 <var class="var">正则表达式</var>匹配的文件名的符号表。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-catch_002ddemangler_002dcrashes"></a>
+<a class="index-entry-id" id="index-demangler-crashes"></a>
+<a id="index-maint-set-catch_002ddemangler_002dcrashes"></a><span><code class="code">maint set catch-demangler-crashes [on|off]</code><a class="copiable-link" href="#index-maint-set-catch_002ddemangler_002dcrashes"> ¶</a></span></dt>
+<dt><code class="code">maint show catch-demangler-crashes</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 是否应尝试捕获符号名称修饰器中的崩溃。默认情况下会尝试捕获崩溃。如果启用，首次捕获到崩溃时，会创建一个核心文件，显示有问题的符号，并为用户提供终止当前会话的选项。
+</p>
+</dd>
+<dt><a id="index-maint-cplus-first_005fcomponent"></a><span><code class="code">maint cplus first_component <var class="var">name</var></code><a class="copiable-link" href="#index-maint-cplus-first_005fcomponent"> ¶</a></span></dt>
+<dd><p>打印<code class="t">++</code> 类/命名空间组件的第一个C <var class="var">名称</var>。
+</p>
+</dd>
+<dt><a id="index-maint-cplus-namespace"></a><span><code class="code">maint cplus namespace</code><a class="copiable-link" href="#index-maint-cplus-namespace"> ¶</a></span></dt>
+<dd><p>打印可能的C<code class="t">++</code> 命名空间列表。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-undeprecate"></a>
+<a class="index-entry-id" id="index-deprecated-commands"></a>
+<a id="index-maint-deprecate"></a><span><code class="code">maint deprecate <var class="var">command</var> <span class="r">[</span><var class="var">replacement</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-deprecate"> ¶</a></span></dt>
+<dt><code class="code">maint undeprecate <var class="var">command</var></code></dt>
+<dd><p>将指定的 <var class="var">命令</var>标记为弃用或取消弃用。弃用的命令在使用时会使 <small class="sc">GDB</small> 发出警告。可选参数 <var class="var">替代命令</var> 指定应使用哪个较新的命令来替代弃用的命令；如果提供了该参数， <small class="sc">GDB</small> 在警告中会提及替代命令。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-dump_002dme"></a>
+<a id="index-SIGQUIT-signal_002c-dump-core-of-gdb"></a><span><code class="code">maint dump-me</code><a class="copiable-link" href="#index-SIGQUIT-signal_002c-dump-core-of-gdb"> ¶</a></span></dt>
+<dd><p>在调试器中引发一个致命信号并强制其转储核心文件。这仅在支持使用 <code class="code">SIGQUIT</code> 信号终止程序的系统上受支持。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-internal_002dwarning"></a>
+<a class="index-entry-id" id="index-maint-demangler_002dwarning"></a>
+<a class="index-entry-id" id="index-demangler-crashes-1"></a>
+<a id="index-maint-internal_002derror"></a><span><code class="code">maint internal-error <span class="r">[</span><var class="var">message-text</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-internal_002derror"> ¶</a></span></dt>
+<dt><code class="code">maint internal-warning <span class="r">[</span><var class="var">message-text</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint demangler-warning <span class="r">[</span><var class="var">message-text</var><span class="r">]</span></code></dt>
+<dd>
+<p>使 <small class="sc">GDB</small> 调用内部函数 <code class="code">internal_error</code>,
+<code class="code">internal_warning</code> 或 <code class="code">demangler_warning</code> ，从而表现得好像检测到了内部问题。除了报告内部问题外，这些函数还为用户提供了退出的机会 <small class="sc">GDB</small> 或者（对于 <code class="code">internal_error</code>
+和 <code class="code">internal_warning</code>）创建当前
+<small class="sc">GDB</small> 会话的核心文件。
+</p>
+<p>这些命令接受一个可选参数 <var class="var">消息文本</var> ，该文本用作错误或警告消息的内容。
+</p>
+<p>以下是使用 <code class="code">internal-error</code>的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <kbd class="kbd">maint internal-error testing, 1, 2</kbd>
+.../maint.c:121: 内部错误: testing, 1, 2
+检测到GDB内部存在问题。进一步的调试可能不可靠。
+是否退出此调试会话？(y 或 n) <kbd class="kbd">n</kbd>
+是否创建核心文件？(y 或 n) <kbd class="kbd">n</kbd>
+(gdb)
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-debuginfod-download_002dsections"></a>
+<a class="index-entry-id" id="index-debuginfod_002c-maintenance-commands"></a>
+<a id="index-maint-set-debuginfod-download_002dsections"></a><span><code class="code">maint set debuginfod download-sections</code><a class="copiable-link" href="#index-maint-set-debuginfod-download_002dsections"> ¶</a></span></dt>
+<dt><code class="code">maint set debuginfod download-sections <span class="r">[</span>on|off<span class="r">]</span></code></dt>
+<dt><code class="code">maint show debuginfod download-sections</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 是否尝试从 <code class="code">debuginfod</code>下载单个ELF/DWARF节。如果禁用，将仅下载整个调试信息文件；这可能会导致 <small class="sc">GDB</small> 下载更多的数据。
+</p>
+<a class="index-entry-id" id="index-gdb-internal-error"></a>
+<a class="index-entry-id" id="index-internal-errors_002c-control-of-gdb-behavior"></a>
+<a class="index-entry-id" id="index-demangler-crashes-2"></a>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-internal_002derror"></a>
+<a class="index-entry-id" id="index-maint-set-internal_002dwarning"></a>
+<a class="index-entry-id" id="index-maint-show-internal_002dwarning"></a>
+<a class="index-entry-id" id="index-maint-set-demangler_002dwarning"></a>
+<a class="index-entry-id" id="index-maint-show-demangler_002dwarning"></a>
+<a id="index-maint-set-internal_002derror"></a><span><code class="code">maint set internal-error <var class="var">action</var> [ask|yes|no]</code><a class="copiable-link" href="#index-maint-set-internal_002derror"> ¶</a></span></dt>
+<dt><code class="code">maint show internal-error <var class="var">action</var></code></dt>
+<dt><code class="code">maint set internal-warning <var class="var">action</var> [ask|yes|no]</code></dt>
+<dt><code class="code">maint show internal-warning <var class="var">action</var></code></dt>
+<dt><code class="code">maint set demangler-warning <var class="var">action</var> [ask|yes|no]</code></dt>
+<dt><code class="code">maint show demangler-warning <var class="var">action</var></code></dt>
+<dd><p>当 <small class="sc">GDB</small> 报告内部问题（错误或警告）时，它会为用户提供退出的机会 <small class="sc">GDB</small> 并创建当前 <small class="sc">GDB</small> 会话的核心文件。这些命令允许你覆盖每个特定 <var class="var">操作</var>的默认行为，如下表所述。
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">退出</samp>’</dt>
+<dd><p>你可以指定 <small class="sc">GDB</small> 应始终（是）或从不（否）退出。默认情况下会询问用户该怎么做。
+</p>
+</dd>
+<dt>‘<samp class="samp">核心文件</samp>’</dt>
+<dd><p>你可以指定 <small class="sc">GDB</small> 应始终（是）或从不（否）创建核心文件。默认情况下会询问用户该怎么做。请注意，对于 <code class="code">corefile</code> 没有 <code class="code">demangler-warning</code>选项：
+修饰器警告总是会创建一个核心文件，并且无法禁用此功能。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-internal_002derror-1"></a>
+<a class="index-entry-id" id="index-maint-set-internal_002dwarning-1"></a>
+<a class="index-entry-id" id="index-maint-show-internal_002dwarning-1"></a>
+<a id="index-maint-set-internal_002derror-1"></a><span><code class="code">maint set internal-error backtrace <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#index-maint-set-internal_002derror-1"> ¶</a></span></dt>
+<dt><code class="code">maint show internal-error backtrace</code></dt>
+<dt><code class="code">maint set internal-warning backtrace <span class="r">[</span>on|off<span class="r">]</span></code></dt>
+<dt><code class="code">maint show internal-warning backtrace</code></dt>
+<dd><p>当 <small class="sc">GDB</small> 报告内部问题（错误或警告）时，可以将 <small class="sc">GDB</small> 的回溯信息打印到标准错误流。对于<samp class="samp">默认情况下为‘</samp>开启 <code class="code">internal-error</code>
+’，对于<samp class="samp">默认情况下为‘</samp>关闭 <code class="code">internal-warning</code>’。
+</p>
+<a class="anchor" id="maint-packet"></a></dd>
+<dt><a id="index-maint-packet-1"></a><span><code class="code">maint packet <var class="var">text</var></code><a class="copiable-link" href="#index-maint-packet-1"> ¶</a></span></dt>
+<dd><p>如果 <small class="sc">GDB</small> 通过串行协议与目标进程通信，则此命令将字符串 <var class="var">文本</var> 发送到目标进程，并显示响应包。  <small class="sc">GDB</small> 会提供初始的‘<samp class="samp">$</samp>’字符、终止的‘<samp class="samp">#</samp>’字符和校验和。
+</p>
+<p>回复中的任何不可打印字符将以转义的十六进制形式打印，例如‘<samp class="samp">\x00</samp>’、‘<samp class="samp">\x01</samp>’等。
+</p>
+</dd>
+<dt><a id="index-maint-print-architecture"></a><span><code class="code">maint print architecture <span class="r">[</span><var class="var">file</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-architecture"> ¶</a></span></dt>
+<dd><p>打印整个架构配置。可选参数
+<var class="var">文件</var> 指定输出的目标文件。
+</p>
+</dd>
+<dt><a id="index-maint-print-c_002dtdesc"></a><span><code class="code">maint print c-tdesc <span class="r">[</span>-single-feature<span class="r">]</span> <span class="r">[</span><var class="var">file</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-c_002dtdesc"> ¶</a></span></dt>
+<dd><p>将目标描述（请参阅 <a class="pxref" href="Target-Descriptions.html">目标描述</a>) 打印为C源文件。默认情况下，目标描述是针对当前目标的，但如果提供了可选参数 <var class="var">文件</var> ，则使用该文件生成描述。 <var class="var">文件</var> 应该是一个XML文档，格式如 <a class="ref" href="Target-Description-Format.html">目标描述格式</a>中所述。
+生成的源文件在 <small class="sc">GDB</small> 重新构建时会被编译进去。开发人员在添加或修改XML目标描述后会使用此命令。 <small class="sc">GDB</small> 重新构建时会被编译进去。此命令在开发人员添加或修改XML目标描述后使用。
+</p>
+<p>当提供可选标志‘<samp class="samp">-single-feature</samp>’时，正在处理的目标描述（无论是默认的还是来自
+<var class="var">文件</var>) 必须只包含一个特性。在这种情况下，生成的源文件会有所不同。
+</p>
+<p> <var class="var">文件</var> 参数支持转义和引用，请参阅
+<a class="ref" href="Filename-Arguments.html">作为命令参数的文件名</a>.
+</p>
+</dd>
+<dt><a id="index-maint-print-xml_002dtdesc"></a><span><code class="code">maint print xml-tdesc  <span class="r">[</span><var class="var">file</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-xml_002dtdesc"> ¶</a></span></dt>
+<dd><p>将目标描述（请参阅 <a class="pxref" href="Target-Descriptions.html">目标描述</a>) 打印为XML文件。默认情况下打印当前目标的目标描述，但如果提供了可选参数 <var class="var">文件</var> ，则GDB会读取该文件并使用它生成描述。
+<var class="var">文件</var> 应该是一个XML文档，格式如
+<a class="ref" href="Target-Description-Format.html">目标描述格式</a>.
+</p>
+</dd>
+<dt><a id="index-maint-check-xml_002ddescriptions"></a><span><code class="code">maint check xml-descriptions <var class="var">dir</var></code><a class="copiable-link" href="#index-maint-check-xml_002ddescriptions"> ¶</a></span></dt>
+<dd><p>检查 <small class="sc">GDB</small>
+动态创建的目标描述是否与从 <var class="var">目录</var>中找到的XML文件创建的描述相同。
+</p>
+<a class="anchor" id="maint-check-libthread_002ddb"></a></dd>
+<dt><a id="index-maint-check-libthread_002ddb"></a><span><code class="code">maint check libthread-db</code><a class="copiable-link" href="#index-maint-check-libthread_002ddb"> ¶</a></span></dt>
+<dd><p>对当前目标进程的线程调试库运行完整性检查。这将测试 <code class="code">libthread_db</code> 在GNU/Linux系统上使用的所有
+<small class="sc">GDB</small> 功能，并且也会测试
+<code class="code">proc_service</code> 使用的 <small class="sc">GDB</small> 提供的函数。请注意，在某些平台上调试核心文件时，部分测试可能会被跳过。
+<code class="code">libthread_db</code> 
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-memory-address-space-mappings-1"></a>
+<a id="index-maint-print-core_002dfile_002dbacked_002dmappings"></a><span><code class="code">maint print core-file-backed-mappings</code><a class="copiable-link" href="#index-maint-print-core_002dfile_002dbacked_002dmappings"> ¶</a></span></dt>
+<dd><p>打印从核心文件注释中加载的基于文件的映射。此输出表示 <small class="sc">GDB</small> 内部的状态，应该与 <code class="code">info proc mappings</code>
+命令显示的映射类似。
+</p>
+</dd>
+<dt><a id="index-maint-print-dummy_002dframes"></a><span><code class="code">maint print dummy-frames</code><a class="copiable-link" href="#index-maint-print-dummy_002dframes"> ¶</a></span></dt>
+<dd><p>打印 <small class="sc">GDB</small>的内部虚拟帧栈的内容。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <kbd class="kbd">b add</kbd>
+...
+(gdb) <kbd class="kbd">print add(2,3)</kbd>
+断点2，add (a=2, b=3) 在 ...
+58	  return (a + b);
+正在调试的程序在从GDB调用的函数中停止。
+...
+(gdb) <kbd class="kbd">maint print dummy-frames</kbd>
+0xa8206d8: id={stack=0xbfffe734,code=0xbfffe73f,!special}, ptid=进程 9353
+(gdb)
+</pre></div>
+
+<p>接受一个可选的文件参数。
+</p>
+</dd>
+<dt><a id="index-maint-print-frame_002did"></a><span><code class="code">maint print frame-id</code><a class="copiable-link" href="#index-maint-print-frame_002did"> ¶</a></span></dt>
+<dt><code class="code">maint print frame-id <var class="var">level</var></code></dt>
+<dd><p>打印 <small class="sc">GDB</small>的内部帧ID在相对
+<var class="var">级别</var>的帧的每个地址处的四个字节的内存，或者当未指定 <var class="var">级别</var> 时，记录当前选定帧的内存。
+</p>
+<p>如果使用， <var class="var">级别</var> 应该是一个整数，如
+<code class="command">backtrace</code> 输出中所示。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) maint print frame-id
+帧 #0 的帧ID: {stack=0x7fffffffac70,code=0x0000000000401106,!special}
+(gdb) maint print frame-id 2
+帧 #2 的帧ID: {stack=0x7fffffffac90,code=0x000000000040111c,!special}
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-info-inline_002dframes"></a>
+<a id="index-frames-of-inlined-functions"></a><span><code class="code">maint info inline-frames</code><a class="copiable-link" href="#index-frames-of-inlined-functions"> ¶</a></span></dt>
+<dt><code class="code">maint info inline-frames <var class="var">address</var></code></dt>
+<dd><p>打印从当前地址开始的内联帧的信息，或者如果指定了 <var class="var">地址</var> ，则打印从该地址开始的内联帧的信息。
+</p>
+<p>为了允许用户正确地单步进入内联函数，
+<small class="sc">GDB</small> 需要识别哪些内联函数从特定地址开始，并且 <small class="sc">GDB</small> 还需要跟踪这些函数中哪个最后被显示给用户作为当前帧。
+</p>
+<p>想象一个情况，函数 <code class="code">main</code> 调用 <code class="code">foo</code>, 然后它调用 <code class="code">bar</code>, 类似这样：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">int
+main ()
+{
+  /* 这里有一些有趣的代码...  */
+
+  foo ();
+
+  /* 这里还有更多有趣的代码... */
+}
+
+void
+foo ()
+{
+  bar ();
+}
+
+void
+bar ()
+{
+  /* 这里有一些有趣的代码...  */
+}
+</pre></div></div>
+
+<p>由于 <code class="code">foo</code> 和 <code class="code">bar</code> 都在内联到 <code class="code">main</code> 中，那么 <code class="code">main</code> 内可能有一个地址也是 <code class="code">foo</code> 的起始地址，也是 <code class="code">bar</code>的起始地址。当用户在这个地址处停止时，最初会被告知目标进程处于
+<code class="code">main</code>, 如果用户执行一个 <kbd class="kbd">单步</kbd> 那么 <small class="sc">GDB</small> 实际上不会单步执行目标进程，而是会告诉用户目标进程进入了 <code class="code">foo</code>. 在下一次 <kbd class="kbd">单步</kbd> 之后，会告诉用户目标进程进入了 <code class="code">bar</code>. 可以使用 <kbd class="kbd">maint info inline-frames</kbd>
+命令来查看这个内部 <small class="sc">GDB</small> 状态，如下所示：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) step
+24	  foo ();
+(gdb) maintenance info inline-frames
+线程 1 的缓存内联状态信息。
+程序计数器 = 0x401137
+跳过的帧 = 2
+  bar
+  foo
+&gt; main
+</pre></div></div>
+
+<p>这里用户在 <code class="code">main</code> 调用 <code class="code">foo</code>处停止。内联帧信息显示，在这个地址处 <small class="sc">GDB</small> 找到了内联函数 <code class="code">bar</code> 和 <code class="code">foo</code>的起始地址，但当前 <small class="sc">GDB</small> 跳过了2个帧，并认为 <code class="code">main</code>
+是当前帧，这用‘<samp class="samp">&gt;</samp>’表示。
+</p>
+<p>如果用户执行一个 <kbd class="kbd">单步</kbd> 进入 <code class="code">foo</code> ，那么情况会更新：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) step
+foo () 在 inline.c:14
+14	  bar ();
+(gdb) maintenance info inline-frames
+线程 1 的缓存内联状态信息。
+程序计数器 = 0x401137
+跳过的帧 = 1
+  bar
+&gt; foo
+  main
+</pre></div></div>
+
+<p>注意，程序计数器的值 <code class="code">0x401137</code> 没有改变，但现在 <small class="sc">GDB</small> 认为 <code class="code">foo</code> 是当前帧，并使用‘<samp class="samp">&gt;</samp>’标记。
+</p>
+<p>最后，用户再执行一次 <kbd class="kbd">单步</kbd> 进入 <code class="code">bar</code>:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) step
+bar () 在 inline.c:6
+6	  ++global_counter;
+(gdb) maintenance info inline-frames
+线程 1 的缓存内联状态信息。
+程序计数器 = 0x401137
+跳过的帧 = 0
+&gt; bar
+  foo
+  main
+</pre></div></div>
+
+</dd>
+<dt><a id="index-maint-info-blocks"></a><span><code class="code">maint info blocks</code><a class="copiable-link" href="#index-maint-info-blocks"> ¶</a></span></dt>
+<dt><code class="code">maint info blocks <var class="var">address</var></code></dt>
+<dd><p>打印在 <var class="var">地址</var>, 或者如果未指定
+<code class="code">$pc</code> ，则为当前 <var class="var">地址</var> 生成远程代理字节码。
+</p>
+<p>有关 <small class="sc">GDB</small> 中块的信息，请参阅 <a class="ref" href="Blocks-In-Python.html">从Python访问块</a>.
+</p>
+<p>块的列表从全局块开始，然后是静态块，然后逐步遍历更窄的作用域。
+</p>
+<p>以下是该命令输出的一个示例：
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) maintenance info blocks
+地址 0x401137 处的块：
+  来自目标文件: [(目标文件 *) 0x50507d0] /tmp/inline_func_demo
+
+[(块 *) 0x504da90] 0x401106..0x40119a
+  入口PC: 0x401106
+  是全局块
+  符号计数: 2
+  是连续的
+</pre></div><div class="group"><pre class="example-preformatted">[(块 *) 0x504d9f0] 0x401106..0x40119a
+  入口PC: 0x401106
+  是静态块
+  符号计数: 1
+  是连续的
+</pre></div><div class="group"><pre class="example-preformatted">[(块 *) 0x504d9a0] 0x401106..0x40119a
+  入口PC: 0x401106
+  函数: main
+  是连续的
+</pre></div><div class="group"><pre class="example-preformatted">[(块 *) 0x504d900] 0x401137..0x401166
+  入口PC: 0x401137
+  内联函数: foo
+  符号计数: 1
+  是连续的
+</pre></div><div class="group"><pre class="example-preformatted">[(块 *) 0x504d860] 0x401137..0x401165
+  入口PC: 0x401137
+  内联函数: bar
+  符号计数: 1
+  是连续的
+</pre></div></div>
+
+<p>命令 <kbd class="kbd">maint info blocks</kbd> 列出每个块的符号计数，但不打印符号本身。可以使用 <kbd class="kbd">maint print symbols</kbd> （请参阅 <a class="pxref" href="Symbols.html#maint-print-symbols">maint print symbols</a>)。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-print-raw_002dregisters"></a>
+<a class="index-entry-id" id="index-maint-print-cooked_002dregisters"></a>
+<a class="index-entry-id" id="index-maint-print-register_002dgroups"></a>
+<a class="index-entry-id" id="index-maint-print-remote_002dregisters"></a>
+<a id="index-maint-print-registers"></a><span><code class="code">maint print registers <span class="r">[</span><var class="var">file</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-registers"> ¶</a></span></dt>
+<dt><code class="code">maint print raw-registers <span class="r">[</span><var class="var">file</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print cooked-registers <span class="r">[</span><var class="var">file</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print register-groups <span class="r">[</span><var class="var">file</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print remote-registers <span class="r">[</span><var class="var">file</var><span class="r">]</span></code></dt>
+<dd><p>打印 <small class="sc">GDB</small>的内部寄存器数据结构。
+</p>
+<p>命令 <code class="code">maint print raw-registers</code> 包括原始寄存器缓存的内容；命令 <code class="code">maint print
+cooked-registers</code> 包括所有寄存器的（处理后）值，包括目标上不可用或用户不可见的寄存器；命令 <code class="code">maint print register-groups</code> 包括每个寄存器所属的组；命令 <code class="code">maint
+print remote-registers</code> 包括远程目标的寄存器编号和‘G’包中的偏移量，以及指示哪些寄存器包含在
+<small class="sc">GDB</small> 收到的最后一个停止回复包中（请参阅 <a class="pxref" href="Stop-Reply-Packets.html">停止回复包</a>)。请注意，停止回复中包含的寄存器列表可能会从一次停止到下一次停止发生变化。
+</p>
+<p>这些命令接受一个可选参数，即要将信息写入的文件名。
+</p>
+</dd>
+<dt><a id="index-maint-print-reggroups"></a><span><code class="code">maint print reggroups <span class="r">[</span><var class="var">file</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-reggroups"> ¶</a></span></dt>
+<dd><p>打印 <small class="sc">GDB</small>的内部寄存器组数据结构。可选参数 <var class="var">文件</var> 指定将信息写入的文件。
+</p>
+<p>寄存器组信息如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <kbd class="kbd">maint print reggroups</kbd>
+ 组      类型
+ 通用    用户
+ 浮点    用户
+ 所有    用户
+ 向量    用户
+ 系统    用户
+ 保存    内部
+ 恢复    内部
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-flushregs"></a>
+<a class="index-entry-id" id="index-register-cache_002c-flushing"></a>
+<a id="index-maint-flush-register_002dcache"></a><span><code class="code">maint flush register-cache</code><a class="copiable-link" href="#index-maint-flush-register_002dcache"> ¶</a></span></dt>
+<dt><code class="code">flushregs</code></dt>
+<dd><p>刷新寄存器缓存的内容，从而刷新帧缓存。此命令在调试与寄存器获取或帧展开相关的问题时很有用。命令 <code class="code">flushregs</code>
+已被弃用，建议使用 <code class="code">maint flush register-cache</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-source-code_002c-caching"></a>
+<a id="index-maint-flush-source_002dcache"></a><span><code class="code">maint flush source-cache</code><a class="copiable-link" href="#index-maint-flush-source_002dcache"> ¶</a></span></dt>
+<dd><p>刷新 <small class="sc">GDB</small>的源代码文件内容缓存。在
+<small class="sc">GDB</small> 读取源代码文件并可选地应用样式（请参阅 <a class="pxref" href="Output-Styling.html">输出样式</a>）后，文件内容会被缓存。此命令清除该缓存。下次 <small class="sc">GDB</small> 想要显示源代码文件的行时，内容将被重新读取。
+</p>
+<p>此命令在调试与源代码样式相关的问题时很有用。刷新缓存后，
+<small class="sc">GDB</small> 显示的任何源代码都将被重新读取和重新样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-info-for-known-object-files"></a>
+<a id="index-maint-print-objfiles"></a><span><code class="code">maint print objfiles <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-objfiles"> ¶</a></span></dt>
+<dd><p>打印所有已知目标文件的转储。
+如果 <var class="var">正则表达式</var> 被指定，则仅打印名称与 <var class="var">正则表达式</var>匹配的目标文件。对于每个目标文件，此命令打印其名称、内存地址以及所有的psymtab和symtab。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-user-registers"></a>
+<a id="index-maint-print-user_002dregisters"></a><span><code class="code">maint print user-registers</code><a class="copiable-link" href="#index-maint-print-user_002dregisters"> ¶</a></span></dt>
+<dd><p>列出所有当前可用的 <em class="dfn">用户寄存器</em>. 用户寄存器通常为实际硬件寄存器提供替代名称。它们包括四个“标准”寄存器 <code class="code">$fp</code>, <code class="code">$pc</code>,
+<code class="code">$sp</code>, 和 <code class="code">$ps</code>. 请参阅 <a class="xref" href="Registers.html#standard-registers">标准寄存器</a>. 用户寄存器可以在表达式中以与规范寄存器名称相同的方式使用，但只有后者会在 <code class="code">info
+registers</code> 和 <code class="code">maint print registers</code> 命令中列出。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-info-for-known-_002edebug_005fgdb_005fscripts_002dloaded-scripts"></a>
+<a id="index-maint-print-section_002dscripts"></a><span><code class="code">maint print section-scripts [<var class="var">regexp</var>]</code><a class="copiable-link" href="#index-maint-print-section_002dscripts"> ¶</a></span></dt>
+<dd><p>打印 <code class="code">.debug_gdb_section</code> 部分中指定的脚本的转储。
+如果 <var class="var">正则表达式</var> 被指定，则仅打印由名称与 <var class="var">正则表达式</var>匹配的目标文件加载的脚本。对于每个脚本，此命令打印其在目标文件中指定的名称以及已知的完整路径。请参阅 <a class="xref" href="dotdebug_005fgdb_005fscripts-section.html"> <code class="code">.debug_gdb_scripts</code> 部分</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-bcache-statistics"></a>
+<a id="index-maint-print-statistics"></a><span><code class="code">maint print statistics</code><a class="copiable-link" href="#index-maint-print-statistics"> ¶</a></span></dt>
+<dd><p>此命令为程序中的每个目标文件打印有关该目标文件的各种数据，后跟该目标文件的字节缓存（<em class="dfn">bcache</em>) 统计信息。目标文件数据包括最小、部分、完整和stabs符号的数量、目标文件定义的类型数量、尚未展开的psym表的数量、行表和字符串表的数量，以及各种表使用的内存量。字节缓存统计信息包括所有和唯一对象的计数、大小和重复计数、最大、平均和中值条目大小、使用的总内存及其开销和节省，以及哈希表大小和链长度的各种度量。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-target-stack-description"></a>
+<a id="index-maint-print-target_002dstack"></a><span><code class="code">maint print target-stack</code><a class="copiable-link" href="#index-maint-print-target_002dstack"> ¶</a></span></dt>
+<dd><p>一个 <em class="dfn">目标</em> 是调试器与特定类型的文件或进程之间的接口。目标可以堆叠在 <em class="dfn">层</em>, 以便多个目标可能对一个请求做出响应。特别是，内存访问将遍历目标栈，直到找到一个对处理该特定地址感兴趣的目标。
+</p>
+<p>此命令打印推送到 <em class="dfn">目标栈</em>上的每个层的简短描述，从顶层到底层。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-type-chain-of-a-data-type"></a>
+<a id="index-maint-print-type"></a><span><code class="code">maint print type <var class="var">expr</var></code><a class="copiable-link" href="#index-maint-print-type"> ¶</a></span></dt>
+<dd><p>打印由 <var class="var">表达式</var>指定的类型的类型链。参数可以是类型名称或符号。如果是符号，则描述该符号的类型。此命令生成的类型链是存储在 <small class="sc">GDB</small>的数据结构中的数据类型的递归定义，包括其标志和包含的类型。
+</p>
+</dd>
+<dt><a id="index-maint-print-record_002dinstruction"></a><span><code class="code">maint print record-instruction</code><a class="copiable-link" href="#index-maint-print-record_002dinstruction"> ¶</a></span></dt>
+<dt><code class="code">maint print record-instruction <var class="var">N</var></code></dt>
+<dd><p>打印GDB如何记录给定的指令。如果 <var class="var">n</var> 不是正数，则打印在执行第 <var class="var">n</var>条前一条指令之前目标进程存储的值。如果 <var class="var">n</var> 是正数，则打印执行第 <var class="var">n</var>条后一条指令之后的值。如果未指定 <var class="var">n</var> ，则假定为0。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-self-tests"></a>
+<a id="index-maint-selftest"></a><span><code class="code">maint selftest <span class="r">[</span>-verbose<span class="r">]</span> <span class="r">[</span><var class="var">filter</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-selftest"> ¶</a></span></dt>
+<dd><p>运行编译到 <small class="sc">GDB</small>中的任何自测。这将打印一条消息，显示运行了多少个测试以及有多少个失败。如果传递了 <var class="var">过滤器</var> ，则仅运行名称中包含 <var class="var">过滤器</var> 的测试。如果传递了 <code class="code">-verbose</code> ，自测可以更详细。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-selftest-verbose"></a>
+<a class="index-entry-id" id="index-self-tests-1"></a>
+<a id="index-maint-set-selftest-verbose"></a><span><code class="code">maint set selftest verbose</code><a class="copiable-link" href="#index-maint-set-selftest-verbose"> ¶</a></span></dt>
+<dt><code class="code">maint show selftest verbose</code></dt>
+<dd><p>控制自测是否详细运行。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-self-tests-2"></a>
+<a id="index-maint-info-selftests"></a><span><code class="code">maint info selftests</code><a class="copiable-link" href="#index-maint-info-selftests"> ¶</a></span></dt>
+<dd><p>列出编译到 <small class="sc">GDB</small>中的自测。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-dwarf-always_002ddisassemble"></a>
+<a id="index-maint-set-dwarf-always_002ddisassemble"></a><span><code class="code">maint set dwarf always-disassemble</code><a class="copiable-link" href="#index-maint-set-dwarf-always_002ddisassemble"> ¶</a></span></dt>
+<dt><code class="code">maint show dwarf always-disassemble</code></dt>
+<dd><p>控制使用DWARF调试信息时 <code class="code">info address</code> 的行为。
+</p>
+<p>默认是 <code class="code">off</code>, 这意味着 <small class="sc">GDB</small> 应该尝试以易于阅读的格式描述变量的位置。当
+<code class="code">on</code>, <small class="sc">GDB</small> 将改为以类似汇编的格式显示DWARF位置表达式。请注意，某些位置对于 <small class="sc">GDB</small> 来说太复杂，无法简单描述；在这种情况下，你将始终看到反汇编形式。
+</p>
+<p>以下是生成的反汇编示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info addr argc
+符号 &#34;argc&#34; 是一个复杂的DWARF表达式：
+     1: DW_OP_fbreg 0
+</pre></div>
+
+<p>有关这些表达式的更多信息，请参阅
+<a class="uref" href="http://www.dwarfstd.org/">DWARF标准</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-dwarf-max_002dcache_002dage"></a>
+<a id="index-maint-set-dwarf-max_002dcache_002dage"></a><span><code class="code">maint set dwarf max-cache-age</code><a class="copiable-link" href="#index-maint-set-dwarf-max_002dcache_002dage"> ¶</a></span></dt>
+<dt><code class="code">maint show dwarf max-cache-age</code></dt>
+<dd><p>控制DWARF编译单元缓存。
+</p>
+<a class="index-entry-id" id="index-DWARF-compilation-units-cache"></a>
+<p>在具有编译单元间引用的目标文件中，例如由GCC选项‘<samp class="samp">-feliminate-dwarf2-dups</samp>’生成的文件，DWARF读取器需要频繁引用先前读取的编译单元。此设置控制如果一个编译单元未被引用，它将在缓存中保留多长时间。较高的限制意味着缓存的编译单元将在内存中存储更长时间，并且将使用更多的总内存。将其设置为零将禁用缓存，这将减慢 <small class="sc">GDB</small> 的启动速度，但减少内存消耗。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-dwarf-synchronous"></a>
+<a id="index-maint-set-dwarf-synchronous"></a><span><code class="code">maint set dwarf synchronous</code><a class="copiable-link" href="#index-maint-set-dwarf-synchronous"> ¶</a></span></dt>
+<dt><code class="code">maint show dwarf synchronous</code></dt>
+<dd><p>控制是否异步读取DWARF。
+</p>
+<p>在支持线程的主机上，DWARF读取器相对于 <small class="sc">GDB</small>的其余部分大多是异步的。也就是说，大部分读取操作在后台进行，并且 <small class="sc">GDB</small> 仅在绝对必要时才会暂停以等待此任务完成。
+</p>
+<p>当此设置启用时， <small class="sc">GDB</small> 将改为在继续之前等待DWARF处理完成。
+</p>
+<p>在不支持线程的主机上，或者在运行时禁用了工作线程的情况下，此设置无效，因为DWARF读取始终在主线程上进行，因此始终是同步的。
+</p>
+</dd>
+<dt><a id="index-maint-info-frame_002dunwinders"></a><span><code class="code">maint info frame-unwinders</code><a class="copiable-link" href="#index-maint-info-frame_002dunwinders"> ¶</a></span></dt>
+<dd><p>列出当前生效的帧展开器，从优先级最高的开始。这还列出了展开器类，该类主要由 <small class="sc">GDB</small> 的使用区域定义。当前可用的类有：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">GDB</samp>’</dt>
+<dd><p>由 <small class="sc">GDB</small> 核心添加的内部展开器。
+</p></dd>
+<dt>‘<samp class="samp">扩展</samp>’</dt>
+<dd><p>由扩展语言添加的展开器。
+</p></dd>
+<dt>‘<samp class="samp">调试信息</samp>’</dt>
+<dd><p>由调试信息读取器安装的展开器。
+</p></dd>
+<dt>‘<samp class="samp">架构</samp>’</dt>
+<dd><p>由特定架构代码安装的展开器。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-frame_002dunwinder-enable"></a>
+<a id="index-maint-frame_002dunwinder-disable"></a><span><code class="code">maint frame-unwinder disable [<code class="code">-all</code> | <code class="code">-name</code> <var class="var">name</var> | [<code class="code">-class</code>] <var class="var">class</var>]</code><a class="copiable-link" href="#index-maint-frame_002dunwinder-disable"> ¶</a></span></dt>
+<dt><code class="code">maint frame-unwinder enable [<code class="code">-all</code> | <code class="code">-name</code> <var class="var">name</var> | [<code class="code">-class</code>] <var class="var">class</var>]</code></dt>
+<dd><p>禁用或启用帧展开器。这仅用作测试工具，并且如果无法找到有效的帧展开器，则不能保证其正常工作。
+<small class="sc">GDB</small> 以下每个调用的含义如下：
+</p>
+<p>‘
+</p>
+<dl class="table">
+<dt><samp class="samp"><code class="code">-all</code></samp>’</dt>
+<dd><p>禁用或启用所有展开器。
+</p></dd>
+<dt>‘<samp class="samp"><code class="code">-name</code> <var class="var">名称</var></samp>’</dt>
+<dd><p><var class="var">名称</var> 是要禁用或启用的展开器的确切名称。
+</p></dd>
+<dt>‘<samp class="samp">[<code class="code">-class</code>] <var class="var">类</var></samp>’</dt>
+<dd><p><var class="var">类</var> 是要禁用或启用的帧展开器类。类可以包括前缀，但不是必需的。 <code class="code">FRAME_UNWINDER_</code>, 但不是必需的。
+</p></dd>
+</dl>
+
+<p><var class="var">名称</var> 和 <var class="var">类</var> 始终不区分大小写。如果没有以 <code class="code">-</code> 开头的选项，则 <small class="sc">GDB</small> 假定 <code class="code">-class</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-worker_002dthreads"></a>
+<a id="index-maint-set-worker_002dthreads"></a><span><code class="code">maint set worker-threads</code><a class="copiable-link" href="#index-maint-set-worker_002dthreads"> ¶</a></span></dt>
+<dt><code class="code">maint show worker-threads</code></dt>
+<dd><p>控制 <small class="sc">GDB</small>可以使用的工作线程数量。在支持的主机上， <small class="sc">GDB</small> 可以使用多个线程来加速某些CPU密集型操作，例如符号名称修饰。虽然 <small class="sc">GDB</small> 使用的线程数量可能会有所不同，但此命令可用于设置该数量的上限。默认值是 <code class="code">unlimited</code>, 这让 <small class="sc">GDB</small> 选择一个合理的数量。请注意，这仅控制
+<small class="sc">GDB</small> 自己启动的工作线程； <small class="sc">GDB</small> 使用的库可能会自己启动线程。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-profile"></a>
+<a class="index-entry-id" id="index-profiling-GDB"></a>
+<a id="index-maint-set-profile"></a><span><code class="code">maint set profile</code><a class="copiable-link" href="#index-maint-set-profile"> ¶</a></span></dt>
+<dt><code class="code">maint show profile</code></dt>
+<dd><p>控制 <small class="sc">GDB</small>的性能分析。
+</p>
+<p>在使用‘<samp class="samp">maint set profile</samp>’命令启用之前，性能分析将被禁用。启用性能分析后，系统将开始收集计时和执行计数数据；禁用性能分析或退出 <small class="sc">GDB</small>时，结果将写入日志文件。请记住，如果使用性能分析， <small class="sc">GDB</small> 将覆盖性能分析日志文件（通常称为 <samp class="file">gmon.out</samp>)。如果你在 <samp class="file">gmon.out</samp> 文件中有重要的性能分析数据记录，请务必将其移动到安全的位置。
+</p>
+<p>使用‘<samp class="samp">--enable-profiling</samp>’进行配置会使 <small class="sc">GDB</small> 使用‘<samp class="samp">-pg</samp>’编译器选项进行编译。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-show_002ddebug_002dregs"></a>
+<a class="index-entry-id" id="index-hardware-debug-registers"></a>
+<a id="index-maint-set-show_002ddebug_002dregs"></a><span><code class="code">maint set show-debug-regs</code><a class="copiable-link" href="#index-maint-set-show_002ddebug_002dregs"> ¶</a></span></dt>
+<dt><code class="code">maint show show-debug-regs</code></dt>
+<dd><p>控制是否显示镜像硬件调试寄存器的变量。使用 <code class="code">on</code> 启用，使用 <code class="code">off</code> 禁用。如果启用，在 <small class="sc">GDB</small> 插入或移除硬件断点或观察点时，以及目标进程触发硬件辅助的断点或观察点时，将显示调试寄存器的值。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-show_002dall_002dtib"></a>
+<a id="index-maint-set-show_002dall_002dtib"></a><span><code class="code">maint set show-all-tib</code><a class="copiable-link" href="#index-maint-set-show_002dall_002dtib"> ¶</a></span></dt>
+<dt><code class="code">maint show show-all-tib</code></dt>
+<dd><p>控制在使用‘<samp class="samp">info w32 thread-information-block</samp>’命令时，是否显示从线程本地基地址开始的1k块内的所有非零区域。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-target_002dasync"></a>
+<a id="index-maint-set-target_002dasync"></a><span><code class="code">maint set target-async</code><a class="copiable-link" href="#index-maint-set-target_002dasync"> ¶</a></span></dt>
+<dt><code class="code">maint show target-async</code></dt>
+<dd><p>这控制 <small class="sc">GDB</small> 目标是以同步还是异步模式运行（请参阅 <a class="pxref" href="Background-Execution.html">后台执行</a>)。通常默认是异步模式，如果可用的话；但可以更改此设置以更轻松地调试仅在同步模式下出现的问题。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-target_002dnon_002dstop"></a>
+<a id="index-maint-set-target_002dnon_002dstop-mode-_005bon_007coff_007cauto_005d"></a><span><code class="code">maint set target-non-stop</code><a class="copiable-link" href="#index-maint-set-target_002dnon_002dstop-mode-_005bon_007coff_007cauto_005d"> ¶</a></span></dt>
+<dt><code class="code">maint show target-non-stop</code></dt>
+<dd>
+<p>这控制 <small class="sc">GDB</small> 目标是否始终以非停止模式运行，即使 <code class="code">set non-stop</code> 是 <code class="code">off</code> （请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>)。默认是 <code class="code">auto</code>, 这意味着如果目标支持，则启用非停止模式。
+</p>
+<dl class="table">
+<dt><code class="code">maint set target-non-stop auto</code></dt>
+<dd><p>这是默认模式。  <small class="sc">GDB</small> 如果目标支持，则以非停止模式控制目标。
+</p>
+</dd>
+<dt><code class="code">maint set target-non-stop on</code></dt>
+<dd><p><small class="sc">GDB</small> 即使目标未表明支持，也以非停止模式控制目标。
+</p>
+</dd>
+<dt><code class="code">maint set target-non-stop off</code></dt>
+<dd><p><small class="sc">GDB</small> 即使目标支持，也不以非停止模式控制目标。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-tui_002dresize_002dmessage"></a>
+<a id="index-maint-set-tui_002dresize_002dmessage"></a><span><code class="code">maint set tui-resize-message</code><a class="copiable-link" href="#index-maint-set-tui_002dresize_002dmessage"> ¶</a></span></dt>
+<dt><code class="code">maint show tui-resize-message</code></dt>
+<dd><p>控制在TUI模式下每次终端调整大小时 <small class="sc">GDB</small> 是否显示消息。默认是 <code class="code">off</code>, 这意味着 <small class="sc">GDB</small> 在调整大小时保持沉默。当 <code class="code">on</code>,
+<small class="sc">GDB</small> 将在调整大小完成后显示一条消息；消息将包含一个数字，指示终端已调整大小的次数。此设置旨在供测试套件使用，否则在测试套件中很难确定调整大小和刷新何时完成。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-tui_002dleft_002dmargin_002dverbose"></a>
+<a id="index-maint-set-tui_002dleft_002dmargin_002dverbose"></a><span><code class="code">maint set tui-left-margin-verbose</code><a class="copiable-link" href="#index-maint-set-tui_002dleft_002dmargin_002dverbose"> ¶</a></span></dt>
+<dt><code class="code">maint show tui-left-margin-verbose</code></dt>
+<dd><p>控制TUI源代码和反汇编窗口的左边缘是否在原本为空格的位置使用‘<samp class="samp">_</samp>’和‘<samp class="samp">0</samp>’。默认是 <code class="code">off</code>, 这意味着使用空格。此设置旨在明确左边缘的起始和结束位置，以避免错误地将空格解释为左边缘的一部分。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-set-per_002dcommand"></a>
+<a class="index-entry-id" id="index-maint-show-per_002dcommand"></a>
+<a id="index-resources-used-by-commands"></a><span><code class="code">maint set per-command</code><a class="copiable-link" href="#index-resources-used-by-commands"> ¶</a></span></dt>
+<dt><code class="code">maint show per-command</code></dt>
+<dd>
+<p><small class="sc">GDB</small> 可以显示每个命令使用的资源。这在调试性能问题时很有用。
+</p>
+<dl class="table">
+<dt><code class="code">maint set per-command space [on|off]</code></dt>
+<dt><code class="code">maint show per-command space</code></dt>
+<dd><p>启用或禁用打印每个命令使用的GDB内存。如果启用， <small class="sc">GDB</small> 将在命令自身的输出之后显示每个命令使用的内存量。这也可以通过使用 <small class="sc">GDB</small> 的
+<samp class="option">--statistics</samp> 命令行开关来请求（请参阅 <a class="pxref" href="Mode-Options.html">选择模式</a>)。
+</p>
+</dd>
+<dt><code class="code">maint set per-command time [on|off]</code></dt>
+<dt><code class="code">maint show per-command time</code></dt>
+<dd><p>启用或禁用打印每个命令的 <small class="sc">GDB</small>
+执行时间。如果启用， <small class="sc">GDB</small> 将在命令自身的输出之后显示执行每个命令所花费的时间。将同时打印CPU时间和时钟时间。打印两者在尝试确定成本是CPU成本还是例如磁盘/网络延迟时很有用。请注意，打印的CPU时间仅针对 <small class="sc">GDB</small> ，不包括目标进程的执行时间，因为目前没有机制来计算 <small class="sc">GDB</small> 花费了多少时间以及被调试程序花费了多少时间。这也可以通过使用 <small class="sc">GDB</small> 的
+<samp class="option">--statistics</samp> 命令行开关来请求（请参阅 <a class="pxref" href="Mode-Options.html">选择模式</a>)。
+</p>
+</dd>
+<dt><code class="code">maint set per-command symtab [on|off]</code></dt>
+<dt><code class="code">maint show per-command symtab</code></dt>
+<dd><p>启用或禁用打印每个命令的基本符号表统计信息。如果启用， <small class="sc">GDB</small> 将显示以下信息：
+</p>
+<ol class="enumerate" type="a" start="1">
+<li> 符号表数量
+</li><li> 主符号表数量
+</li><li> 块向量中的块数量
+</li></ol>
+</dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-check_002dlibthread_002ddb"></a>
+<a id="index-maint-set-check_002dlibthread_002ddb"></a><span><code class="code">maint set check-libthread-db [on|off]</code><a class="copiable-link" href="#index-maint-set-check_002dlibthread_002ddb"> ¶</a></span></dt>
+<dt><code class="code">maint show check-libthread-db</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 在加载特定于目标进程的线程调试库时是否运行完整性检查。默认情况下不执行此类检查。如果任何检查失败， <small class="sc">GDB</small> 将卸载该库并继续搜索合适的候选库，如 <a class="ref" href="Threads.html#set-libthread_002ddb_002dsearch_002dpath">set libthread-db-search-path</a>中所述。有关测试的更多信息，请参阅 <a class="ref" href="#maint-check-libthread_002ddb">maint check libthread-db</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-gnu_002dsource_002dhighlight-enabled"></a>
+<a id="index-maint-set-gnu_002dsource_002dhighlight-enabled"></a><span><code class="code">maint set gnu-source-highlight enabled <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#index-maint-set-gnu_002dsource_002dhighlight-enabled"> ¶</a></span></dt>
+<dt><code class="code">maint show gnu-source-highlight enabled</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 是否使用GNU Source Highlight库对源代码应用样式（请参阅 <a class="pxref" href="Output-Styling.html">输出样式</a>)。如果GNU Source Highlight库可用，默认将为‘<samp class="samp">开启</samp>’。如果GNU Source Highlight库不可用，则默认将为‘<samp class="samp">关闭</samp>’，并且尝试将此值更改为‘<samp class="samp">开启</samp>’将给出错误。
+</p>
+<p>如果不使用GNU Source Highlight库，则
+<small class="sc">GDB</small> 将使用Python Pygments包进行源代码样式化，如果该包可用的话。
+</p>
+<p>此选项在调试 <small class="sc">GDB</small>使用Pygments库时很有用，当 <small class="sc">GDB</small> 与GNU Source Highlight库链接时。
+</p>
+<a class="anchor" id="maint_005flibopcodes_005fstyling"></a></dd>
+<dt><a class="index-entry-id" id="index-maint-show-libopcodes_002dstyling-enabled"></a>
+<a id="index-maint-set-libopcodes_002dstyling-enabled"></a><span><code class="code">maint set libopcodes-styling enabled <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#index-maint-set-libopcodes_002dstyling-enabled"> ¶</a></span></dt>
+<dt><code class="code">maint show libopcodes-styling enabled</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 是否使用其内置反汇编器<samp class="file">libopcodes</samp>) 对反汇编输出进行样式化（请参阅 <a class="pxref" href="Output-Styling.html">输出样式</a>)。内置反汇编器并非支持所有架构的样式化。
+</p>
+<p>当此选项为‘<samp class="samp">关闭</samp>’时，内置反汇编器将不用于样式化， <small class="sc">GDB</small> 将尽可能回退到使用Python Pygments包。
+</p>
+<p>尝试将此选项设置为‘<samp class="samp">开启</samp>’命令的执行历史的原始分支跟踪包。两者的信息和打印格式都取决于btrace记录格式。
+</p>
+<p>’对于内置反汇编器无法进行样式化的架构将给出错误，否则，将使用内置反汇编器对反汇编输出进行样式化。<samp class="samp">开启</samp>’对于支持的架构默认启用。
+</p>
+<p>此选项在调试 <small class="sc">GDB</small>使用Pygments库时很有用，当 <small class="sc">GDB</small> 为支持使用内置反汇编器进行样式化的架构构建时。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-screen-characteristics"></a>
+<a id="index-maint-info-screen"></a><span><code class="code">maint info screen</code><a class="copiable-link" href="#index-maint-info-screen"> ¶</a></span></dt>
+<dd><p>打印屏幕的各种特性，如各种宽度和高度的概念。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-memory-used-by-commands"></a>
+<a id="index-maint-space"></a><span><code class="code">maint space <var class="var">value</var></code><a class="copiable-link" href="#index-maint-space"> ¶</a></span></dt>
+<dd><p>的别名。非零值启用，零值禁用。 <code class="code">maint set per-command space</code>.
+非零值启用，零值禁用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-time-of-command-execution"></a>
+<a id="index-maint-time"></a><span><code class="code">maint time <var class="var">value</var></code><a class="copiable-link" href="#index-maint-time"> ¶</a></span></dt>
+<dd><p>的别名。非零值启用，零值禁用。 <code class="code">maint set per-command time</code>.
+非零值启用，零值禁用。
+</p>
+</dd>
+<dt><a id="index-maint-translate_002daddress"></a><span><code class="code">maint translate-address <span class="r">[</span><var class="var">section</var><span class="r">]</span> <var class="var">addr</var></code><a class="copiable-link" href="#index-maint-translate_002daddress"> ¶</a></span></dt>
+<dd><p>查找由地址
+<var class="var">addr</var> 和可选的节名称 <var class="var">section</var>指定的位置存储的符号。如果找到，
+<small class="sc">GDB</small> 将打印最接近的符号的名称以及从符号位置到指定地址的偏移量。这类似于 <code class="code">info address</code> 命令（请参阅 <a class="pxref" href="Symbols.html">检查符号表</a>），不同之处在于此命令还允许在其他节中查找符号。
+</p>
+<p>如果未指定节，还将打印找到符号的节。对于动态链接的可执行文件，还将打印包含该符号的可执行文件或共享库的名称。
+</p>
+</dd>
+<dt><a id="index-maint-test_002doptions"></a><span><code class="code">maint test-options require-delimiter</code><a class="copiable-link" href="#index-maint-test_002doptions"> ¶</a></span></dt>
+<dt><code class="code">maint test-options unknown-is-error</code></dt>
+<dt><code class="code">maint test-options unknown-is-operand</code></dt>
+<dd><p>这些命令由测试套件用于验证命令选项框架。 <code class="code">require-delimiter</code> 变体需要双破折号分隔符来指示选项结束。
+<code class="code">unknown-is-error</code> 和 <code class="code">unknown-is-operand</code> 不需要。
+<code class="code">unknown-is-error</code> 变体在遇到未知选项时会抛出错误，而 <code class="code">unknown-is-operand</code> 将未知选项视为命令操作数的开始。运行时，命令将输出处理后的选项的结果。完成后，命令将处理完成的内部结果存储在 <code class="code">maint
+show test-options-completion-result</code> 命令公开的变量中。
+</p>
+</dd>
+<dt><a id="index-maint-show-test_002doptions_002dcompletion_002dresult"></a><span><code class="code">maint show test-options-completion-result</code><a class="copiable-link" href="#index-maint-show-test_002doptions_002dcompletion_002dresult"> ¶</a></span></dt>
+<dd><p>显示完成 <code class="code">maint test-options</code>
+子命令的结果。这由测试套件用于验证命令选项框架中的补全支持。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-test_002dsettings"></a>
+<a id="index-maint-set-test_002dsettings"></a><span><code class="code">maint set test-settings <var class="var">kind</var></code><a class="copiable-link" href="#index-maint-set-test_002dsettings"> ¶</a></span></dt>
+<dt><code class="code">maint show test-settings <var class="var">kind</var></code></dt>
+<dd><p>这些是 <var class="var">每种</var> 设置类型的代表性命令。它们由测试套件用于测试设置基础设施。
+<small class="sc">GDB</small> 
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-show-backtrace_002don_002dfatal_002dsignal"></a>
+<a id="index-maint-set-backtrace_002don_002dfatal_002dsignal"></a><span><code class="code">maint set backtrace-on-fatal-signal [on|off]</code><a class="copiable-link" href="#index-maint-set-backtrace_002don_002dfatal_002dsignal"> ¶</a></span></dt>
+<dt><code class="code">maint show backtrace-on-fatal-signal</code></dt>
+<dd><p>当此设置为 <code class="code">on</code>, 如果 <small class="sc">GDB</small> 本身因致命信号（例如SIGSEGV）终止，则将向标准错误流打印有限的回溯信息。此回溯信息可用于帮助诊断用户无法与 <small class="sc">GDB</small> 开发者共享核心文件的情况下 <small class="sc">GDB</small> 内部的崩溃。
+</p>
+<p>如果GDB运行的平台不支持提供此回溯信息的功能，则此功能默认将为
+<code class="code">off</code> ，并且尝试启用此功能将给出错误。
+</p>
+<p>对于支持创建回溯信息的平台，此功能默认将为
+<code class="code">on</code> 。
+</p>
+</dd>
+<dt><a id="index-maint-wait_002dfor_002dindex_002dcache"></a><span><code class="code">maint wait-for-index-cache</code><a class="copiable-link" href="#index-maint-wait_002dfor_002dindex_002dcache"> ¶</a></span></dt>
+<dd><p>等待所有对索引缓存的挂起写入完成。这由测试套件用于避免在索引缓存由工作线程更新时出现竞争条件。
+</p>
+</dd>
+<dt><a id="index-maint-with"></a><span><code class="code">maint with <var class="var">setting</var> [<var class="var">value</var>] [-- <var class="var">command</var>]</code><a class="copiable-link" href="#index-maint-with"> ¶</a></span></dt>
+<dd><p>类似于 <code class="code">with</code> 命令，但适用于 <code class="code">maintenance set</code>
+变量。这由测试套件用于测试 <code class="code">with</code>
+命令的基础设施。
+</p>
+</dd>
+<dt><a id="index-maint-ignore_002dprobes"></a><span><code class="code">maint ignore-probes [<var class="var">-v</var>|<var class="var">-verbose</var>] [<var class="var">provider</var> [<var class="var">name</var> [<var class="var">objfile</var>]]]</code><a class="copiable-link" href="#index-maint-ignore_002dprobes"> ¶</a></span></dt>
+<dt><code class="code">maint ignore-probes <var class="var">-reset</var></code></dt>
+<dd><p>设置或重置忽略探针过滤器。 <var class="var">提供者</var>, <var class="var">名称</var>
+和 <var class="var">目标文件</var> 参数与 <code class="code">enable probes</code> 和
+<code class="code">disable probes</code> 中的相同（请参阅 <a class="pxref" href="Static-Probe-Points.html#enable-probes">enable probes</a>)。仅支持SystemTap探针。
+</p>
+<p>以下是使用 <code class="code">maint ignore-probes</code>:
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) maint ignore-probes -verbose libc ^longjmp$
+忽略探针过滤器已设置为：
+提供者: &#39;libc&#39;
+探针名称: &#39;^longjmp$&#39;
+目标文件名: &#39;&#39;
+(gdb) start
+&lt;... 更多输出 ...&gt;
+忽略SystemTap探针 libc longjmp 在 /lib64/libc.so.6.^M
+忽略SystemTap探针 libc longjmp 在 /lib64/libc.so.6.^M
+忽略SystemTap探针 libc longjmp 在 /lib64/libc.so.6.^M
+</pre></div>
+</dd>
+</dl>
+
+<p>以下命令对于非交互式调用
+<small class="sc">GDB</small>, 例如在测试套件中很有用。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-watchdog-timer"></a>
+<a class="index-entry-id" id="index-timeout-for-commands"></a>
+<a id="index-set-watchdog"></a><span><code class="code">set watchdog <var class="var">nsec</var></code><a class="copiable-link" href="#index-set-watchdog"> ¶</a></span></dt>
+<dd><p>设置 <small class="sc">GDB</small> 等待目标操作完成的最大秒数。如果此时间到期， <small class="sc">GDB</small>
+将报告错误并中止命令。
+</p>
+</dd>
+<dt><code class="code">show watchdog</code></dt>
+<dd><p>显示目标等待超时的当前设置。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>, 上一项： <a href="Installing-GDB.html">安装 <small class="sc">GDB</small></a>, 上一级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

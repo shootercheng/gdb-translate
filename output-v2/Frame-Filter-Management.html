@@ -1,0 +1,188 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>帧过滤器管理（使用GDB调试）</title>
+
+<meta name="description" content="Frame Filter Management (Debugging with GDB)"/>
+<meta name="keywords" content="Frame Filter Management (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Stack.html" rel="up" title="Stack"/>
+<link href="Frame-Apply.html" rel="prev" title="Frame Apply"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frame-Filter-Management">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Frame-Apply.html" rel="prev"></a> <a accesskey="u" href="Stack.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index"></a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Management-of-Frame-Filters_002e"><span>8.6 帧过滤器的管理。<a class="copiable-link" href="#Management-of-Frame-Filters_002e"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-managing-frame-filters"></a>
+
+<p>帧过滤器是基于Python的实用工具，用于管理和装饰帧的输出。请参阅 <a class="xref" href="Frame-Filter-API.html">过滤帧</a>，以获取更多信息。
+</p>
+<p>管理帧过滤器是通过 <small class="sc">GDB</small>中可用的几个命令来执行的，这里将详细介绍。
+</p>
+<dl class="table">
+<dt><a id="index-info-frame_002dfilter"></a><span><code class="code">info frame-filter</code><a class="copiable-link" href="#index-info-frame_002dfilter"> ¶</a></span></dt>
+<dd><p>打印所有字典中已安装的帧过滤器列表，显示它们的名称、优先级和启用状态。
+</p>
+<a class="index-entry-id" id="index-disable-frame_002dfilter"></a>
+<a class="anchor" id="disable-frame_002dfilter-all"></a></dd>
+<dt><code class="code">disable frame-filter <var class="var">filter-dictionary</var> <var class="var">filter-name</var></code></dt>
+<dd><p>禁用与
+<var class="var">过滤器字典</var> 和 <var class="var">过滤器名称</var>匹配的字典中的帧过滤器。
+<var class="var">过滤器字典</var> 可以是 <code class="code">all</code>, <code class="code">global</code>,
+<code class="code">progspace</code>, 或者是帧过滤器字典所在的目标文件的名称。当 <code class="code">all</code> 被指定时，所有字典中的所有帧过滤器都将被禁用。 <var class="var">过滤器名称</var> 是帧过滤器的名称，当 <code class="code">all</code> 不是
+<var class="var">过滤器字典</var>的选项时使用。禁用的帧过滤器不会被删除，以后可以再次启用。
+</p>
+</dd>
+<dt><a id="index-enable-frame_002dfilter"></a><span><code class="code">enable frame-filter <var class="var">filter-dictionary</var> <var class="var">filter-name</var></code><a class="copiable-link" href="#index-enable-frame_002dfilter"> ¶</a></span></dt>
+<dd><p>启用与
+<var class="var">过滤器字典</var> 和 <var class="var">过滤器名称</var>匹配的字典中的帧过滤器。
+<var class="var">过滤器字典</var> 可以是 <code class="code">all</code>, <code class="code">global</code>,
+<code class="code">progspace</code> 或者是帧过滤器字典所在的目标文件的名称。当 <code class="code">all</code> 被指定时，所有字典中的所有帧过滤器都将被启用。 <var class="var">过滤器名称</var> 是帧过滤器的名称，当 <code class="code">all</code> 不是
+<var class="var">过滤器字典</var>的选项时使用。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info frame-filter
+
+global frame-filters:
+  Priority  Enabled  Name
+  1000      No       PrimaryFunctionFilter
+  100       Yes      Reverse
+
+progspace /build/test frame-filters:
+  Priority  Enabled  Name
+  100       Yes      ProgspaceFilter
+
+objfile /build/test frame-filters:
+  Priority  Enabled  Name
+  999       Yes      BuildProgramFilter
+
+(gdb) disable frame-filter /build/test BuildProgramFilter
+(gdb) info frame-filter
+
+global frame-filters:
+  Priority  Enabled  Name
+  1000      No       PrimaryFunctionFilter
+  100       Yes      Reverse
+
+progspace /build/test frame-filters:
+  Priority  Enabled  Name
+  100       Yes      ProgspaceFilter
+
+objfile /build/test frame-filters:
+  Priority  Enabled  Name
+  999       No       BuildProgramFilter
+
+(gdb) enable frame-filter global PrimaryFunctionFilter
+(gdb) info frame-filter
+
+global frame-filters:
+  Priority  Enabled  Name
+  1000      Yes      PrimaryFunctionFilter
+  100       Yes      Reverse
+
+progspace /build/test frame-filters:
+  Priority  Enabled  Name
+  100       Yes      ProgspaceFilter
+
+objfile /build/test frame-filters:
+  Priority  Enabled  Name
+  999       No       BuildProgramFilter
+</pre></div>
+
+</dd>
+<dt><a id="index-set-frame_002dfilter-priority"></a><span><code class="code">set frame-filter priority <var class="var">filter-dictionary</var> <var class="var">filter-name</var> <var class="var">priority</var></code><a class="copiable-link" href="#index-set-frame_002dfilter-priority"> ¶</a></span></dt>
+<dd><p>设置与 <var class="var">优先级</var> 匹配的字典中帧过滤器的
+<var class="var">过滤器字典</var>，以及与帧过滤器名称匹配的
+<var class="var">过滤器名称</var>。 <var class="var">过滤器字典</var> 可以是 <code class="code">global</code>,
+<code class="code">progspace</code> 或者是帧过滤器字典所在的目标文件的名称。 <var class="var">优先级</var> 是一个整数。
+</p>
+</dd>
+<dt><a id="index-show-frame_002dfilter-priority"></a><span><code class="code">show frame-filter priority <var class="var">filter-dictionary</var> <var class="var">filter-name</var></code><a class="copiable-link" href="#index-show-frame_002dfilter-priority"> ¶</a></span></dt>
+<dd><p>显示与 <var class="var">优先级</var> 匹配的字典中帧过滤器的
+<var class="var">过滤器字典</var>，以及与帧过滤器名称匹配的
+<var class="var">过滤器名称</var>。 <var class="var">过滤器字典</var> 可以是 <code class="code">global</code>,
+<code class="code">progspace</code> 或者是帧过滤器字典所在的目标文件的名称。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info frame-filter
+
+global frame-filters:
+  Priority  Enabled  Name
+  1000      Yes      PrimaryFunctionFilter
+  100       Yes      Reverse
+
+progspace /build/test frame-filters:
+  Priority  Enabled  Name
+  100       Yes      ProgspaceFilter
+
+objfile /build/test frame-filters:
+  Priority  Enabled  Name
+  999       No       BuildProgramFilter
+
+(gdb) set frame-filter priority global Reverse 50
+(gdb) info frame-filter
+
+global frame-filters:
+  Priority  Enabled  Name
+  1000      Yes      PrimaryFunctionFilter
+  50        Yes      Reverse
+
+progspace /build/test frame-filters:
+  Priority  Enabled  Name
+  100       Yes      ProgspaceFilter
+
+objfile /build/test frame-filters:
+  Priority  Enabled  Name
+  999       No       BuildProgramFilter
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一章： <a href="Frame-Apply.html">对多个帧应用命令。</a>, 上一级： <a href="Stack.html">检查栈</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>AMD GPU（使用GDB调试）</title>
+
+<meta name="description" content="AMD GPU (Debugging with GDB)"/>
+<meta name="keywords" content="AMD GPU (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Architectures.html" rel="up" title="Architectures"/>
+<link href="RISC_002dV.html" rel="next" title="RISC-V"/>
+<link href="S12Z.html" rel="prev" title="S12Z"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AMD-GPU">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="RISC_002dV.html" rel="next">RISC-V</a>, 上一步： <a accesskey="p" href="S12Z.html" rel="prev">S12Z</a>, 向上： <a accesskey="u" href="Architectures.html" rel="up">架构</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="AMD-GPU-1"><span>21.4.9 <abbr class="acronym">AMD GPU</abbr><a class="copiable-link" href="#AMD-GPU-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-AMD-GPU-support"></a>
+
+<p><small class="sc">GDB</small> 支持调试卸载到 <abbr class="acronym">AMD GPU</abbr> 设备上的程序
+使用 <a class="url" href="https://docs.amd.com/"><abbr class="acronym">AMD ROCm</abbr></a> 平台。
+<small class="sc">GDB</small> 在GPU波前旁边展示主机线程，允许同时调试程序的主机和设备部分。
+</p>
+<ul class="mini-toc">
+<li><a accesskey="1" href="#AMD-GPU-Architectures"><abbr class="acronym">AMD GPU</abbr> 架构</a></li>
+<li><a accesskey="2" href="#AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime"><abbr class="acronym">AMD GPU</abbr> 设备驱动程序和 <abbr class="acronym">AMD ROCm</abbr> 运行时</a></li>
+<li><a accesskey="3" href="#AMD-GPU-Wavefronts"><abbr class="acronym">AMD GPU</abbr> 波前</a></li>
+<li><a accesskey="4" href="#AMD-GPU-Code-Objects"><abbr class="acronym">AMD GPU</abbr> 代码对象</a></li>
+<li><a accesskey="5" href="#AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables"><abbr class="acronym">AMD GPU</abbr> 实体目标标识符和便利变量</a></li>
+<li><a accesskey="6" href="#AMD-GPU-Signals-1"><abbr class="acronym">AMD GPU</abbr> 信号</a></li>
+<li><a accesskey="7" href="#AMD-GPU-Memory-Violation-Reporting"><abbr class="acronym">AMD GPU</abbr> 内存违规报告</a></li>
+<li><a accesskey="8" href="#AMD-GPU-Logging"><abbr class="acronym">AMD GPU</abbr> 日志记录</a></li>
+<li><a accesskey="9" href="#AMD-GPU-Restrictions"><abbr class="acronym">AMD GPU</abbr> 限制</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AMD-GPU-Architectures">
+<h4 class="subsubsection"><span>21.4.9.1 <abbr class="acronym">AMD GPU</abbr> 架构<a class="copiable-link" href="#AMD-GPU-Architectures"> ¶</a></span></h4>
+
+<p>支持的 <abbr class="acronym">AMD GPU</abbr> 架构列表取决于所使用的AMD调试器API库的版本。有关更多详细信息，请参阅其 <small class="sc">GDB</small> 
+<a class="uref" href="https://docs.amd.com/bundle/ROCDebugger_User_and_API">文档</a> 以获取
+更多详细信息。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime">
+<h4 class="subsubsection"><span>21.4.9.2 <abbr class="acronym">AMD GPU</abbr> 设备驱动程序和 <abbr class="acronym">AMD ROCm</abbr> 运行时<a class="copiable-link" href="#AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 需要安装兼容的 <abbr class="acronym">AMD GPU</abbr> 设备驱动程序。如果设备驱动程序版本或其实现的调试支持版本不受支持，将显示警告消息。  <small class="sc">GDB</small> 将继续运行，但无法进行
+<abbr class="acronym">AMD GPU</abbr> 调试。
+</p>
+<p><small class="sc">GDB</small> 需要设备驱动程序为每个代理安装兼容的固件。如果检测到不受支持的固件，将显示警告消息。  <small class="sc">GDB</small> 将继续运行，但无法在 <abbr class="acronym">AMD GPU</abbr> 代理上进行调试。
+</p>
+<p><small class="sc">GDB</small> 需要加载兼容的 <abbr class="acronym">AMD ROCm</abbr> 运行时才能检测到 <abbr class="acronym">AMD GPU</abbr> 代码对象和
+波前。如果检测到不受支持的
+<abbr class="acronym">AMD ROCm</abbr> 运行时，或者存在阻止调试的错误或限制，将显示警告消息。  <small class="sc">GDB</small> 将继续运行，但无法进行 <abbr class="acronym">AMD GPU</abbr> 调试。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Wavefronts">
+<h4 class="subsubsection"><span>21.4.9.3 <abbr class="acronym">AMD GPU</abbr> 波前<a class="copiable-link" href="#AMD-GPU-Wavefronts"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-wavefronts"></a>
+
+<p>一个 <abbr class="acronym">AMD GPU</abbr> 波前在 <small class="sc">GDB</small> 中表示为一个
+线程。
+</p>
+<p>请注意，某些 <abbr class="acronym">AMD GPU</abbr> 架构在提供有关 <abbr class="acronym">AMD GPU</abbr> 未附加时创建的波前的信息方面可能有限制（请参阅 <small class="sc">GDB</small> 未附加时创建的波前的信息方面可能有限制（请参阅 <a class="pxref" href="#AMD-GPU-Attaching-Restrictions"><abbr class="acronym">AMD GPU</abbr> 附加限制</a>）。
+</p>
+<p>当调度器锁定生效时（请参阅 <a class="pxref" href="All_002dStop-Mode.html#set-scheduler_002dlocking">设置调度器锁定</a>），恢复的线程（CPU线程或GPU波前）创建的新波前将处于暂停状态。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Code-Objects">
+<h4 class="subsubsection"><span>21.4.9.4 <abbr class="acronym">AMD GPU</abbr> 代码对象<a class="copiable-link" href="#AMD-GPU-Code-Objects"> ¶</a></span></h4>
+
+<p>The ‘<samp class="samp">info sharedlibrary</samp>’ command will show the <abbr class="acronym">AMD GPU</abbr>
+code objects as file or memory URIs, together with the host’s shared
+libraries.  For example:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info sharedlibrary
+From    To      Syms Read   Shared Object Library
+0x1111  0x2222  Yes (*)     /lib64/ld-linux-x86-64.so.2
+...
+0x3333  0x4444  Yes (*)     /opt/rocm-4.5.0/.../libamd_comgr.so
+0x5555  0x6666  Yes (*)     /lib/x86_64-linux-gnu/libtinfo.so.5
+0x7777  0x8888  Yes         file:///tmp/a.out#offset=6477&amp;size=10832
+0x9999  0xaaaa  Yes (*)     memory://95557/mem#offset=0x1234&amp;size=100
+(*): Shared library is missing debugging information.
+(gdb)
+</pre></div>
+
+<p>For a ‘<samp class="samp">file</samp>’ URI, the path portion is the file on disk containing
+the code object.  The <var class="var">offset</var> parameter is a 0-based offset in
+this file, to the start of the code object.  If omitted, it defaults to
+0.  The <var class="var">size</var> parameter is the size of the code object in bytes.
+If omitted, it defaults to the size of the file.
+</p>
+<p>For a ‘<samp class="samp">memory</samp>’ URI, the path portion is the process id of the
+process owning the memory containing the code object.  The <var class="var">offset</var>
+parameter is the memory address where the code object is found, and
+the <var class="var">size</var> parameter is its size in bytes.
+</p>
+<p><abbr class="acronym">AMD GPU</abbr> code objects are loaded into each <abbr class="acronym">AMD GPU</abbr>
+device separately.  The ‘<samp class="samp">info sharedlibrary</samp>’ command may
+therefore show the same code object loaded multiple times.  As a
+consequence, setting a breakpoint in <abbr class="acronym">AMD GPU</abbr> code will
+result in multiple breakpoint locations if there are multiple
+<abbr class="acronym">AMD GPU</abbr> devices.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables">
+<h4 class="subsubsection"><span>21.4.9.5 <abbr class="acronym">AMD GPU</abbr> Entity Target Identifiers and Convenience Variables<a class="copiable-link" href="#AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables"> ¶</a></span></h4>
+
+<p>The <abbr class="acronym">AMD GPU</abbr> entities have the following target identifier formats:
+</p>
+<dl class="table">
+<dt>Thread Target ID</dt>
+<dd><p>The <abbr class="acronym">AMD GPU</abbr> thread target identifier (<var class="var">systag</var>) string has the
+following format:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">AMDGPU Wave <var class="var">agent-id</var>:<var class="var">queue-id</var>:<var class="var">dispatch-id</var>:<var class="var">wave-id</var> (<var class="var">work-group-x</var>,<var class="var">work-group-y</var>,<var class="var">work-group-z</var>)/<var class="var">work-group-thread-index</var>
+</pre></div>
+
+</dd>
+</dl>
+
+<a class="anchor" id="AMD-GPU-Signals"></a></div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Signals-1">
+<h4 class="subsubsection"><span>21.4.9.6 <abbr class="acronym">AMD GPU</abbr> Signals<a class="copiable-link" href="#AMD-GPU-Signals-1"> ¶</a></span></h4>
+
+<p>For <abbr class="acronym">AMD GPU</abbr> wavefronts, <small class="sc">GDB</small> maps target conditions to stop
+signals in the following way:
+</p>
+<dl class="table">
+<dt><code class="code">SIGILL</code></dt>
+<dd><p>Execution of an illegal instruction.
+</p>
+</dd>
+<dt><code class="code">SIGTRAP</code></dt>
+<dd><p>Execution of a <code class="code">S_TRAP</code> instruction other than:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">S_TRAP 1</code> which is used by <small class="sc">GDB</small> to insert breakpoints.
+
+</li><li><code class="code">S_TRAP 2</code> which raises <code class="code">SIGABRT</code>.
+
+</li></ul>
+
+</dd>
+<dt><code class="code">SIGABRT</code></dt>
+<dd><p>Execution of a <code class="code">S_TRAP 2</code> instruction.
+</p>
+</dd>
+<dt><code class="code">SIGFPE</code></dt>
+<dd><p>Execution of a floating point or integer instruction detects a
+condition that is enabled to raise a signal.  The conditions include:
+</p>
+<ul class="itemize mark-bullet">
+<li>Floating point operation is invalid.
+
+</li><li>Floating point operation had subnormal input that was rounded to zero.
+
+</li><li>Floating point operation performed a division by zero.
+
+</li><li>Floating point operation produced an overflow result.  The result was
+rounded to infinity.
+
+</li><li>Floating point operation produced an underflow result.  A subnormal
+result was rounded to zero.
+
+</li><li>Floating point operation produced an inexact result.
+
+</li><li>Integer operation performed a division by zero.
+
+</li></ul>
+
+<p>By default, these conditions are not enabled to raise signals.  The
+‘<samp class="samp">set $mode</samp>’ command can be used to change the <abbr class="acronym">AMD GPU</abbr>
+wavefront’s register that has bits controlling which conditions are
+enabled to raise signals.  The ‘<samp class="samp">print $trapsts</samp>’ command can be
+used to inspect which conditions have been detected even if they are
+not enabled to raise a signal.
+</p>
+</dd>
+<dt><code class="code">SIGBUS</code></dt>
+<dd><p>Execution of an instruction that accessed global memory using an
+address that is outside the virtual address range.
+</p>
+</dd>
+<dt><code class="code">SIGSEGV</code></dt>
+<dd><p>Execution of an instruction that accessed a global memory page that is
+either not mapped or accessed with incompatible permissions.
+</p>
+</dd>
+</dl>
+
+<p>If a single instruction raises more than one signal, they will be
+reported one at a time each time the wavefront is continued.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Memory-Violation-Reporting">
+<h4 class="subsubsection"><span>21.4.9.7 <abbr class="acronym">AMD GPU</abbr> Memory Violation Reporting<a class="copiable-link" href="#AMD-GPU-Memory-Violation-Reporting"> ¶</a></span></h4>
+
+<p>A wavefront can report memory violation events.  However, the program
+location at which they are reported may be after the machine instruction
+that caused them.  This can result in the reported source statement
+being incorrect.  The following commands can be used to control this
+behavior:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-AMD-GPU-precise-memory-event-reporting"></a>
+<a id="index-set-amdgpu-precise_002dmemory"></a><span><code class="code">set amdgpu precise-memory <var class="var">mode</var></code><a class="copiable-link" href="#index-set-amdgpu-precise_002dmemory"> ¶</a></span></dt>
+<dd><p>Controls how <abbr class="acronym">AMD GPU</abbr> devices detect memory violations, where
+<var class="var">mode</var> can be:
+</p>
+<dl class="table">
+<dt><code class="code">off</code></dt>
+<dd><p>The program location may not be immediately after the instruction that
+caused the memory violation.  This is the default.
+</p>
+</dd>
+<dt><code class="code">on</code></dt>
+<dd><p>Requests that the program location will be immediately after the
+instruction that caused a memory violation.  Enabling this mode may make
+the <abbr class="acronym">AMD GPU</abbr> device execution significantly slower as it has to
+wait for each memory operation to complete before executing the next
+instruction.
+</p>
+</dd>
+</dl>
+
+<p>The <code class="code">amdgpu precise-memory</code> parameter is per-inferior.  When an
+inferior forks or execs, or the user uses the <code class="code">clone-inferior</code> command,
+and an inferior is created as a result, the newly created inferior inherits
+the parameter value of the original inferior.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-AMD-GPU-precise-memory-event-reporting-1"></a>
+<a id="index-show-amdgpu-precise_002dmemory"></a><span><code class="code">show amdgpu precise-memory</code><a class="copiable-link" href="#index-show-amdgpu-precise_002dmemory"> ¶</a></span></dt>
+<dd><p>Displays the currently requested AMD GPU precise memory setting.
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Logging">
+<h4 class="subsubsection"><span>21.4.9.8 <abbr class="acronym">AMD GPU</abbr> Logging<a class="copiable-link" href="#AMD-GPU-Logging"> ¶</a></span></h4>
+
+<p>The ‘<samp class="samp">set debug amd-dbgapi</samp>’ command can be used
+to enable diagnostic messages in the ‘<samp class="samp">amd-dbgapi</samp>’ target.  The
+‘<samp class="samp">show debug amd-dbgapi</samp>’ command displays the current setting.
+See <a class="xref" href="Debugging-Output.html#set-debug-amd_002ddbgapi">set debug amd-dbgapi</a>.
+</p>
+<p>The ‘<samp class="samp">set debug amd-dbgapi-lib log-level <var class="var">level</var></samp>’ command can be used
+to enable diagnostic messages from the ‘<samp class="samp">amd-dbgapi</samp>’ library (which
+<small class="sc">GDB</small> uses under the hood).  The ‘<samp class="samp">show debug amd-dbgapi-lib
+log-level</samp>’ command displays the current ‘<samp class="samp">amd-dbgapi</samp>’ library log level.
+See <a class="xref" href="Debugging-Output.html#set-debug-amd_002ddbgapi_002dlib">set debug amd-dbgapi-lib</a>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AMD-GPU-Restrictions">
+<h4 class="subsubsection"><span>21.4.9.9 <abbr class="acronym">AMD GPU</abbr> Restrictions<a class="copiable-link" href="#AMD-GPU-Restrictions"> ¶</a></span></h4>
+
+<ol class="enumerate">
+<li> When in non-stop mode, wavefronts may not hit breakpoints inserted
+while not stopped, nor see memory updates made while not stopped,
+until the wavefront is next stopped.  Memory updated by non-stopped
+wavefronts may not be visible until the wavefront is next stopped.
+
+</li><li> The HIP runtime performs deferred code object loading by default.
+<abbr class="acronym">AMD GPU</abbr> code objects are not loaded until the first kernel is
+launched.  Before then, all breakpoints have to be set as pending breakpoints.
+
+<p>If source line positions are used that only correspond to source lines in
+unloaded code objects, then <small class="sc">GDB</small> may not set pending breakpoints, and
+instead set breakpoints on the next following source line that maps to host
+code.  This can result in unexpected breakpoint hits being reported.  When the
+code object containing the source lines is loaded, the incorrect breakpoints
+will be removed and replaced by the correct ones.  This problem can be avoided
+by only setting breakpoints in unloaded code objects using symbol or function
+names.
+</p>
+<p>Setting the <code class="code">HIP_ENABLE_DEFERRED_LOADING</code> environment variable to <code class="code">0</code>
+can be used to disable deferred code object loading by the HIP runtime.  This
+ensures all code objects will be loaded when the inferior reaches the beginning
+of the <code class="code">main</code> function.
+</p>
+</li><li> If no CPU thread is running, then ‘<samp class="samp">Ctrl-C</samp>’ is not able to stop
+<abbr class="acronym">AMD GPU</abbr> threads.  This can happen for example if you enable
+<code class="code">scheduler-locking</code> after the whole program stopped, and then resume an
+<abbr class="acronym">AMD GPU</abbr> thread.  The only way to unblock the situation is to kill the
+<small class="sc">GDB</small> process.
+
+<a class="anchor" id="AMD-GPU-Attaching-Restrictions"></a></li><li> 
+By default, for some architectures, the <abbr class="acronym">AMD GPU</abbr> device driver causes
+all <abbr class="acronym">AMD GPU</abbr> wavefronts created when <small class="sc">GDB</small> is not attached to
+be unable to report the dispatch associated with the wavefront, or the
+wavefront’s work-group position.  The ‘<samp class="samp">info threads</samp>’ command will display
+this missing information with a ‘<samp class="samp">?</samp>’.
+
+<p>This does not affect wavefronts created while <small class="sc">GDB</small> is attached which
+are always capable of reporting this information.
+</p>
+<p>If the <code class="env">HSA_ENABLE_DEBUG</code> environment variable is set to ‘<samp class="samp">1</samp>’ when the
+<abbr class="acronym">AMD ROCm</abbr> runtime is initialized, then this information will be
+available for all architectures even for wavefronts created when <small class="sc">GDB</small>
+was not attached.
+</p>
+</li></ol>
+
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+Next: <a href="RISC_002dV.html">RISC-V</a>, Previous: <a href="S12Z.html">S12Z</a>, Up: <a href="Architectures.html">Architectures</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">Contents</a>][<a href="Concept-Index.html" rel="index" title="Index">Index</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

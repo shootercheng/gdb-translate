@@ -1,0 +1,131 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI输入语法（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI Input Syntax (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Input Syntax (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Command-Syntax.html" rel="up" title="GDB/MI Command Syntax"/>
+<link href="GDB_002fMI-Output-Syntax.html" rel="next" title="GDB/MI Output Syntax"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Input-Syntax">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Output-Syntax.html" rel="next"><small class="sc">GDB/MI</small> 输出语法</a>，上一项： <a accesskey="u" href="GDB_002fMI-Command-Syntax.html" rel="up"><small class="sc">GDB/MI</small> 命令语法</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="gdb_002fmi-Input-Syntax"><span>27.2.1 <small class="sc">GDB/MI</small> 输入语法<a class="copiable-link" href="#gdb_002fmi-Input-Syntax"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-input-syntax-for-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-input-syntax"></a>
+<dl class="table">
+<dt><code class="code"><var class="var">command</var> →</code></dt>
+<dd><p><code class="code"><var class="var">cli-command</var> | <var class="var">mi-command</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">cli-command</var> →</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] <var class="var">cli-command</var> <var class="var">nl</var></code>，其中
+<var class="var">cli命令</var> 是任何现有的 <small class="sc">GDB</small> CLI命令。
+</p>
+</dd>
+<dt><code class="code"><var class="var">mi-command</var> →</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &#34;-&#34; <var class="var">operation</var> ( &#34; &#34; <var class="var">option</var> )*
+<code class="code">[</code> &#34; --&#34; <code class="code">]</code> ( &#34; &#34; <var class="var">parameter</var> )* <var class="var">nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">token</var> →</code></dt>
+<dd><p>“任意数字序列”
+</p>
+</dd>
+<dt><code class="code"><var class="var">option</var> →</code></dt>
+<dd><p><code class="code">&#34;-&#34; <var class="var">parameter</var> [ &#34; &#34; <var class="var">parameter</var> ]</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">parameter</var> →</code></dt>
+<dd><p><code class="code"><var class="var">non-blank-sequence</var> | <var class="var">c-string</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">operation</var> →</code></dt>
+<dd><p><em class="emph">本章中描述的任何操作</em>
+</p>
+</dd>
+<dt><code class="code"><var class="var">non-blank-sequence</var> →</code></dt>
+<dd><p><em class="emph">任何内容，前提是它不包含特殊字符，如
+“-” <var class="var">换行符</var>、“&#34;&#34;” 当然还有 “ ”</em>
+</p>
+</dd>
+<dt><code class="code"><var class="var">c-string</var> →</code></dt>
+<dd><p><code class="code">&#34;&#34;&#34; <var class="var">seven-bit-iso-c-string-content</var> &#34;&#34;&#34;</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">nl</var> →</code></dt>
+<dd><p><code class="code">CR | CR-LF</code>
+</p></dd>
+</dl>
+
+<p>注意事项：
+</p>
+<ul class="itemize mark-bullet">
+<li>CLI命令仍由 <small class="sc">MI</small> 解释器处理；其
+输出如下所述。
+
+</li><li>该 <code class="code"><var class="var">token</var></code>（如果存在）在命令
+完成时会被传回。
+
+</li><li>一些 <small class="sc">MI</small> 命令接受可选参数作为参数
+列表的一部分。每个选项由一个前导 ‘<samp class="samp">-</samp>’（破折号）标识，并且可能
+后跟一个可选的参数。选项在参数
+列表中首先出现，可以使用
+‘<samp class="samp">--</samp>’ 与普通参数分隔（当某些参数以破折号开头时，这很有用）。
+</li></ul>
+
+<p>实际应用：
+</p>
+<ul class="itemize mark-bullet">
+<li>我们希望能够轻松访问现有的CLI语法（用于调试）。
+
+</li><li>我们希望能够轻松识别一个 <small class="sc">MI</small> 操作。
+</li></ul>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Output-Syntax.html"><small class="sc">GDB/MI</small> 输出语法</a>, 上一项： <a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> 命令语法</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>支持的语言（使用 GDB 调试）</title>
+
+<meta name="description" content="Supported Languages (Debugging with GDB)"/>
+<meta name="keywords" content="Supported Languages (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Languages.html" rel="up" title="Languages"/>
+<link href="Unsupported-Languages.html" rel="next" title="Unsupported Languages"/>
+<link href="Checks.html" rel="prev" title="Checks"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Supported-Languages">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Unsupported-Languages.html" rel="next">不支持的语言</a>, 上一项： <a accesskey="p" href="Checks.html" rel="prev">类型和范围检查</a>, 返回： <a accesskey="u" href="Languages.html" rel="up">使用 <small class="sc">GDB</small> 与不同语言</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Supported-Languages-1"><span>15.4 支持的语言<a class="copiable-link" href="#Supported-Languages-1"> ¶</a></span></h3>
+
+<p><small class="sc">GDB</small> 支持 C、C++<code class="t">++</code>, D、Go、Objective - C、Fortran、
+OpenCL C、Pascal、Rust、汇编、Modula - 2 和 Ada。
+某些 <small class="sc">GDB</small> 特性可在表达式中使用，无论你使用何种
+语言： <small class="sc">GDB</small> <code class="code">@</code> 和 <code class="code">::</code> 运算符，
+以及 ‘<samp class="samp">{类型}地址</samp>’ 构造（参见 <a class="pxref" href="Expressions.html">表达式</a>) 可与任何支持的
+语言的构造一起使用。
+</p>
+<p>以下各节详细说明了每种源语言在何种程度上得到了 <small class="sc">GDB</small>的支持。 这些章节并非旨在作为语言
+教程或参考资料，而仅作为参考指南，说明
+<small class="sc">GDB</small> 表达式解析器接受什么，以及不同语言的输入和输出
+格式应该是什么样的。 关于这些语言中的每一种都有很多优秀的
+书籍；请参考这些书籍获取语言参考或教程。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="C.html">C 和 C++<code class="t">++</code></a></li>
+<li><a accesskey="2" href="D.html">D</a></li>
+<li><a accesskey="3" href="Go.html">Go</a></li>
+<li><a accesskey="4" href="Objective_002dC.html">Objective - C</a></li>
+<li><a accesskey="5" href="OpenCL-C.html">OpenCL C</a></li>
+<li><a accesskey="6" href="Fortran.html">Fortran</a></li>
+<li><a accesskey="7" href="Pascal.html">Pascal</a></li>
+<li><a accesskey="8" href="Rust.html">Rust</a></li>
+<li><a accesskey="9" href="Modula_002d2.html">Modula - 2</a></li>
+<li><a href="Ada.html">Ada</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

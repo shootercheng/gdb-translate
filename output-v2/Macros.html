@@ -1,0 +1,268 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>宏（使用 GDB 调试）</title>
+
+<meta name="description" content="Macros (Debugging with GDB)"/>
+<meta name="keywords" content="Macros (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Tracepoints.html" rel="next" title="Tracepoints"/>
+<link href="Optimized-Code.html" rel="prev" title="Optimized Code"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Macros">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Tracepoints.html" rel="next">跟踪点</a>, 上一项： <a accesskey="p" href="Optimized-Code.html" rel="prev">调试优化代码</a> <a accesskey="u" href="index.html" rel="up"> <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="C-Preprocessor-Macros"><span>12 个 C 预处理器宏<a class="copiable-link" href="#C-Preprocessor-Macros"> ¶</a></span></h2>
+
+<p>某些语言，如 C 和 C<code class="t">++</code>, 提供了一种定义和调用“预处理器宏”的方法，这些宏会扩展为标记字符串。
+<small class="sc">GDB</small> 可以计算包含宏调用的表达式，显示宏展开的结果，并显示宏的定义，包括其定义位置。
+</p>
+<p>您可能需要专门编译您的程序，以便为 <small class="sc">GDB</small>
+提供有关预处理器宏的信息。大多数编译器即使在使用 <samp class="option">-g</samp> 标志编译时，也不会在调试信息中包含宏。请参阅 <a class="xref" href="Compilation.html">为调试而编译</a>.
+</p>
+<p>程序可能在某一点定义一个宏，稍后移除该定义，然后再提供一个不同的定义。因此，在程序的不同点，宏可能有不同的定义，或者根本没有定义。如果有当前栈帧， <small class="sc">GDB</small>
+会使用该帧源代码行作用域内的宏。否则，
+<small class="sc">GDB</small> 会使用当前列表位置作用域内的宏；请参阅 <a class="ref" href="List.html">打印源行</a>.
+</p>
+<p>每当 <small class="sc">GDB</small> 计算表达式时，它总是会展开表达式中存在的任何宏调用。  <small class="sc">GDB</small> 还提供了以下命令来显式处理宏。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-macro-expansion_002c-showing-the-results-of-preprocessor"></a>
+<a class="index-entry-id" id="index-preprocessor-macro-expansion_002c-showing-the-results-of"></a>
+<a class="index-entry-id" id="index-expanding-preprocessor-macros"></a>
+<a id="index-macro-expand"></a><span><code class="code">macro expand <var class="var">expression</var></code><a class="copiable-link" href="#index-macro-expand"> ¶</a></span></dt>
+<dt><code class="code">macro exp <var class="var">expression</var></code></dt>
+<dd><p>显示展开
+<var class="var">表达式</var>中所有预处理器宏调用的结果。由于 <small class="sc">GDB</small> 只是展开宏，但不解析结果， <var class="var">表达式</var> 不必是有效的表达式；它可以是任何标记字符串。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-macro-exp1"></a>
+<a id="index-expand-macro-once"></a><span><code class="code">macro expand-once <var class="var">expression</var></code><a class="copiable-link" href="#index-expand-macro-once"> ¶</a></span></dt>
+<dt><code class="code">macro exp1 <var class="var">expression</var></code></dt>
+<dd><p><i class="i">（此命令尚未实现。）</i>  显示展开
+<var class="var">表达式</var>中显式出现的那些预处理器宏调用的结果。该展开中出现的宏调用保持不变。此命令允许您更清楚地看到特定宏的效果，而不会被进一步的展开所混淆。由于 <small class="sc">GDB</small> 只是展开宏，但不解析结果， <var class="var">表达式</var> 不必是有效的表达式；它可以是任何标记字符串。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-macro-definition_002c-showing"></a>
+<a class="index-entry-id" id="index-definition-of-a-macro_002c-showing"></a>
+<a class="index-entry-id" id="index-macros_002c-from-debug-info"></a>
+<a id="index-info-macro"></a><span><code class="code">info macro [-a|-all] [--] <var class="var">macro</var></code><a class="copiable-link" href="#index-info-macro"> ¶</a></span></dt>
+<dd><p>显示命名的 <var class="var">宏</var>,
+的当前定义或所有定义，并描述该定义的源位置或编译器命令行。可选的双破折号用于表示参数处理的结束和 <var class="var">宏</var> 的开始，对于非类 C 宏，宏可能以连字符开头。
+</p>
+</dd>
+<dt><a id="index-info-macros"></a><span><code class="code">info macros <var class="var">locspec</var></code><a class="copiable-link" href="#index-info-macros"> ¶</a></span></dt>
+<dd><p>显示在解析 <var class="var">位置规范</var>, 后得到的代码位置的源行上生效的所有宏定义，并描述这些定义的源位置或编译器命令行。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-user_002ddefined-macros"></a>
+<a class="index-entry-id" id="index-defining-macros-interactively"></a>
+<a class="index-entry-id" id="index-macros_002c-user_002ddefined"></a>
+<a id="index-macro-define"></a><span><code class="code">macro define <var class="var">macro</var> <var class="var">replacement-list</var></code><a class="copiable-link" href="#index-macro-define"> ¶</a></span></dt>
+<dt><code class="code">macro define <var class="var">macro</var>(<var class="var">arglist</var>) <var class="var">replacement-list</var></code></dt>
+<dd><p>为名为 <var class="var">宏</var>,
+的预处理器宏引入一个定义，其调用会被
+<var class="var">替换列表</var>中给出的标记所替换。此命令的第一种形式定义一个“类对象”宏，它不接受参数；第二种形式定义一个“类函数”宏，它接受
+<var class="var">参数列表</var>中给出的参数。
+</p>
+<p>此命令引入的定义在 <small class="sc">GDB</small>中计算的每个表达式中都有效，直到使用下面描述的
+<code class="code">macro undef</code> 命令将其移除。该定义会覆盖正在调试的程序中所有 <var class="var">宏</var> 的定义，以及任何先前用户提供的定义。
+</p>
+</dd>
+<dt><a id="index-macro-undef"></a><span><code class="code">macro undef <var class="var">macro</var></code><a class="copiable-link" href="#index-macro-undef"> ¶</a></span></dt>
+<dd><p>移除名为 <var class="var">宏</var>.
+的宏的任何用户提供的定义。此命令仅影响上面描述的 <code class="code">macro
+define</code> 命令提供的定义；它不能移除正在调试的程序中存在的定义。
+</p>
+</dd>
+<dt><a id="index-macro-list"></a><span><code class="code">macro list</code><a class="copiable-link" href="#index-macro-list"> ¶</a></span></dt>
+<dd><p>列出使用 <code class="code">macro define</code> 命令定义的所有宏。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-macros_002c-example-of-debugging-with"></a>
+<p>以下是一个展示上述命令实际操作的转录。首先，我们展示我们的源文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ cat sample.c
+#include &lt;stdio.h&gt;
+#include &#34;sample.h&#34;
+
+#define M 42
+#define ADD(x) (M + x)
+
+main ()
+{
+#define N 28
+  printf (&#34;Hello, world!\n&#34;);
+#undef N
+  printf (&#34;We&#39;re so creative.\n&#34;);
+#define N 1729
+  printf (&#34;Goodbye, world!\n&#34;);
+}
+$ cat sample.h
+#define Q &lt;
+$
+</pre></div>
+
+<p>现在，我们使用 <small class="sc">GNU</small> C 编译器
+<small class="sc">GCC</small>. 编译程序。我们传递 <samp class="option">-gdwarf-2</samp><a class="footnote" href="#FOOT14" id="DOCF14"><sup>14</sup></a> <em class="emph">和</em> <samp class="option">-g3</samp> 标志，以确保编译器在调试信息中包含有关预处理器宏的信息。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gcc -gdwarf-2 -g3 sample.c -o sample
+$
+</pre></div>
+
+<p>现在，我们在我们的示例程序上启动 <small class="sc">GDB</small> :
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -nw sample
+GNU gdb 2002-05-06-cvs
+版权所有 2002 自由软件基金会
+GDB 是自由软件，...
+(gdb)
+</pre></div>
+
+<p>即使程序没有运行，我们也可以展开宏并检查它们的定义。  <small class="sc">GDB</small> 使用当前列表位置来决定哪些宏定义在作用域内：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) list main
+3
+4       #define M 42
+5       #define ADD(x) (M + x)
+6
+7       main ()
+8       {
+9       #define N 28
+10        printf (&#34;Hello, world!\n&#34;);
+11      #undef N
+12        printf (&#34;We&#39;re so creative.\n&#34;);
+(gdb) info macro ADD
+在 /home/jimb/gdb/macros/play/sample.c:5 处定义
+#define ADD(x) (M + x)
+(gdb) info macro Q
+在 /home/jimb/gdb/macros/play/sample.h:1 处定义
+  在 /home/jimb/gdb/macros/play/sample.c:2 处包含
+#define Q &lt;
+(gdb) macro expand ADD(1)
+展开为：(42 + 1)
+(gdb) macro expand-once ADD(1)
+展开为：once (M + 1)
+(gdb)
+</pre></div>
+
+<p>在上面的示例中，请注意 <code class="code">macro expand-once</code> 仅展开原始文本中显式的宏调用 ——
+<code class="code">ADD</code> 的调用 —— 但不展开由 <code class="code">M</code>引入的宏 <code class="code">ADD</code>的调用。
+</p>
+<p>一旦程序开始运行, <small class="sc">GDB</small> 使用当前栈帧源行生效的宏定义：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break main
+断点 1 在 0x8048370 处：文件 sample.c，第 10 行。
+(gdb) run
+开始执行程序：/home/jimb/gdb/macros/play/sample
+
+在断点 1 处，main () 在 sample.c:10
+10        printf (&#34;Hello, world!\n&#34;);
+(gdb)
+</pre></div>
+
+<p>在第 10 行，宏的定义 <code class="code">N</code> 在第 9 行生效：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info macro N
+在 /home/jimb/gdb/macros/play/sample.c:9 处定义
+#define N 28
+(gdb) macro expand N Q M
+展开为：28 &lt; 42
+(gdb) print N Q M
+$1 = 1
+(gdb)
+</pre></div>
+
+<p>当我们跳过移除 <code class="code">N</code>定义的指令，然后
+给它一个新的定义时， <small class="sc">GDB</small> 会找到每个点生效的定义（或不存在定义）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) next
+Hello, world!
+12        printf (&#34;We&#39;re so creative.\n&#34;);
+(gdb) info macro N
+符号 `N&#39; 在 /home/jimb/gdb/macros/play/sample.c:12 处没有作为 C/C++ 预处理器宏的定义
+(gdb) next
+We&#39;re so creative.
+14        printf (&#34;Goodbye, world!\n&#34;);
+(gdb) info macro N
+在 /home/jimb/gdb/macros/play/sample.c:13 处定义
+#define N 1729
+(gdb) macro expand N Q M
+展开为：1729 &lt; 42
+(gdb) print N Q M
+$2 = 0
+(gdb)
+</pre></div>
+
+<p>除了源文件，宏可以在编译命令行上使用 <samp class="option">-D<var class="var">名称</var>=<var class="var">值</var></samp> 语法来定义。对于以这种方式定义的宏， <small class="sc">GDB</small> 会将其定义位置显示为提交给编译器的源文件的第零行。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info macro __STDC__
+在 /home/jimb/gdb/macros/play/sample.c:0 处定义
+-D__STDC__=1
+(gdb)
+</pre></div>
+
+
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF14" id="FOOT14">(14)</a></h5>
+<p>这是
+最小值。最近版本的 <small class="sc">GCC</small> 支持 <samp class="option">-gdwarf-3</samp>
+和 <samp class="option">-gdwarf-4</samp>；我们建议始终选择最新版本的 DWARF。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Tracepoints.html">跟踪点</a>, 上一项： <a href="Optimized-Code.html">调试优化代码</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

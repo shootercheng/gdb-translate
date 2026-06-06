@@ -1,0 +1,82 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>引言和符号表示（使用GDB调试）</title>
+
+<meta name="description" content="Introduction and Notation (Debugging with GDB)"/>
+<meta name="keywords" content="Introduction and Notation (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Command-Line-Editing.html" rel="up" title="Command Line Editing"/>
+<link href="Readline-Interaction.html" rel="next" title="Readline Interaction"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Introduction-and-Notation">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Readline-Interaction.html" rel="next">Readline交互</a>, 上一项： <a accesskey="u" href="Command-Line-Editing.html" rel="up">命令行编辑</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Introduction-to-Line-Editing"><span>33.1 行编辑简介<a class="copiable-link" href="#Introduction-to-Line-Editing"> ¶</a></span></h3>
+
+<p>以下段落描述了用于表示按键操作的符号表示法。
+</p>
+<p>文本 <kbd class="kbd">C - k</kbd> 读作‘Control - K’，表示在按下Control键的同时按下 <kbd class="key">k</kbd> 键所产生的字符。
+</p>
+<p>文本 <kbd class="kbd">M - k</kbd> 读作‘Meta - K’，表示在按下Meta键（如果有的话）的同时按下 <kbd class="key">k</kbd>
+键所产生的字符。
+Meta键在许多键盘上标为 <kbd class="key">ALT</kbd> 。
+在有两个标有 <kbd class="key">ALT</kbd> 键（通常在空格键两侧）的键盘上，左侧的 <kbd class="key">ALT</kbd> 键通常被设置为作为Meta键使用。
+右侧的 <kbd class="key">ALT</kbd> 键也可以配置为作为Meta键使用，或者配置为其他修饰键，例如用于输入带重音字符的组合键。
+</p>
+<p>如果您没有Meta键或 <kbd class="key">ALT</kbd> 键，或者没有其他键作为Meta键使用，可以通过先输入 <kbd class="key">ESC</kbd>
+<em class="emph">，然后输入</em> <kbd class="key">k</kbd>来生成相同的按键操作。
+这两种操作过程都称为 <em class="dfn">元化</em>  <kbd class="key">k</kbd> 键。
+</p>
+<p>文本 <kbd class="kbd">M - C - k</kbd> 读作‘Meta - Control - k’，表示对 <em class="dfn">元化</em> <kbd class="kbd">C - k</kbd>所产生的字符。
+</p>
+<p>此外，有几个键有它们自己的名称。具体来说，
+<kbd class="key">DEL</kbd>, <kbd class="key">ESC</kbd>, <kbd class="key">LFD</kbd>, <kbd class="key">SPC</kbd>, <kbd class="key">RET</kbd>, 以及 <kbd class="key">TAB</kbd> 在本文或初始化文件（参见 <a class="pxref" href="Readline-Init-File.html">Readline初始化文件</a>）中出现时都代表它们自身。
+如果您的键盘没有 <kbd class="key">LFD</kbd> 键，输入 <kbd class="key">C - j</kbd> 将产生所需的字符。
+ <kbd class="key">RET</kbd> 键在某些键盘上可能标为 <kbd class="key">Return</kbd> 或 <kbd class="key">Enter</kbd> 。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Readline-Interaction.html">Readline交互</a>, 上一项： <a href="Command-Line-Editing.html">命令行编辑</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

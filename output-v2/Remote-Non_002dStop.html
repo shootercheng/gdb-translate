@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>远程不停机（使用GDB调试）</title>
+
+<meta name="description" content="Remote Non-Stop (Debugging with GDB)"/>
+<meta name="keywords" content="Remote Non-Stop (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Packet-Acknowledgment.html" rel="next" title="Packet Acknowledgment"/>
+<link href="Notification-Packets.html" rel="prev" title="Notification Packets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Non_002dStop">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Packet-Acknowledgment.html" rel="next"></a>, 上一项： <a accesskey="p" href="Notification-Packets.html" rel="prev">通知数据包</a> <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Remote-Protocol-Support-for-Non_002dStop-Mode"><span>E.11 不停机模式的远程协议支持<a class="copiable-link" href="#Remote-Protocol-Support-for-Non_002dStop-Mode"> ¶</a></span></h3>
+
+<p><small class="sc">GDB</small>的远程协议支持多线程程序的不停机调试，如 <a class="ref" href="Non_002dStop-Mode.html">不停机模式</a>中所述。如果存根支持不停机模式，它应通过在其‘ <small class="sc">GDB</small> 中包含‘<samp class="samp">QNonStop+</samp>’ 向<samp class="samp">qSupported</samp>’ 响应中报告这一点（见 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）。
+</p>
+<p><small class="sc">GDB</small> 通常仅在与存根建立新连接时发送‘<samp class="samp">QNonStop</samp>’ 数据包。进入不停机模式不会改变任何当前正在运行的线程的状态，但目标必须在进入全停机模式时停止任何已附加进程中的所有线程。  <small class="sc">GDB</small> 必要时使用‘<samp class="samp">?</samp>’ 数据包来探测模式更改后的目标状态。
+</p>
+<p>在不停机模式下，当已附加的进程遇到原本会用停机回复报告的事件时，它会使用异步通知机制（见 <a class="pxref" href="Notification-Packets.html">通知数据包</a>）来通知 <small class="sc">GDB</small>。与全停机模式不同，在全停机模式下，当发送停机回复时，所有进程中的所有线程都会停止；而在不停机模式下，只有报告停机事件的线程会停止。也就是说，当报告‘<samp class="samp">S</samp>’ 或 ‘<samp class="samp">T</samp>’ 响应以指示单步操作完成、命中断点或发生故障时，只有受影响的线程会停止；任何其他仍在运行的线程会继续运行。当报告‘<samp class="samp">W</samp>’ 或 ‘<samp class="samp">X</samp>’ 响应时，属于其他已附加进程的所有正在运行的线程会继续运行。
+</p>
+<p>在不停机模式下，目标应按以下方式响应‘<samp class="samp">?</samp>’ 数据包。首先，任何正在进行的未完成的停机回复通知/‘<samp class="samp">vStopped</samp>’ 序列将被放弃。目标必须开始一个新的序列，报告所有已停止线程的停机事件，无论它之前是否已向 <small class="sc">GDB</small>报告过这些事件。第一个停机回复作为对‘<samp class="samp">?</samp>’ 数据包的同步回复发送，后续的停机回复作为对‘<samp class="samp">vStopped</samp>’ 数据包的响应，使用上述机制发送。在序列完成之前，目标不得发送异步停机回复通知。如果目标在收到‘<samp class="samp">?</samp>’ 数据包时所有线程都在运行，或者目标未附加到任何进程，它应响应‘<samp class="samp">OK</samp>’。
+</p>
+<p>如果存根支持不停机模式，并且支持软件断点，它还应支持‘<samp class="samp">swbreak</samp>’ 停机原因；如果支持硬件断点，应支持‘<samp class="samp">hwbreak</samp>’ 停机原因（见 <a class="pxref" href="Stop-Reply-Packets.html#swbreak-stop-reason">swbreak停机原因</a>）。这是因为考虑到不停机模式的异步性质，在线程命中断点到事件最终被 <small class="sc">GDB</small>处理的这段时间内，断点可能已经从目标中移除。因此， <small class="sc">GDB</small> 需要能够区分陷阱停机是由延迟的断点事件引起的（应忽略），还是由随机陷阱信号引起的（应报告给用户）。请注意，‘<samp class="samp">swbreak</samp>’ 功能意味着目标在软件断点触发时（如有必要，例如在x86架构上）负责调整程序计数器。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Packet-Acknowledgment.html">数据包确认</a>, 上一项： <a href="Notification-Packets.html">通知数据包</a>, 上一项： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的架构（使用 GDB 调试）</title>
+
+<meta name="description" content="Architectures In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Architectures In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Disassembly-In-Guile.html" rel="next" title="Disassembly In Guile"/>
+<link href="Lazy-Strings-In-Guile.html" rel="prev" title="Lazy Strings In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Architectures-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Disassembly-In-Guile.html" rel="next">Guile 中的反汇编</a>, 上一项： <a accesskey="p" href="Lazy-Strings-In-Guile.html" rel="prev">Guile 对惰性字符串的表示。</a>, 上级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Guile-representation-of-architectures"><span>23.4.3.21 Guile 对架构的表示<a class="copiable-link" href="#Guile-representation-of-architectures"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-architectures"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aarch_003e"></a>
+
+<p><small class="sc">GDB</small> 在其各种计算中使用特定于架构的参数和工件。架构由 <code class="code">&lt;gdb:arch&gt;</code> 类的实例表示。
+</p>
+<p>以下与架构相关的过程由
+<code class="code">(gdb)</code> 模块提供：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">是否为架构对象？</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-arch_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是类型为 <code class="code">&lt;gdb:arch&gt;</code>的对象。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-current_002darch"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">当前架构</strong><a class="copiable-link" href="#index-current_002darch"> ¶</a></span></dt>
+<dd><p>将当前架构作为 <code class="code">&lt;gdb:arch&gt;</code> 对象返回。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dname"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构名称</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dname"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的名称（字符串值）。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dcharset"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构字符集</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dcharset"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的目标字符集名称。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dwide_002dcharset"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构宽字符集</strong><a class="copiable-link" href="#index-arch_002dwide_002dcharset"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:arch&gt;</code> <var class="var">架构</var>的目标宽字符集名称。
+</p></dd></dl>
+
+<p>每个架构都提供了一组预定义类型，可通过以下函数获取。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dvoid_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 空类型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dvoid_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">void</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dchar_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 字符类型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dchar_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">char</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dshort_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 短整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dshort_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">short</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dint_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">int</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlong_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 长整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dlong_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">long</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dschar_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 有符号字符类型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dschar_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">signed char</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duchar_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 无符号字符类型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duchar_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">unsigned char</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dushort_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 无符号短整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dushort_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">unsigned short</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 无符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duint_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">unsigned int</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dulong_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 无符号长整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dulong_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">unsigned long</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dfloat_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 浮点型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dfloat_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">float</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002ddouble_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 双精度浮点型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002ddouble_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">double</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlongdouble_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 长双精度浮点型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dlongdouble_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">long double</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dbool_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 布尔型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dbool_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">bool</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dlonglong_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 长长整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dlonglong_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">long long</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dulonglong_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 无符号长长整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dulonglong_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">unsigned long long</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint8_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 8 位有符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dint8_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">int8</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint8_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 8 位无符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duint8_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">uint8</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint16_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 16 位有符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dint16_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">int16</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint16_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 16 位无符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duint16_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">uint16</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint32_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 32 位有符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dint32_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">int32</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint32_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 32 位无符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duint32_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">uint32</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002dint64_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 64 位有符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002dint64_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">int64</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-arch_002duint64_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">架构 - 64 位无符号整型</strong> <var class="def-var-arguments">架构</var><a class="copiable-link" href="#index-arch_002duint64_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> 对象，用于 <code class="code">uint64</code> 架构类型
+ <var class="var">架构</var>.
+</p></dd></dl>
+
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (type-name (arch-uchar-type (current-arch)))
+&#34;unsigned char&#34;
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Disassembly-In-Guile.html">Guile 中的反汇编</a>, 上一项： <a href="Lazy-Strings-In-Guile.html">Guile 对惰性字符串的表示。</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>远程调试（使用GDB进行调试）</title>
+
+<meta name="description" content="Remote Debugging (Debugging with GDB)"/>
+<meta name="keywords" content="Remote Debugging (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Configurations.html" rel="next" title="Configurations"/>
+<link href="Targets.html" rel="prev" title="Targets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Remote-Debugging">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Configurations.html" rel="next">特定配置信息</a>, 上一项： <a accesskey="p" href="Targets.html" rel="prev">指定调试目标</a>, 返回上一级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Debugging-Remote-Programs"><span>20 调试远程程序<a class="copiable-link" href="#Debugging-Remote-Programs"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-remote-debugging"></a>
+
+<p>如果您试图调试在无法以常规方式运行的机器上运行的程序，使用远程调试通常很有用。
+例如，您可能会在操作系统内核上使用远程调试，或者在没有足够强大的通用操作系统来运行功能齐全的调试器的小型系统上使用。
+<small class="sc">GDB</small> 某些配置的
+</p>
+<p>有特殊的串行或TCP/IP接口，以使这一功能适用于特定的调试目标。此外， <small class="sc">GDB</small> 附带一个通用的串行协议（特定于
+<small class="sc">GDB</small> ,但不特定于任何特定的目标系统），如果您编写远程存根（即在远程系统上运行以与 <small class="sc">GDB</small>进行通信的代码），就可以使用该协议。 <small class="sc">GDB</small>.
+</p>
+<p>在您的 <small class="sc">GDB</small>配置中可能还有其他远程目标；使用 <code class="code">help target</code> 来列出它们。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Connecting.html">连接到远程目标</a></li>
+<li><a accesskey="2" href="File-Transfer.html">将文件发送到远程系统</a></li>
+<li><a accesskey="3" href="Server.html">使用 <code class="code">gdbserver</code> 程序</a></li>
+<li><a accesskey="4" href="Remote-Configuration.html">远程配置</a></li>
+<li><a accesskey="5" href="Remote-Stub.html">实现远程存根</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

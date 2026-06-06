@@ -1,0 +1,429 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>设置断点（使用 GDB 调试）</title>
+
+<meta name="description" content="Set Breaks (Debugging with GDB)"/>
+<meta name="keywords" content="Set Breaks (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Set-Watchpoints.html" rel="next" title="Set Watchpoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Set-Breaks">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Set-Watchpoints.html" rel="next">设置观察点</a>，上一项： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Setting-Breakpoints"><span>5.1.1 设置断点<a class="copiable-link" href="#Setting-Breakpoints"> ¶</a></span></h4>
+
+
+<a class="index-entry-id" id="index-break"></a>
+<a class="index-entry-id" id="index-b-_0028break_0029"></a>
+<a class="index-entry-id" id="index-_0024bpnum_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-latest-breakpoint"></a>
+<p>使用以下命令设置断点 <code class="code">break</code> 命令（缩写为
+<code class="code">b</code>)。调试器便利变量 ‘<samp class="samp">$bpnum</samp>’ 记录了你最近设置的断点编号：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) b main
+断点 1 设置在 0x11c6：文件 zeoes.c，第 24 行。
+(gdb) p $bpnum
+$1 = 1
+</pre></div>
+
+<p>一个断点可能会映射到多个代码位置，例如内联函数、Ada 泛型、C<code class="t">++</code> 模板或重载函数名。
+<small class="sc">GDB</small> 然后在断点命令输出中指示代码位置的数量：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) b some_func
+断点 2 设置在 0x1179：some_func。（3 个位置）
+(gdb) p $bpnum
+$2 = 2
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_0024_005fhit_005fbpnum_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-_0024_005fhit_005flocno_002c-convenience-variable"></a>
+<p>当程序在断点处停止时，便利变量 ‘<samp class="samp">$_hit_bpnum</samp>’ 和 ‘<samp class="samp">$_hit_locno</samp>’ 分别设置为遇到的断点编号和断点的代码位置编号：
+</p><div class="example smallexample">
+<pre class="example-preformatted">线程 1 &#34;zeoes&#34; 命中断点 2.1，some_func () 在 zeoes.c:8
+8	  printf(&#34;some func\n&#34;);
+(gdb) p $_hit_bpnum
+$5 = 2
+(gdb) p $_hit_locno
+$6 = 1
+(gdb)
+</pre></div>
+
+<p>请注意，‘<samp class="samp">$_hit_bpnum</samp>’ 和 ‘<samp class="samp">$bpnum</samp>’ 并不等价：
+‘<samp class="samp">$_hit_bpnum</samp>’ 设置为断点编号 <b class="b">最后命中</b>, 而
+‘<samp class="samp">$bpnum</samp>’ 设置为断点编号 <b class="b">最后设置</b>。
+</p>
+
+<p>如果遇到的断点只有一个代码位置，‘<samp class="samp">$_hit_locno</samp>’ 设置为 1：
+</p><div class="example smallexample">
+<pre class="example-preformatted">断点 1，main (argc=1, argv=0x7fffffffe018) 在 zeoes.c:24
+24	  if (argc &gt; 1)
+(gdb) p $_hit_bpnum
+$3 = 1
+(gdb) p $_hit_locno
+$4 = 1
+(gdb)
+</pre></div>
+
+<p>‘<samp class="samp">$_hit_bpnum</samp>’ 和 ‘<samp class="samp">$_hit_locno</samp>’ 变量通常可用于断点命令列表中。（请参阅 <a class="pxref" href="Break-Commands.html">断点命令列表</a>）。例如，作为断点命令列表的一部分，你可以使用 <kbd class="kbd">disable $_hit_bpnum</kbd> 完全禁用遇到的断点，或使用
+<kbd class="kbd">disable $_hit_bpnum.$_hit_locno</kbd>禁用遇到的特定断点位置。
+如果断点只有一个位置，‘<samp class="samp">$_hit_locno</samp>’ 设置为 1，并且命令 <kbd class="kbd">disable $_hit_bpnum</kbd> 和
+<kbd class="kbd">disable $_hit_bpnum.$_hit_locno</kbd> 都将禁用该断点。
+</p>
+<p>你还可以定义别名，以便轻松禁用最后命中的位置或最后命中的断点：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias lld = disable $_hit_bpnum.$_hit_locno
+(gdb) alias lbd = disable $_hit_bpnum
+</pre></div>
+
+<dl class="table">
+<dt><code class="code">break <var class="var">locspec</var></code></dt>
+<dd><p>在程序中所有通过解析给定的 <var class="var">位置规范</var>得到的代码位置设置断点。  <var class="var">位置规范</var> 可以指定函数名、行号、指令地址等。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>，了解
+<var class="var">位置规范</var>的各种形式。断点将在程序执行断点代码位置地址处的指令之前停止程序。
+</p>
+<p>当使用允许符号重载的源语言（如 C）时，函数名可能引用多个符号，因此可能有多个断点位置。请参阅<code class="t">++</code>, 对于这种情况的讨论。 <a class="xref" href="Ambiguous-Expressions.html">模糊表达式</a>，了解有关这种情况的讨论。
+</p>
+<p>也可以插入一个断点，只有当特定线程（请参阅 <a class="pxref" href="Thread_002dSpecific-Breakpoints.html">特定线程的断点</a>）、特定子进程（请参阅 <a class="pxref" href="Inferior_002dSpecific-Breakpoints.html">特定子进程的断点</a>）或特定任务（请参阅 <a class="pxref" href="Ada-Tasks.html">Ada 任务扩展</a>）命中该断点时，程序才会停止。
+</p>
+</dd>
+<dt><code class="code">break</code></dt>
+<dd><p>如果不带任何参数调用， <code class="code">break</code> 将在所选栈帧中要执行的下一条指令处设置断点（请参阅 <a class="pxref" href="Stack.html">检查栈</a>）。在除最内层之外的任何所选帧中，这将使程序在控制权返回该帧时立即停止。这类似于在所选帧内部的帧中使用
+<code class="code">finish</code> 命令的效果 —— 除了 <code class="code">finish</code> 不会留下活动断点。如果你在最内层帧中不带参数使用
+<code class="code">break</code> ， <small class="sc">GDB</small> 将在下次到达当前位置时停止；这在循环内部可能很有用。
+</p>
+<p><small class="sc">GDB</small> 通常在恢复执行时会忽略断点，直到至少执行了一条指令。如果不这样做，你将无法在不禁用断点的情况下越过断点继续执行。此规则适用于程序停止时断点是否已经存在。
+</p>
+</dd>
+<dt><code class="code">break … if <var class="var">cond</var></code></dt>
+<dd><p>设置一个带有条件 <var class="var">条件</var>的断点；每次到达断点时评估表达式
+<var class="var">条件</var> ，只有当值非零（即条件 <var class="var">条件</var> 评估为真）时才停止。<samp class="samp">…</samp>’ 代表上述描述的可能参数之一（或无参数），用于指定在何处设置断点。请参阅 <a class="xref" href="Conditions.html">断点条件</a>，了解有关断点条件的更多信息。
+</p>
+<p>断点可能会映射到多个位置。如果断点条件 <var class="var">条件</var> 在某些但并非所有位置无效，则条件无效的位置将被禁用。例如， <small class="sc">GDB</small> 以下报告显示三个位置中的两个被禁用。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break func if a == 10
+警告：无法在位置 0x11ce 验证条件，已禁用：
+  当前上下文中没有符号 &#34;a&#34;。
+警告：无法在位置 0x11b6 验证条件，已禁用：
+  当前上下文中没有符号 &#34;a&#34;。
+断点 1 设置在 0x11b6：func。（3 个位置）
+</pre></div>
+
+<p>由于条件而被禁用的位置在输出中用大写字母表示 <code class="code">N</code> 在以下命令的输出中： <code class="code">info breakpoints</code>
+命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info breakpoints
+编号     类型           处置 启用 地址            位置
+1       断点         保留 y   &lt;MULTIPLE&gt;
+        仅当 a == 10 时停止
+1.1                         N*  0x00000000000011b6 在 ...
+1.2                         y   0x00000000000011c2 在 ...
+1.3                         N*  0x00000000000011ce 在 ...
+(*): 此位置的断点条件无效。
+</pre></div>
+
+<p>如果断点条件 <var class="var">条件</var> 在
+<em class="emph">所有</em> 断点位置的上下文中都无效， <small class="sc">GDB</small> 将拒绝定义该断点。例如，如果变量 <code class="code">foo</code> 是一个未定义的变量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break func if foo
+当前上下文中没有符号 &#34;foo&#34;。
+</pre></div>
+
+</dd>
+<dt><code class="code">break … -force-condition if <var class="var">cond</var></code></dt>
+<dd><p>可能存在这样的情况：条件 <var class="var">条件</var> 在当前所有位置都无效，但用户知道在未来某个位置它将有效；例如，由于加载了库。在这种情况下，通过使用 <code class="code">-force-condition</code> 关键字在 ‘<samp class="samp">if</samp>’ 之前，
+<small class="sc">GDB</small> 可以强制使用给定的条件表达式定义断点，而不是拒绝它。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break func -force-condition if foo
+警告：无法在位置 1 验证条件，已禁用：
+  当前上下文中没有符号 &#34;foo&#34;。
+警告：无法在位置 2 验证条件，已禁用：
+  当前上下文中没有符号 &#34;foo&#34;。
+警告：无法在位置 3 验证条件，已禁用：
+  当前上下文中没有符号 &#34;foo&#34;。
+断点 1 设置在 0x1158：test.c:18。（3 个位置）
+</pre></div>
+
+<p>这会导致原本要插入断点的所有当前位置都被禁用，如上面的示例所示。然而，如果存在条件有效的位置，
+<code class="code">-force-condition</code> 关键字将不起作用。
+</p>
+</dd>
+<dt><a id="index-tbreak"></a><span><code class="code">tbreak <var class="var">args</var></code><a class="copiable-link" href="#index-tbreak"> ¶</a></span></dt>
+<dd><p>设置一个仅在一次停止时启用的断点。 <var class="var">参数</var> 与 <code class="code">break</code> 命令的参数相同，断点的设置方式也相同，但程序第一次在该断点处停止后，该断点将自动删除。请参阅 <a class="xref" href="Disabling.html">禁用断点</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-hardware-breakpoints"></a>
+<a id="index-hbreak"></a><span><code class="code">hbreak <var class="var">args</var></code><a class="copiable-link" href="#index-hbreak"> ¶</a></span></dt>
+<dd><p>设置一个硬件辅助断点。 <var class="var">参数</var> 与
+<code class="code">break</code> 命令的参数相同，断点的设置方式也相同，但该断点需要硬件支持，某些目标硬件可能不具备此支持。其主要用途是 EPROM/ROM 代码调试，这样你可以在不更改指令的情况下在某条指令处设置断点。这可以与 SPARClite DSU 和大多数基于 x86 的目标提供的新陷阱生成功能一起使用。当程序访问分配给调试寄存器的某些数据或指令地址时，这些目标将生成陷阱。然而，硬件断点寄存器只能设置有限数量的断点。例如，在 DSU 上，一次只能设置两个数据断点，并且
+<small class="sc">GDB</small> 如果使用的断点超过两个，将拒绝此命令。在设置新的硬件断点之前，删除或禁用未使用的硬件断点（请参阅 <a class="pxref" href="Disabling.html">禁用断点</a>）。
+请参阅 <a class="xref" href="Conditions.html">断点条件</a>。
+对于远程目标，你可以限制 <small class="sc">GDB</small> 将使用的硬件断点数量，请参阅 <a class="ref" href="Remote-Configuration.html#set-remote-hardware_002dbreakpoint_002dlimit">set remote hardware-breakpoint-limit</a>。
+</p>
+</dd>
+<dt><a id="index-thbreak"></a><span><code class="code">thbreak <var class="var">args</var></code><a class="copiable-link" href="#index-thbreak"> ¶</a></span></dt>
+<dd><p>设置一个仅在一次停止时启用的硬件辅助断点。 <var class="var">参数</var>
+与 <code class="code">hbreak</code> 命令的参数相同，断点的设置方式也相同。然而，与 <code class="code">tbreak</code> 命令一样，程序第一次在该断点处停止后，该断点将自动删除。此外，与 <code class="code">hbreak</code>
+命令一样，该断点需要硬件支持，某些目标硬件可能不具备此支持。请参阅 <a class="xref" href="Disabling.html">禁用断点</a>。
+另请参阅 <a class="ref" href="Conditions.html">断点条件</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-regular-expression"></a>
+<a class="index-entry-id" id="index-breakpoints-at-functions-matching-a-regexp"></a>
+<a class="index-entry-id" id="index-set-breakpoints-in-many-functions"></a>
+<a id="index-rbreak"></a><span><code class="code">rbreak <var class="var">regex</var></code><a class="copiable-link" href="#index-rbreak"> ¶</a></span></dt>
+<dd><p>在所有与正则表达式
+<var class="var">正则表达式</var>匹配的函数上设置断点。此命令在所有匹配项上设置无条件断点，并打印出它设置的所有断点的列表。一旦设置了这些断点，它们的处理方式与使用 <code class="code">break</code> 命令设置的断点相同。你可以像处理其他任何断点一样删除、禁用它们或使它们成为条件断点。
+</p>
+<p>在使用不同语言的程序中， <small class="sc">GDB</small> 根据 ‘<samp class="samp">set language</samp>’ 的值选择打印它设置的所有断点列表的语法：使用 ‘<samp class="samp">set language auto</samp>’（请参阅 <a class="ref" href="Automatically.html">自动设置语言</a>）意味着使用断点函数的语言，其他值意味着使用手动指定的语言（请参阅 <a class="ref" href="Manually.html">手动设置语言</a>）。
+</p>
+<p>正则表达式的语法是与 <samp class="file">grep</samp>等工具使用的标准语法。请注意，这与 shell 使用的语法不同，例如 <code class="code">foo*</code> 匹配所有包含一个 <code class="code">fo</code> 后跟零个或多个 <code class="code">o</code>的函数。你提供的正则表达式前后有隐式的
+<code class="code">.*</code> ，因此要仅匹配以 <code class="code">foo</code>开头的函数，请使用 <code class="code">^foo</code>。
+</p>
+<a class="index-entry-id" id="index-non_002dmember-C_002b_002b-functions_002c-set-breakpoint-in"></a>
+<p>在调试 C<code class="t">++</code> 程序时， <code class="code">rbreak</code> 对于在不属于任何特殊类的重载函数上设置断点很有用。
+</p>
+<a class="index-entry-id" id="index-set-breakpoints-on-all-functions"></a>
+<p>该 <code class="code">rbreak</code> 命令可用于在
+<strong class="strong">所有</strong> 程序中的函数上设置断点，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) rbreak .
+</pre></div>
+
+</dd>
+<dt><code class="code">rbreak <var class="var">file</var>:<var class="var">regex</var></code></dt>
+<dd><p>如果 <code class="code">rbreak</code> 在调用时带有文件名限定符，它会将搜索与给定正则表达式匹配的函数的范围限制在指定的 <var class="var">文件</var>中。例如，这可用于在给定文件中的每个函数上设置断点：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) rbreak file.c:.
+</pre></div>
+
+<p>分隔文件名限定符和正则表达式的冒号可以选择性地用空格包围。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_0024_005f-and-info-breakpoints"></a>
+<a id="index-info-breakpoints"></a><span><code class="code">info breakpoints <span class="r">[</span><var class="var">list</var>…<span class="r">]</span></code><a class="copiable-link" href="#index-info-breakpoints"> ¶</a></span></dt>
+<dt><code class="code">info break <span class="r">[</span><var class="var">list</var>…<span class="r">]</span></code></dt>
+<dd><p>打印所有已设置且未删除的断点、观察点、跟踪点和捕获点的表格。可选参数 <var class="var">n</var> 表示仅打印指定断点（或观察点、跟踪点或捕获点）的信息。
+对于每个断点，将打印以下列：
+</p>
+<dl class="table">
+<dt><em class="emph">断点编号</em></dt>
+<dt><em class="emph">类型</em></dt>
+<dd><p>断点、观察点、跟踪点或捕获点。
+</p></dd>
+<dt><em class="emph">处置方式</em></dt>
+<dd><p>断点命中时是否标记为禁用或删除。
+</p></dd>
+<dt><em class="emph">启用或禁用</em></dt>
+<dd><p>启用的断点用 ‘<samp class="samp">y</samp>’ 标记。‘<samp class="samp">n</samp>’ 标记未启用的断点。
+</p></dd>
+<dt><em class="emph">地址</em></dt>
+<dd><p>断点在程序中的位置，以内存地址表示。对于地址尚未确定的待决断点，此字段将包含 ‘<samp class="samp">&lt;PENDING&gt;</samp>’。此类断点在加载包含断点所引用的符号或行的共享库之前不会触发。详情请见下文。具有多个位置的断点在此字段中将有 ‘<samp class="samp">&lt;MULTIPLE&gt;</samp>’ —— 详情请见下文。
+</p></dd>
+<dt><em class="emph">位置</em></dt>
+<dd><p>断点在程序源代码中的位置，以文件和行号表示。对于待决断点，传递给断点命令的原始字符串将被列出，因为在将来加载适当的共享库之前无法解析它。
+</p></dd>
+</dl>
+
+<p>如果断点是有条件的，有两种评估模式：“主机”和“目标”。如果模式是“主机”，则断点条件评估由
+<small class="sc">GDB</small> 在主机端进行。如果是“目标”，则条件由目标进行评估。 <code class="code">info break</code> 命令会在受影响的断点下面的行显示条件，以及括号内的条件评估模式。
+</p>
+<p>如果有断点命令，则会在后面列出。待决断点可以指定条件。在加载允许待决断点解析为有效位置的共享库之前，不会解析条件的有效性。
+</p>
+<p><code class="code">info break</code> 使用断点编号 <var class="var">n</var> 作为参数仅列出该断点。便利变量 <code class="code">$_</code> 和 <code class="code">x</code> 命令的默认检查地址将设置为列出的最后一个断点的地址（请参阅 <a class="pxref" href="Memory.html">检查内存</a>）。
+</p>
+<p><code class="code">info break</code> 会显示断点被命中的次数。这与
+<code class="code">ignore</code> 命令结合使用特别有用。你可以忽略大量的断点命中，查看断点信息以了解断点被命中的次数，然后再次运行，忽略比该次数少一次的命中。这将使你快速到达该断点的最后一次命中。
+</p>
+<p>对于启用计数（xref）大于 1 的断点，
+<code class="code">info break</code> 也会显示该计数。
+</p>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> 允许你在程序的同一位置设置任意数量的断点。这并非毫无意义。当断点是有条件的时，这甚至很有用（请参阅 <a class="pxref" href="Conditions.html">断点条件</a>）。
+</p>
+<a class="index-entry-id" id="index-multiple-locations_002c-breakpoints"></a>
+<a class="index-entry-id" id="index-breakpoints_002c-multiple-locations"></a>
+<p>单个逻辑断点可能会在程序的多个代码位置设置。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>，了解示例。
+</p>
+<p>具有多个代码位置的断点在断点表中使用多行显示 —— 一行标题行，后面跟着每个代码位置的一行。标题行的地址列中有 ‘<samp class="samp">&lt;MULTIPLE&gt;</samp>’。每个代码位置行包含其代码位置的实际地址、源文件、源行和函数。代码位置的编号列形式为
+<var class="var">断点编号</var>。<var class="var">位置编号</var>。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编号     类型           处置 启用 地址    位置
+1       断点         保留 y    &lt;MULTIPLE&gt;
+        仅当 i==1 时停止
+        断点已命中 1 次
+1.1                         y    0x080486a2 在 void foo&lt;int&gt;() 于 t.cc:8
+1.2                         y    0x080486ca 在 void foo&lt;double&gt;() 于 t.cc:8
+</pre></div>
+
+<p>你不能从断点中删除单个位置。但是，每个位置可以通过传递
+<var class="var">断点编号</var>。<var class="var">位置编号</var> 作为参数给
+<code class="code">enable</code> 和 <code class="code">disable</code> 命令来单独启用或禁用。也可以
+<code class="code">enable</code> 和 <code class="code">disable</code> 一个范围的 <var class="var">位置编号</var>
+位置，使用一个 <var class="var">断点编号</var> 和两个 <var class="var">位置编号</var>，按升序排列，用连字符分隔，如
+<kbd class="kbd"><var class="var">断点编号</var>。<var class="var">位置编号 1</var>-<var class="var">位置编号 2</var></kbd>, 在这种情况下， <small class="sc">GDB</small> 将作用于该范围内的所有位置（包括两端）。禁用或启用父断点（请参阅 <a class="pxref" href="Disabling.html">禁用断点</a>）会影响属于该断点的所有位置。
+</p>
+<p>父断点被禁用时仍启用的位置不会触发中断，在 <code class="code">y-</code> 列中用 <code class="code">Enb</code>
+表示。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info breakpoints
+编号     类型           处置 启用 地址            位置
+1       断点         保留 n   &lt;MULTIPLE&gt;
+1.1                         y-  0x00000000000011b6 在 ...
+1.2                         y-  0x00000000000011c2 在 ...
+1.3                         n   0x00000000000011ce 在 ...
+</pre></div>
+
+<a class="index-entry-id" id="index-pending-breakpoints"></a>
+<p>在共享库中设置断点是很常见的。共享库可以在程序执行时显式加载和卸载，并且可能会重复进行。为了支持这种用例， <small class="sc">GDB</small> 每当加载或卸载任何共享库时，都会更新断点位置。通常，你会在调试会话开始时，当库尚未加载且库中的符号不可用时，在共享库中设置断点。当你尝试设置断点时， <small class="sc">GDB</small> 会询问你是否要设置一个所谓的 <em class="dfn">待决断点</em> —— 地址尚未解析的断点。
+</p>
+<p>程序运行后，每当加载新的共享库时，
+<small class="sc">GDB</small> 会重新评估所有断点。当新加载的共享库包含某个待决断点所引用的符号或行时，该断点将被解析并成为普通断点。当库被卸载时，所有引用其符号或源行的断点将再次变为待决断点。
+</p>
+<p>这种逻辑也适用于具有多个位置的断点。例如，如果你在一个 C<code class="t">++</code> 模板函数中有一个断点，并且新加载的共享库有该模板的一个实例化，那么该断点的位置列表中将添加一个新位置。
+</p>
+<p>除了地址未解析之外，待决断点与普通断点没有区别。你可以设置条件或命令，启用和禁用它们，并执行其他断点操作。
+</p>
+<p><small class="sc">GDB</small> 提供了一些额外的命令，用于控制当 ‘<samp class="samp">break</samp>’ 命令无法将位置规范解析到程序中的任何代码位置时的行为（请参阅 <a class="pxref" href="Location-Specifications.html">位置规范</a>）：
+</p>
+<a class="index-entry-id" id="index-set-breakpoint-pending"></a>
+<a class="index-entry-id" id="index-show-breakpoint-pending"></a>
+<dl class="table">
+<dt><code class="code">set breakpoint pending auto</code></dt>
+<dd><p>这是默认行为。当 <small class="sc">GDB</small> 无法解析位置规范时，它会询问你是否应该创建一个待决断点。
+</p>
+</dd>
+<dt><code class="code">set breakpoint pending on</code></dt>
+<dd><p>这表示当 <small class="sc">GDB</small> 无法解析位置规范时，它应该在不确认的情况下创建一个待决断点。
+</p>
+</dd>
+<dt><code class="code">set breakpoint pending off</code></dt>
+<dd><p>这表示不创建待决断点。如果
+<small class="sc">GDB</small> 无法解析位置规范，它将以错误终止断点创建。此设置不会影响之前创建的任何待决断点。
+</p>
+</dd>
+<dt><code class="code">show breakpoint pending</code></dt>
+<dd><p>显示当前创建待决断点的行为设置。
+</p></dd>
+</dl>
+
+<p>上述设置仅影响 <code class="code">break</code> 命令及其变体。一旦设置了断点，随着共享库的加载和卸载，它将自动更新。
+</p>
+<a class="index-entry-id" id="index-automatic-hardware-breakpoints"></a>
+<p>对于某些目标， <small class="sc">GDB</small> 可以根据断点地址是只读还是读写，自动决定使用硬件还是软件断点。这适用于使用 <code class="code">break</code> 命令设置的断点，以及由 <code class="code">next</code> 和 <code class="code">finish</code>等命令设置的内部断点。对于使用 <code class="code">hbreak</code>, <small class="sc">GDB</small> 将始终使用硬件断点。
+</p>
+<p>你可以使用以下命令控制这种自动行为：
+</p>
+<a class="index-entry-id" id="index-set-breakpoint-auto_002dhw"></a>
+<a class="index-entry-id" id="index-show-breakpoint-auto_002dhw"></a>
+<dl class="table">
+<dt><code class="code">set breakpoint auto-hw on</code></dt>
+<dd><p>这是默认行为。当 <small class="sc">GDB</small> 设置断点时，它将尝试使用目标内存映射来决定使用软件还是硬件断点。
+</p>
+</dd>
+<dt><code class="code">set breakpoint auto-hw off</code></dt>
+<dd><p>这表示 <small class="sc">GDB</small> 不应自动选择断点类型。如果目标提供了内存映射， <small class="sc">GDB</small> 在尝试在只读地址设置软件断点时会发出警告。
+</p></dd>
+</dl>
+
+<p><small class="sc">GDB</small> 通常通过将断点地址处的程序代码替换为一条特殊指令来实现断点，当执行该指令时，将控制权交给调试器。默认情况下，只有在程序恢复执行时才会修改程序代码。一旦程序停止， <small class="sc">GDB</small> 将恢复原始指令。这种行为可以防止在 GDB 突然断开连接时，目标中仍插入有断点。然而，对于慢速远程目标，插入和移除断点会降低性能。可以使用以下命令控制这种行为：
+</p>
+<a class="index-entry-id" id="index-set-breakpoint-always_002dinserted"></a>
+<a class="index-entry-id" id="index-show-breakpoint-always_002dinserted"></a>
+<dl class="table">
+<dt><code class="code">set breakpoint always-inserted off</code></dt>
+<dd><p>所有断点，包括用户新添加的断点，仅在目标恢复执行时插入到目标中。目标停止时，所有断点将从目标中移除。这是默认模式。
+</p>
+</dd>
+<dt><code class="code">set breakpoint always-inserted on</code></dt>
+<dd><p>导致所有断点始终插入到目标中。如果用户添加新的断点或更改现有断点，目标中的断点将立即更新。只有当断点本身被删除时，才会从目标中移除断点。
+</p></dd>
+</dl>
+
+<p><small class="sc">GDB</small> 通过在断点触发时评估这些条件来处理条件断点。如果条件为真，则被调试的进程停止，否则进程继续执行。
+</p>
+<p>如果目标支持在其端评估条件， <small class="sc">GDB</small> 可以将断点及其条件下载到目标中。
+</p>
+<p>可以通过以下命令控制此功能：
+</p>
+<a class="index-entry-id" id="index-set-breakpoint-condition_002devaluation"></a>
+<a class="index-entry-id" id="index-show-breakpoint-condition_002devaluation"></a>
+<dl class="table">
+<dt><code class="code">set breakpoint condition-evaluation host</code></dt>
+<dd><p>此选项命令 <small class="sc">GDB</small> 在主机端评估断点条件。无条件断点将发送到目标，目标接收触发并将其报告回 GDB 进行条件评估。这是标准评估模式。
+</p>
+</dd>
+<dt><code class="code">set breakpoint condition-evaluation target</code></dt>
+<dd><p>此选项命令 <small class="sc">GDB</small> 在插入断点条件时将其下载到目标中。目标负责评估条件表达式，并在条件为真时将断点停止事件报告回 <small class="sc">GDB</small> 。由于目标端评估的限制，某些条件无法在那里评估，例如依赖于仅主机知道的本地数据的条件。示例包括涉及便利变量的条件表达式、代理表达式解析器无法处理的复杂类型以及太长而无法发送到目标的表达式，特别是当目标是远程系统时。在这些情况下，条件将由 <small class="sc">GDB</small>评估。
+</p>
+</dd>
+<dt><code class="code">set breakpoint condition-evaluation auto</code></dt>
+<dd><p>这是默认模式。如果目标支持在其端评估断点条件， <small class="sc">GDB</small> 将断点条件下载到目标（受前面提到的限制）。如果目标不支持断点条件评估，则 <small class="sc">GDB</small> 将回退到在主机端评估所有这些条件。
+</p></dd>
+</dl>
+
+
+<a class="index-entry-id" id="index-negative-breakpoint-numbers"></a>
+<a class="index-entry-id" id="index-internal-gdb-breakpoints"></a>
+<p><small class="sc">GDB</small> 本身有时会为特殊目的在程序中设置断点，例如正确处理 <code class="code">longjmp</code> （在 C 程序中）。这些内部断点被分配负编号，从 <code class="code">-1</code>开始；‘<samp class="samp">info breakpoints</samp>’ 不会显示它们。你可以使用 <small class="sc">GDB</small> 维护命令 ‘<samp class="samp">maint info breakpoints</samp>’（请参阅 <a class="pxref" href="Maintenance-Commands.html#maint-info-breakpoints">maint info breakpoints</a>）查看这些断点。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Set-Watchpoints.html">设置观察点</a>, 上一项： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

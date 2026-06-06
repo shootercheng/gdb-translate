@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自定义调试信息（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Custom Debug Info (Debugging with GDB)"/>
+<meta name="keywords" content="Custom Debug Info (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="JIT-Interface.html" rel="up" title="JIT Interface"/>
+<link href="Unregistering-Code.html" rel="prev" title="Unregistering Code"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Custom-Debug-Info">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="p" href="Unregistering-Code.html" rel="prev">注销代码</a>, 上一级： <a accesskey="u" href="JIT-Interface.html" rel="up">JIT 编译接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Custom-Debug-Info-1"><span>30.4 自定义调试信息<a class="copiable-link" href="#Custom-Debug-Info-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-custom-JIT-debug-info"></a>
+<a class="index-entry-id" id="index-JIT-debug-info-reader"></a>
+
+<p>在平台原生文件格式（如 ELF 或 COFF）中生成调试信息对于 JIT 编译器来说可能有些大材小用；特别是如果所有调试信息仅用于显示有意义的回溯信息。这个问题可以通过让 JIT 编写者决定一种调试信息格式，并提供一个解析 JIT 编译器生成的调试信息的读取器来解决。本节简要概述了编写这样一个解析器的方法。更具体的细节可以在源文件中找到
+<samp class="file">gdb/jit-reader.in</samp>，它也作为头文件安装在
+<samp class="file"><var class="var">包含目录</var>/gdb/jit-reader.h</samp> 以便于包含。
+</p>
+<p>读取器被实现为一个共享对象（因此在不允许在运行时加载共享对象的平台上，此功能不可用）。有两个 <small class="sc">GDB</small> 命令 <code class="code">jit-reader-load</code> 和
+<code class="code">jit-reader-unload</code> 被提供，用于从预配置的目录加载和卸载读取器。一旦加载，共享对象就会用于解析 JIT 编译器发出的调试信息。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Using-JIT-Debug-Info-Readers.html">使用 JIT 调试信息读取器</a></li>
+<li><a accesskey="2" href="Writing-JIT-Debug-Info-Readers.html">编写 JIT 调试信息读取器</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

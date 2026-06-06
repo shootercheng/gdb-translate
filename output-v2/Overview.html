@@ -1,0 +1,177 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>概述 (使用 GDB 调试)</title>
+
+<meta name="description" content="Overview (Debugging with GDB)"/>
+<meta name="keywords" content="Overview (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Standard-Replies.html" rel="next" title="Standard Replies"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Overview">
+<div class="nav-panel">
+<p>
+下一项: <a accesskey="n" href="Standard-Replies.html" rel="next">标准回复</a>, 上一项: <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Overview-1"><span>E.1 概述<a class="copiable-link" href="#Overview-1"> ¶</a></span></h3>
+
+<p>有时您可能需要了解有关该
+协议的某些信息 — 例如，如果到目标
+机器只有一个串行端口，您可能希望程序在识别出针对 <small class="sc">GDB</small>.
+</p>
+<p>在下面的示例中，‘<samp class="samp">-&gt;</samp>’ 和 ‘<samp class="samp">&lt;-</samp>’ 分别用于表示
+发送和接收的数据。
+</p>
+<a class="index-entry-id" id="index-protocol_002c-gdb-remote-serial"></a>
+<a class="index-entry-id" id="index-serial-protocol_002c-gdb-remote"></a>
+<a class="index-entry-id" id="index-remote-serial-protocol"></a>
+<p>所有 <small class="sc">GDB</small> 命令和响应（除了确认
+和通知，见 <a class="ref" href="Notification-Packets.html">通知数据包</a>) 作为一个
+<var class="var">数据包</var>. 一个 <var class="var">数据包</var> 以字符
+‘<samp class="samp">$</samp>’ 开始，实际的 <var class="var">数据包数据</var>, 以及终止字符
+‘<samp class="samp">#</samp>’ 后跟一个两位的 <var class="var">校验和</var>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">$</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+</pre></div>
+
+<a class="index-entry-id" id="index-checksum_002c-for-gdb-remote"></a>
+<p>两位的 <var class="var">校验和</var> 是通过对前导 ‘<samp class="samp">$</samp>’ 和尾随 ‘<samp class="samp">#</samp>’ 之间的所有字符进行模 256 求和计算得出的（一个
+八位无符号校验和）。
+</p>
+<p>实现者应注意，在 <small class="sc">GDB</small> 5.0 之前，协议
+规范还包括一个可选的两位 <var class="var">序列号</var>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><code class="code">$</code><var class="var">序列号</var><code class="code">:</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+</pre></div>
+
+<a class="index-entry-id" id="index-sequence_002did_002c-for-gdb-remote"></a>
+<p>那个 <var class="var">序列号</var> 被附加到确认信息中。  <small class="sc">GDB</small>
+从未输出过 <var class="var">序列号</var>。自 <small class="sc">GDB</small> 5.0 以来添加的处理数据包的存根不得接受 <var class="var">序列号</var>.
+</p>
+<p>当主机或目标机器接收到一个数据包时，预期的第一个
+响应是确认信息：要么是 ‘<samp class="samp">+</samp>’（表示数据包已正确接收），要么是 ‘<samp class="samp">-</samp>’（请求
+重新传输）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; <code class="code">$</code><var class="var">数据包数据</var><code class="code">#</code><var class="var">校验和</var>
+&lt;- <code class="code">+</code>
+</pre></div>
+
+<p>‘<samp class="samp">+</samp>’/‘<samp class="samp">-</samp>’ 确认信息在连接建立后可以禁用。
+请参阅 <a class="xref" href="Packet-Acknowledgment.html">数据包确认</a>, 了解详细信息。
+</p>
+<p>主机（<small class="sc">GDB</small>) 发送 <var class="var">命令</var>，目标（包含在您程序中的调试存根）发送一个 <var class="var">响应</var>. 对于单步和继续 <var class="var">命令</var>，只有在操作完成且目标再次停止所有
+附加进程中的所有线程时才会发送响应。这是默认的全停止模式
+行为，但远程协议也支持 <small class="sc">GDB</small>的非停止
+执行模式；请参阅 <a class="ref" href="Remote-Non_002dStop.html">远程协议对非停止模式的支持</a>, 了解详细信息。
+</p>
+<p><var class="var">数据包数据</var> 由一系列字符组成，但不包括 ‘<samp class="samp">#</samp>’ 和 ‘<samp class="samp">$</samp>’（有关其他例外情况，请参阅 ‘<samp class="samp">X</samp>’ 数据包）。
+</p>
+<a class="index-entry-id" id="index-remote-protocol_002c-field-separator"></a>
+<p>数据包内的字段应使用 ‘<samp class="samp">,</samp>’ ‘<samp class="samp">;</samp>’ 或
+‘<samp class="samp">:</samp>’。除非另有说明，所有数字均以
+<small class="sc">HEX</small> 表示，前导零被省略。
+</p>
+<p>实现者应注意，在 <small class="sc">GDB</small> 5.0 之前，字符
+‘<samp class="samp">:</samp>’ 不能作为数据包中的第三个字符出现（因为它
+可能会与 <var class="var">序列号</var>）冲突。
+</p>
+<a class="index-entry-id" id="index-remote-protocol_002c-binary-data"></a>
+<a class="anchor" id="Binary-Data"></a><p>大多数数据包中的二进制数据以每字节二进制数据用两个十六进制
+数字进行编码。这使得传统的远程
+协议能够在仅支持七位干净的连接上工作。
+一些最近设计的数据包假设是八位干净的
+连接，并使用更高效的编码来发送和接收
+二进制数据。
+</p>
+<p>二进制数据表示使用 <code class="code">7d</code> (<small class="sc">ASCII</small> ‘<samp class="samp">}</samp>’)
+作为转义字符。任何转义字节都作为转义
+字符后跟与 <code class="code">0x20</code>进行异或运算后的原始字符进行传输。
+例如，字节 <code class="code">0x7d</code> 将作为两个
+字节 <code class="code">0x7d 0x5d</code>进行传输。字节 <code class="code">0x23</code> (<small class="sc">ASCII</small> ‘<samp class="samp">#</samp>’),
+<code class="code">0x24</code> (<small class="sc">ASCII</small> ‘<samp class="samp">$</samp>’), 和 <code class="code">0x7d</code> (<small class="sc">ASCII</small>
+‘<samp class="samp">}</samp>’) 必须始终进行转义。存根发送的响应
+也必须对 <code class="code">0x2a</code> (<small class="sc">ASCII</small> ‘<samp class="samp">*</samp>’) 进行转义，以免
+它被解释为游程编码序列（接下来描述）的开始。
+</p>
+<p>响应 <var class="var">数据</var> 可以进行游程编码以节省空间。
+游程编码用重复字符的一个实例，后跟一个 ‘<samp class="samp">*</samp>’ 和一个
+重复计数来替换连续相同字符的序列。重复计数本身也进行编码，以避免
+ <var class="var">数据</var>: 值为 <var class="var">n</var> 被发送为
+<code class="code"><var class="var">n</var>+29</code>. 对于大于或等于 3 的重复计数，这会产生一个可打印的
+字符，例如重复计数为 3 时的空格（ <small class="sc">ASCII</small> 代码 32）。（这是因为游程编码在计数为 3 或更多时开始节省空间。）因此，例如，
+‘<small class="sc">ASCII</small>
+0*<samp class="samp">’ 是 “0000” 的游程编码：‘ </samp>*<samp class="samp">’ 后面的空格字符
+表示重复前导</samp>更多次。 <code class="code">0</code> <code class="code">32 - 29 = 3</code><!-- /@w --> 更多次。
+</p>
+<p>可打印字符 ‘<samp class="samp">#</samp>’ 和 ‘<samp class="samp">$</samp>’ 或数值大于 126 的字符不得使用。六个重复的序列（‘<samp class="samp">#</samp>’) 或
+七个重复的序列（‘<samp class="samp">$</samp>’) 可以仅使用重复计数为
+五（‘<samp class="samp">&#34;</samp>’）进行展开。例如，‘<samp class="samp">00000000</samp>’ 可以编码为
+‘<samp class="samp">0*&#34;00</samp>’。
+</p>
+<p>请参阅 <a class="xref" href="Standard-Replies.html">标准回复</a>, 了解标准错误响应以及如何
+响应表示命令不被支持。
+</p>
+<p>在描述数据包（命令和响应）时，每个描述都有一个
+模板，显示整体语法，然后是对该
+数据包含义的解释。为了清晰起见，我们在一些模板中包含了空格；这些不是数据包语法的一部分。没有 <small class="sc">GDB</small>
+数据包使用空格来分隔其组件。例如，像 ‘<samp class="samp">foo <var class="var">bar</var> <var class="var">baz</var></samp>’ 这样的模板描述了一个以三个 ASCII 字节 ‘<samp class="samp">foo</samp>’ 开头的数据包，后跟一个
+<var class="var">bar</var>, 紧接着是一个 <var class="var">baz</var>.  <small class="sc">GDB</small> 在 ‘<samp class="samp">foo</samp>’ 和 <var class="var">bar</var>之间，或者在 <var class="var">bar</var> 和 <var class="var">baz</var>之间不发送空格字符。
+</p>
+<p>我们将数据包的可选部分放在 [方括号] 中；
+例如，像 ‘<samp class="samp">c <span class="r">[</span><var class="var">addr</var><span class="r">]</span></samp>’ 这样的模板描述了一个以单个 ASCII 字符 ‘<samp class="samp">c</samp>’ 开头的数据包，可能
+后跟一个 <var class="var">addr</var>.
+</p>
+<p>至少，存根需要支持 ‘<samp class="samp">?</samp>’ 命令以告知 <small class="sc">GDB</small> 停止的原因，‘<samp class="samp">g</samp>’ 和 ‘<samp class="samp">G</samp>’
+用于寄存器访问的命令，以及 ‘<samp class="samp">m</samp>’ 和 ‘<samp class="samp">M</samp>’ 用于内存访问的命令。仅控制单线程目标的存根
+可以使用 ‘<samp class="samp">c</samp>’（继续）命令实现运行控制，如果
+目标架构支持硬件辅助单步执行，则使用 ‘<samp class="samp">s</samp>’（单步）命令。支持多线程
+目标的存根应支持 ‘<samp class="samp">vCont</samp>’ 命令。所有其他命令
+都是可选的。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项: <a href="Standard-Replies.html">标准回复</a>, 上一项: <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

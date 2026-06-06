@@ -1,0 +1,732 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 数据操作（使用 GDB 调试）</title>
+
+<meta name="description" content="GDB/MI Data Manipulation (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Data Manipulation (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Tracepoint-Commands.html" rel="next" title="GDB/MI Tracepoint Commands"/>
+<link href="GDB_002fMI-Variable-Objects.html" rel="prev" title="GDB/MI Variable Objects"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Data-Manipulation">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Tracepoint-Commands.html" rel="next"><small class="sc">GDB/MI</small> </a>, 上一项： <a accesskey="p" href="GDB_002fMI-Variable-Objects.html" rel="prev"><small class="sc">GDB/MI</small> 变量对象</a>, 上一级： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Data-Manipulation"><span>27.16 <small class="sc">GDB/MI</small> 数据操作<a class="copiable-link" href="#gdb_002fmi-Data-Manipulation"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-data-manipulation_002c-in-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-data-manipulation"></a>
+<p>本节描述了 <small class="sc">GDB/MI</small> 用于操作数据的命令：检查内存和寄存器、计算表达式等。
+</p>
+<p>有关可寻址内存单元的详细信息，请参阅 <a class="pxref" href="Memory.html#addressable-memory-unit">可寻址内存单元</a>
+</p>
+
+<a class="index-entry-id" id="index-_002ddata_002ddisassemble"></a>
+<h4 class="subheading" id="The-_002ddata_002ddisassemble-Command"><span>该 <code class="code">-data-disassemble</code> <a class="copiable-link" href="#The-_002ddata_002ddisassemble-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-64"><span><a class="copiable-link" href="#Synopsis-64"> </a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-disassemble
+  ( -s <var class="var"></var> -e <var class="var">结束地址</var>
+  | -a <var class="var">地址</var>
+  | -f <var class="var">文件名</var> -l <var class="var">行号</var> [ -n <var class="var">行数</var>  <var class="var"></var> ]
+  [ --source ]
+  [ -- <var class="var">模式</var> ]
+</pre></div>
+
+<p>
+</p>
+<dl class="table">
+<dt>‘<samp class="samp"><var class="var"></var></samp>’</dt>
+<dd><p> <code class="code">$pc</code>
+</p></dd>
+<dt><samp class="samp"><var class="var">结束地址</var></samp></dt>
+<dd><p>
+</p></dd>
+<dt><samp class="samp"><var class="var"></var></samp></dt>
+<dd><p>是要反汇编的函数内的任意地址（或函数名称）。如果指定了地址，将反汇编围绕该地址的整个函数。如果指定了名称，将反汇编具有该名称的整个函数。
+</p></dd>
+<dt><samp class="samp"><var class="var"></var></samp></dt>
+<dd><p>
+</p></dd>
+<dt><samp class="samp"><var class="var">行号</var></samp>’</dt>
+<dd><p>是要围绕其进行反汇编的行号
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">行数</var></samp>’</dt>
+<dd><p>是要生成的反汇编行数。如果为 -1，在没有指定 <var class="var">结束地址</var> 的情况下，将反汇编整个函数。如果 <var class="var">结束地址</var> 指定为非零值，并且
+<var class="var">行数</var> 小于
+<var class="var">起始地址</var> 和 <var class="var">结束地址</var>之间的反汇编行数，仅显示 <var class="var">行数</var> 行；如果 <var class="var">行数</var> 大于
+<var class="var">起始地址</var> 和 <var class="var">结束地址</var>之间的行数，仅显示到 <var class="var">结束地址</var>
+的行。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">操作码模式</var></samp>’</dt>
+<dd><p>只能与 <var class="var">模式</var> 0 一起使用，并且应该是以下之一：
+</p><dl class="table">
+<dt>‘<samp class="samp">无</samp>’</dt>
+<dd><p>结果中不包含操作码信息。
+</p>
+</dd>
+<dt>‘<samp class="samp">字节</samp>’</dt>
+<dd><p>操作码将包含在结果中，操作码将按照以下格式进行格式化： <kbd class="kbd">反汇编 /b</kbd>。
+</p>
+</dd>
+<dt>‘<samp class="samp">显示</samp>’</dt>
+<dd><p>操作码将包含在结果中，操作码将按照以下格式进行格式化： <kbd class="kbd">反汇编 /r</kbd>。
+</p></dd>
+</dl>
+</dd>
+<dt>‘<samp class="samp"><var class="var">模式</var></samp>’</dt>
+<dd><p>使用 <var class="var">模式</var> 已被弃用，建议使用
+<code class="code">--opcodes</code> 和 <code class="code">--source</code> 选项。当没有指定 <var class="var">模式</var> 时， <var class="var">模式</var> 将假定为 0。但是， <var class="var">模式</var> 仍然可用于向后兼容。 <var class="var">模式</var> 应该是以下之一：
+</p><dl class="table">
+<dt>‘<samp class="samp">0</samp>’</dt>
+<dd><p><em class="emph">仅反汇编</em>, 如果未指定模式，这是默认模式。
+</p>
+</dd>
+<dt>‘<samp class="samp">1</samp>’</dt>
+<dd><p><em class="emph">混合源代码和反汇编（已弃用）</em>, 无法使用 <code class="code">--opcodes</code> 和 <code class="code">--source</code>
+选项重新创建此模式。
+</p>
+</dd>
+<dt>‘<samp class="samp">2</samp>’</dt>
+<dd><p><em class="emph">带有原始操作码的反汇编</em>, 此模式等同于使用
+<var class="var">模式</var> 0 并将 <code class="code">--opcodes bytes</code> 传递给命令。
+</p>
+</dd>
+<dt>‘<samp class="samp">3</samp>’</dt>
+<dd><p><em class="emph">带有原始操作码的混合源代码和反汇编（已弃用）</em>, 无法使用 <code class="code">--opcodes</code> 和
+<code class="code">--source</code> 选项重新创建此模式。
+</p>
+</dd>
+<dt>‘<samp class="samp">4</samp>’</dt>
+<dd><p><em class="emph">混合源代码和反汇编</em>, 此模式等同于使用
+<var class="var">模式</var> 0 并将 <code class="code">--source</code> 传递给命令。
+</p>
+</dd>
+<dt>‘<samp class="samp">5</samp>’</dt>
+<dd><p><em class="emph">带有原始操作码的混合源代码和反汇编</em>, 此模式等同于使用 <var class="var">模式</var> 0 并将 <code class="code">--opcodes bytes</code>
+和 <code class="code">--source</code> 传递给命令。
+</p></dd>
+</dl>
+<p>模式 1 和 3 已被弃用。输出是“以源代码为中心”的，在实践中证明没有用处。请参阅 <a class="xref" href="Machine-Code.html">源代码和机器代码</a>, 以讨论
+<code class="code">/m</code> 和 <code class="code">/s</code> 命令输出之间的差异。 <code class="code">disassemble</code> 命令。
+</p></dd>
+</dl>
+
+<p>该 <code class="code">--source</code> 只能与 <var class="var">模式</var> 0 一起使用。传递此选项将在反汇编结果中包含源代码，就好像使用了
+<var class="var">模式</var> 4 或 5 一样。
+</p>
+<h4 class="subsubheading" id="Result-6"><span>结果<a class="copiable-link" href="#Result-6"> ¶</a></span></h4>
+
+<p>该 <code class="code">-data-disassemble</code> 命令的结果将是一个名为<samp class="samp">asm_insns</samp>的列表，此列表的内容取决于与 <code class="code">-data-disassemble</code> 命令一起使用的选项。
+</p>
+<p>对于模式 0 和 2，并且当未使用 <code class="code">--source</code> 选项时，<samp class="samp">asm_insns</samp>列表包含具有以下字段的元组：
+</p>
+<dl class="table">
+<dt><code class="code">address</code></dt>
+<dd><p>此指令被反汇编的地址。
+</p>
+</dd>
+<dt><code class="code">func-name</code></dt>
+<dd><p>此指令所在的函数名称。
+</p>
+</dd>
+<dt><code class="code">offset</code></dt>
+<dd><p>从<samp class="samp">func-name</samp>开始的字节十进制偏移量。
+</p>
+</dd>
+<dt><code class="code">inst</code></dt>
+<dd><p>此<samp class="samp">地址</samp>的文本反汇编。
+</p>
+</dd>
+<dt><code class="code">opcodes</code></dt>
+<dd><p>此字段仅在模式 2、3 和 5 中存在，或者当使用
+<code class="code">--opcodes</code> 选项<samp class="samp">字节</samp>或<samp class="samp">显示</samp>时存在。它包含<samp class="samp">inst</samp>字段的原始操作码字节。
+</p>
+<p>当<samp class="samp">--opcodes</samp>选项未传递给
+<code class="code">-data-disassemble</code>, 或者<samp class="samp">字节</samp>值传递给<samp class="samp">--opcodes</samp>时，字节将格式化为一系列单字节，以十六进制表示，按地址升序排列，每个字节之间有一个空格。此格式等同于使用<samp class="samp">/b</samp>选项与 <kbd class="kbd">反汇编</kbd> 命令一起使用（请参阅 <a class="pxref" href="Machine-Code.html#disassemble"><kbd class="kbd">反汇编</kbd></a>）。
+</p>
+<p>当<samp class="samp">--opcodes</samp>传递的值为<samp class="samp">显示</samp>时，字节将按自然指令显示顺序格式化。这意味着多个字节可以组合在一起，并且字节可能会进行字节交换。此格式等同于使用<samp class="samp">/r</samp>选项与 <kbd class="kbd">反汇编</kbd> 命令一起使用。
+</p></dd>
+</dl>
+
+<p>对于模式 1、3、4 和 5，或者当使用 <code class="code">--source</code> 选项时，<samp class="samp">asm_insns</samp>列表包含名为<samp class="samp">src_and_asm_line</samp>的元组，每个元组具有以下字段：
+</p>
+<dl class="table">
+<dt><code class="code">line</code></dt>
+<dd><p>在<samp class="samp">文件</samp>中的行号。
+</p>
+</dd>
+<dt><code class="code">file</code></dt>
+<dd><p>编译单元中的文件名。根据使用的编译命令，这可能是绝对文件名或相对文件名。
+</p>
+</dd>
+<dt><code class="code">fullname</code></dt>
+<dd><p><samp class="samp">文件</samp>的绝对文件名。它使用源文件搜索路径转换为规范形式（请参阅 <a class="pxref" href="Source-Path.html">指定源目录</a>），并在解析所有符号链接之后。
+</p>
+<p>如果未找到源文件，此字段将包含调试信息中存在的路径。
+</p>
+</dd>
+<dt><code class="code">line_asm_insn</code></dt>
+<dd><p>这是一个包含<samp class="samp">行</samp>在<samp class="samp">文件</samp>中的反汇编的元组列表。每个元组的字段与
+<code class="code">-data-disassemble</code> 在 <var class="var">模式</var> 0 和 2 中相同，因此<samp class="samp">地址</samp>、<samp class="samp">func-name</samp>、<samp class="samp">偏移量</samp>、<samp class="samp">inst</samp>，以及可选的<samp class="samp">操作码</samp>。
+</p>
+</dd>
+</dl>
+
+<p>请注意，<samp class="samp">inst</samp>字段中包含的任何内容都不会由 <small class="sc">GDB/MI</small>直接操作，即无法调整其格式。
+</p>
+<h4 class="subsubheading" id="gdb-Command-46"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-46"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是<samp class="samp">反汇编</samp>。
+</p>
+<h4 class="subsubheading" id="Example-52"><span>示例<a class="copiable-link" href="#Example-52"> ¶</a></span></h4>
+
+<p>从当前值开始反汇编 <code class="code">$pc</code> 到 <code class="code">$pc + 20</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-disassemble -s $pc -e &#34;$pc + 20&#34; -- 0
+^done,
+asm_insns=[
+{address=&#34;0x000107c0&#34;,func-name=&#34;main&#34;,offset=&#34;4&#34;,
+inst=&#34;mov  2, %o0&#34;},
+{address=&#34;0x000107c4&#34;,func-name=&#34;main&#34;,offset=&#34;8&#34;,
+inst=&#34;sethi  %hi(0x11800), %o2&#34;},
+{address=&#34;0x000107c8&#34;,func-name=&#34;main&#34;,offset=&#34;12&#34;,
+inst=&#34;or  %o2, 0x140, %o1\t! 0x11940 &lt;_lib_version+8&gt;&#34;},
+{address=&#34;0x000107cc&#34;,func-name=&#34;main&#34;,offset=&#34;16&#34;,
+inst=&#34;sethi  %hi(0x11800), %o2&#34;},
+{address=&#34;0x000107d0&#34;,func-name=&#34;main&#34;,offset=&#34;20&#34;,
+inst=&#34;or  %o2, 0x168, %o4\t! 0x11968 &lt;_lib_version+48&gt;&#34;}]
+(gdb)
+</pre></div>
+
+<p>反汇编整个 <code class="code">main</code> 函数。第 32 行是
+<code class="code">main</code>的一部分。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-data-disassemble -f basics.c -l 32 -- 0
+^done,asm_insns=[
+{address=&#34;0x000107bc&#34;,func-name=&#34;main&#34;,offset=&#34;0&#34;,
+inst=&#34;save  %sp, -112, %sp&#34;},
+{address=&#34;0x000107c0&#34;,func-name=&#34;main&#34;,offset=&#34;4&#34;,
+inst=&#34;mov   2, %o0&#34;},
+{address=&#34;0x000107c4&#34;,func-name=&#34;main&#34;,offset=&#34;8&#34;,
+inst=&#34;sethi %hi(0x11800), %o2&#34;},
+[...]
+{address=&#34;0x0001081c&#34;,func-name=&#34;main&#34;,offset=&#34;96&#34;,inst=&#34;ret &#34;},
+{address=&#34;0x00010820&#34;,func-name=&#34;main&#34;,offset=&#34;100&#34;,inst=&#34;restore &#34;}]
+(gdb)
+</pre></div>
+
+<p>从 <code class="code">main</code>的开始处反汇编 3 条指令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-disassemble -f basics.c -l 32 -n 3 -- 0
+^done,asm_insns=[
+{address=&#34;0x000107bc&#34;,func-name=&#34;main&#34;,offset=&#34;0&#34;,
+inst=&#34;save  %sp, -112, %sp&#34;},
+{address=&#34;0x000107c0&#34;,func-name=&#34;main&#34;,offset=&#34;4&#34;,
+inst=&#34;mov  2, %o0&#34;},
+{address=&#34;0x000107c4&#34;,func-name=&#34;main&#34;,offset=&#34;8&#34;,
+inst=&#34;sethi  %hi(0x11800), %o2&#34;}]
+(gdb)
+</pre></div>
+
+<p>从 <code class="code">main</code> 的开始处以混合模式反汇编 3 条指令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-disassemble -f basics.c -l 32 -n 3 -- 1
+^done,asm_insns=[
+src_and_asm_line={line=&#34;31&#34;,
+file=&#34;../../../src/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/absolute/path/to/src/gdb/testsuite/gdb.mi/basics.c&#34;,
+line_asm_insn=[{address=&#34;0x000107bc&#34;,
+func-name=&#34;main&#34;,offset=&#34;0&#34;,inst=&#34;save  %sp, -112, %sp&#34;}]},
+src_and_asm_line={line=&#34;32&#34;,
+file=&#34;../../../src/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/absolute/path/to/src/gdb/testsuite/gdb.mi/basics.c&#34;,
+line_asm_insn=[{address=&#34;0x000107c0&#34;,
+func-name=&#34;main&#34;,offset=&#34;4&#34;,inst=&#34;mov  2, %o0&#34;},
+{address=&#34;0x000107c4&#34;,func-name=&#34;main&#34;,offset=&#34;8&#34;,
+inst=&#34;sethi  %hi(0x11800), %o2&#34;}]}]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002ddata_002devaluate_002dexpression"></a>
+<h4 class="subheading" id="The-_002ddata_002devaluate_002dexpression-Command"><span>该 <code class="code">-data-evaluate-expression</code> 命令<a class="copiable-link" href="#The-_002ddata_002devaluate_002dexpression-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-65"><span>概要<a class="copiable-link" href="#Synopsis-65"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-evaluate-expression <var class="var">表达式</var>
+</pre></div>
+
+<p>计算 <var class="var">表达式</var> 作为一个表达式。该表达式可能包含一个下级函数调用。函数调用将同步执行。如果表达式包含空格，必须用双引号括起来。
+</p>
+<h4 class="subsubheading" id="gdb-Command-47"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-47"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是<samp class="samp">打印</samp>、<samp class="samp">输出</samp>和<samp class="samp">调用</samp>。在 <code class="code">gdbtk</code> 中，有一个对应的<samp class="samp">gdb_eval</samp>命令。
+</p>
+<h4 class="subsubheading" id="Example-53"><span>示例<a class="copiable-link" href="#Example-53"> ¶</a></span></h4>
+
+<p>在以下示例中，命令前面的数字是
+<em class="dfn">令牌</em> 在 <a class="ref" href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small>
+命令语法</a>中描述的。注意 <small class="sc">GDB/MI</small> 如何在其输出中返回相同的令牌。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">211-data-evaluate-expression A
+211^done,value=&#34;1&#34;
+(gdb)
+311-data-evaluate-expression &amp;A
+311^done,value=&#34;0xefffeb7c&#34;
+(gdb)
+411-data-evaluate-expression A+3
+411^done,value=&#34;4&#34;
+(gdb)
+511-data-evaluate-expression &#34;A + 3&#34;
+511^done,value=&#34;4&#34;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002ddata_002dlist_002dchanged_002dregisters"></a>
+<h4 class="subheading" id="The-_002ddata_002dlist_002dchanged_002dregisters-Command"><span>该 <code class="code">-data-list-changed-registers</code> 命令<a class="copiable-link" href="#The-_002ddata_002dlist_002dchanged_002dregisters-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-66"><span>概要<a class="copiable-link" href="#Synopsis-66"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-list-changed-registers
+</pre></div>
+
+<p>显示已更改的寄存器列表。
+</p>
+<h4 class="subsubheading" id="gdb-Command-48"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-48"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 没有与此命令直接对应的命令； <code class="code">gdbtk</code>
+有对应的命令<samp class="samp">gdb_changed_register_list</samp>。
+</p>
+<h4 class="subsubheading" id="Example-54"><span>示例<a class="copiable-link" href="#Example-54"> ¶</a></span></h4>
+
+<p>在 PPC MBX 板上：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-exec-continue
+^running
+
+(gdb)
+*stopped,reason=&#34;breakpoint-hit&#34;,disp=&#34;keep&#34;,bkptno=&#34;1&#34;,frame={
+func=&#34;main&#34;,args=[],file=&#34;try.c&#34;,fullname=&#34;/home/foo/bar/try.c&#34;,
+line=&#34;5&#34;,arch=&#34;powerpc&#34;}
+(gdb)
+-data-list-changed-registers
+^done,changed-registers=[&#34;0&#34;,&#34;1&#34;,&#34;2&#34;,&#34;4&#34;,&#34;5&#34;,&#34;6&#34;,&#34;7&#34;,&#34;8&#34;,&#34;9&#34;,
+&#34;10&#34;,&#34;11&#34;,&#34;13&#34;,&#34;14&#34;,&#34;15&#34;,&#34;16&#34;,&#34;17&#34;,&#34;18&#34;,&#34;19&#34;,&#34;20&#34;,&#34;21&#34;,&#34;22&#34;,&#34;23&#34;,
+&#34;24&#34;,&#34;25&#34;,&#34;26&#34;,&#34;27&#34;,&#34;28&#34;,&#34;30&#34;,&#34;31&#34;,&#34;64&#34;,&#34;65&#34;,&#34;66&#34;,&#34;67&#34;,&#34;69&#34;]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002ddata_002dlist_002dregister_002dnames"></a>
+<h4 class="subheading" id="The-_002ddata_002dlist_002dregister_002dnames-Command"><span>该 <code class="code">-data-list-register-names</code> 命令<a class="copiable-link" href="#The-_002ddata_002dlist_002dregister_002dnames-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-67"><span>概要<a class="copiable-link" href="#Synopsis-67"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-list-register-names [ ( <var class="var">寄存器编号</var> )+ ]
+</pre></div>
+
+<p>显示当前目标的寄存器名称列表。如果没有给出参数，它将显示所有寄存器的名称列表。如果给出整数作为参数，它将打印与参数对应的寄存器名称列表。为了确保寄存器名称和其编号之间的一致性，输出列表可能包含空的寄存器名称。
+</p>
+<h4 class="subsubheading" id="gdb-Command-49"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-49"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 没有与<samp class="samp">-data-list-register-names</samp>对应的命令。在 <code class="code">gdbtk</code> 中有一个对应的命令<samp class="samp">gdb_regnames</samp>。
+</p>
+<h4 class="subsubheading" id="Example-55"><span>示例<a class="copiable-link" href="#Example-55"> ¶</a></span></h4>
+
+<p>对于 PPC MBX 板：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-list-register-names
+^done,register-names=[&#34;r0&#34;,&#34;r1&#34;,&#34;r2&#34;,&#34;r3&#34;,&#34;r4&#34;,&#34;r5&#34;,&#34;r6&#34;,&#34;r7&#34;,
+&#34;r8&#34;,&#34;r9&#34;,&#34;r10&#34;,&#34;r11&#34;,&#34;r12&#34;,&#34;r13&#34;,&#34;r14&#34;,&#34;r15&#34;,&#34;r16&#34;,&#34;r17&#34;,&#34;r18&#34;,
+&#34;r19&#34;,&#34;r20&#34;,&#34;r21&#34;,&#34;r22&#34;,&#34;r23&#34;,&#34;r24&#34;,&#34;r25&#34;,&#34;r26&#34;,&#34;r27&#34;,&#34;r28&#34;,&#34;r29&#34;,
+&#34;r30&#34;,&#34;r31&#34;,&#34;f0&#34;,&#34;f1&#34;,&#34;f2&#34;,&#34;f3&#34;,&#34;f4&#34;,&#34;f5&#34;,&#34;f6&#34;,&#34;f7&#34;,&#34;f8&#34;,&#34;f9&#34;,
+&#34;f10&#34;,&#34;f11&#34;,&#34;f12&#34;,&#34;f13&#34;,&#34;f14&#34;,&#34;f15&#34;,&#34;f16&#34;,&#34;f17&#34;,&#34;f18&#34;,&#34;f19&#34;,&#34;f20&#34;,
+&#34;f21&#34;,&#34;f22&#34;,&#34;f23&#34;,&#34;f24&#34;,&#34;f25&#34;,&#34;f26&#34;,&#34;f27&#34;,&#34;f28&#34;,&#34;f29&#34;,&#34;f30&#34;,&#34;f31&#34;,
+&#34;&#34;, &#34;pc&#34;,&#34;ps&#34;,&#34;cr&#34;,&#34;lr&#34;,&#34;ctr&#34;,&#34;xer&#34;]
+(gdb)
+-data-list-register-names 1 2 3
+^done,register-names=[&#34;r1&#34;,&#34;r2&#34;,&#34;r3&#34;]
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002ddata_002dlist_002dregister_002dvalues"></a>
+<h4 class="subheading" id="The-_002ddata_002dlist_002dregister_002dvalues-Command"><span>该 <code class="code">-data-list-register-values</code> 命令<a class="copiable-link" href="#The-_002ddata_002dlist_002dregister_002dvalues-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-68"><span>概要<a class="copiable-link" href="#Synopsis-68"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-list-register-values
+    [ <code class="code">--skip-unavailable</code> ] <var class="var">格式</var> [ ( <var class="var">寄存器编号</var> )*]
+</pre></div>
+
+<p>显示寄存器的内容。寄存器内容返回的格式由 <var class="var">格式</var>指定，后面可以跟一个可选的数字列表，指定要显示的寄存器。如果没有提供数字列表，则表示要返回所有寄存器的内容。 <code class="code">--skip-unavailable</code> 选项表示只返回可用的寄存器。
+</p>
+<p>允许的 <var class="var">格式</var> 有：
+</p>
+<dl class="table">
+<dt><code class="code">x</code></dt>
+<dd><p>十六进制
+</p></dd>
+<dt><code class="code">o</code></dt>
+<dd><p>八进制
+</p></dd>
+<dt><code class="code">t</code></dt>
+<dd><p>二进制
+</p></dd>
+<dt><code class="code">d</code></dt>
+<dd><p>十进制
+</p></dd>
+<dt><code class="code">r</code></dt>
+<dd><p>原始
+</p></dd>
+<dt><code class="code">N</code></dt>
+<dd><p>自然
+</p></dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-50"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-50"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是<samp class="samp">info reg</samp>、<samp class="samp">info
+all-reg</samp>，以及（在 <code class="code">gdbtk</code>)<samp class="samp">gdb_fetch_registers</samp>。
+</p>
+<h4 class="subsubheading" id="Example-56"><span>示例<a class="copiable-link" href="#Example-56"> ¶</a></span></h4>
+
+<p>对于 PPC MBX 板（注意：换行仅为了可读性，实际输出中不存在）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-list-register-values r 64 65
+^done,register-values=[{number=&#34;64&#34;,value=&#34;0xfe00a300&#34;},
+{number=&#34;65&#34;,value=&#34;0x00029002&#34;}]
+(gdb)
+-data-list-register-values x
+^done,register-values=[{number=&#34;0&#34;,value=&#34;0xfe0043c8&#34;},
+{number=&#34;1&#34;,value=&#34;0x3fff88&#34;},{number=&#34;2&#34;,value=&#34;0xfffffffe&#34;},
+{number=&#34;3&#34;,value=&#34;0x0&#34;},{number=&#34;4&#34;,value=&#34;0xa&#34;},
+{number=&#34;5&#34;,value=&#34;0x3fff68&#34;},{number=&#34;6&#34;,value=&#34;0x3fff58&#34;},
+{number=&#34;7&#34;,value=&#34;0xfe011e98&#34;},{number=&#34;8&#34;,value=&#34;0x2&#34;},
+{number=&#34;9&#34;,value=&#34;0xfa202820&#34;},{number=&#34;10&#34;,value=&#34;0xfa202808&#34;},
+{number=&#34;11&#34;,value=&#34;0x1&#34;},{number=&#34;12&#34;,value=&#34;0x0&#34;},
+{number=&#34;13&#34;,value=&#34;0x4544&#34;},{number=&#34;14&#34;,value=&#34;0xffdfffff&#34;},
+{number=&#34;15&#34;,value=&#34;0xffffffff&#34;},{number=&#34;16&#34;,value=&#34;0xfffffeff&#34;},
+{number=&#34;17&#34;,value=&#34;0xefffffed&#34;},{number=&#34;18&#34;,value=&#34;0xfffffffe&#34;},
+{number=&#34;19&#34;,value=&#34;0xffffffff&#34;},{number=&#34;20&#34;,value=&#34;0xffffffff&#34;},
+{number=&#34;21&#34;,value=&#34;0xffffffff&#34;},{number=&#34;22&#34;,value=&#34;0xfffffff7&#34;},
+{number=&#34;23&#34;,value=&#34;0xffffffff&#34;},{number=&#34;24&#34;,value=&#34;0xffffffff&#34;},
+{number=&#34;25&#34;,value=&#34;0xffffffff&#34;},{number=&#34;26&#34;,value=&#34;0xfffffffb&#34;},
+{number=&#34;27&#34;,value=&#34;0xffffffff&#34;},{number=&#34;28&#34;,value=&#34;0xf7bfffff&#34;},
+{number=&#34;29&#34;,value=&#34;0x0&#34;},{number=&#34;30&#34;,value=&#34;0xfe010000&#34;},
+{number=&#34;31&#34;,value=&#34;0x0&#34;},{number=&#34;32&#34;,value=&#34;0x0&#34;},
+{number=&#34;33&#34;,value=&#34;0x0&#34;},{number=&#34;34&#34;,value=&#34;0x0&#34;},
+{number=&#34;35&#34;,value=&#34;0x0&#34;},{number=&#34;36&#34;,value=&#34;0x0&#34;},
+{number=&#34;37&#34;,value=&#34;0x0&#34;},{number=&#34;38&#34;,value=&#34;0x0&#34;},
+{number=&#34;39&#34;,value=&#34;0x0&#34;},{number=&#34;40&#34;,value=&#34;0x0&#34;},
+{number=&#34;41&#34;,value=&#34;0x0&#34;},{number=&#34;42&#34;,value=&#34;0x0&#34;},
+{number=&#34;43&#34;,value=&#34;0x0&#34;},{number=&#34;44&#34;,value=&#34;0x0&#34;},
+{number=&#34;45&#34;,value=&#34;0x0&#34;},{number=&#34;46&#34;,value=&#34;0x0&#34;},
+{number=&#34;47&#34;,value=&#34;0x0&#34;},{number=&#34;48&#34;,value=&#34;0x0&#34;},
+{number=&#34;49&#34;,value=&#34;0x0&#34;},{number=&#34;50&#34;,value=&#34;0x0&#34;},
+{number=&#34;51&#34;,value=&#34;0x0&#34;},{number=&#34;52&#34;,value=&#34;0x0&#34;},
+{number=&#34;53&#34;,value=&#34;0x0&#34;},{number=&#34;54&#34;,value=&#34;0x0&#34;},
+{number=&#34;55&#34;,value=&#34;0x0&#34;},{number=&#34;56&#34;,value=&#34;0x0&#34;},
+{number=&#34;57&#34;,value=&#34;0x0&#34;},{number=&#34;58&#34;,value=&#34;0x0&#34;},
+{number=&#34;59&#34;,value=&#34;0x0&#34;},{number=&#34;60&#34;,value=&#34;0x0&#34;},
+{number=&#34;61&#34;,value=&#34;0x0&#34;},{number=&#34;62&#34;,value=&#34;0x0&#34;},
+{number=&#34;63&#34;,value=&#34;0x0&#34;},{number=&#34;64&#34;,value=&#34;0xfe00a300&#34;},
+{number=&#34;65&#34;,value=&#34;0x29002&#34;},{number=&#34;66&#34;,value=&#34;0x202f04b5&#34;},
+{number=&#34;67&#34;,value=&#34;0xfe0043b0&#34;},{number=&#34;68&#34;,value=&#34;0xfe00b3e4&#34;},
+{number=&#34;69&#34;,value=&#34;0x20002b03&#34;}]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002ddata_002dread_002dmemory"></a>
+<h4 class="subheading" id="The-_002ddata_002dread_002dmemory-Command"><span>该 <code class="code">-data-read-memory</code> 命令<a class="copiable-link" href="#The-_002ddata_002dread_002dmemory-Command"> ¶</a></span></h4>
+
+<p>此命令已被弃用，请使用 <code class="code">-data-read-memory-bytes</code> 代替。
+</p>
+<h4 class="subsubheading" id="Synopsis-69"><span>概要<a class="copiable-link" href="#Synopsis-69"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-read-memory [ -o <var class="var">字节偏移量</var> ]
+   <var class="var">地址</var> <var class="var">字格式</var> <var class="var">字大小</var>
+   <var class="var">行数</var> <var class="var">列数</var> [ <var class="var">作为字符</var> ]
+</pre></div>
+
+<p>其中：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp"><var class="var">地址</var></samp>’</dt>
+<dd><p>一个表达式，指定要读取的第一个内存字的地址。包含嵌入式空格的复杂表达式应使用 C 约定进行引用。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">字格式</var></samp>’</dt>
+<dd><p>用于打印内存字的格式。表示法与 <small class="sc">GDB</small>的 <code class="code">print</code> 命令（请参阅 <a class="pxref" href="Output-Formats.html">输出格式</a>）相同。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">字大小</var></samp>’</dt>
+<dd><p>每个内存字的字节大小。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">行数</var></samp>’</dt>
+<dd><p>输出表中的行数。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">列数</var></samp>’</dt>
+<dd><p>输出表中的列数。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">作为字符</var></samp>’</dt>
+<dd><p>如果存在，表示每行应包含一个 <small class="sc">ASCII</small> 转储。 <var class="var">作为字符</var> 的值用作填充字符，当一个字节不是可打印 <small class="sc">ASCII</small> 字符集（可打印字符是代码在 32 到 126 之间的字符）的成员时。 <small class="sc">ASCII</small>
+
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">字节偏移量</var></samp>’</dt>
+<dd><p>在获取内存之前要添加到 <var class="var">地址</var> 的偏移量。
+</p></dd>
+</dl>
+
+<p>此命令将内存内容显示为一个 <var class="var">行数</var> 乘
+<var class="var">列数</var> 的内存字表，每个字为 <var class="var">字大小</var> 字节。总共读取
+<code class="code"><var class="var">nr-rows</var> * <var class="var">nr-cols</var> * <var class="var">word-size</var></code> 字节（作为<samp class="samp">总字节数</samp>返回）。如果目标返回的字节数少于请求的数量，缺失的字将使用<samp class="samp">N/A</samp>标识。从目标读取的字节数在<samp class="samp">读取字节数</samp>中返回，用于读取内存的起始地址在<samp class="samp">地址</samp>中返回。
+</p>
+<p>下一行/上一行或下一页/上一页的地址在<samp class="samp">下一行</samp>和<samp class="samp">上一行</samp>、<samp class="samp">下一页</samp>和<samp class="samp">上一页</samp>中可用。
+</p>
+<h4 class="subsubheading" id="gdb-Command-51"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-51"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是<samp class="samp">x</samp>。  <code class="code">gdbtk</code> 有<samp class="samp">gdb_get_mem</samp>内存读取命令。
+</p>
+<h4 class="subsubheading" id="Example-57"><span>示例<a class="copiable-link" href="#Example-57"> ¶</a></span></h4>
+
+<p>从 <code class="code">bytes+6</code> 开始读取 6 字节内存，但偏移
+<code class="code">-6</code> 字节。格式化为 3 行 2 列。每个字 1 字节。以十六进制显示每个字。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+9-data-read-memory -o -6 -- bytes+6 x 1 3 2
+9^done,addr=&#34;0x00001390&#34;,nr-bytes=&#34;6&#34;,total-bytes=&#34;6&#34;,
+next-row=&#34;0x00001396&#34;,prev-row=&#34;0x0000138e&#34;,next-page=&#34;0x00001396&#34;,
+prev-page=&#34;0x0000138a&#34;,memory=[
+{addr=&#34;0x00001390&#34;,data=[&#34;0x00&#34;,&#34;0x01&#34;]},
+{addr=&#34;0x00001392&#34;,data=[&#34;0x02&#34;,&#34;0x03&#34;]},
+{addr=&#34;0x00001394&#34;,data=[&#34;0x04&#34;,&#34;0x05&#34;]}]
+(gdb)
+</pre></div>
+
+<p>从地址 <code class="code">shorts + 64</code> 开始读取 2 字节内存，并以十进制格式显示为一个字。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+5-data-read-memory shorts+64 d 2 1 1
+5^done,addr=&#34;0x00001510&#34;,nr-bytes=&#34;2&#34;,total-bytes=&#34;2&#34;,
+next-row=&#34;0x00001512&#34;,prev-row=&#34;0x0000150e&#34;,
+next-page=&#34;0x00001512&#34;,prev-page=&#34;0x0000150e&#34;,memory=[
+{addr=&#34;0x00001510&#34;,data=[&#34;128&#34;]}]
+(gdb)
+</pre></div>
+
+<p>从 <code class="code">bytes+16</code> 开始读取 32 字节内存，并格式化为 8 行 4 列。包含一个字符串编码，使用<samp class="samp">x</samp>作为不可打印字符。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+4-data-read-memory bytes+16 x 1 8 4 x
+4^done,addr=&#34;0x000013a0&#34;,nr-bytes=&#34;32&#34;,total-bytes=&#34;32&#34;,
+next-row=&#34;0x000013c0&#34;,prev-row=&#34;0x0000139c&#34;,
+next-page=&#34;0x000013c0&#34;,prev-page=&#34;0x00001380&#34;,memory=[
+{addr=&#34;0x000013a0&#34;,data=[&#34;0x10&#34;,&#34;0x11&#34;,&#34;0x12&#34;,&#34;0x13&#34;],ascii=&#34;xxxx&#34;},
+{addr=&#34;0x000013a4&#34;,data=[&#34;0x14&#34;,&#34;0x15&#34;,&#34;0x16&#34;,&#34;0x17&#34;],ascii=&#34;xxxx&#34;},
+{addr=&#34;0x000013a8&#34;,data=[&#34;0x18&#34;,&#34;0x19&#34;,&#34;0x1a&#34;,&#34;0x1b&#34;],ascii=&#34;xxxx&#34;},
+{addr=&#34;0x000013ac&#34;,data=[&#34;0x1c&#34;,&#34;0x1d&#34;,&#34;0x1e&#34;,&#34;0x1f&#34;],ascii=&#34;xxxx&#34;},
+{addr=&#34;0x000013b0&#34;,data=[&#34;0x20&#34;,&#34;0x21&#34;,&#34;0x22&#34;,&#34;0x23&#34;],ascii=&#34; !\&#34;#&#34;},
+{addr=&#34;0x000013b4&#34;,data=[&#34;0x24&#34;,&#34;0x25&#34;,&#34;0x26&#34;,&#34;0x27&#34;],ascii=&#34;$%&amp;&#39;&#34;},
+{addr=&#34;0x000013b8&#34;,data=[&#34;0x28&#34;,&#34;0x29&#34;,&#34;0x2a&#34;,&#34;0x2b&#34;],ascii=&#34;()*+&#34;},
+{addr=&#34;0x000013bc&#34;,data=[&#34;0x2c&#34;,&#34;0x2d&#34;,&#34;0x2e&#34;,&#34;0x2f&#34;],ascii=&#34;,-./&#34;}]
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002ddata_002dread_002dmemory_002dbytes"></a>
+<h4 class="subheading" id="The-_002ddata_002dread_002dmemory_002dbytes-Command"><span>该 <code class="code">-data-read-memory-bytes</code> 命令<a class="copiable-link" href="#The-_002ddata_002dread_002dmemory_002dbytes-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-70"><span>概要<a class="copiable-link" href="#Synopsis-70"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-read-memory-bytes [ -o <var class="var">偏移量</var> ]
+   <var class="var">地址</var> <var class="var">数量</var>
+</pre></div>
+
+<p>其中：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp"><var class="var">地址</var></samp>’</dt>
+<dd><p>一个表达式，指定要读取的第一个可寻址内存单元的地址。包含嵌入式空格的复杂表达式应使用 C 约定进行引用。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">数量</var></samp>’</dt>
+<dd><p>要读取的可寻址内存单元的数量。这应该是一个整数字面量。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">偏移量</var></samp>’</dt>
+<dd><p>相对于 <var class="var">地址</var> 开始读取的偏移量。这应该是一个整数字面量。提供此选项是为了使前端不必先计算地址，然后再自行进行地址算术运算。
+</p>
+</dd>
+</dl>
+
+<p>此命令尝试读取指定范围内的所有可访问内存区域。首先，内存映射中标记为不可读的所有区域（如果定义了）将被跳过。请参阅 <a class="xref" href="Memory-Region-Attributes.html">内存区域属性</a>。其次， <small class="sc">GDB</small> 将尝试读取其余区域。对于每个区域，如果读取整个区域导致错误，
+<small class="sc">GDB</small> 将尝试读取该区域的一个子集。
+</p>
+<p>一般来说，区域中的每个单个内存单元可能可读也可能不可读，读取每个可读单元的唯一方法是在每个地址进行读取，这是不实际的。因此， <small class="sc">GDB</small> 将尝试使用二进制划分方案读取区域开头或结尾的所有可访问内存单元。这种启发式方法在跨内存映射边界读取时效果很好。请注意，如果一个区域有一个既不在开头也不在结尾的可读范围，
+<small class="sc">GDB</small> 将不会读取它。
+</p>
+<p>该命令输出的结果记录（请参阅 <a class="pxref" href="GDB_002fMI-Result-Records.html"><small class="sc">GDB/MI</small> 结果记录</a>）包含一个名为<samp class="samp">内存</samp>的字段，其内容是一个元组列表。每个元组表示一个成功读取的内存块，具有以下字段：
+</p>
+<dl class="table">
+<dt><code class="code">begin</code></dt>
+<dd><p>内存块的起始地址，以十六进制字面量表示。
+</p>
+</dd>
+<dt><code class="code">end</code></dt>
+<dd><p>内存块的结束地址，以十六进制字面量表示。
+</p>
+</dd>
+<dt><code class="code">offset</code></dt>
+<dd><p>内存块相对于传递给 <code class="code">-data-read-memory-bytes</code>的起始地址的偏移量，以十六进制字面量表示。
+</p>
+</dd>
+<dt><code class="code">contents</code></dt>
+<dd><p>内存块的内容，以十六进制表示。
+</p>
+</dd>
+</dl>
+
+
+
+<h4 class="subsubheading" id="gdb-Command-52"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-52"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是<samp class="samp">x</samp>。
+</p>
+<h4 class="subsubheading" id="Example-58"><span>示例<a class="copiable-link" href="#Example-58"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-read-memory-bytes &amp;a 10
+^done,memory=[{begin=&#34;0xbffff154&#34;,offset=&#34;0x00000000&#34;,
+              end=&#34;0xbffff15e&#34;,
+              contents=&#34;01000000020000000300&#34;}]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002ddata_002dwrite_002dmemory_002dbytes"></a>
+<h4 class="subheading" id="The-_002ddata_002dwrite_002dmemory_002dbytes-Command"><span>该 <code class="code">-data-write-memory-bytes</code> 命令<a class="copiable-link" href="#The-_002ddata_002dwrite_002dmemory_002dbytes-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-71"><span>概要<a class="copiable-link" href="#Synopsis-71"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -data-write-memory-bytes <var class="var">地址</var> <var class="var">内容</var>
+ -data-write-memory-bytes <var class="var">地址</var> <var class="var">内容</var> <span class="r">[</span><var class="var">数量</var><span class="r">]</span>
+</pre></div>
+
+<p>其中：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp"><var class="var">地址</var></samp>’</dt>
+<dd><p>一个表达式，指定要写入的第一个可寻址内存单元的地址。包含嵌入式空格的复杂表达式应使用 C 约定进行引用。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">内容</var></samp>’</dt>
+<dd><p>要写入的十六进制编码数据。如果 <var class="var">内容</var> 不代表整数个可寻址内存单元，则为错误。
+</p>
+</dd>
+<dt>‘<samp class="samp"><var class="var">数量</var></samp>’</dt>
+<dd><p>可选参数，指示要写入的可寻址内存单元的数量。如果 <var class="var">数量</var> 大于 <var class="var">内容</var>的长度，
+<small class="sc">GDB</small> 将重复写入 <var class="var">内容</var> 直到填满
+<var class="var">数量</var> 个内存单元。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-53"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-53"> ¶</a></span></h4>
+
+<p>没有对应的 <small class="sc">GDB</small> 命令。
+</p>
+<h4 class="subsubheading" id="Example-59"><span>示例<a class="copiable-link" href="#Example-59"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-write-memory-bytes &amp;a &#34;aabbccdd&#34;
+^done
+(gdb)
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-data-write-memory-bytes &amp;a &#34;aabbccdd&#34; 16e
+^done
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Tracepoint-Commands.html"><small class="sc">GDB/MI</small> 跟踪点命令</a>, 上一项： <a href="GDB_002fMI-Variable-Objects.html"><small class="sc">GDB/MI</small> 变量对象</a>, 上一级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

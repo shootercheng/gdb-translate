@@ -1,0 +1,275 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Commands In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Commands In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Parameters-In-Guile.html" rel="next" title="Parameters In Guile"/>
+<link href="Writing-a-Guile-Pretty_002dPrinter.html" rel="prev" title="Writing a Guile Pretty-Printer"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Commands-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Parameters-In-Guile.html" rel="next">Guile 中的参数</a>, 上一项： <a accesskey="p" href="Writing-a-Guile-Pretty_002dPrinter.html" rel="prev">编写 Guile 漂亮打印机</a>, 上级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Commands-In-Guile-1"><span>23.4.3.11 Guile 中的命令<a class="copiable-link" href="#Commands-In-Guile-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-commands-in-guile"></a>
+<a class="index-entry-id" id="index-guile-commands-1"></a>
+<p>你可以在 Guile 中实现新的 <small class="sc">GDB</small> CLI 命令。一个 CLI 命令对象是通过 <code class="code">make-command</code> Guile 函数创建的，并通过 <small class="sc">GDB</small> Guile 函数添加到 <code class="code">register-command!</code> 这种两步走的方法是为了将添加命令的副作用与 <small class="sc">GDB</small> 分开。 <code class="code">make-command</code>.
+</p>
+<p>不支持多行命令，即由多行组成并以 <code class="code">end</code>
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dcommand"><span class="category-def"> </span><span><strong class="def-name">make-command</strong> <var class="def-var-arguments"> <span class="r"></span>#:invoke 调用<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:command-class 命令类别<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:completer-class 补全器类别<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:prefix? 前缀？<span class="r">]</span><!-- /@w --> <span class="r">[</span>#:doc 文档字符串<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-make_002dcommand"> ¶</a></span></dt>
+<dd>
+<p>参数 <var class="var">名称</var> 是命令的名称。如果 <var class="var">名称</var> 由多个单词组成，则会将初始单词作为前缀命令进行查找。在这种情况下，如果某个前缀命令不存在，则会抛出异常。
+</p>
+<p>结果是表示该命令的 <code class="code">&lt;gdb:command&gt;</code> 对象。在使用 <small class="sc">GDB</small>
+注册该命令之前，该命令不可用。 <code class="code">register-command!</code>.
+</p>
+<p>其余参数是可选的。
+</p>
+<p>参数 <var class="var">调用</var> 是一个接受三个参数的过程： <var class="var">自身</var>,
+<var class="var">参数</var> 和 <var class="var">来自终端</var>. 参数 <var class="var">自身</var> 是表示该命令的
+<code class="code">&lt;gdb:command&gt;</code> 对象。参数 <var class="var">参数</var> 是一个字符串，表示传递给命令的参数，去除了首尾的空白字符。参数 <var class="var">来自终端</var> 是一个布尔标志，指定该命令是否应认为是由用户交互式调用的。如果此函数抛出异常，则会将其转换为 <small class="sc">GDB</small> <code class="code">error</code> 调用。否则，返回值将被忽略。
+</p>
+<p>对于非前缀命令， <var class="var">调用</var> 是必需的。对于前缀命令 <var class="var">调用</var> 是可选的。只有需要处理未知子命令的前缀命令才应提供 <var class="var">调用</var>.
+</p>
+<p>对于不提供 <var class="var">调用</var>, 如果前缀命令在没有子命令名称的情况下使用，则 <small class="sc">GDB</small> 将显示每个子命令的帮助文本，除非前缀命令是一个 <kbd class="kbd">显示</kbd> 子命令，在这种情况下 <small class="sc">GDB</small> 将列出所有子命令的值。
+</p>
+<p>参数 <var class="var">命令类别</var> 是下面定义的‘<samp class="samp">COMMAND_</samp>’常量之一。此参数告诉 <small class="sc">GDB</small> 如何在帮助系统中对新命令进行分类。默认值是 <code class="code">COMMAND_NONE</code>.
+</p>
+<p>参数 <var class="var">补全器</var> 要么是 <code class="code">#f</code>, 下面定义的‘<samp class="samp">COMPLETE_</samp>’常量之一，要么是下面也定义的一个过程。此参数告诉 <small class="sc">GDB</small> 如何为此命令执行补全。如果未提供或值为 <code class="code">#f</code>, 则不对该命令执行补全。
+</p>
+<p>参数 <var class="var">前缀</var> 是一个布尔标志，指示新命令是否为前缀命令；可以注册此命令的子命令。
+</p>
+<p>参数 <var class="var">文档字符串</var> 是新命令的帮助文本。如果未提供文档字符串，则使用默认值“此命令未提供文档。”。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-register_002dcommand_0021"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">register-command!</strong> <var class="def-var-arguments">命令</var><a class="copiable-link" href="#index-register_002dcommand_0021"> ¶</a></span></dt>
+<dd><p>添加 <var class="var">命令</var>, 一个 <code class="code">&lt;gdb:command&gt;</code> 对象，到 <small class="sc">GDB</small>的命令列表中。多次注册同一个命令会导致错误。结果未指定。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-command_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">command?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-command_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:command&gt;</code> 对象。否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-don_0027t-repeat-Guile-command"></a>
+<dl class="first-deffn">
+<dt class="deffn" id="index-dont_002drepeat"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">dont-repeat</strong><a class="copiable-link" href="#index-dont_002drepeat"> ¶</a></span></dt>
+<dd><p>默认情况下，当用户在命令提示符处输入空行时，一个 <small class="sc">GDB</small> 命令会被重复执行。命令可以通过调用 <code class="code">dont-repeat</code> 函数来抑制这种行为。这类似于用户命令 <code class="code">dont-repeat</code>, 请参阅 <a class="ref" href="Define.html">dont-repeat</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-string_002d_003eargv"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">string-&gt;argv</strong> <var class="def-var-arguments">字符串</var><a class="copiable-link" href="#index-string_002d_003eargv"> ¶</a></span></dt>
+<dd><p>根据
+<small class="sc">GDB</small>的参数解析规则将一个字符串转换为字符串列表。建议使用此方法以保持一致性。参数由空格分隔，并且可以加引号。示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">scheme@(guile-user)&gt; (string-&gt;argv &#34;1 2 \&#34;3 &#39;4 \&#34;5&#39; \&#34;6 &#39;7\&#34;&#34;)
+$1 = (&#34;1&#34; &#34;2 \&#34;3&#34; &#34;4 \&#34;5&#34; &#34;6 &#39;7&#34;)
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-throw_002duser_002derror"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">throw-user-error</strong> <var class="def-var-arguments">消息 . 参数</var><a class="copiable-link" href="#index-throw_002duser_002derror"> ¶</a></span></dt>
+<dd><p>抛出一个 <code class="code">gdb:user-error</code> 异常。参数 <var class="var">消息</var> 是作为格式字符串的错误消息，类似于 
+<var class="var">fmt</var> 参数传递给 <code class="code">format</code> Scheme 函数。请参阅 <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Formatted-Output.html#Formatted-Output">格式化输出</a> 在 <cite class="cite">GNU Guile 参考手册</cite>. 中创建的。参数 <var class="var">参数</var> 是 <var class="var">消息</var>的可选参数列表。
+</p>
+<p>当命令检测到某种用户错误时，例如错误的命令参数，会使用此功能。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (use-modules (gdb))
+(gdb) guile
+(register-command! (make-command &#34;test-user-error&#34;
+  #:command-class COMMAND_OBSCURE
+  #:invoke (lambda (self arg from-tty)
+    (throw-user-error &#34;Bad argument ~a&#34; arg))))
+end
+(gdb) test-user-error ugh
+ERROR: Bad argument ugh
+</pre></div>
+</dd></dl>
+
+<a class="index-entry-id" id="index-completion-of-Guile-commands"></a>
+<dl class="first-deffn">
+<dt class="deffn" id="index-self"><span class="category-def">补全器： </span><span><strong class="def-name">自身</strong> <var class="def-var-arguments">文本 单词</var><a class="copiable-link" href="#index-self"> ¶</a></span></dt>
+<dd><p>如果 <var class="var">补全器</var> 选项传递给 <code class="code">make-command</code> 的是一个过程，它接受三个参数： <var class="var">自身</var> 这是 <code class="code">&lt;gdb:command&gt;</code>
+对象，以及 <var class="var">文本</var> 和 <var class="var">单词</var> 它们都是字符串。参数 <var class="var">文本</var> 包含直到光标位置的完整命令行。参数 <var class="var">单词</var> 包含命令行的最后一个单词；这是使用分词启发式算法计算得出的。
+</p>
+<p>所有形式的补全都由这个函数处理，即 <kbd class="key">TAB</kbd> 和 <kbd class="key">M-?</kbd> 键绑定（请参阅 <a class="pxref" href="Completion.html">命令补全</a>）以及 <code class="code">complete</code> 命令（请参阅 <a class="pxref" href="Help.html">complete</a>) 分开。
+</p>
+<p>这个过程可以返回几种类型的值：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果返回值是一个列表，则列表的内容将用作补全项。由 <var class="var">补全器</var> 确保内容实际上能补全单词。允许为空列表，这意味着没有可用的补全项。列表中只有字符串元素会被使用；列表中的其他元素将被忽略。
+
+</li><li>如果返回值是一个 <code class="code">&lt;gdb:iterator&gt;</code> 对象，则会对其进行迭代以获取补全项。由 <code class="code">completer-procedure</code> 确保结果实际上能补全单词。结果中只有字符串元素会被使用；序列中的其他元素将被忽略。
+
+</li><li>所有其他结果都被视为没有可用的补全项。
+</li></ul>
+</dd></dl>
+
+<p>当注册一个新命令时，它会被声明为某个通用命令类的成员。这用于在在线帮助系统中对顶级命令进行分类；请注意，前缀命令不会在其自身的类别下列出，而是在其顶级命令的类别下列出。可用的分类由 <code class="code">gdb</code> 模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a id="index-COMMAND_005fNONE-1"></a><span><code class="code">COMMAND_NONE</code><a class="copiable-link" href="#index-COMMAND_005fNONE-1"> ¶</a></span></dt>
+<dd><p>该命令不属于任何特定类别。此类别中的命令不会在任何帮助类别中显示。这是默认设置。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fRUNNING-1"></a><span><code class="code">COMMAND_RUNNING</code><a class="copiable-link" href="#index-COMMAND_005fRUNNING-1"> ¶</a></span></dt>
+<dd><p>该命令与运行被调试程序有关。例如，
+<code class="code">start</code>, <code class="code">step</code>, 和 <code class="code">continue</code> 属于此类别。在 <kbd class="kbd">help running</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fDATA-1"></a><span><code class="code">COMMAND_DATA</code><a class="copiable-link" href="#index-COMMAND_005fDATA-1"> ¶</a></span></dt>
+<dd><p>该命令与数据或变量有关。例如，
+<code class="code">call</code>, <code class="code">find</code>, 和 <code class="code">print</code> 属于此类别。在
+<kbd class="kbd">help data</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fSTACK-1"></a><span><code class="code">COMMAND_STACK</code><a class="copiable-link" href="#index-COMMAND_005fSTACK-1"> ¶</a></span></dt>
+<dd><p>该命令与栈的操作有关。例如，
+<code class="code">backtrace</code>, <code class="code">frame</code>, 和 <code class="code">return</code> 属于此类别。在 <kbd class="kbd">help stack</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fFILES-1"></a><span><code class="code">COMMAND_FILES</code><a class="copiable-link" href="#index-COMMAND_005fFILES-1"> ¶</a></span></dt>
+<dd><p>此类用于与文件相关的命令。例如，
+<code class="code">file</code>, <code class="code">list</code> 和 <code class="code">section</code> 属于此类别。在 <kbd class="kbd">help files</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fSUPPORT-1"></a><span><code class="code">COMMAND_SUPPORT</code><a class="copiable-link" href="#index-COMMAND_005fSUPPORT-1"> ¶</a></span></dt>
+<dd><p>这应该用于“支持工具”，通常指的是用户与 <small class="sc">GDB</small>交互时有用但与被调试程序的状态无关的事物。例如，
+<code class="code">help</code>, <code class="code">make</code>, 和 <code class="code">shell</code> 属于此类别。在
+<kbd class="kbd">help support</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fSTATUS-1"></a><span><code class="code">COMMAND_STATUS</code><a class="copiable-link" href="#index-COMMAND_005fSTATUS-1"> ¶</a></span></dt>
+<dd><p>该命令是一个与‘<samp class="samp">info</samp>’相关的命令，即与 <small class="sc">GDB</small> 自身的状态有关。例如， <code class="code">info</code>, <code class="code">macro</code>,
+和 <code class="code">show</code> 属于此类别。在 <kbd class="kbd">help status</kbd> 命令提示符处输入
+<small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fBREAKPOINTS-1"></a><span><code class="code">COMMAND_BREAKPOINTS</code><a class="copiable-link" href="#index-COMMAND_005fBREAKPOINTS-1"> ¶</a></span></dt>
+<dd><p>该命令与断点有关。例如， <code class="code">break</code>,
+<code class="code">clear</code>, 和 <code class="code">delete</code> 属于此类别。在 <kbd class="kbd">help
+breakpoints</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fTRACEPOINTS-1"></a><span><code class="code">COMMAND_TRACEPOINTS</code><a class="copiable-link" href="#index-COMMAND_005fTRACEPOINTS-1"> ¶</a></span></dt>
+<dd><p>该命令与跟踪点有关。例如， <code class="code">trace</code>,
+<code class="code">actions</code>, 和 <code class="code">tfind</code> 属于此类别。在
+<kbd class="kbd">help tracepoints</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fUSER-1"></a><span><code class="code">COMMAND_USER</code><a class="copiable-link" href="#index-COMMAND_005fUSER-1"> ¶</a></span></dt>
+<dd><p>该命令是一个通用的用户命令，通常不属于其他类别。在 <kbd class="kbd">help user-defined</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表，以及 gdb 宏列表（请参阅 <a class="pxref" href="Sequences.html">预定义命令序列</a>)。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fOBSCURE-1"></a><span><code class="code">COMMAND_OBSCURE</code><a class="copiable-link" href="#index-COMMAND_005fOBSCURE-1"> ¶</a></span></dt>
+<dd><p>该命令仅在不寻常的情况下使用，或者对用户没有普遍的吸引力。例如， <code class="code">checkpoint</code>,
+<code class="code">fork</code>, 和 <code class="code">stop</code> 属于此类别。在 <kbd class="kbd">help
+obscure</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p>
+</dd>
+<dt><a id="index-COMMAND_005fMAINTENANCE-1"></a><span><code class="code">COMMAND_MAINTENANCE</code><a class="copiable-link" href="#index-COMMAND_005fMAINTENANCE-1"> ¶</a></span></dt>
+<dd><p>该命令仅对 <small class="sc">GDB</small> 维护人员有用。
+<code class="code">maintenance</code> 和 <code class="code">flushregs</code> 命令属于此类别。在 <kbd class="kbd">help internals</kbd> 命令提示符处输入 <small class="sc">GDB</small> 以查看此类别中的命令列表。
+</p></dd>
+</dl>
+
+<p>一个新命令可以使用预定义的补全函数，要么在初始化时通过参数指定，要么从 <code class="code">completer</code> 过程中返回。这些预定义的补全常量都在 <code class="code">gdb</code> 模块中定义：
+</p>
+<dl class="vtable">
+<dt><a id="index-COMPLETE_005fNONE-1"></a><span><code class="code">COMPLETE_NONE</code><a class="copiable-link" href="#index-COMPLETE_005fNONE-1"> ¶</a></span></dt>
+<dd><p>此常量表示不进行补全。
+</p>
+</dd>
+<dt><a id="index-COMPLETE_005fFILENAME-1"></a><span><code class="code">COMPLETE_FILENAME</code><a class="copiable-link" href="#index-COMPLETE_005fFILENAME-1"> ¶</a></span></dt>
+<dd><p>此常量表示应执行文件名补全。
+</p>
+</dd>
+<dt><a id="index-COMPLETE_005fLOCATION-1"></a><span><code class="code">COMPLETE_LOCATION</code><a class="copiable-link" href="#index-COMPLETE_005fLOCATION-1"> ¶</a></span></dt>
+<dd><p>此常量表示应执行位置补全。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>.
+</p>
+</dd>
+<dt><a id="index-COMPLETE_005fCOMMAND-1"></a><span><code class="code">COMPLETE_COMMAND</code><a class="copiable-link" href="#index-COMPLETE_005fCOMMAND-1"> ¶</a></span></dt>
+<dd><p>此常量表示补全应检查 <small class="sc">GDB</small>
+命令名称。
+</p>
+</dd>
+<dt><a id="index-COMPLETE_005fSYMBOL-1"></a><span><code class="code">COMPLETE_SYMBOL</code><a class="copiable-link" href="#index-COMPLETE_005fSYMBOL-1"> ¶</a></span></dt>
+<dd><p>此常量表示应使用符号名称作为源进行补全。
+</p>
+</dd>
+<dt><a id="index-COMPLETE_005fEXPRESSION-1"></a><span><code class="code">COMPLETE_EXPRESSION</code><a class="copiable-link" href="#index-COMPLETE_005fEXPRESSION-1"> ¶</a></span></dt>
+<dd><p>此常量表示应在表达式上进行补全。通常这意味着在符号名称上进行补全，但某些语言解析器也支持在字段名称上进行补全。
+</p></dd>
+</dl>
+
+<p>以下代码片段展示了如何在 Guile 中实现一个简单的 CLI 命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile
+(register-command! (make-command &#34;hello-world&#34;
+  #:command-class COMMAND_USER
+  #:doc &#34;向整个世界问好。&#34;
+  #:invoke (lambda (self args from-tty) (display &#34;Hello, World!\n&#34;))))
+end
+(gdb) hello-world
+Hello, World!
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Parameters-In-Guile.html">Guile 中的参数</a>, 上一项： <a href="Writing-a-Guile-Pretty_002dPrinter.html">编写 Guile 漂亮打印机</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

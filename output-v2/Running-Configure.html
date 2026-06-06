@@ -1,0 +1,145 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>运行配置（使用GDB调试）</title>
+
+<meta name="description" content="Running Configure (Debugging with GDB)"/>
+<meta name="keywords" content="Running Configure (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Installing-GDB.html" rel="up" title="Installing GDB"/>
+<link href="Separate-Objdir.html" rel="next" title="Separate Objdir"/>
+<link href="Requirements.html" rel="prev" title="Requirements"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Running-Configure">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Separate-Objdir.html" rel="next"> <small class="sc">GDB</small> </a> <a accesskey="p" href="Requirements.html" rel="prev"> <small class="sc">GDB</small></a> <a accesskey="u" href="Installing-GDB.html" rel="up"> <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Invoking-the-gdb-configure-Script"><span>C.2 调用 <small class="sc">GDB</small> <samp class="file">配置</samp> 脚本<a class="copiable-link" href="#Invoking-the-gdb-configure-Script"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-configuring-gdb"></a>
+<p><small class="sc">GDB</small> 附带一个 <samp class="file">配置</samp> 脚本，它可以自动完成准备过程
+以便进行安装；然后您可以使用 <small class="sc">GDB</small> 来
+构建 <code class="code">make</code> 程序。 <code class="code">gdb</code> 程序。
+</p>
+<p>该 <small class="sc">GDB</small> 发行版包含您所需的所有源代码，用于
+<small class="sc">GDB</small> 在单个目录中，其名称通常是通过在‘<samp class="samp">gdb</samp>’后面追加版本号组成的。
+</p>
+<p>例如， <small class="sc">GDB</small> 17.2版本的发行版位于
+<samp class="file">gdb - 17.2</samp> 目录中。该目录包含：
+</p>
+<dl class="table">
+<dt><code class="code">gdb-17.2/configure <span class="r">(and supporting files)</span></code></dt>
+<dd><p>用于配置的脚本 <small class="sc">GDB</small> 及其所有支持库
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/gdb</code></dt>
+<dd><p>特定于 <small class="sc">GDB</small> 本身的源代码
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/bfd</code></dt>
+<dd><p>二进制文件描述符库的源代码
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/include</code></dt>
+<dd><p><small class="sc">GNU</small> 头文件
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/libiberty</code></dt>
+<dd><p>‘<samp class="samp">-liberty</samp>’自由软件库的源代码
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/opcodes</code></dt>
+<dd><p>操作码表和反汇编器库的源代码
+</p>
+</dd>
+<dt><code class="code">gdb-17.2/readline</code></dt>
+<dd><p>的源代码 <small class="sc">GNU</small> 命令行界面
+</p></dd>
+</dl>
+
+<p>可能还有其他子目录。
+</p>
+<p>配置和构建 <small class="sc">GDB</small> 的最简单方法是运行 <samp class="file">配置</samp>
+从 <samp class="file">gdb -<var class="var">版本号</var></samp> 源代码目录，在
+这个例子中是 <samp class="file">gdb - 17.2</samp> 目录。
+</p>
+<p>首先切换到 <samp class="file">gdb -<var class="var">版本号</var></samp> 源代码目录
+如果您还不在其中；然后运行 <samp class="file">配置</samp>. 传递
+要运行的平台的标识符作为
+参数。 <small class="sc">GDB</small> 将运行的平台的标识符作为参数。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">cd gdb - 17.2
+./configure
+make
+</pre></div>
+
+<p>运行‘<samp class="samp">配置</samp>’然后运行 <code class="code">make</code> 会构建
+包含的支持库，然后是 <code class="code">gdb</code> 本身。配置后的
+源文件和二进制文件会留在相应的源
+目录中。
+</p>
+<p><samp class="file">配置</samp> 是一个Bourne shell（<code class="code">/bin/sh</code>)脚本；如果您的
+系统在您运行不同的
+shell时不能自动识别它，您可能需要显式地运行 <code class="code">sh</code> 在它上面：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">sh configure
+</pre></div>
+
+<p>您应该从源
+树的顶级目录运行 <samp class="file">配置</samp> 脚本，即 <samp class="file">gdb -<var class="var">版本号</var></samp> 目录。如果您运行
+<samp class="file">配置</samp> 从其中一个子目录运行，您将只配置
+该子目录。这通常不是您想要的。特别是，
+如果您第一次运行 <samp class="file">配置</samp> 从 <samp class="file">gdb</samp> 子目录
+在 <samp class="file">gdb -<var class="var">版本号</var></samp> 目录中，您将省略对 <samp class="file">bfd</samp>, <samp class="file">readline</samp>, 以及 <samp class="file">gdb</samp> 子目录的其他同级
+目录的配置。这会导致构建错误，因为缺少头文件，例如 <samp class="file">bfd/bfd.h</samp>.
+</p>
+<p>您可以将 <code class="code"><small class="sc">GDB</small></code> 安装在任何地方。最好的方法是将 <code class="code">--prefix</code> 选项传递给 <code class="code">configure</code>, 然后
+使用它进行安装 <code class="code">make install</code>.
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Separate-Objdir.html">编译 <small class="sc">GDB</small> 在另一个目录中</a>，上一步： <a href="Requirements.html">构建要求 <small class="sc">GDB</small></a>，返回上一级： <a href="Installing-GDB.html">安装 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

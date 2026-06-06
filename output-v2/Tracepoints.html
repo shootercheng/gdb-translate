@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪点（使用GDB进行调试）</title>
+
+<meta name="description" content="Tracepoints (Debugging with GDB)"/>
+<meta name="keywords" content="Tracepoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Overlays.html" rel="next" title="Overlays"/>
+<link href="Macros.html" rel="prev" title="Macros"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Tracepoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Overlays.html" rel="next">调试使用覆盖层的程序</a>, 上一项： <a accesskey="p" href="Macros.html" rel="prev">C预处理器宏</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Tracepoints-1"><span>13 跟踪点<a class="copiable-link" href="#Tracepoints-1"> ¶</a></span></h2>
+
+<a class="index-entry-id" id="index-tracepoints"></a>
+<p>在某些应用程序中，调试器中断程序执行的时间足够长，让开发人员了解其行为的有用信息是不可行的。如果程序的正确性取决于其实时行为，调试器引入的延迟可能会导致程序的行为发生巨大变化，或者可能会失败，即使代码本身是正确的。能够在不中断程序的情况下观察其行为是很有用的。
+</p>
+<p>使用 <small class="sc">GDB</small>的 <code class="code">trace</code> 和 <code class="code">collect</code> 命令，你可以指定程序中的位置，称为 <em class="dfn">跟踪点</em>, 并指定在到达这些跟踪点时要计算的任意表达式。稍后，使用 <code class="code">tfind</code> 命令，你可以检查程序命中跟踪点时这些表达式的值。这些表达式也可以表示内存中的对象，例如结构体或数组，其值 <small class="sc">GDB</small> 应该记录；在访问特定的跟踪点时，你可以像它们在那一刻存在于内存中一样检查这些对象。然而，因为 <small class="sc">GDB</small> 在不与你交互的情况下记录这些值，所以它可以快速且不引人注意地进行，希望不会干扰程序的行为。
+</p>
+<p>目前，跟踪点功能仅适用于远程目标。请参阅 <a class="xref" href="Targets.html">指定调试目标</a>. 此外，你的远程目标必须知道如何收集跟踪数据。此功能在远程存根中实现；然而，截至撰写本文时，与 <small class="sc">GDB</small>
+一起分发的存根都不支持跟踪点。用于实现跟踪点的远程数据包的格式在 <a class="ref" href="Tracepoint-Packets.html">跟踪点数据包</a>. 中描述。
+</p>
+<p>也可以以类似于核心文件的方式从文件中获取跟踪数据；你指定文件名，并使用 <code class="code">tfind</code> 在文件中进行搜索。请参阅 <a class="xref" href="Trace-Files.html">使用跟踪文件</a>, 了解更多详细信息。
+</p>
+<p>本章描述了跟踪点命令和功能。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Set-Tracepoints.html">设置跟踪点的命令</a></li>
+<li><a accesskey="2" href="Analyze-Collected-Data.html">使用收集的数据</a></li>
+<li><a accesskey="3" href="Tracepoint-Variables.html">跟踪点的便利变量</a></li>
+<li><a accesskey="4" href="Trace-Files.html">使用跟踪文件</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Overlays.html">调试使用覆盖层的程序</a>, 上一项： <a href="Macros.html">C预处理器宏</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

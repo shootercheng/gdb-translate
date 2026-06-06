@@ -1,0 +1,64 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>操作系统信息（使用 GDB 调试）</title>
+
+<meta name="description" content="Operating System Information (Debugging with GDB)"/>
+<meta name="keywords" content="Operating System Information (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Trace-File-Format.html" rel="next" title="Trace File Format"/>
+<link href="Target-Descriptions.html" rel="prev" title="Target Descriptions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Operating-System-Information">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Trace-File-Format.html" rel="next">跟踪文件格式</a>, 上一项： <a accesskey="p" href="Target-Descriptions.html" rel="prev">目标描述</a>, 返回： <a accesskey="u" href="index.html" rel="up">使用……调试 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="appendix" id="Operating-System-Information-1"><span>附录 H 操作系统信息<a class="copiable-link" href="#Operating-System-Information-1"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-operating-system-information"></a>
+
+<p>……的用户 <small class="sc">GDB</small> 通常希望获取有关目标上运行的操作系统状态的信息，例如进程列表或打开文件的列表。本节介绍了实现这一目的的机制。该机制与目标特性机制类似（见 <a class="pxref" href="Target-Descriptions.html">目标描述</a>），但侧重于目标的不同方面。
+</p>
+<p>操作系统信息是通过远程协议，使用‘<samp class="samp">qXfer</samp>’请求从目标获取的（见 <a class="pxref" href="General-Query-Packets.html#qXfer-osdata-read">qXfer osdata read</a>)。请求中的对象名称应该是‘<samp class="samp">osdata</samp>’，并且 <var class="var">附件</var> 标识要获取的数据。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Process-list.html">进程列表</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

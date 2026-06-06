@@ -1,0 +1,74 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>TUI（使用 GDB 进行调试）</title>
+
+<meta name="description" content="TUI (Debugging with GDB)"/>
+<meta name="keywords" content="TUI (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Emacs.html" rel="next" title="Emacs"/>
+<link href="Interpreters.html" rel="prev" title="Interpreters"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="TUI">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Emacs.html" rel="next">使用 <small class="sc">GDB</small> 在……之下 <small class="sc">GNU</small> Emacs</a>, 上一项： <a accesskey="p" href="Interpreters.html" rel="prev">命令解释器</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="gdb-Text-User-Interface"><span>25 <small class="sc">GDB</small> 文本用户界面<a class="copiable-link" href="#gdb-Text-User-Interface"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-TUI"></a>
+<a class="index-entry-id" id="index-Text-User-Interface"></a>
+
+<p> <small class="sc">GDB</small> 文本用户界面（TUI）是一种终端界面，它使用该库在不同的文本窗口中显示源文件、汇编输出、程序寄存器和命令。TUI 模式仅在有合适版本的该库可用的平台上受支持。 <code class="code">curses</code> 命令。TUI 模式仅在有合适版本的 <small class="sc">GDB</small>
+库可用的平台上受支持。 <code class="code">curses</code> 库是可用的。
+</p>
+<p>当你以‘ <small class="sc">GDB</small> 作为<samp class="samp">gdb -tui</samp>’的方式调用 GDB 时，TUI 模式默认启用。你还可以在 GDB 运行时使用各种 TUI 命令和按键绑定（如 <small class="sc">GDB</small> 运行时通过 <code class="command">tui
+enable</code> 或 <kbd class="kbd">C-x C-a</kbd>）在 TUI 模式和非 TUI 模式之间切换。请参阅 <a class="xref" href="TUI-Commands.html">TUI 命令</a>，以及
+<a class="ref" href="TUI-Keys.html">TUI 按键绑定</a>。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="TUI-Overview.html">TUI 概述</a></li>
+<li><a accesskey="2" href="TUI-Keys.html">TUI 按键绑定</a></li>
+<li><a accesskey="3" href="TUI-Single-Key-Mode.html">TUI 单键模式</a></li>
+<li><a accesskey="4" href="TUI-Mouse-Support.html">TUI 鼠标支持</a></li>
+<li><a accesskey="5" href="TUI-Commands.html">TUI 特定命令</a></li>
+<li><a accesskey="6" href="TUI-Configuration.html">TUI 配置变量</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

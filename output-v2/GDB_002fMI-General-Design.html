@@ -1,0 +1,83 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 总体设计（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI General Design (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI General Design (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Command-Syntax.html" rel="next" title="GDB/MI Command Syntax"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-General-Design">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Command-Syntax.html" rel="next"><small class="sc">GDB/MI</small> </a>, 上一项： <a accesskey="u" href="GDB_002fMI.html" rel="up"> <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-General-Design"><span>27.1 <small class="sc">GDB/MI</small> 总体设计<a class="copiable-link" href="#gdb_002fmi-General-Design"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-GDB_002fMI-General-Design"></a>
+
+<p>一个 <small class="sc">GDB/MI</small> 前端与 <small class="sc">GDB</small> 的交互涉及三个部分 —— 发送给的命令、对这些命令的响应以及通知。每个命令恰好产生一个响应，表明命令是成功完成还是出现错误。对于不恢复目标的命令，响应包含请求的信息。对于恢复目标的命令，响应仅表明目标是否成功恢复。通知是用于报告目标状态或 <small class="sc">GDB</small>状态变化的机制，这些变化不方便与某个命令关联并作为该命令响应的一部分进行报告。 <small class="sc">GDB</small> 通知的重要示例包括：
+</p>
+<p>执行通知。这些通知用于报告目标状态的变化 —— 当目标恢复或停止时。将此信息包含在恢复命令的响应中是不可行的，因为一个恢复命令可能会在不同线程中导致多个事件。此外，在目标中发生任何事件之前可能会经过相当长的时间，而前端需要知道恢复命令本身是否成功执行。
+</p><ul class="itemize mark-bullet">
+<li>控制台输出和状态通知。控制台输出通知用于报告 CLI 命令的输出以及其他命令的诊断信息。状态通知用于报告长时间运行操作的进度。自然地，将此信息包含在命令响应中意味着在命令完成之前不会产生任何输出，这是不可取的。
+
+</li><li>一般通知。命令可能会对
+
+</li><li>或目标状态产生超出其官方目的的各种副作用。例如，一个命令可能会更改所选线程。虽然此类更改可以包含在命令响应中，但使用通知可以实现更正交的前端设计。 <small class="sc">GDB</small> 不能保证每当 MI 命令报告错误时，
+
+</li></ul>
+
+<p>或目标处于任何特定状态，特别是，状态不会恢复到处理 MI 命令之前的状态。因此，每当 MI 命令导致错误时，我们建议前端刷新用户界面中显示的所有信息。
+<small class="sc">GDB</small> 上下文管理
+</p>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Context-management.html">异步命令执行和非停止模式</a></li>
+<li><a accesskey="2" href="Asynchronous-and-non_002dstop-modes.html">线程组</a></li>
+<li><a accesskey="3" href="Thread-groups.html">下一项：</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+命令语法 <a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> 命令语法</a>, 上一项： <a href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

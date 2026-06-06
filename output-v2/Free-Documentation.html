@@ -1,0 +1,86 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>免费文档（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Free Documentation (Debugging with GDB)"/>
+<meta name="keywords" content="Free Documentation (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Summary.html" rel="up" title="Summary"/>
+<link href="Contributors.html" rel="next" title="Contributors"/>
+<link href="Free-Software.html" rel="prev" title="Free Software"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsec-level-extent" id="Free-Documentation">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Contributors.html" rel="next">贡献者 <small class="sc">GDB</small></a>，上一项： <a accesskey="p" href="Free-Software.html" rel="prev">自由软件</a>，上级： <a accesskey="u" href="Summary.html" rel="up">总结 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="unnumberedsec" id="Free-Software-Needs-Free-Documentation"><span>自由软件需要免费文档<a class="copiable-link" href="#Free-Software-Needs-Free-Documentation"> ¶</a></span></h3>
+
+<p>如今自由软件社区最大的不足不在于软件本身，而在于缺乏可以随自由软件一同提供的优质免费文档。我们许多最重要的程序都没有附带免费的参考手册和免费的入门教程。文档是任何软件包不可或缺的一部分；当一个重要的自由软件包没有附带免费的手册和免费的教程时，这就是一个重大的缺失。如今我们有很多这样的缺失。
+</p>
+<p>以 Perl 为例。人们通常使用的教程手册是非免费的。这是怎么造成的呢？因为这些手册的作者以限制性条款发布了它们——禁止复制、禁止修改、源代码不可获取，这些都将它们排除在了自由软件的范畴之外。
+</p>
+<p>这种事情不是第一次发生，也远不是最后一次。我们多次听到 GNU 用户热切地描述他正在编写的手册，这是他打算为社区做出的贡献，但最后却得知他因为签署了一份使其成为非免费的出版合同而毁了一切。
+</p>
+<p>免费文档和自由软件一样，关乎的是自由，而非价格。非免费手册的问题不在于出版商对印刷版收取费用，这本身并没有问题。（自由软件基金会也出售手册的印刷版。）问题在于对手册使用的限制。免费手册以源代码形式提供，允许你复制和修改。非免费手册则不允许这样做。
+</p>
+<p>免费手册的自由标准与自由软件大致相同。必须允许再分发（包括常见的商业再分发），这样手册才能随程序的每一份副本一起提供，无论是在线形式还是纸质形式。
+</p>
+<p>允许修改技术内容也至关重要。当人们修改软件、添加或更改功能时，如果他们认真负责，也会修改手册，以便为修改后的程序提供准确清晰的文档。如果一本手册让你别无选择，只能编写一本新的手册来记录程序的更改版本，那么它实际上对我们的社区来说是不可用的。
+</p>
+<p>对修改方式的某些限制是可以接受的。例如，要求保留原作者的版权声明、分发条款或作者列表是可以的。要求修改后的版本包含修改说明也没问题。甚至整个不可删除或更改的部分也是可以接受的，只要它们涉及非技术主题（比如这部分）。这些限制是可以接受的，因为它们不会妨碍社区对手册的正常使用。
+</p>
+<p>然而，必须能够修改手册的所有 <em class="emph">技术</em>
+内容，然后通过所有常见的渠道以所有常见的媒体形式分发修改后的结果。否则，这些限制会妨碍对手册的使用，它就不是免费的，我们就需要另一本手册来替代它。
+</p>
+<p>请宣传这个问题。我们的社区不断有手册被专有出版模式吞噬。如果我们宣传自由软件需要免费的参考手册和免费的教程，也许下一个想通过编写文档做出贡献的人在为时已晚之前会意识到，只有免费手册才能为自由软件社区做出贡献。
+</p>
+<p>如果你正在编写文档，请坚持以 GNU 自由文档许可证或其他免费文档许可证发布它。请记住，这个决定需要你自己批准，你不必让出版商来做决定。一些商业出版商如果你坚持的话会使用免费许可证，但他们不会主动提出这个选项，需要你自己提出这个问题并坚定地表明这是你想要的。如果和你打交道的出版商拒绝了，请尝试其他出版商。如果你不确定提议的许可证是否免费，请写信至 <a class="email" href="mailto:licensing@gnu.org">licensing@gnu.org</a>.
+</p>
+<p>你可以通过购买商业出版商的免费、采用版权保护许可证的手册和教程来鼓励他们销售更多此类产品，特别是从为编写或重大改进付费的出版商那里购买。同时，尽量避免购买非免费文档。在购买手册之前检查其分发条款，并坚持要求与你做生意的人尊重你的自由。查看书籍的历史记录，并尽量奖励那些为作者编写或改进付费的出版商。
+</p>
+<p>自由软件基金会维护了一份其他出版商出版的免费文档列表，地址为
+<a class="url" href="http://www.fsf.org/doc/other-free-books.html">http://www.fsf.org/doc/other-free-books.html</a>.
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Contributors.html">贡献者 <small class="sc">GDB</small></a>，上一项： <a href="Free-Software.html">自由软件</a>，上级： <a href="Summary.html">总结 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

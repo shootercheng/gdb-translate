@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>gstack 手册（使用 GDB 进行调试）</title>
+
+<meta name="description" content="gstack man (Debugging with GDB)"/>
+<meta name="keywords" content="gstack man (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+pre.format-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gstack-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="heading" id="gstack"><span>gstack<a class="copiable-link" href="#gstack"> ¶</a></span></h3>
+
+
+<div class="format">
+<pre class="format-preformatted">gstack [-h | –帮助] [-v | –版本] <var class="var">进程 ID</var>
+</pre></div>
+
+<p>打印具有进程 ID 的正在运行程序的堆栈跟踪信息 <var class="var">进程 ID</var>. 如果该进程
+是多线程的， <code class="command">gstack</code> 则输出该进程中存在的每个线程的回溯信息。
+</p>
+<p>该脚本会调用 <small class="sc">GDB</small>, 附加到给定的进程 ID，打印堆栈跟踪信息，
+然后从该进程分离。
+</p>
+<p><code class="command">gstack</code> 如果 <code class="code">gdb</code> 由于任何原因（例如进程 ID 不存在或
+没有足够的权限附加到该进程）无法附加到给定的进程 ID，则以非零状态退出。
+</p>
+<dl class="table">
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项并简要说明。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dt><code class="env">-v</code></dt>
+<dd><p>打印版本信息然后退出。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><code class="env">AWK</code></dt>
+<dd><p>要使用的 Awk 解释器的完整文件名。如果未设置， <code class="env">PATH</code> 将搜索一个 <code class="code">awk</code> 程序。
+</p>
+</dd>
+<dt><code class="env">GDB</code></dt>
+<dd><p>一个 <small class="sc">GDB</small> 可执行文件的完整文件名，用于生成堆栈回溯信息。
+如果未设置， <code class="env">PATH</code> 将搜索一个 <code class="code">gdb</code> 程序。
+</p>
+</dd>
+<dt><code class="env">GDBARGS</code></dt>
+<dd><p>要传递给 <code class="code">gdb</code> 程序的可选参数。
+</p></dd>
+</dl>
+
+
+
+
+
+
+
+</body></html>

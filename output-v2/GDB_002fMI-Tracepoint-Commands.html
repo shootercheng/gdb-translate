@@ -1,0 +1,425 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 跟踪点命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Tracepoint Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Tracepoint Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Symbol-Query.html" rel="next" title="GDB/MI Symbol Query"/>
+<link href="GDB_002fMI-Data-Manipulation.html" rel="prev" title="GDB/MI Data Manipulation"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Tracepoint-Commands">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="GDB_002fMI-Symbol-Query.html" rel="next"><small class="sc">GDB/MI</small> 符号查询命令</a>, 上一步： <a accesskey="p" href="GDB_002fMI-Data-Manipulation.html" rel="prev"><small class="sc">GDB/MI</small> 数据操作</a>, 向上： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">内容</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Tracepoint-Commands"><span>27.17 <small class="sc">GDB/MI</small> 跟踪点命令<a class="copiable-link" href="#gdb_002fmi-Tracepoint-Commands"> ¶</a></span></h3>
+
+<p>本节中定义的命令实现了对跟踪点的 MI 支持。有关详细介绍，请参阅 <a class="ref" href="Tracepoints.html">跟踪点</a>.
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002dfind"></a>
+<h4 class="subheading" id="The-_002dtrace_002dfind-Command"><span>该 <code class="code">-trace-find</code> 命令<a class="copiable-link" href="#The-_002dtrace_002dfind-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-72"><span>概要<a class="copiable-link" href="#Synopsis-72"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-find <var class="var">模式</var> [<var class="var">参数</var>...]
+</pre></div>
+
+<p>使用由 <var class="var">模式</var> 和
+<var class="var">参数</var>定义的条件查找跟踪帧。下表列出了允许的模式及其参数。有关操作细节，请参阅 <a class="ref" href="tfind.html"><code class="code">tfind <var class="var">n</var></code></a>.
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">无</samp>’</dt>
+<dd><p>无需参数。停止检查跟踪帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">帧编号</samp>’</dt>
+<dd><p>需要一个整数作为参数。选择具有该索引的跟踪点帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">跟踪点编号</samp>’</dt>
+<dd><p>需要一个整数作为参数。查找与指定编号的跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">程序计数器</samp>’</dt>
+<dd><p>需要一个地址作为参数。查找与指定地址处的任何跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">程序计数器在范围内</samp>’</dt>
+<dd><p>需要两个地址作为参数。查找与指定范围内地址处的跟踪点对应的下一个跟踪帧。两个边界都被视为在范围内。
+</p>
+</dd>
+<dt>‘<samp class="samp">程序计数器在范围外</samp>’</dt>
+<dd><p>需要两个地址作为参数。查找与指定范围外地址处的跟踪点对应的下一个跟踪帧。两个边界都被视为在范围内。
+</p>
+</dd>
+<dt>‘<samp class="samp">行</samp>’</dt>
+<dd><p>需要位置规范作为参数。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>. 查找与指定位置处的跟踪点对应的下一个跟踪帧。
+</p>
+</dd>
+</dl>
+
+<p>如果‘<samp class="samp">无</samp>’作为 <var class="var">模式</var>传递，则响应没有字段。否则，响应可能具有以下字段：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">找到</samp>’</dt>
+<dd><p>此字段的值为‘<samp class="samp">0</samp>’或‘<samp class="samp">1</samp>’，具体取决于是否找到匹配的跟踪点。
+</p>
+</dd>
+<dt>‘<samp class="samp">跟踪帧</samp>’</dt>
+<dd><p>找到的跟踪帧的索引。仅当‘<samp class="samp">找到</samp>’字段的值为‘<samp class="samp">1</samp>’时，此字段才会出现。
+</p>
+</dd>
+<dt>‘<samp class="samp">跟踪点</samp>’</dt>
+<dd><p>找到的跟踪点的索引。仅当‘<samp class="samp">找到</samp>’字段的值为‘<samp class="samp">1</samp>’时，此字段才会出现。
+</p>
+</dd>
+<dt>‘<samp class="samp">帧</samp>’</dt>
+<dd><p>与找到的跟踪帧对应的帧的信息。仅当找到跟踪帧时，此字段才会出现。请参阅 <a class="xref" href="GDB_002fMI-Frame-Information.html"><small class="sc">GDB/MI</small> 帧信息</a>, 以获取此字段的描述。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-54"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-54"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">tfind</samp>’。
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002ddefine_002dvariable"></a>
+<h4 class="subheading" id="The-_002dtrace_002ddefine_002dvariable-Command"><span>该 <code class="code">-trace-define-variable</code> 命令<a class="copiable-link" href="#The-_002dtrace_002ddefine_002dvariable-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-73"><span>概要<a class="copiable-link" href="#Synopsis-73"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-define-variable <var class="var">名称</var> [ <var class="var">值</var> ]
+</pre></div>
+
+<p>创建跟踪变量 <var class="var">名称</var> 如果不存在。如果
+<var class="var">值</var> 被指定，则将指定跟踪变量的初始值设置为该值。请注意， <var class="var">名称</var> 应该以‘<samp class="samp">$</samp>’字符开头。
+</p>
+<h4 class="subsubheading" id="gdb-Command-55"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-55"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">tvariable</samp>’。
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002dframe_002dcollected"></a>
+<h4 class="subheading" id="The-_002dtrace_002dframe_002dcollected-Command"><span>该 <code class="code">-trace-frame-collected</code> 命令<a class="copiable-link" href="#The-_002dtrace_002dframe_002dcollected-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-74"><span>概要<a class="copiable-link" href="#Synopsis-74"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-frame-collected
+    [--var-print-values <var class="var">var_pval</var>]
+    [--comp-print-values <var class="var">comp_pval</var>]
+    [--registers-format <var class="var">regformat</var>]
+    [--memory-contents]
+</pre></div>
+
+<p>此命令返回在特定跟踪帧处收集的一组对象、寄存器名称、跟踪状态变量名称、内存范围和计算表达式。该命令的可选参数以不同方式影响输出格式。有关更多详细信息，请参阅下面的输出描述表。
+</p>
+<p>报告的名称可以按常规方式用于创建varobjs并检查对象本身。此命令返回的项目按类别分类，以便清楚地知道哪个是变量、哪个是寄存器、哪个是跟踪状态变量、哪个是内存范围以及哪个是计算表达式。
+</p>
+<p>例如，如果操作是
+</p><div class="example smallexample">
+<pre class="example-preformatted">收集 myVar, myArray[myIndex], myObj.field, myPtr-&gt;field, myCount + 2
+收集 *(int*)0xaf02bef0@40
+</pre></div>
+
+<p>则完整收集的对象将是 <code class="code">myVar</code>。该 <code class="code">myArray</code> 对象 <code class="code">myIndex</code> 将被部分收集，因为只收集索引处的元素。其余对象将是计算表达式。
+</p>
+<p>一个示例输出将是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-trace-frame-collected
+^done,
+  explicit-variables=[{name=&#34;myVar&#34;,value=&#34;1&#34;}],
+  computed-expressions=[{name=&#34;myArray[myIndex]&#34;,value=&#34;0&#34;},
+                        {name=&#34;myObj.field&#34;,value=&#34;0&#34;},
+                        {name=&#34;myPtr-&gt;field&#34;,value=&#34;1&#34;},
+                        {name=&#34;myCount + 2&#34;,value=&#34;3&#34;},
+                        {name=&#34;$tvar1 + 1&#34;,value=&#34;43970027&#34;}],
+  registers=[{number=&#34;0&#34;,value=&#34;0x7fe2c6e79ec8&#34;},
+             {number=&#34;1&#34;,value=&#34;0x0&#34;},
+             {number=&#34;2&#34;,value=&#34;0x4&#34;},
+             ...
+             {number=&#34;125&#34;,value=&#34;0x0&#34;}],
+  tvars=[{name=&#34;$tvar1&#34;,current=&#34;43970026&#34;}],
+  memory=[{address=&#34;0x0000000000602264&#34;,length=&#34;4&#34;},
+          {address=&#34;0x0000000000615bc0&#34;,length=&#34;4&#34;}]
+(gdb)
+</pre></div>
+
+<p>其中：
+</p>
+<dl class="table">
+<dt><code class="code">explicit-variables</code></dt>
+<dd><p>已完整收集的对象集（与仅收集数组的几个元素或结构体的几个成员相对）。对于每个对象，则打印其名称和值。 <code class="code">--var-print-values</code> 选项影响值字段的输出方式或是否输出。如果 <var class="var">var_pval</var> 为0，则仅打印名称；如果为1，则也打印其值；如果为2，则打印简单数据类型的名称、类型和值，以及数组、结构体和联合体的名称和类型。
+</p>
+</dd>
+<dt><code class="code">computed-expressions</code></dt>
+<dd><p>在当前跟踪帧处收集的计算表达式集。 <code class="code">--comp-print-values</code> 选项以与 <code class="code">--var-print-values</code> 选项影响
+<code class="code">explicit-variables</code> 集相同的方式影响此集。请参阅上文。
+</p>
+</dd>
+<dt><code class="code">registers</code></dt>
+<dd><p>在当前跟踪帧处收集的寄存器。对于每个收集的寄存器，返回其名称和当前值。值根据 <code class="code">--registers-format</code>
+选项进行格式化。有关允许格式的列表，请参阅 <code class="command">-data-list-register-values</code> 命令。默认值为‘<samp class="samp">x</samp>’。
+</p>
+</dd>
+<dt><code class="code">tvars</code></dt>
+<dd><p>在当前跟踪帧处收集的跟踪状态变量。对于每个收集的跟踪状态变量，返回其名称和当前值。
+</p>
+</dd>
+<dt><code class="code">memory</code></dt>
+<dd><p>在当前跟踪帧处收集的内存范围集。其内容是一个元组列表。每个元组表示一个收集的内存范围，并具有以下字段：
+</p>
+<dl class="table">
+<dt><code class="code">address</code></dt>
+<dd><p>内存范围的起始地址，作为十六进制文字。
+</p>
+</dd>
+<dt><code class="code">length</code></dt>
+<dd><p>内存范围的长度，作为十进制文字。
+</p>
+</dd>
+<dt><code class="code">contents</code></dt>
+<dd><p>内存块的内容，以十六进制表示。仅当指定 <code class="code">--memory-contents</code> 选项时才会出现此字段。
+</p>
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-56"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-56"> ¶</a></span></h4>
+
+<p>没有对应的 <small class="sc">GDB</small> 命令。
+</p>
+<h4 class="subsubheading" id="Example-60"><span>示例<a class="copiable-link" href="#Example-60"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-_002dtrace_002dlist_002dvariables"></a>
+<h4 class="subheading" id="The-_002dtrace_002dlist_002dvariables-Command"><span>该 <code class="code">-trace-list-variables</code> 命令<a class="copiable-link" href="#The-_002dtrace_002dlist_002dvariables-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-75"><span>概要<a class="copiable-link" href="#Synopsis-75"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-list-variables
+</pre></div>
+
+<p>返回所有已定义跟踪变量的表。表的每个元素具有以下字段：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">名称</samp>’</dt>
+<dd><p>跟踪变量的名称。此字段始终存在。
+</p>
+</dd>
+<dt>‘<samp class="samp">初始值</samp>’</dt>
+<dd><p>初始值。这是一个64位有符号整数。此字段始终存在。
+</p>
+</dd>
+<dt>‘<samp class="samp">当前值</samp>’</dt>
+<dd><p>跟踪变量当前时刻的值。这是一个64位有符号整数。如果当前值未定义，例如如果跟踪从未运行或当前正在运行，则此字段不存在。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-57"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-57"> ¶</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is ‘<samp class="samp">tvariables</samp>’.
+</p>
+<h4 class="subsubheading" id="Example-61"><span>Example<a class="copiable-link" href="#Example-61"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-trace-list-variables
+^done,trace-variables={nr_rows=&#34;1&#34;,nr_cols=&#34;3&#34;,
+hdr=[{width=&#34;15&#34;,alignment=&#34;-1&#34;,col_name=&#34;name&#34;,colhdr=&#34;Name&#34;},
+     {width=&#34;11&#34;,alignment=&#34;-1&#34;,col_name=&#34;initial&#34;,colhdr=&#34;Initial&#34;},
+     {width=&#34;11&#34;,alignment=&#34;-1&#34;,col_name=&#34;current&#34;,colhdr=&#34;Current&#34;}],
+body=[variable={name=&#34;$trace_timestamp&#34;,initial=&#34;0&#34;}
+      variable={name=&#34;$foo&#34;,initial=&#34;10&#34;,current=&#34;15&#34;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dtrace_002dsave"></a>
+<h4 class="subheading" id="The-_002dtrace_002dsave-Command"><span>The <code class="code">-trace-save</code> Command<a class="copiable-link" href="#The-_002dtrace_002dsave-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-76"><span>Synopsis<a class="copiable-link" href="#Synopsis-76"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-save [ -r ] [ -ctf ] <var class="var">filename</var>
+</pre></div>
+
+<p>Saves the collected trace data to <var class="var">filename</var>.  Without the
+‘<samp class="samp">-r</samp>’ option, the data is downloaded from the target and saved
+in a local file.  With the ‘<samp class="samp">-r</samp>’ option the target is asked
+to perform the save.
+</p>
+<p>By default, this command will save the trace in the tfile format.  You can
+supply the optional ‘<samp class="samp">-ctf</samp>’ argument to save it the CTF format. See
+<a class="ref" href="Trace-Files.html">Using Trace Files</a> for more information about CTF.
+</p>
+<h4 class="subsubheading" id="gdb-Command-58"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-58"> ¶</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is ‘<samp class="samp">tsave</samp>’.
+</p>
+
+<a class="index-entry-id" id="index-_002dtrace_002dstart"></a>
+<h4 class="subheading" id="The-_002dtrace_002dstart-Command"><span>The <code class="code">-trace-start</code> Command<a class="copiable-link" href="#The-_002dtrace_002dstart-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-77"><span>Synopsis<a class="copiable-link" href="#Synopsis-77"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-start
+</pre></div>
+
+<p>Starts a tracing experiment.  The result of this command does not
+have any fields.
+</p>
+<h4 class="subsubheading" id="gdb-Command-59"><span><small class="sc">GDB</small> Command<a class="copiable-link" href="#gdb-Command-59"> ¶</a></span></h4>
+
+<p>The corresponding <small class="sc">GDB</small> command is ‘<samp class="samp">tstart</samp>’.
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002dstatus"></a>
+<h4 class="subheading" id="The-_002dtrace_002dstatus-Command"><span>The <code class="code">-trace-status</code> Command<a class="copiable-link" href="#The-_002dtrace_002dstatus-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-78"><span>Synopsis<a class="copiable-link" href="#Synopsis-78"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-status
+</pre></div>
+
+<p>Obtains the status of a tracing experiment.  The result may include
+the following fields:
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">supported</samp>’</dt>
+<dd><p>May have a value of either ‘<samp class="samp">0</samp>’, when no tracing operations are
+supported, ‘<samp class="samp">1</samp>’, when all tracing operations are supported, or
+‘<samp class="samp">file</samp>’ when examining trace file.  In the latter case, examining
+of trace frame is possible but new tracing experiment cannot be
+started.  This field is always present.
+</p>
+</dd>
+<dt>‘<samp class="samp">running</samp>’</dt>
+<dd><p>May have a value of either ‘<samp class="samp">0</samp>’ or ‘<samp class="samp">1</samp>’ depending on whether
+tracing experiment is in progress on target.  This field is present
+if ‘<samp class="samp">supported</samp>’ field is not ‘<samp class="samp">0</samp>’.
+</p>
+</dd>
+<dt>‘<samp class="samp">stop-reason</samp>’</dt>
+<dd><p>Report the reason why the tracing was stopped last time.  This field
+may be absent iff tracing was never stopped on target yet.  The
+value of ‘<samp class="samp">request</samp>’ means the tracing was stopped as result of
+the <code class="code">-trace-stop</code> command.  The value of ‘<samp class="samp">overflow</samp>’ means
+the tracing buffer is full.  The value of ‘<samp class="samp">disconnection</samp>’ means
+tracing was automatically stopped when <small class="sc">GDB</small> has disconnected.
+The value of ‘<samp class="samp">passcount</samp>’ means tracing was stopped when a
+tracepoint was passed a maximal number of times for that tracepoint.
+This field is present if ‘<samp class="samp">supported</samp>’ field is not ‘<samp class="samp">0</samp>’.
+</p>
+</dd>
+<dt>‘<samp class="samp">stopping-tracepoint</samp>’</dt>
+<dd><p>The number of tracepoint whose passcount as exceeded.  This field is
+present iff the ‘<samp class="samp">stop-reason</samp>’ field has the value of
+‘<samp class="samp">passcount</samp>’.
+</p>
+</dd>
+<dt>‘<samp class="samp">帧</samp>’</dt>
+<dt>‘<samp class="samp">已创建的帧</samp>’</dt>
+<dd><p>‘<samp class="samp">帧</samp>’字段是跟踪缓冲区中跟踪帧总数的计数
+，而‘<samp class="samp">已创建的帧</samp>’是运行期间创建的总数
+，包括已丢弃的那些，例如当循环跟踪缓冲区已满时。这两个字段都是可选的。
+</p>
+</dd>
+<dt>‘<samp class="samp">缓冲区大小</samp>’</dt>
+<dt>‘<samp class="samp">可用缓冲区</samp>’</dt>
+<dd><p>这些字段表示跟踪缓冲区的当前大小和
+剩余空间。这些字段是可选的。
+</p>
+</dd>
+<dt>‘<samp class="samp">循环的</samp>’</dt>
+<dd><p>循环跟踪缓冲区标志的值。  <code class="code">1</code> 表示
+跟踪缓冲区是循环的，如果需要腾出空间，旧的跟踪帧将被丢弃， <code class="code">0</code> 表示跟踪缓冲区是线性的
+并且可能会填满。
+</p>
+</dd>
+<dt>‘<samp class="samp">已断开连接</samp>’</dt>
+<dd><p>已断开连接跟踪标志的值。  <code class="code">1</code> 表示
+断开连接后跟踪将继续 <small class="sc">GDB</small> ， <code class="code">0</code> 表示
+跟踪运行将停止。
+</p>
+</dd>
+<dt>‘<samp class="samp">跟踪文件</samp>’</dt>
+<dd><p>正在检查的跟踪文件的文件名。此字段是
+可选的，并且仅在检查跟踪文件时出现。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="gdb-Command-60"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-60"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">tstatus</samp>’。
+</p>
+<a class="index-entry-id" id="index-_002dtrace_002dstop"></a>
+<h4 class="subheading" id="The-_002dtrace_002dstop-Command"><span>该 <code class="code">-trace-stop</code> 命令<a class="copiable-link" href="#The-_002dtrace_002dstop-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-79"><span>概要<a class="copiable-link" href="#Synopsis-79"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -trace-stop
+</pre></div>
+
+<p>停止跟踪实验。此命令的结果具有与 <code class="code">-trace-status</code>相同的字段
+，除了‘<samp class="samp">支持的</samp>’和
+‘<samp class="samp">正在运行</samp>’字段不输出。
+</p>
+<h4 class="subsubheading" id="gdb-Command-61"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-61"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">tstop</samp>’。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一个： <a href="GDB_002fMI-Symbol-Query.html"><small class="sc">GDB/MI</small> 符号查询命令</a>，上一个： <a href="GDB_002fMI-Data-Manipulation.html"><small class="sc">GDB/MI</small> 数据操作</a>，上： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

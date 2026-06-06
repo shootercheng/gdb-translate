@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>结构体 stat（使用 GDB 进行调试）</title>
+
+<meta name="description" content="struct stat (Debugging with GDB)"/>
+<meta name="keywords" content="struct stat (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="Protocol-specific Representation of Datatypes"/>
+<link href="struct-timeval.html" rel="next" title="struct timeval"/>
+<link href="Memory-Transfer.html" rel="prev" title="Memory Transfer"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="struct-stat">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="struct-timeval.html" rel="next"></a>, 上一项： <a accesskey="p" href="Memory-Transfer.html" rel="prev">内存传输</a>, 上级： <a accesskey="u" href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up">数据类型的协议特定表示形式</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="unnumberedsubsubsec" id="struct-stat-1"><span>结构体 stat<a class="copiable-link" href="#struct-stat-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-struct-stat_002c-in-file_002di_002fo-protocol"></a>
+
+<p>目标使用的类型缓冲区 <code class="code">struct stat</code> 并且 <small class="sc">GDB</small> 
+定义如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">结构体 stat {
+    无符号整型  st_dev;      /* 设备 */
+    无符号整型  st_ino;      /* 索引节点 */
+    模式类型    st_mode;     /* 保护权限 */
+    无符号整型  st_nlink;    /* 硬链接数量 */
+    无符号整型  st_uid;      /* 所有者用户 ID */
+    无符号整型  st_gid;      /* 所有者组 ID */
+    无符号整型  st_rdev;     /* 设备类型（如果是索引节点设备） */
+    无符号长整型 st_size;     /* 总大小，以字节为单位 */
+    无符号长整型 st_blksize;  /* 文件系统 I/O 的块大小 */
+    无符号长整型 st_blocks;   /* 分配的块数量 */
+    时间类型      st_atime;    /* 最后访问时间 */
+    时间类型      st_mtime;    /* 最后修改时间 */
+    时间类型      st_ctime;    /* 最后更改时间 */
+};
+</pre></div>
+
+<p>整数数据类型符合在
+相应章节（见 <a class="ref" href="Integral-Datatypes.html">整数数据类型</a>, 详情）中给出的定义，因此这个
+结构体大小为 64 字节。
+</p>
+<p>几个字段的值有受限的含义和/或
+值的范围。
+</p>
+<dl class="table">
+<dt><code class="code">st_dev</code></dt>
+<dd><p>值为 0 表示文件，1 表示控制台。
+</p>
+</dd>
+<dt><code class="code">st_ino</code></dt>
+<dd><p>对目标没有有效含义。原样传输。
+</p>
+</dd>
+<dt><code class="code">st_mode</code></dt>
+<dd><p>有效的模式位在 <a class="ref" href="Constants.html">常量</a>中描述。任何其他
+位目前对目标没有意义。
+</p>
+</dd>
+<dt><code class="code">st_uid</code></dt>
+<dt><code class="code">st_gid</code></dt>
+<dt><code class="code">st_rdev</code></dt>
+<dd><p>对目标没有有效含义。原样传输。
+</p>
+</dd>
+<dt><code class="code">st_atime</code></dt>
+<dt><code class="code">st_mtime</code></dt>
+<dt><code class="code">st_ctime</code></dt>
+<dd><p>这些值的精度依赖于主机和文件系统。特别是在 Windows 主机上，文件系统可能不
+支持精确的时间值。
+</p></dd>
+</dl>
+
+<p>目标获取一个 <code class="code">struct stat</code> 上述表示形式，并负责在继续之前将其转换为目标表示形式。
+</p>
+<p>请注意，由于主机、目标和协议
+对 <code class="code">struct stat</code> 成员的表示形式在大小上存在差异，这些成员最终可能
+在目标上被截断。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="struct-timeval.html">结构体 timeval</a>, 上一项： <a href="Memory-Transfer.html">内存传输</a>, 上级： <a href="Protocol_002dspecific-Representation-of-Datatypes.html">数据类型的协议特定表示形式</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

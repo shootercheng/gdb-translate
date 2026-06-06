@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 简单示例（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Simple Examples (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Simple Examples (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Command-Description-Format.html" rel="next" title="GDB/MI Command Description Format"/>
+<link href="GDB_002fMI-Output-Records.html" rel="prev" title="GDB/MI Output Records"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Simple-Examples">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Command-Description-Format.html" rel="next"><small class="sc">GDB/MI</small> </a>, 上一项： <a accesskey="p" href="GDB_002fMI-Output-Records.html" rel="prev"><small class="sc">GDB/MI</small> 输出记录</a>, 上级： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Simple-Examples-of-gdb_002fmi-Interaction"><span>27.6 的简单示例 <small class="sc">GDB/MI</small> 交互<a class="copiable-link" href="#Simple-Examples-of-gdb_002fmi-Interaction"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-simple-examples"></a>
+
+<p>本小节展示了几个使用
+该接口进行交互的简单示例。在这些示例中，‘ <small class="sc">GDB/MI</small> -&gt;’ 表示以下行作为输入传递给<samp class="samp">-&gt;</samp>，而 ‘ <small class="sc">GDB/MI</small> &lt;-’ 表示从<samp class="samp">&lt;-</samp>接收到的输出。 <small class="sc">GDB/MI</small>.
+</p>
+<p>注意示例中显示的换行仅为了可读性，它们不会出现在实际输出中。
+</p>
+<h4 class="subheading" id="Setting-a-Breakpoint"><span>设置断点<a class="copiable-link" href="#Setting-a-Breakpoint"> ¶</a></span></h4>
+
+<p>设置断点会生成包含断点详细信息的同步输出。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; -break-insert main
+&lt;- ^done,bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,
+    enabled=&#34;y&#34;,addr=&#34;0x08048564&#34;,func=&#34;main&#34;,file=&#34;myprog.c&#34;,
+    fullname=&#34;/home/nickrob/myprog.c&#34;,line=&#34;68&#34;,thread-groups=[&#34;i1&#34;],
+    times=&#34;0&#34;}
+&lt;- (gdb)
+</pre></div>
+
+<h4 class="subheading" id="Program-Execution"><span>程序执行<a class="copiable-link" href="#Program-Execution"> ¶</a></span></h4>
+
+<p>程序执行会生成异步记录，并且 MI 会给出执行停止的原因。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; -exec-run
+&lt;- ^running
+&lt;- (gdb)
+&lt;- *stopped,reason=&#34;breakpoint-hit&#34;,disp=&#34;keep&#34;,bkptno=&#34;1&#34;,thread-id=&#34;0&#34;,
+   frame={addr=&#34;0x08048564&#34;,func=&#34;main&#34;,
+   args=[{name=&#34;argc&#34;,value=&#34;1&#34;},{name=&#34;argv&#34;,value=&#34;0xbfc4d4d4&#34;}],
+   file=&#34;myprog.c&#34;,fullname=&#34;/home/nickrob/myprog.c&#34;,line=&#34;68&#34;,
+   arch=&#34;i386:x86_64&#34;}
+&lt;- (gdb)
+-&gt; -exec-continue
+&lt;- ^running
+&lt;- (gdb)
+&lt;- *stopped,reason=&#34;exited-normally&#34;
+&lt;- (gdb)
+</pre></div>
+
+<h4 class="subheading" id="Quitting-gdb-1"><span>退出 <small class="sc">GDB</small><a class="copiable-link" href="#Quitting-gdb-1"> ¶</a></span></h4>
+
+<p>退出 <small class="sc">GDB</small> 只会打印结果类 ‘<samp class="samp">^exit</samp>’。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; (gdb)
+&lt;- -gdb-exit
+&lt;- ^exit
+</pre></div>
+
+<p>请注意，‘<samp class="samp">^exit</samp>’ 会立即打印，但 <small class="sc">GDB</small> 实际退出可能需要一些时间。在此期间， <small class="sc">GDB</small>
+会执行必要的清理操作，包括终止正在调试的程序或断开与调试硬件的连接，因此前端应该等待
+<small class="sc">GDB</small> 退出，并且只有在 <small class="sc">GDB</small> 在合理时间内未能退出时才应强制终止它。
+</p>
+<h4 class="subheading" id="A-Bad-Command"><span>一个错误的命令<a class="copiable-link" href="#A-Bad-Command"> ¶</a></span></h4>
+
+<p>如果你传递一个不存在的命令会发生以下情况：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-&gt; -rubbish
+&lt;- ^error,msg=&#34;Undefined MI command: rubbish&#34;
+&lt;- (gdb)
+</pre></div>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Command-Description-Format.html"><small class="sc">GDB/MI</small> 命令描述格式</a>, 上一项： <a href="GDB_002fMI-Output-Records.html"><small class="sc">GDB/MI</small> 输出记录</a>, 上级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

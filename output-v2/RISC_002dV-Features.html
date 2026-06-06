@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>RISC-V 特性（使用 GDB 调试）</title>
+
+<meta name="description" content="RISC-V Features (Debugging with GDB)"/>
+<meta name="keywords" content="RISC-V Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features"/>
+<link href="RX-Features.html" rel="next" title="RX Features"/>
+<link href="PowerPC-Features.html" rel="prev" title="PowerPC Features"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="RISC_002dV-Features">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="RX-Features.html" rel="next">RX 特性</a>, 上一项： <a accesskey="p" href="PowerPC-Features.html" rel="prev">PowerPC 特性</a>, 上一级： <a accesskey="u" href="Standard-Target-Features.html" rel="up">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="RISC_002dV-Features-1"><span>G.5.13 RISC-V 特性<a class="copiable-link" href="#RISC_002dV-Features-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-RISC_002dV-Features"></a>
+
+<p>‘<samp class="samp">org.gnu.gdb.riscv.cpu</samp>’ 特性是 RISC-V 目标所必需的。它应包含寄存器 ‘<samp class="samp">x0</samp>’ 到
+‘<samp class="samp">x31</samp>’，以及 ‘<samp class="samp">pc</samp>’。可以使用架构名称（‘<samp class="samp">x0</samp>’，
+‘<samp class="samp">x1</samp>’ 等），也可以使用 ABI 名称（‘<samp class="samp">零</samp>’，‘<samp class="samp">返回地址</samp>’ 等）。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.riscv.fpu</samp>’ 特性是可选的。如果存在，它
+应包含寄存器 ‘<samp class="samp">f0</samp>’ 到 ‘<samp class="samp">f31</samp>’，‘<samp class="samp">浮点标志</samp>’，
+‘<samp class="samp">浮点舍入模式</samp>’，以及 ‘<samp class="samp">浮点控制状态寄存器</samp>’。与 CPU 特性一样，可以使用架构寄存器名称或 ABI 名称。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.riscv.virtual</samp>’ 特性是可选的。如果存在，
+它应包含目标上没有由真实寄存器支持的寄存器，而是虚拟的，其中寄存器值
+是从其他目标状态派生而来的。在很多方面，这些类似于
+<small class="sc">GDB</small>伪寄存器，只是由目标实现。
+目前，此集合中预期的唯一寄存器是单字节的
+‘<samp class="samp">特权</samp>’ 寄存器，其最低有效两位包含目标的特权级别。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.riscv.csr</samp>’ 特性是可选的。如果存在，它
+应包含目标的所有标准控制状态寄存器（CSR）。标准 CSR 是
+RISC-V 规范文档中定义的那些。此特性与 FPU 特性之间存在一些
+重叠；‘<samp class="samp">浮点标志</samp>’，
+‘<samp class="samp">浮点舍入模式</samp>’，以及 ‘<samp class="samp">浮点控制状态寄存器</samp>’ 寄存器可以在任一特性中。预期是，如果目标有浮点硬件，这些寄存器将在 FPU 特性中，但如果目标有浮点控制寄存器，但没有其他浮点硬件，则可以将它们移到 CSR 特性中。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.riscv.vector</samp>’ 特性是可选的。如果存在，
+它应包含寄存器 ‘<samp class="samp">v0</samp>’ 到 ‘<samp class="samp">v31</samp>’，所有这些寄存器的大小必须相同。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="RX-Features.html">RX 特性</a>, 上一项： <a href="PowerPC-Features.html">PowerPC 特性</a>, 上一级： <a href="Standard-Target-Features.html">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

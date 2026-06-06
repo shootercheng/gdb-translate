@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>S/390和System z特性（使用GDB调试）</title>
+
+<meta name="description" content="S/390 and System z Features (Debugging with GDB)"/>
+<meta name="keywords" content="S/390 and System z Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features"/>
+<link href="Sparc-Features.html" rel="next" title="Sparc Features"/>
+<link href="RX-Features.html" rel="prev" title="RX Features"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="S_002f390-and-System-z-Features">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Sparc-Features.html" rel="next">Sparc特性</a>, 上一项： <a accesskey="p" href="RX-Features.html" rel="prev">RX特性</a>, 返回： <a accesskey="u" href="Standard-Target-Features.html" rel="up">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="S_002f390-and-System-z-Features-1"><span>G.5.15 S/390和System z特性<a class="copiable-link" href="#S_002f390-and-System-z-Features-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-S_002f390-features"></a>
+<a class="index-entry-id" id="index-target-descriptions_002c-System-z-features"></a>
+
+<p>‘<samp class="samp">org.gnu.gdb.s390.core</samp>’特性是S/390和
+System z目标所必需的。它应包含程序状态字（PSW）和16个通用
+寄存器。特别是，System z目标应提供64位
+寄存器‘<samp class="samp">pswm</samp>’，‘<samp class="samp">pswa</samp>’和‘<samp class="samp">r0</samp>’到‘<samp class="samp">r15</samp>’。
+S/390目标应提供这些寄存器的32位版本。
+以31位寻址模式运行的System z目标应提供
+‘<samp class="samp">pswm</samp>’和‘<samp class="samp">pswa</samp>’的32位版本，以及通用
+寄存器的上半部分‘<samp class="samp">r0h</samp>’到‘<samp class="samp">r15h</samp>’，以及它们的
+下半部分‘<samp class="samp">r0l</samp>’到‘<samp class="samp">r15l</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.fpr</samp>’特性是必需的。它应
+包含64位寄存器‘<samp class="samp">f0</samp>’到‘<samp class="samp">f15</samp>’，以及
+‘<samp class="samp">fpc</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.acr</samp>’特性是必需的。它应
+包含32位寄存器‘<samp class="samp">acr0</samp>’到‘<samp class="samp">acr15</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.linux</samp>’特性是可选的。它应
+包含寄存器‘<samp class="samp">orig_r2</samp>’，在System z
+目标上是64位宽，否则是32位宽。此外，该特性可能包含
+‘<samp class="samp">last_break</samp>’寄存器，其宽度取决于寻址
+模式，以及‘<samp class="samp">system_call</samp>’寄存器，它始终是
+32位宽。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.tdb</samp>’特性是可选的。它应
+包含64位寄存器‘<samp class="samp">tdb0</samp>’，‘<samp class="samp">tac</samp>’，‘<samp class="samp">tct</samp>’，
+‘<samp class="samp">atia</samp>’和‘<samp class="samp">tr0</samp>’到‘<samp class="samp">tr15</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.vx</samp>’特性是可选的。它应包含
+64位宽的寄存器‘<samp class="samp">v0l</samp>’到‘<samp class="samp">v15l</samp>’，这些寄存器将由 <small class="sc">GDB</small> 与浮点寄存器‘<samp class="samp">f0</samp>’
+到‘<samp class="samp">f15</samp>’组合，以呈现128位宽的向量寄存器
+‘<samp class="samp">v0</samp>’到‘<samp class="samp">v15</samp>’。此外，该特性应
+包含128位宽的向量寄存器‘<samp class="samp">v16</samp>’到
+‘<samp class="samp">v31</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.gs</samp>’特性是可选的。它应包含
+64位宽的保护存储控制寄存器‘<samp class="samp">gsd</samp>’，
+‘<samp class="samp">gssm</samp>’和‘<samp class="samp">gsepla</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.s390.gsbc</samp>’特性是可选的。它应包含
+64位宽的保护存储广播控制寄存器
+‘<samp class="samp">bc_gsd</samp>’，‘<samp class="samp">bc_gssm</samp>’和‘<samp class="samp">bc_gsepla</samp>’。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Sparc-Features.html">Sparc特性</a>，上一项： <a href="RX-Features.html">RX特性</a>，返回： <a href="Standard-Target-Features.html">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

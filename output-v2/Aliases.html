@@ -1,0 +1,137 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>别名（使用GDB进行调试）</title>
+
+<meta name="description" content="Aliases (Debugging with GDB)"/>
+<meta name="keywords" content="Aliases (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Extending-GDB.html" rel="up" title="Extending GDB"/>
+<link href="Python.html" rel="next" title="Python"/>
+<link href="Sequences.html" rel="prev" title="Sequences"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Aliases">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Python.html" rel="next">扩展 <small class="sc">GDB</small> 使用Python</a>, 上一项： <a accesskey="p" href="Sequences.html" rel="prev">预定义命令序列</a> <a accesskey="u" href="Extending-GDB.html" rel="up">扩展 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Command-Aliases"><span>23.2 命令别名<a class="copiable-link" href="#Command-Aliases"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-aliases-for-commands"></a>
+
+<p>别名允许你为现有命令定义替代拼写。
+例如，如果一个用Python定义的新 <small class="sc">GDB</small> 命令（请参阅 <a class="pxref" href="Python.html">扩展 <small class="sc">GDB</small> 使用Python</a>）有一个很长的名称，那么有一个缩写版本会很方便，这样可以减少输入量。
+</p>
+<p><small class="sc">GDB</small> 它本身就使用了别名。例如，‘<samp class="samp">s</samp>’ 是 ‘<samp class="samp">step</samp>’ 命令的别名，尽管它也是其他命令（如 ‘<samp class="samp">set</samp>’ 和 ‘<samp class="samp">show</samp>’）的模糊缩写。
+</p>
+<p>别名还用于为多字命令提供缩短或更常用的版本。例如， <small class="sc">GDB</small> 提供了 ‘<samp class="samp">tty</samp>’ 作为 ‘<samp class="samp">set inferior-tty</samp>’ 命令的别名。
+</p>
+<p>你可以使用 ‘<samp class="samp">alias</samp>’ 命令定义一个新的别名。
+</p>
+<dl class="table">
+<dt><a id="index-alias"></a><span><code class="code">alias [-a] [--] <var class="var">alias</var> = <var class="var">command</var> [<var class="var">default-args</var>]</code><a class="copiable-link" href="#index-alias"> ¶</a></span></dt>
+</dl>
+
+<p><var class="var">alias</var> 指定新别名的名称。‘
+<var class="var">alias</var> ’ 的每个单词必须由字母、数字、连字符和下划线组成。
+</p>
+<p><var class="var">command</var> 指定被别名化的现有命令的名称。
+</p>
+<p><var class="var">command</var> 也可以是现有别名的名称。在这种情况下， <var class="var">command</var> 不能是有默认参数的别名。
+</p>
+<p>‘<samp class="samp">-a</samp>’ 选项指定新别名是命令的缩写。缩写在命令补全中不使用。
+</p>
+<p>‘<samp class="samp">--</samp>’ 选项指定选项的结束，当 <var class="var">alias</var> 以连字符开头时很有用。
+</p>
+<p>你可以为你的别名指定 <var class="var">默认参数</var> 。这些
+<var class="var">默认参数</var> 将自动添加到在命令行上显式输入的别名参数之前。
+</p>
+<p>例如，下面定义了一个别名 <code class="code">btfullall</code> ，用于显示所有局部变量和所有帧参数：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias btfullall = backtrace -full -frame-arguments all
+</pre></div>
+
+<p>有关 <var class="var">默认参数</var>, 请参阅 <a class="ref" href="Command-aliases-default-args.html">默认参数</a>。
+</p>
+<p>这里有一个简单的示例，展示了如何为一个命令创建缩写，以减少输入量。假设你厌倦了输入 ‘<samp class="samp">disas</samp>’，它是 ‘<samp class="samp">disassemble</samp>’ 命令当前最短的无歧义缩写，你想要一个更短的版本，名为 ‘<samp class="samp">di</samp>’。以下操作可以实现这一点。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a di = disas
+</pre></div>
+
+<p>请注意，别名与用户定义的命令不同。对于用户定义的命令，你还需要使用 ‘<samp class="samp">document</samp>’ 命令为其编写文档。别名会自动采用现有命令的文档。
+</p>
+<p>这里有一个示例，我们将 ‘<samp class="samp">elms</samp>’ 作为 ‘<samp class="samp">elements</samp>’ 在 ‘<samp class="samp">set print elements</samp>’ 命令中的缩写。
+这表明你可以为命令的任何部分创建缩写。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a set print elms = set print elements
+(gdb) alias -a show print elms = show print elements
+(gdb) set p elms 200
+(gdb) show p elms
+打印字符串字符或数组元素的限制是200。
+</pre></div>
+
+<p>请注意，如果你正在定义一个 ‘<samp class="samp">set</samp>’ 命令的别名，并且你想为相应的 ‘<samp class="samp">show</samp>’
+命令创建一个别名，那么你需要单独定义后者。
+</p>
+<p>无歧义的缩写命令在 <var class="var">command</var> 和
+<var class="var">alias</var>, 中是允许的，就像通常一样。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias -a set pr elms = set p ele
+</pre></div>
+
+<p>最后，这里有一个示例，展示了如何为一个更复杂的命令创建一个单字别名。
+这将创建命令 ‘<samp class="samp">spe</samp>’，它是命令 ‘<samp class="samp">set print elements</samp>’ 的别名。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) alias spe = set print elements
+(gdb) spe 20
+</pre></div>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Command-aliases-default-args.html">默认参数</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Python.html">扩展 <small class="sc">GDB</small> 使用Python</a>, 上一项： <a href="Sequences.html">预定义命令序列</a>, 上级： <a href="Extending-GDB.html">扩展 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

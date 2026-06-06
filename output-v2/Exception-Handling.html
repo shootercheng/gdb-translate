@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>异常处理（使用 GDB 调试）</title>
+
+<meta name="description" content="Exception Handling (Debugging with GDB)"/>
+<meta name="keywords" content="Exception Handling (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Values-From-Inferior.html" rel="next" title="Values From Inferior"/>
+<link href="Threading-in-GDB.html" rel="prev" title="Threading in GDB"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Exception-Handling">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Values-From-Inferior.html" rel="next">来自被调试程序的值</a>, 上一项： <a accesskey="p" href="Threading-in-GDB.html" rel="prev">GDB 中的线程处理</a>, 上一级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Exception-Handling-1"><span>23.3.2.3 异常处理<a class="copiable-link" href="#Exception-Handling-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-python-exceptions"></a>
+<a class="index-entry-id" id="index-exceptions_002c-python"></a>
+
+<p>在执行 <code class="code">python</code> 命令时，Python 代码中未捕获的 Python 异常会被转换为对
+<small class="sc">GDB</small> 错误报告机制的调用。如果调用
+<code class="code">python</code> 的命令没有处理该错误， <small class="sc">GDB</small> 将终止该命令并打印错误消息。具体打印的内容取决于 <code class="code">set python print-stack</code> （请参阅 <a class="pxref" href="Python-Commands.html">Python 命令</a>)。
+示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python print foo
+Traceback (最近一次调用栈):
+  File &#34;&lt;string&gt;&#34;, line 1, in &lt;module&gt;
+NameError: name &#39;foo&#39; 未定义
+</pre></div>
+
+<p><small class="sc">GDB</small> 在 <small class="sc">GDB</small> Python 代码调用的命令中发生的错误会被转换为 Python 异常。Python 异常的类型取决于错误情况。
+</p>
+<dl class="ftable">
+<dt><a id="index-gdb_002eerror"></a><span><code class="code">gdb.error</code><a class="copiable-link" href="#index-gdb_002eerror"> ¶</a></span></dt>
+<dd><p>这是由 <small class="sc">GDB</small>生成的大多数异常的基类。
+它派生自 <code class="code">RuntimeError</code>, 以与早期版本的 <small class="sc">GDB</small>兼容。
+</p>
+<p>如果在 <small class="sc">GDB</small> 中发生的错误不属于更具体的类别，那么生成的异常将具有此类型。
+</p>
+</dd>
+<dt><a id="index-gdb_002eMemoryError"></a><span><code class="code">gdb.MemoryError</code><a class="copiable-link" href="#index-gdb_002eMemoryError"> ¶</a></span></dt>
+<dd><p>这是 <code class="code">gdb.error</code> 的一个子类，当操作试图访问被调试程序中的无效内存时会抛出该异常。
+</p>
+</dd>
+<dt><a id="index-KeyboardInterrupt"></a><span><code class="code">KeyboardInterrupt</code><a class="copiable-link" href="#index-KeyboardInterrupt"> ¶</a></span></dt>
+<dd><p>用户中断（通过 <kbd class="kbd">C-c</kbd> 或在分页提示时输入 <kbd class="kbd">q</kbd> ）会被转换为一个 Python <code class="code">KeyboardInterrupt</code> 异常。
+</p></dd>
+</dl>
+
+<p>在所有情况下，你的异常处理程序将看到 <small class="sc">GDB</small> 错误消息作为其值，并且在最接近 <small class="sc">GDB</small> 错误发生位置的 Python 语句处的 Python 调用栈回溯作为回溯信息。
+</p>
+
+<p>在通过 <small class="sc">GDB</small> 用 Python 实现
+<code class="code">gdb.Command</code>命令，或通过 <code class="code">gdb.Function</code>实现函数时，能够抛出一个不会导致回溯信息被打印的异常是很有用的。例如，用户可能错误地调用了该命令。  <small class="sc">GDB</small> 提供了一个特殊的异常类，可用于此目的。
+</p>
+<dl class="ftable">
+<dt><a id="index-gdb_002eGdbError"></a><span><code class="code">gdb.GdbError</code><a class="copiable-link" href="#index-gdb_002eGdbError"> ¶</a></span></dt>
+<dd><p>当从命令或函数中抛出此异常时，该命令或函数将失败，但不会显示 Python 栈。  <small class="sc">GDB</small> 本身不会抛出此异常，而是在用户 Python 代码抛出该异常时识别它。示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python
+&gt;class HelloWorld (gdb.Command):
+&gt;  &#34;&#34;&#34;向整个世界问好。&#34;&#34;&#34;
+&gt;  def __init__ (self):
+&gt;    super (HelloWorld, self).__init__ (&#34;hello-world&#34;, gdb.COMMAND_USER)
+&gt;  def invoke (self, args, from_tty):
+&gt;    argv = gdb.string_to_argv (args)
+&gt;    if len (argv) != 0:
+&gt;      raise gdb.GdbError (&#34;hello-world 不接受参数&#34;)
+&gt;    print (&#34;Hello, World!&#34;)
+&gt;HelloWorld ()
+&gt;end
+(gdb) hello-world 42
+hello-world 不接受参数
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Values-From-Inferior.html">来自被调试程序的值</a>, 上一项： <a href="Threading-in-GDB.html">GDB 中的线程处理</a>, 上一级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

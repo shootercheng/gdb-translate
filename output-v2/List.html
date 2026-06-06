@@ -1,0 +1,159 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>列表（使用GDB进行调试）</title>
+
+<meta name="description" content="List (Debugging with GDB)"/>
+<meta name="keywords" content="List (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Source.html" rel="up" title="Source"/>
+<link href="Location-Specifications.html" rel="next" title="Location Specifications"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="List">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Location-Specifications.html" rel="next">位置规范</a>, 上一项： <a accesskey="u" href="Source.html" rel="up">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Printing-Source-Lines"><span>9.1 打印源代码行<a class="copiable-link" href="#Printing-Source-Lines"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-list"></a>
+<a class="index-entry-id" id="index-l-_0028list_0029"></a>
+<p>要从源文件中打印行，请使用 <code class="code">list</code> 命令
+（缩写为 <code class="code">l</code>）。默认情况下，会打印十行。
+有几种方法可以指定你想要打印文件的哪一部分；请参阅 <a class="ref" href="Location-Specifications.html">位置规范</a>，以获取完整列表。
+</p>
+<p>以下是最常用的 <code class="code">list</code> 命令形式：
+</p>
+<dl class="table">
+<dt><code class="code">list <var class="var">linenum</var></code></dt>
+<dd><p>打印以行号为中心的行 <var class="var">行号</var> 在
+当前源文件中。
+</p>
+</dd>
+<dt><code class="code">list <var class="var">function</var></code></dt>
+<dd><p>打印以函数开头为中心的行
+<var class="var">函数</var>。
+</p>
+</dd>
+<dt><code class="code">list</code></dt>
+<dd><p>打印更多行。如果最后打印的行是使用
+<code class="code">list</code> 命令打印的，这将打印最后打印行之后的行；但是，如果最后打印的行是作为显示栈帧的一部分单独打印的行（请参阅 <a class="pxref" href="Stack.html">检查栈</a>），这将打印以该行中心的行。如果没有使用过
+<code class="code">list</code> 命令且没有单独打印过行，
+它将打印围绕函数的行 <code class="code">main</code>。
+</p>
+</dd>
+<dt><code class="code">list +</code></dt>
+<dd><p>与不使用参数使用该命令相同。
+</p>
+</dd>
+<dt><code class="code">list -</code></dt>
+<dd><p>打印最后打印行之前的行。
+</p>
+</dd>
+<dt><code class="code">list .</code></dt>
+<dd><p>打印当前选定帧内执行点周围的行。如果程序未运行，则改为打印主函数开始处周围的行。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-list_002c-how-many-lines-to-display"></a>
+<p>默认情况下， <small class="sc">GDB</small> 使用这些形式的
+ <code class="code">list</code> 命令时会打印十行源代码。你可以使用 <code class="code">set listsize</code>来更改此设置：
+</p>
+<dl class="table">
+<dt><a id="index-set-listsize"></a><span><code class="code">set listsize <var class="var">count</var></code><a class="copiable-link" href="#index-set-listsize"> ¶</a></span></dt>
+<dt><code class="code">set listsize unlimited</code></dt>
+<dd><p>使 <code class="code">list</code> 命令显示 <var class="var">数量</var> 行源代码（除非
+ <code class="code">list</code> 参数明确指定了其他数量）。
+将 <var class="var">数量</var> 设置为 <code class="code">unlimited</code> 或0表示没有限制。
+</p>
+</dd>
+<dt><a id="index-show-listsize"></a><span><code class="code">show listsize</code><a class="copiable-link" href="#index-show-listsize"> ¶</a></span></dt>
+<dd><p>显示 <code class="code">list</code> 打印的行数。
+</p></dd>
+</dl>
+
+<p>使用 <code class="code">list</code> 命令并按 <kbd class="key">回车键</kbd> 会丢弃参数，
+因此它等同于只输入 <code class="code">list</code>。这比再次列出相同的行更有用。对于参数 ‘<samp class="samp">-</samp>’ 有一个例外；该参数在重复操作时会保留，以便每次重复都会在源文件中向上移动。
+</p>
+<p>一般来说， <code class="code">list</code> 命令期望你提供零个、一个或两个位置规范。这些位置规范会被解释为解析为源代码行；有几种编写它们的方法
+（请参阅 <a class="pxref" href="Location-Specifications.html">位置规范</a>），但效果总是解析为要显示的某些源代码行。
+</p>
+<p>以下是 <code class="code">list</code>可能参数的完整描述：
+</p>
+<dl class="table">
+<dt><code class="code">list <var class="var">locspec</var></code></dt>
+<dd><p>打印围绕解析 <var class="var">位置规范</var>所得到的所有代码位置的行或行的中心的行。
+</p>
+</dd>
+<dt><code class="code">list <var class="var">first</var>,<var class="var">last</var></code></dt>
+<dd><p>打印从 <var class="var">第一行</var> 到 <var class="var">最后一行</var>的行。两个参数都是
+位置规范。当一个 <code class="code">list</code> 命令有两个位置规范时，
+并且第二个位置规范的源文件被省略，这指的是与第一个位置规范相同的源文件。如果
+<var class="var">第一行</var> 或 <var class="var">最后一行</var> 解析为程序中的多行源代码，那么列表命令将显示解析后的源代码行列表，并且不会继续进行源代码列表操作。
+</p>
+</dd>
+<dt><code class="code">list ,<var class="var">last</var></code></dt>
+<dd><p>打印以 <var class="var">最后一行</var>结尾的行。
+</p>
+<p>同样，如果 <var class="var">最后一行</var> 解析为程序中的多行源代码，那么列表命令将打印解析后的源代码行列表，并且不会继续进行源代码列表操作。
+</p>
+</dd>
+<dt><code class="code">list <var class="var">first</var>,</code></dt>
+<dd><p>打印从 <var class="var">第一行</var>开始的行。
+</p>
+</dd>
+<dt><code class="code">list +</code></dt>
+<dd><p>打印最后打印行之后的行。
+</p>
+</dd>
+<dt><code class="code">list -</code></dt>
+<dd><p>打印最后打印行之前的行。
+</p>
+</dd>
+<dt><code class="code">list</code></dt>
+<dd><p>如前面的表格所述。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Location-Specifications.html">位置规范</a>, 上一项： <a href="Source.html">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

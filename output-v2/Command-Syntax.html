@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>命令语法（使用GDB进行调试）</title>
+
+<meta name="description" content="Command Syntax (Debugging with GDB)"/>
+<meta name="keywords" content="Command Syntax (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Commands.html" rel="up" title="Commands"/>
+<link href="Command-Settings.html" rel="next" title="Command Settings"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Command-Syntax">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Command-Settings.html" rel="next">命令设置</a>, 上一项： <a accesskey="u" href="Commands.html" rel="up"><small class="sc">GDB</small> 命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Command-Syntax-1"><span>3.1 命令语法<a class="copiable-link" href="#Command-Syntax-1"> ¶</a></span></h3>
+
+<p>一条 <small class="sc">GDB</small> 命令是一行输入内容。其长度没有限制。它以一个命令名开头，后面跟着参数，参数的含义取决于命令名。例如，命令 <code class="code">step</code> 接受一个参数，该参数是单步执行的次数，如 ‘<samp class="samp">单步执行 5 次</samp>’。你也可以使用不带任何参数的 <code class="code">step</code> 命令。有些命令不允许带任何参数。
+</p>
+<a class="index-entry-id" id="index-abbreviation"></a>
+<p><small class="sc">GDB</small> 如果缩写不会引起歧义，命令名总是可以缩写。其他可能的命令缩写在各个命令的文档中有列出。在某些情况下，即使是有歧义的缩写也是允许的；例如， <code class="code">s</code> 被特别定义为等同于 <code class="code">step</code> 即使还有其他以 <code class="code">s</code>开头的命令。你可以通过将缩写作为 <code class="code">help</code> 命令的参数来测试它们。
+</p>
+<a class="index-entry-id" id="index-repeating-commands"></a>
+<a class="index-entry-id" id="index-RET-_0028repeat-last-command_0029"></a>
+<p>向 <small class="sc">GDB</small> 输入空行（只输入 <kbd class="key">回车键</kbd>）意味着重复上一条命令。某些命令（例如， <code class="code">run</code>）不会以这种方式重复；这些是那些意外重复可能会导致问题且你不太可能想要重复执行的命令。用户定义的命令可以禁用此功能；请参阅
+<a class="ref" href="Define.html">禁止重复</a>。
+</p>
+<p>当你使用 <code class="code">list</code> 和 <code class="code">x</code> 命令并通过按
+<kbd class="key">回车键</kbd>重复执行时，它们会构造新的参数，而不是完全按照之前输入的内容重复。这便于浏览源代码或内存。
+</p>
+<p><small class="sc">GDB</small> 你还可以用另一种方式使用 <kbd class="key">回车键</kbd> ：以类似于常用实用程序 <code class="code">more</code>
+的方式来分割冗长的输出（请参阅 <a class="pxref" href="Screen-Size.html">屏幕大小</a>）。由于在这种情况下很容易多按一次
+<kbd class="key">回车键</kbd> ，所以 <small class="sc">GDB</small> 会在任何生成此类显示的命令之后禁用命令重复。
+</p>
+<a class="index-entry-id" id="index-_0023-_0028a-comment_0029"></a>
+<a class="index-entry-id" id="index-comment"></a>
+<p>从 <kbd class="kbd">#</kbd> 到行尾的任何文本都是注释；它不起任何作用。这主要在命令文件中很有用（请参阅 <a class="pxref" href="Command-Files.html">命令文件</a>）。
+</p>
+<a class="index-entry-id" id="index-repeating-command-sequences"></a>
+<a class="index-entry-id" id="index-Ctrl_002do-_0028operate_002dand_002dget_002dnext_0029"></a>
+<p> <kbd class="kbd">Ctrl - o</kbd> 绑定对于重复一系列复杂的命令很有用。此命令像 <kbd class="key">回车键</kbd>一样接受当前行，然后从历史记录中获取相对于当前行的下一行进行编辑。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Command-Settings.html">命令设置</a>, 上一项： <a href="Commands.html"><small class="sc">GDB</small> 命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪点条件（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Tracepoint Conditions (Debugging with GDB)"/>
+<meta name="keywords" content="Tracepoint Conditions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Trace-State-Variables.html" rel="next" title="Trace State Variables"/>
+<link href="Tracepoint-Passcounts.html" rel="prev" title="Tracepoint Passcounts"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Conditions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Trace-State-Variables.html" rel="next">跟踪状态变量</a>, 上一项： <a accesskey="p" href="Tracepoint-Passcounts.html" rel="prev">跟踪点通过计数</a>, 上级： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Tracepoint-Conditions-1"><span>13.1.4 跟踪点条件<a class="copiable-link" href="#Tracepoint-Conditions-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-conditional-tracepoints"></a>
+<a class="index-entry-id" id="index-tracepoint-conditions"></a>
+
+<p>最简单的跟踪点类型是每次程序到达指定位置时收集数据。你还可以为跟踪点指定一个 <em class="dfn">条件</em> 。条件只是编程语言中的一个布尔表达式（请参阅 <a class="pxref" href="Expressions.html">表达式</a>）。带有条件的跟踪点会在程序每次到达该位置时计算表达式的值，只有当条件为真时才会进行数据收集。
+</p>
+<p>可以在设置跟踪点时，通过在<samp class="samp">if</samp>命令的参数中使用‘ <code class="code">trace</code> 来指定跟踪点条件。请参阅 <a class="xref" href="Create-and-Delete-Tracepoints.html">设置跟踪点</a>。也可以像设置断点一样，随时使用 <code class="code">condition</code> 命令来设置或更改这些条件。
+</p>
+<p>与断点条件不同， <small class="sc">GDB</small> 实际上并不计算条件表达式本身。相反， <small class="sc">GDB</small> 将表达式编码为一个代理表达式（请参阅 <a class="pxref" href="Agent-Expressions.html">GDB 代理表达式机制</a>），适合在目标设备上独立于 <small class="sc">GDB</small>执行。全局变量变为原始内存位置，局部变量变为栈访问，依此类推。
+</p>
+<p>例如，假设你有一个函数通常会被频繁调用，但在发生错误后不应再调用。你可以使用以下跟踪点命令来收集在错误代码在程序中传播时该函数调用的数据；无条件的跟踪点最终可能会收集数千个无用的跟踪帧，你不得不逐一查找。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <kbd class="kbd">trace normal_operation if errcode &gt; 0</kbd>
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Trace-State-Variables.html">跟踪状态变量</a>, 上一项： <a href="Tracepoint-Passcounts.html">跟踪点通过计数</a>, 上级： <a href="Set-Tracepoints.html">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

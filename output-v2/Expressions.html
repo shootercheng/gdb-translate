@@ -1,0 +1,94 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>表达式（使用GDB进行调试）</title>
+
+<meta name="description" content="Expressions (Debugging with GDB)"/>
+<meta name="keywords" content="Expressions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Ambiguous-Expressions.html" rel="next" title="Ambiguous Expressions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Expressions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ambiguous-Expressions.html" rel="next">有歧义的表达式</a> <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Expressions-1"><span>10.1 表达式<a class="copiable-link" href="#Expressions-1"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-expressions"></a>
+<p><code class="code">print</code> 以及许多其他 <small class="sc">GDB</small> 命令接受一个表达式并计算其值。你所使用的编程语言定义的任何类型的常量、变量或运算符在表达式中都是有效的，
+<small class="sc">GDB</small>。这包括条件表达式、函数调用、类型转换和字符串常量。如果在编译程序时包含了预处理宏的信息，它也包括预处理宏；请参阅
+<a class="ref" href="Compilation.html">为调试而编译</a>。
+</p>
+<a class="index-entry-id" id="index-arrays-in-expressions"></a>
+<p><small class="sc">GDB</small> 支持用户输入的表达式中的数组常量。语法是 {<var class="var">元素</var>, <var class="var">元素</var>…}。例如，你可以使用命令 <code class="code">print {1, 2, 3}</code> 来创建一个包含三个整数的数组。如果你将一个数组传递给一个函数或将其赋值给程序变量， <small class="sc">GDB</small> 会将数组复制到 <code class="code">malloc</code>目标程序中分配的内存中。
+</p>
+<p>由于C语言应用广泛，本手册示例中显示的大多数表达式都是用C语言编写的。请参阅 <a class="xref" href="Languages.html">使用 <small class="sc">GDB</small> 不同语言</a>，了解如何在其他语言中使用表达式的信息。
+</p>
+<p>在本节中，我们将讨论除了你所使用的编程语言中的运算符之外，可能在 <small class="sc">GDB</small>
+表达式中可用的运算符。然而，它们并不一定在所有使用的语言中都可用。
+</p>
+<a class="index-entry-id" id="index-casts_002c-in-expressions"></a>
+<p>所有语言都支持类型转换，而不仅仅是C语言，因为将一个数字转换为指针以便检查内存中该地址处的结构非常有用。
+</p>
+<p><small class="sc">GDB</small> 除了编程语言中常见的运算符之外，还支持以下运算符：
+</p>
+<dl class="table">
+<dt><code class="code">@</code></dt>
+<dd><p>‘<samp class="samp">@</samp>’ 是一个二元运算符，用于将内存的部分视为数组。请参阅 <a class="xref" href="Arrays.html">人工数组</a>，了解更多信息。
+</p>
+</dd>
+<dt><code class="code">::</code></dt>
+<dd><p>‘<samp class="samp">::</samp>’ 允许你根据变量定义所在的文件或函数来指定变量。请参阅 <a class="xref" href="Variables.html">程序变量</a>。目前，Ada、Rust、Pascal、Modula - 2和D语言不支持此功能。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-type-casting-memory"></a>
+<a class="index-entry-id" id="index-memory_002c-viewing-as-typed-object"></a>
+<a class="index-entry-id" id="index-casts_002c-to-view-memory"></a>
+<a id="index-_007btype_007d"></a><span><code class="code">{<var class="var">type</var>} <var class="var">addr</var></code><a class="copiable-link" href="#index-_007btype_007d"> ¶</a></span></dt>
+<dd><p>引用存储在地址 <var class="var">类型</var> 处的 <var class="var">地址</var> 类型的对象。地址 <var class="var">地址</var> 可以是任何值为整数或指针的表达式（但二元运算符周围需要括号，就像在类型转换中一样）。无论通常应该在 <var class="var">地址</var>处存储何种类型的数据，都允许使用此构造。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Ambiguous-Expressions.html">有歧义的表达式</a>, 上一项： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

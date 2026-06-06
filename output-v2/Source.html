@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>源（使用GDB调试）</title>
+
+<meta name="description" content="Source (Debugging with GDB)"/>
+<meta name="keywords" content="Source (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Data.html" rel="next" title="Data"/>
+<link href="Stack.html" rel="prev" title="Stack"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Source">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Data.html" rel="next">检查数据</a>, 上一步： <a accesskey="p" href="Stack.html" rel="prev">检查栈</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Examining-Source-Files"><span>9 检查源文件<a class="copiable-link" href="#Examining-Source-Files"> ¶</a></span></h2>
+
+<p><small class="sc">GDB</small> 可以打印程序源文件的部分内容，因为程序中记录的调试信息会告知 <small class="sc">GDB</small> 用于构建它的源文件有哪些。当程序停止时， <small class="sc">GDB</small> 会自动打印程序停止处的行。同样，当你选择一个栈帧（见 <a class="pxref" href="Selection.html">选择帧</a>）时， <small class="sc">GDB</small> 会打印该帧中执行停止处的行。你可以通过显式命令打印源文件的其他部分。
+</p>
+<p>如果你使用 <small class="sc">GDB</small> 通过其 <small class="sc">GNU</small> Emacs接口，你可能更愿意使用Emacs工具来查看源文件；见 <a class="ref" href="Emacs.html">使用
+<small class="sc">GDB</small> 在 <small class="sc">GNU</small> Emacs</a>下。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="List.html">打印源文件行</a></li>
+<li><a accesskey="2" href="Location-Specifications.html">位置指定</a></li>
+<li><a accesskey="3" href="Edit.html">编辑源文件</a></li>
+<li><a accesskey="4" href="Search.html">搜索源文件</a></li>
+<li><a accesskey="5" href="Source-Path.html">指定源文件目录</a></li>
+<li><a accesskey="6" href="Machine-Code.html">源文件和机器代码</a></li>
+<li><a accesskey="7" href="Disable-Reading-Source.html">禁用读取源代码</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>调试会话（使用GDB进行调试）</title>
+
+<meta name="description" content="Debug Session (Debugging with GDB)"/>
+<meta name="keywords" content="Debug Session (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Stub.html" rel="up" title="Remote Stub"/>
+<link href="Bootstrapping.html" rel="prev" title="Bootstrapping"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Debug-Session">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Bootstrapping.html" rel="prev">存根所需的操作</a> <a accesskey="u" href="Remote-Stub.html" rel="up">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Putting-it-All-Together"><span>20.5.3 综合应用<a class="copiable-link" href="#Putting-it-All-Together"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-remote-serial-debugging-summary"></a>
+<p>总之，当你的程序准备好进行调试时，你必须遵循以下步骤。
+</p>
+<ol class="enumerate">
+<li> 确保你已经定义了支持的底层例程（见 <a class="pxref" href="Bootstrapping.html">存根所需的操作</a>）：
+<div class="display">
+<pre class="display-preformatted"><code class="code">getDebugChar</code>, <code class="code">putDebugChar</code>,
+<code class="code">flush_i_cache</code>, <code class="code">memset</code>, <code class="code">exceptionHandler</code>.
+</pre></div>
+
+</li><li> 在你的程序启动代码中，在调用主程序之前插入以下行：
+
+<div class="example smallexample">
+<pre class="example-preformatted">set_debug_traps();
+breakpoint();
+</pre></div>
+
+<p>在某些机器上，当触发断点陷阱时，硬件会自动将程序计数器（PC）指向断点之后的指令。如果你的机器没有这样做，你可能需要进行调整
+<code class="code">handle_exception</code> 以便在第一次调用时让它返回到断点之后的指令，这样你的程序就不会一直停留在初始断点处，而是能够继续执行。
+</p>
+</li><li> 仅对于680x0存根，你需要提供一个名为
+<code class="code">exceptionHook</code>的变量。通常你只需使用：
+
+<div class="example smallexample">
+<pre class="example-preformatted">void (*exceptionHook)() = 0;
+</pre></div>
+
+<p>但如果在调用 <code class="code">set_debug_traps</code>, 之前，你将其设置为指向你程序中的一个函数，那么当
+<code class="code"><small class="sc">GDB</small></code> 在陷阱（例如总线错误）停止后继续执行时，该函数将被调用。由 <code class="code">exceptionHook</code> 指示的函数将接收一个参数：一个 <code class="code">int</code> ，它是异常编号。
+</p>
+</li><li> 将你的程序、 <small class="sc">GDB</small> 目标架构的调试存根以及支持子程序一起编译和链接。
+
+</li><li> 确保你的目标机器和 <small class="sc">GDB</small> 主机之间有串行连接，并确定主机上的串行端口。
+
+</li><li> 将你的程序下载到目标机器（或者通过制造商提供的任何方式将其传输到目标机器），并启动它。
+
+</li><li> 在主机上启动 <small class="sc">GDB</small> ，并连接到目标（见 <a class="pxref" href="Connecting.html">连接到远程目标</a>)。
+
+</li></ol>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一章： <a href="Bootstrapping.html">存根所需的操作</a>, 上一级： <a href="Remote-Stub.html">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>输出样式设置（使用 GDB 调试）</title>
+
+<meta name="description" content="Output Styling (Debugging with GDB)"/>
+<meta name="keywords" content="Output Styling (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB"/>
+<link href="Numbers.html" rel="next" title="Numbers"/>
+<link href="Screen-Size.html" rel="prev" title="Screen Size"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Output-Styling">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Numbers.html" rel="next"></a>, 上一项： <a accesskey="p" href="Screen-Size.html" rel="prev">屏幕大小</a>, 上级： <a accesskey="u" href="Controlling-GDB.html" rel="up">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Output-Styling-1"><span>22.5 输出样式设置<a class="copiable-link" href="#Output-Styling-1"> </a></span></h3>
+<a class="index-entry-id" id="index-styling"></a>
+<a class="index-entry-id" id="index-colors"></a>
+
+<a class="index-entry-id" id="index-set-style"></a>
+<a class="index-entry-id" id="index-show-style"></a>
+<p><small class="sc">GDB</small>  <a class="pxref" href="Mode-Options.html">选择模式</a>）。有各种样式设置可供选择；也可以完全禁用样式。
+</p>
+<dl class="table">
+<dt><code class="code">set style enabled ‘<samp class="samp">on|off</samp>’</code></dt>
+<dd><p>启用或禁用所有样式设置。默认值取决于主机，大多数主机默认为 ‘<samp class="samp">开启</samp>’。
+</p>
+<p> <code class="env">NO_COLOR</code> 环境变量设置为非空值时，那么 <small class="sc">GDB</small> 将在启动时将其更改为 ‘<samp class="samp">关闭</samp>’。
+</p>
+</dd>
+<dt><code class="code">show style enabled</code></dt>
+<dd><p>显示当前样式设置状态。
+</p>
+</dd>
+<dt><code class="code">set style emoji ‘<samp class="samp">auto|on|off</samp>’</code></dt>
+<dd><p>启用或禁用表情符号的使用。在大多数主机上，默认值为 ‘<samp class="samp">自动</samp>’，这意味着只有当主机字符集为 ‘<samp class="samp">UTF - 8</samp>’ 时才会使用表情符号；然而，在 Windows 上使用控制台时，默认值为 ‘<samp class="samp">关闭</samp>’。请注意，完全禁用样式设置也会阻止表情符号显示。
+</p>
+<p>目前，每当 <small class="sc">GDB</small> 报告错误或警告时都会打印表情符号。
+</p>
+</dd>
+<dt><code class="code">show style emoji</code></dt>
+<dd><p>显示当前表情符号输出状态。
+</p>
+</dd>
+<dt><code class="code">set style sources ‘<samp class="samp">on|off</samp>’</code></dt>
+<dd><p>启用或禁用源代码样式设置。这会影响源代码（例如 <code class="code">list</code> 命令的输出）是否进行样式设置。默认值为 ‘<samp class="samp">开启</samp>’。请注意，源代码样式设置仅在一般样式设置启用且有可用的源代码高亮库时才有效。 <small class="sc">GDB</small>。
+</p>
+<p>有两种进行高亮显示的方法。首先，如果
+<small class="sc">GDB</small> 与 GNU 源代码高亮库链接，则使用该库。否则，如果 <small class="sc">GDB</small> 配置了 Python 脚本支持，并且 Python Pygments 包可用，则将使用该包。
+</p>
+</dd>
+<dt><code class="code">show style sources</code></dt>
+<dd><p>显示当前源代码样式设置状态。
+</p>
+<a class="anchor" id="warning_002dprefix"></a></dd>
+<dt><code class="code">set style warning-prefix</code></dt>
+<dt><code class="code">show style warning-prefix</code></dt>
+<dt><code class="code">set style error-prefix</code></dt>
+<dt><code class="code">show style error-prefix</code></dt>
+<dd>
+<p>这些命令分别控制在警告和错误之前打印的前缀。此功能旨在与表情符号显示一起使用，因此只有在启用表情符号样式设置时才会显示前缀。默认情况下，警告使用警告符号表情符号，错误使用叉号表情符号。
+</p>
+</dd>
+<dt><code class="code">set style tui-current-position ‘<samp class="samp">on|off</samp>’</code></dt>
+<dd><p>启用或禁用 TUI 当前位置指示器突出显示的源代码和汇编代码的样式设置。默认值为 ‘<samp class="samp">关闭</samp>’。
+请参阅 <a class="xref" href="TUI.html"><small class="sc">GDB</small> 文本用户界面</a>。
+</p>
+</dd>
+<dt><code class="code">show style tui-current-position</code></dt>
+<dd><p>显示 TUI 当前位置指示器突出显示的源代码和汇编代码是否进行了样式设置。
+</p>
+<a class="anchor" id="style_005fdisassembler_005fenabled"></a></dd>
+<dt><code class="code">set style disassembler enabled ‘<samp class="samp">on|off</samp>’</code></dt>
+<dd><p>启用或禁用反汇编样式设置。这会影响反汇编输出（例如 <code class="code">disassemble</code>
+命令的输出）是否进行样式设置。反汇编样式设置仅在一般样式设置启用（使用 <code class="code">set style enabled on</code>）且有可用的源代码高亮库时才有效。 <small class="sc">GDB</small>。
+</p>
+<p>可用于设置反汇编输出样式的两个源代码高亮库是： <small class="sc">GDB</small>  <small class="sc">GDB</small>的内置反汇编器，或 Python Pygments 包。
+</p>
+<p><small class="sc">GDB</small>首选使用内置反汇编器进行样式设置，这通常能提供更好的效果，因为它能够对不同类型的指令操作数进行不同的样式设置。然而，内置反汇编器并非能对所有架构进行样式设置。
+</p>
+<p>对于内置反汇编器无法进行样式设置的架构，
+<small class="sc">GDB</small> 将尽可能回退到使用 Python Pygments 包。为了使用 Python Pygments 包， <small class="sc">GDB</small>
+必须使用 Python 支持进行构建，并且必须安装 Pygments 包。
+</p>
+<p>如果这两个选项都不可用，那么 <small class="sc">GDB</small> 将生成无样式的反汇编输出，即使此设置为 ‘<samp class="samp">开启</samp>’。
+</p>
+<p>要确定当前架构是否支持使用内置反汇编库进行样式设置，请参阅 <a class="ref" href="Maintenance-Commands.html#maint_005flibopcodes_005fstyling"><kbd class="kbd">维护
+显示 libopcodes - 样式设置 启用</kbd></a>。
+</p>
+</dd>
+<dt><code class="code">show style disassembler enabled</code></dt>
+<dd><p>显示当前反汇编样式设置状态。
+</p>
+</dd>
+</dl>
+
+<p>的子命令控制特定形式的样式设置。
+这些子命令都遵循相同的模式：每个可设置样式的对象都可以设置前景色、背景色和强度。 <code class="code">set style</code> 例如，可以使用
+</p>
+<p>命令组控制文件名的样式：
+<code class="code">set style filename</code> 
+</p>
+<dl class="table">
+<dt><code class="code">set style filename background <var class="var">color</var></code></dt>
+<dd><p>将背景色设置为 <var class="var">颜色</var>。  <var class="var">颜色</var> 可以是 ‘<samp class="samp">无</samp>’
+（表示终端的默认颜色）、ISO/IEC 6429 八种标准颜色之一的名称、终端调色板中 0 到 255 的索引，或者 24 位真彩色的 ‘<samp class="samp">#RRGGBB</samp>’ 格式的十六进制 RGB 三元组。
+</p>
+<p>有效的颜色名称有 ‘<samp class="samp">黑色</samp>’、‘<samp class="samp">红色</samp>’、‘<samp class="samp">绿色</samp>’、
+‘<samp class="samp">黄色</samp>’、‘<samp class="samp">蓝色</samp>’、‘<samp class="samp">品红色</samp>’、‘<samp class="samp">青色</samp>’ 和 ‘<samp class="samp">白色</samp>’。
+</p>
+<p>整数 0 到 7 是标准颜色的同义词。整数 8 - 15 用于 aixterm 扩展 16 色调色板中的所谓亮色。整数 16 - 255 是 xterm 扩展 256 色调色板的索引（通常是 6x6x6 立方体加上灰度渐变）。一般来说，256 色调色板依赖于终端，有时可以使用 OSC 4 序列进行更改，例如
+“\033]4;1;rgb:00/FF/00\033\\”。十六进制 24 位真彩色以格式 ‘<samp class="samp">#RRGGBB</samp>’ 指定，其中 RR、GG 和 BB 分别是指定红、绿、蓝颜色分量强度的两位十六进制整数。
+</p>
+<p>用户有责任验证终端是否支持指定的颜色。
+</p>
+</dd>
+<dt><code class="code">set style filename foreground <var class="var">color</var></code></dt>
+<dd><p>将前景色设置为 <var class="var">颜色</var>。  <var class="var">颜色</var> 的指定方式与背景色相同。
+</p>
+</dd>
+<dt><code class="code">set style filename intensity <var class="var">value</var></code></dt>
+<dd><p>将强度设置为 <var class="var">值</var>。有效的强度值有 ‘<samp class="samp">正常</samp>’
+（默认值）、‘<samp class="samp">粗体</samp>’ 和 ‘<samp class="samp">暗淡</samp>’。
+</p></dd>
+</dl>
+
+<p>该 <code class="code">show style</code> 命令及其子命令会使用自身的样式对输出中的样式名称进行样式设置。
+因此，使用 <code class="command">show style</code> 查看完整的样式列表、它们的特性以及每种样式的视觉效果。
+</p>
+<p>可设置样式的对象有：
+</p><dl class="table">
+<dt><code class="code">command</code></dt>
+<dd><p>控制任何 <small class="sc">GDB</small> 命令显示的样式。默认情况下，此样式的强度为粗体。
+<small class="sc">GDB</small>控制文件名和 URL 的样式。默认情况下，此样式的前景色为绿色。
+</p>
+</dd>
+<dt><code class="code">filename</code></dt>
+<dd><p>控制函数名的样式。这些由
+</p>
+</dd>
+<dt><code class="code">function</code></dt>
+<dd><p>命令族管理。默认情况下，此样式的前景色为黄色。
+<code class="code">set style function</code> 如果
+</p>
+<p>在使用其内置反汇编库进行样式设置时，此样式也用于样式化反汇编输出中的符号名称（请参阅 <small class="sc">GDB</small> 设置样式 反汇编
+启用 <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">）。</kbd></a>
+</p>
+</dd>
+<dt><code class="code">line-number</code></dt>
+<dd><p>控制行号的样式。默认情况下，此样式的强度为暗淡。
+</p>
+</dd>
+<dt><code class="code">variable</code></dt>
+<dd><p>控制变量名的样式。这些由
+<code class="code">set style variable</code> 命令族管理。默认情况下，此样式的前景色为青色。
+</p>
+</dd>
+<dt><code class="code">address</code></dt>
+<dd><p>控制地址的样式。这些由
+<code class="code">set style address</code> 命令族管理。默认情况下，此样式的前景色为蓝色。
+</p>
+<p>如果 <small class="sc">GDB</small> 在使用其内置反汇编库进行样式设置时，此样式也用于样式化反汇编输出中的地址（请参阅 <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">设置样式 反汇编
+启用</kbd></a>）。
+</p>
+</dd>
+<dt><code class="code">version</code></dt>
+<dd><p>控制 <small class="sc">GDB</small>版本号文本的样式。默认情况下，此样式的前景色为品红色，强度为粗体。版本号在两个地方显示， <code class="command">show version</code>的输出中，以及 <small class="sc">GDB</small> 启动时。
+</p>
+<p>为了控制 <small class="sc">GDB</small> 在启动时如何设置版本号的样式，将 <code class="code">set style version</code> 命令族添加到早期初始化命令文件中（请参阅 <a class="pxref" href="Initialization-Files.html">初始化文件</a>）。
+</p>
+</dd>
+<dt><code class="code">title</code></dt>
+<dd><p>控制标题的样式。这些由
+<code class="code">set style title</code> 命令族管理。默认情况下，此样式的强度为粗体。标题样式在显示列表的标题行时使用，例如
+<code class="code">info breakpoints</code> 输出的第一行（请参阅 <a class="pxref" href="Set-Breaks.html">设置断点</a>）。
+</p>
+</dd>
+<dt><code class="code">highlight</code></dt>
+<dd><p>控制高亮显示的样式。这些由
+<code class="code">set style highlight</code> 命令族管理。默认情况下，此样式的前景色为红色。命令使用高亮样式来吸引用户对其输出中某些特定部分的注意。例如，命令 <code class="command">apropos -v REGEXP</code> 使用高亮样式标记与 <var class="var">正则表达式</var>。
+</p>
+</dd>
+<dt><code class="code">metadata</code></dt>
+<dd><p>控制 <small class="sc">GDB</small> 添加到显示数据中的数据注释的样式。默认情况下，此样式的强度为暗淡。元数据注释包括 ‘<samp class="samp">重复 <var class="var">n</var> 次</samp>’ 注释，用于抑制重复数组元素的显示（请参阅 <a class="pxref" href="Print-Settings.html">打印设置</a>）、‘<samp class="samp">&lt;不可用&gt;</samp>’ 和 ‘<samp class="samp">&lt;错误 <var class="var">描述</var>&gt;</samp>’<!-- /@w --> 错误注释以及 ‘<samp class="samp">&lt;优化掉&gt;</samp>’ 注释，用于在回溯中显示栈帧信息时表示已优化掉的值（请参阅 <a class="pxref" href="Backtrace.html">回溯</a>）等。
+</p>
+</dd>
+<dt><code class="code">tui-border</code></dt>
+<dd><p>控制 TUI 边框的样式。请注意，与其他样式选项不同，只能通过
+<code class="code">set style</code>控制边框的颜色。这样做是出于兼容性原因，因为设置边框强度的 TUI 控件早于将通用样式添加到 <small class="sc">GDB</small>之前就存在了。请参阅 <a class="xref" href="TUI-Configuration.html">TUI 配置变量</a>。
+</p>
+</dd>
+<dt><code class="code">tui-active-border</code></dt>
+<dd><p>控制活动 TUI 边框的样式；即具有焦点的 TUI 窗口的样式。
+</p>
+</dd>
+<dt><code class="code">disassembler comment</code></dt>
+<dd><p>控制反汇编输出中注释的样式。这些由 <code class="code">set style disassembler comment</code> 命令族管理。此样式仅在 <small class="sc">GDB</small> 使用其内置反汇编库进行样式设置时使用（请参阅 <a class="pxref" href="#style_005fdisassembler_005fenabled"><kbd class="kbd">设置样式 反汇编
+启用</kbd></a>）。默认情况下，此样式的强度为暗淡，前景色为白色。
+</p>
+</dd>
+<dt><code class="code">disassembler immediate</code></dt>
+<dd><p>控制反汇编输出中数字操作数的样式。这些由 <code class="code">set style disassembler immediate</code>
+命令族管理。此样式不适用于表示地址的指令操作数，在这种情况下，将使用 ‘<samp class="samp">反汇编地址</samp>’
+样式。此样式仅在 <small class="sc">GDB</small> 使用其内置反汇编库进行样式设置时使用。默认情况下，此样式的前景色为蓝色。
+</p>
+</dd>
+<dt><code class="code">disassembler address</code></dt>
+<dd><p>控制反汇编输出中地址操作数的样式。这是 ‘<samp class="samp">地址</samp>’ 样式的别名。
+</p>
+</dd>
+<dt><code class="code">disassembler symbol</code></dt>
+<dd><p>控制反汇编输出中符号名称的样式。这是 ‘<samp class="samp">函数</samp>’ 样式的别名。
+</p>
+</dd>
+<dt><code class="code">disassembler mnemonic</code></dt>
+<dd><p>控制反汇编输出中指令助记符的样式。这些由 <code class="code">set style disassembler
+mnemonic</code> 命令族管理。此样式也用于汇编指令，例如 <code class="code">.byte</code>, <code class="code">.word</code>, 等。此样式仅在 <small class="sc">GDB</small> 使用其内置反汇编库进行样式设置时使用。默认情况下，此样式的前景色为绿色。
+</p>
+</dd>
+<dt><code class="code">disassembler register</code></dt>
+<dd><p>控制反汇编输出中寄存器操作数的样式。这些由 <code class="code">set style disassembler register</code>
+命令族管理。此样式仅在 <small class="sc">GDB</small> 使用其内置反汇编库进行样式设置时使用。默认情况下，此样式的前景色为红色。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Numbers.html">数字</a>, 上一项： <a href="Screen-Size.html">屏幕大小</a>, 上级： <a href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

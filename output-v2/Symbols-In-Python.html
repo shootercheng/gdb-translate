@@ -1,0 +1,358 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的符号（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Symbols In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Symbols In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Symbol-Tables-In-Python.html" rel="next" title="Symbol Tables In Python"/>
+<link href="Blocks-In-Python.html" rel="prev" title="Blocks In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Symbols-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Symbol-Tables-In-Python.html" rel="next">Python 中的符号表表示形式</a>, 上一项： <a accesskey="p" href="Blocks-In-Python.html" rel="prev">从 Python 访问块</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Python-representation-of-Symbols"><span>23.3.2.30 符号的 Python 表示形式<a class="copiable-link" href="#Python-representation-of-Symbols"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-symbols-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eSymbol"></a>
+
+<p><small class="sc">GDB</small> 将每个变量、函数和类型表示为符号表中的一个条目。请参阅 <a class="xref" href="Symbols.html">检查符号表</a>.同样，Python 在 <small class="sc">GDB</small> 使用
+<code class="code">gdb.Symbol</code> 对象。
+</p>
+<p>以下与符号相关的函数在 <code class="code">gdb</code>
+模块：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_symbol</strong> <var class="def-var-arguments">(名称 <span class="r"></span>, 块 <span class="r"></span><span class="r">]]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fsymbol"> ¶</a></span></dt>
+<dd><p>此函数按名称搜索符号。搜索范围可以限制在可选的域和块参数中定义的参数。
+</p>
+<p><var class="var">名称</var> 是符号的名称。它必须是一个字符串。可选的 <var class="var">块</var> 参数将搜索限制在该 <var class="var">块</var>中可见的符号。 <var class="var">块</var> 参数必须是一个
+<code class="code">gdb.Block</code> 对象。如果省略，则使用当前帧的块。可选的 <var class="var">域</var> 参数将搜索限制在域类型。 <var class="var">域</var> 参数必须是在 <code class="code">gdb</code> 模块中定义并在本章后面描述的域常量。
+</p>
+<p>结果是一个包含两个元素的元组。第一个元素是一个 <code class="code">gdb.Symbol</code> 对象，或者如果未找到符号则为 <code class="code">None</code> 。如果找到符号，第二个元素是 <code class="code">True</code> 如果符号是方法对象的字段（例如， <code class="code">this</code> 在 C 中<code class="t">++</code>），否则为 <code class="code">False</code>。如果未找到符号，第二个元素是 <code class="code">False</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fglobal_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_global_symbol</strong> <var class="def-var-arguments">(名称 <span class="r">[</span>, 域<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fglobal_005fsymbol"> ¶</a></span></dt>
+<dd><p>此函数按名称搜索全局符号。搜索范围可以通过域参数进行限制。
+</p>
+<p><var class="var">名称</var> 是符号的名称。它必须是一个字符串。可选的 <var class="var">域</var> 参数将搜索限制在域类型。 <var class="var">域</var> 参数必须是在 <code class="code">gdb</code>
+模块中定义并在本章后面描述的域常量。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象，或者如果未找到符号则为 <code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fstatic_005fsymbol"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_static_symbol</strong> <var class="def-var-arguments">(名称 <span class="r">[</span>, 域<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fstatic_005fsymbol"> ¶</a></span></dt>
+<dd><p>此函数按名称搜索具有静态链接的全局符号。搜索范围可以通过域参数进行限制。
+</p>
+<p><var class="var">名称</var> 是符号的名称。它必须是一个字符串。可选的 <var class="var">域</var> 参数将搜索限制在域类型。 <var class="var">域</var> 参数必须是在 <code class="code">gdb</code>
+模块中定义并在本章后面描述的域常量。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象，或者如果未找到符号则为 <code class="code">None</code> 。
+</p>
+<p>请注意，此函数不会找到函数作用域内的静态变量。要查找此类变量，请遍历函数的
+<code class="code">gdb.Block</code> 并检查 <code class="code">block.addr_class</code> 是否为
+<code class="code">gdb.SYMBOL_LOC_STATIC</code>.
+</p>
+<p>可能存在多个具有相同名称的具有静态链接的全局符号。此函数将只返回它找到的第一个匹配符号。找到哪个符号取决于 <small class="sc">GDB</small> 当前停止的位置，因为 <small class="sc">GDB</small> 将首先在当前目标文件中搜索匹配的符号，然后搜索所有其他目标文件。如果应用程序尚未运行，则 <small class="sc">GDB</small> 将按调试信息中出现的顺序搜索所有目标文件。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002elookup_005fstatic_005fsymbols"><span class="category-def">函数： </span><span><strong class="def-name">gdb.lookup_static_symbols</strong> <var class="def-var-arguments">(名称 <span class="r">[</span>, 域<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002elookup_005fstatic_005fsymbols"> ¶</a></span></dt>
+<dd><p>与……类似 <code class="code">gdb.lookup_static_symbol</code>, 此函数按名称搜索具有静态链接的全局符号，并可选择通过域参数进行限制。 但是，此函数返回找到的所有匹配符号的列表，而不仅仅是第一个。
+</p>
+<p><var class="var">名称</var> 是符号的名称。 它必须是一个字符串。可选的 <var class="var">域</var> 参数将搜索限制在域类型。 <var class="var">域</var> 参数必须是在 <code class="code">gdb</code>
+模块中定义并在本章后面描述的域常量。
+</p>
+<p>结果是一个 <code class="code">gdb.Symbol</code> 对象列表，如果没有找到匹配的符号，该列表可能为空。
+</p>
+<p>请注意，此函数不会找到函数作用域内的静态变量。要查找此类变量，请遍历函数的
+<code class="code">gdb.Block</code> 并检查 <code class="code">block.addr_class</code> 是否为
+<code class="code">gdb.SYMBOL_LOC_STATIC</code>。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Symbol</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002etype"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.type</strong><a class="copiable-link" href="#index-Symbol_002etype"> ¶</a></span></dt>
+<dd><p>符号的类型，或者 <code class="code">None</code> 如果没有记录类型。此属性表示为一个 <code class="code">gdb.Type</code> 对象。请参阅 <a class="xref" href="Types-In-Python.html">Python 中的类型</a>。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002esymtab"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.symtab</strong><a class="copiable-link" href="#index-Symbol_002esymtab"> ¶</a></span></dt>
+<dd><p>符号出现的符号表。此属性表示为一个 <code class="code">gdb.Symtab</code> 对象。请参阅 <a class="xref" href="Symbol-Tables-In-Python.html">Python 中的符号表表示形式</a>。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eline"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.line</strong><a class="copiable-link" href="#index-Symbol_002eline"> ¶</a></span></dt>
+<dd><p>符号在源代码中定义的行号。这是一个整数。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002ename"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.name</strong><a class="copiable-link" href="#index-Symbol_002ename"> ¶</a></span></dt>
+<dd><p>符号的名称，以字符串形式表示。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002elinkage_005fname"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.linkage_name</strong><a class="copiable-link" href="#index-Symbol_002elinkage_005fname"> ¶</a></span></dt>
+<dd><p>链接器使用的符号名称（即，可能是经过修饰的）。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eprint_005fname"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.print_name</strong><a class="copiable-link" href="#index-Symbol_002eprint_005fname"> ¶</a></span></dt>
+<dd><p>适合输出的符号名称形式。这可以是
+<code class="code">name</code> 或 <code class="code">linkage_name</code>, 具体取决于用户是否要求 <small class="sc">GDB</small> 显示去修饰或修饰后的名称。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eaddr_005fclass"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.addr_class</strong><a class="copiable-link" href="#index-Symbol_002eaddr_005fclass"> ¶</a></span></dt>
+<dd><p>符号的地址类。这对如何查找符号的值进行分类。每个地址类是在
+<code class="code">gdb</code> 模块中定义并在本章后面描述的常量。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002edomain"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.domain</strong><a class="copiable-link" href="#index-Symbol_002edomain"> ¶</a></span></dt>
+<dd><p>符号的域。每个域是在
+<code class="code">gdb</code> 模块中定义并在本章后面描述的常量。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eneeds_005fframe"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.needs_frame</strong><a class="copiable-link" href="#index-Symbol_002eneeds_005fframe"> ¶</a></span></dt>
+<dd><p>如果计算此符号的值需要一个帧（请参阅 <code class="code">True</code> 从 Python 访问 inferior 栈帧 <a class="pxref" href="Frames-In-Python.html">），则为</a>，否则为 <code class="code">False</code> 。通常，局部变量需要一个帧，但其他符号不需要。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eis_005fargument"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.is_argument</strong><a class="copiable-link" href="#index-Symbol_002eis_005fargument"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果符号是函数的参数。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eis_005fartificial"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.is_artificial</strong><a class="copiable-link" href="#index-Symbol_002eis_005fartificial"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果符号是人工的。人工符号是编译器引入的符号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eis_005fconstant"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.is_constant</strong><a class="copiable-link" href="#index-Symbol_002eis_005fconstant"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果符号是常量。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eis_005ffunction"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.is_function</strong><a class="copiable-link" href="#index-Symbol_002eis_005ffunction"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果符号是函数或方法。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Symbol_002eis_005fvariable"><span class="category-def">变量： </span><span><strong class="def-name">Symbol.is_variable</strong><a class="copiable-link" href="#index-Symbol_002eis_005fvariable"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果符号是变量，而不是函数或类型之类的东西。请注意，对于参数，此属性也返回 <code class="code">False</code> 。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Symbol</code> 对象具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Symbol_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Symbol.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Symbol_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">True</code> 对象有效，则返回 <code class="code">gdb.Symbol</code> ，否则返回
+<code class="code">False</code> 。如果 <code class="code">gdb.Symbol</code> 对象所引用的符号在 <small class="sc">GDB</small> 中不再存在，则该对象可能会变得无效。如果在调用方法时对象无效，所有其他 <code class="code">gdb.Symbol</code> 方法将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Symbol_002evalue"><span class="category-def">函数： </span><span><strong class="def-name">Symbol.value</strong> <var class="def-var-arguments">(<span class="r">[</span>帧<span class="r">]</span>)</var><a class="copiable-link" href="#index-Symbol_002evalue"> ¶</a></span></dt>
+<dd><p>计算符号的值，作为一个 <code class="code">gdb.Value</code>。对于函数，这计算函数的地址，并转换为适当的类型。如果符号需要一个帧来计算其值，则必须提供 <var class="var">帧</var> 。如果没有提供 <var class="var">帧</var> ，或者 <var class="var">帧</var> 无效，则此方法将抛出异常。
+</p></dd></dl>
+
+<p>在 <code class="code">gdb.Symbol</code> 中可用的域类别在 <code class="code">gdb</code> 模块中表示为常量：
+</p>
+<dl class="vtable">
+<dt><a class="index-entry-id" id="index-SYMBOL_005fUNDEF_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fUNDEF_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_UNDEF_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fUNDEF_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>当未发现域或以下域都不适用时使用。这通常表示符号信息或 <small class="sc">GDB</small>对符号的处理存在错误。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fVAR_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fVAR_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_VAR_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fVAR_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含变量。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fFUNCTION_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fFUNCTION_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_FUNCTION_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fFUNCTION_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含函数。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fTYPE_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fTYPE_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_TYPE_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fTYPE_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含类型。在类似 C 的语言中，使用标签（出现在 <code class="code">struct</code>, 或 <code class="code">union</code>关键字之后的名称）的类型不会出现在这里；在其他语言中，所有类型都在此域中。
+<code class="code">enum</code> 
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fSTRUCT_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fSTRUCT_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_STRUCT_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fSTRUCT_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域保存结构体、联合体和枚举标签名称。此域仅用于类似 C 的语言。例如，在以下代码中：
+</p><div class="example smallexample">
+<pre class="example-preformatted">struct type_one { int x; };
+typedef struct type_one type_two;
+</pre></div>
+<p>这里 <code class="code">type_one</code> 将在 <code class="code">SYMBOL_STRUCT_DOMAIN</code>, 但
+<code class="code">type_two</code> 将在 <code class="code">SYMBOL_TYPE_DOMAIN</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLABEL_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fLABEL_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_LABEL_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLABEL_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含标签（用于 goto）的名称。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fMODULE_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fMODULE_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_MODULE_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fMODULE_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含 Fortran 模块类型的名称。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fCOMMON_005fBLOCK_005fDOMAIN"></a>
+<a id="index-gdb_002eSYMBOL_005fCOMMON_005fBLOCK_005fDOMAIN"></a><span><code class="code">gdb.SYMBOL_COMMON_BLOCK_DOMAIN</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fCOMMON_005fBLOCK_005fDOMAIN"> ¶</a></span></dt>
+<dd><p>此域包含 Fortran 公共块的名称。
+</p></dd>
+</dl>
+
+<p>在搜索符号时，可以将所需的域常量直接传递给查找函数。例如：
+</p><div class="example smallexample">
+<pre class="example-preformatted">symbol = gdb.lookup_symbol (&#34;name&#34;, domain=gdb.SYMBOL_VAR_DOMAIN)
+</pre></div>
+
+<p>对于更复杂的搜索，有一组相应的常量，每个常量的名称都基于前面的常量，但用<samp class="samp">SEARCH</samp>前缀替换<samp class="samp">SYMBOL</samp>前缀；例如，
+<code class="code">SEARCH_LABEL_DOMAIN</code>. 这些常量可以通过按位或组合形成一个搜索常量，例如：
+</p><div class="example smallexample">
+<pre class="example-preformatted">symbol = gdb.lookup_symbol (&#34;name&#34;,
+                            domain=gdb.SEARCH_VAR_DOMAIN | gdb.SEARCH_TYPE_DOMAIN)
+</pre></div>
+
+<p>在 <code class="code">gdb.Symbol</code> 中可用的地址类类别在 <code class="code">gdb</code> 模块中表示为常量：
+</p>
+<dl class="vtable">
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fUNDEF"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fUNDEF"></a><span><code class="code">gdb.SYMBOL_LOC_UNDEF</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fUNDEF"> ¶</a></span></dt>
+<dd><p>如果地址类返回此值，则表示符号信息或 <small class="sc">GDB</small>对符号的处理存在错误。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fCONST"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fCONST"></a><span><code class="code">gdb.SYMBOL_LOC_CONST</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fCONST"> ¶</a></span></dt>
+<dd><p>值是常量整数。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fSTATIC"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fSTATIC"></a><span><code class="code">gdb.SYMBOL_LOC_STATIC</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fSTATIC"> ¶</a></span></dt>
+<dd><p>值位于固定地址。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fREGISTER"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fREGISTER"></a><span><code class="code">gdb.SYMBOL_LOC_REGISTER</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fREGISTER"> ¶</a></span></dt>
+<dd><p>值在寄存器中。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fARG"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fARG"></a><span><code class="code">gdb.SYMBOL_LOC_ARG</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fARG"> ¶</a></span></dt>
+<dd><p>值是一个参数。此值位于帧的参数列表中符号内部存储的偏移量处。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fREF_005fARG"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fREF_005fARG"></a><span><code class="code">gdb.SYMBOL_LOC_REF_ARG</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fREF_005fARG"> ¶</a></span></dt>
+<dd><p>值的地址存储在帧的参数列表中。与
+<code class="code">LOC_ARG</code> 类似，只是值的地址存储在偏移量处，而不是值本身。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fREGPARM_005fADDR"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fREGPARM_005fADDR"></a><span><code class="code">gdb.SYMBOL_LOC_REGPARM_ADDR</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fREGPARM_005fADDR"> ¶</a></span></dt>
+<dd><p>值是指定的寄存器。与 <code class="code">LOC_REGISTER</code> 类似，只是寄存器保存的是参数的地址，而不是参数本身。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fLOCAL"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fLOCAL"></a><span><code class="code">gdb.SYMBOL_LOC_LOCAL</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fLOCAL"> ¶</a></span></dt>
+<dd><p>值是局部变量。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fTYPEDEF"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fTYPEDEF"></a><span><code class="code">gdb.SYMBOL_LOC_TYPEDEF</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fTYPEDEF"> ¶</a></span></dt>
+<dd><p>值未使用。 <code class="code">SYMBOL_STRUCT_DOMAIN</code> 域中的符号都具有此类别。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fLABEL"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fLABEL"></a><span><code class="code">gdb.SYMBOL_LOC_LABEL</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fLABEL"> ¶</a></span></dt>
+<dd><p>值是标签。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fBLOCK"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fBLOCK"></a><span><code class="code">gdb.SYMBOL_LOC_BLOCK</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fBLOCK"> ¶</a></span></dt>
+<dd><p>值是块。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fCONST_005fBYTES"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fCONST_005fBYTES"></a><span><code class="code">gdb.SYMBOL_LOC_CONST_BYTES</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fCONST_005fBYTES"> ¶</a></span></dt>
+<dd><p>值是字节序列。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fUNRESOLVED"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fUNRESOLVED"></a><span><code class="code">gdb.SYMBOL_LOC_UNRESOLVED</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fUNRESOLVED"> ¶</a></span></dt>
+<dd><p>值位于固定地址，但每次引用变量时，变量的地址必须从最小符号表中确定。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fOPTIMIZED_005fOUT"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fOPTIMIZED_005fOUT"></a><span><code class="code">gdb.SYMBOL_LOC_OPTIMIZED_OUT</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fOPTIMIZED_005fOUT"> ¶</a></span></dt>
+<dd><p>该值实际上在程序中不存在。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fCOMPUTED"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fCOMPUTED"></a><span><code class="code">gdb.SYMBOL_LOC_COMPUTED</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fCOMPUTED"> ¶</a></span></dt>
+<dd><p>值的地址是一个计算位置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-SYMBOL_005fLOC_005fCOMMON_005fBLOCK"></a>
+<a id="index-gdb_002eSYMBOL_005fLOC_005fCOMMON_005fBLOCK"></a><span><code class="code">gdb.SYMBOL_LOC_COMMON_BLOCK</code><a class="copiable-link" href="#index-gdb_002eSYMBOL_005fLOC_005fCOMMON_005fBLOCK"> ¶</a></span></dt>
+<dd><p>值的地址是一个符号。这仅用于 Fortran 公共块。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Symbol-Tables-In-Python.html">Python 中的符号表表示形式</a>, 上一项： <a href="Blocks-In-Python.html">从 Python 访问块</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

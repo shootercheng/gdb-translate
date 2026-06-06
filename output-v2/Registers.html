@@ -1,0 +1,157 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>寄存器（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Registers (Debugging with GDB)"/>
+<meta name="keywords" content="Registers (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Floating-Point-Hardware.html" rel="next" title="Floating Point Hardware"/>
+<link href="Convenience-Funs.html" rel="prev" title="Convenience Funs"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Registers">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Floating-Point-Hardware.html" rel="next">浮点硬件</a>, 上一项： <a accesskey="p" href="Convenience-Funs.html" rel="prev"></a>, 上一项： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Registers-1"><span>10.14 寄存器<a class="copiable-link" href="#Registers-1"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-registers"></a>
+<p>在表达式中，您可以将机器寄存器的内容作为变量引用，这些变量的名称以 ‘<samp class="samp">$</samp>’ 开头。不同的机器寄存器名称不同；使用 <code class="code">info registers</code> 查看您的机器上使用的名称。
+</p>
+<dl class="table">
+<dt><a id="index-info-registers"></a><span><code class="code">info registers</code><a class="copiable-link" href="#index-info-registers"> ¶</a></span></dt>
+<dd><p>打印除浮点和向量寄存器之外的所有寄存器的名称和值（在选定的栈帧中）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-floating-point-registers"></a>
+<a id="index-info-all_002dregisters"></a><span><code class="code">info all-registers</code><a class="copiable-link" href="#index-info-all_002dregisters"> ¶</a></span></dt>
+<dd><p>打印所有寄存器的名称和值，包括浮点和向量寄存器（在选定的栈帧中）。
+</p>
+<a class="anchor" id="info_005fregisters_005freggroup"></a></dd>
+<dt><code class="code">info registers <var class="var">reggroup</var> …</code></dt>
+<dd><p>打印每个指定的
+<var class="var">寄存器组</var>的寄存器名称和值。 <var class="var">寄存器组</var> 可以是
+<code class="code">maint print reggroups</code> 返回的任何组（请参阅 <a class="pxref" href="Maintenance-Commands.html">维护命令</a>）。
+</p>
+</dd>
+<dt><code class="code">info registers <var class="var">regname</var> …</code></dt>
+<dd><p>打印每个指定寄存器的 <em class="dfn">相对化</em> 值 <var class="var">寄存器名称</var>。如下文详细讨论的，寄存器值通常相对于选定的栈帧。 <var class="var">寄存器名称</var> 可以是您使用的机器上有效的任何寄存器名称，带或不带开头的 ‘<samp class="samp">$</samp>’。
+</p></dd>
+</dl>
+
+<a class="anchor" id="standard-registers"></a><a class="index-entry-id" id="index-stack-pointer-register"></a>
+<a class="index-entry-id" id="index-program-counter-register"></a>
+<a class="index-entry-id" id="index-process-status-register"></a>
+<a class="index-entry-id" id="index-frame-pointer-register"></a>
+<a class="index-entry-id" id="index-standard-registers"></a>
+<p><small class="sc">GDB</small> 有四个“标准”寄存器名称，在大多数机器上（只要它们不与架构的寄存器规范助记符冲突）的表达式中都可用。寄存器名称
+<code class="code">$pc</code> 和 <code class="code">$sp</code> 用于程序计数器寄存器和栈指针。  <code class="code">$fp</code> 用于包含指向当前栈帧指针的寄存器， <code class="code">$ps</code> 用于包含处理器状态的寄存器。例如，您可以使用
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p/x $pc
+</pre></div>
+
+<p>以十六进制打印程序计数器，或者使用
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">x/i $pc
+</pre></div>
+
+<p>打印下一条要执行的指令，或者给栈指针加四<a class="footnote" href="#FOOT12" id="DOCF12"><sup>12</sup></a> 使用
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $sp += 4
+</pre></div>
+
+<p>只要可能，即使机器有不同的规范助记符，这四个标准寄存器名称在您的机器上仍然可用，只要不冲突。 <code class="code">info registers</code> 命令显示规范名称。例如，在 SPARC 上， <code class="code">info
+registers</code> 将处理器状态寄存器显示为 <code class="code">$psr</code> 但您也可以将其称为 <code class="code">$ps</code>；在基于 x86 的机器上 <code class="code">$ps</code>
+是 <small class="sc">EFLAGS</small> 寄存器的别名。
+</p>
+<p><small class="sc">GDB</small> 当以这种方式检查寄存器时，始终将普通寄存器的内容视为整数。有些机器有只能保存浮点值的特殊寄存器；这些寄存器被认为具有浮点值。没有办法将普通寄存器的内容作为浮点值引用（尽管您可以 <em class="emph">打印</em> 它作为浮点值，使用 ‘<samp class="samp">print/f $<var class="var">寄存器名称</var></samp>’）。
+</p>
+<p>有些寄存器有不同的“原始”和“虚拟”数据格式。这意味着操作系统保存寄存器内容的数据格式与您的程序通常看到的格式不同。例如，68881 浮点协处理器的寄存器总是以“扩展”（原始）格式保存，但所有 C 程序都期望使用“双精度”（虚拟）格式。在这种情况下， <small class="sc">GDB</small> 通常只处理虚拟格式（对您的程序有意义的格式），但 <code class="code">info registers</code> 命令以两种格式打印数据。
+</p>
+<a class="index-entry-id" id="index-SSE-registers-_0028x86_0029"></a>
+<a class="index-entry-id" id="index-MMX-registers-_0028x86_0029"></a>
+<p>有些机器有特殊寄存器，其内容可以有几种不同的解释方式。例如，现代基于 x86 的机器有 SSE 和 MMX 寄存器，可以以几种不同的格式一起保存多个值。  <small class="sc">GDB</small> 以 <code class="code">struct</code> 表示法引用此类寄存器：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $xmm1
+$1 = {
+  v4_float = {0, 3.43859137e-038, 1.54142831e-044, 1.821688e-044},
+  v2_double = {9.92129282474342e-303, 2.7585945287983262e-313},
+  v16_int8 = &#34;\000\000\000\000\3706;\001\v\000\000\000\r\000\000&#34;,
+  v8_int16 = {0, 0, 14072, 315, 11, 0, 13, 0},
+  v4_int32 = {0, 20657912, 11, 13},
+  v2_int64 = {88725056443645952, 55834574859},
+  uint128 = 0x0000000d0000000b013b36f800000000
+}
+</pre></div>
+
+<p>要设置此类寄存器的值，您需要告诉 <small class="sc">GDB</small> 您希望更改寄存器的哪个视图，就好像您在为一个 <code class="code">struct</code> 成员赋值一样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"> (gdb) set $xmm1.uint128 = 0x000000000000000000000000FFFFFFFF
+</pre></div>
+
+<p>通常，寄存器值相对于选定的栈帧（请参阅 <a class="pxref" href="Selection.html">选择帧</a>）。这意味着如果退出所有更深层的栈帧并恢复其保存的寄存器，您将获得寄存器将包含的值。为了查看硬件寄存器的真实内容，您必须选择最内层的帧（使用 ‘<samp class="samp">frame 0</samp>’）。
+</p>
+<a class="index-entry-id" id="index-caller_002dsaved-registers"></a>
+<a class="index-entry-id" id="index-call_002dclobbered-registers"></a>
+<a class="index-entry-id" id="index-volatile-registers"></a>
+<a class="index-entry-id" id="index-_003cnot-saved_003e-values"></a>
+<p>通常，ABI 会保留一些寄存器，被调用者无需保存这些寄存器（也称为“调用者保存”、“调用破坏”或“易失性”寄存器）。因此，如果寄存器的值此后被被调用者更改， <small class="sc">GDB</small> 可能无法知道调用之前（换句话说，在外层帧中）寄存器的值。
+<small class="sc">GDB</small> 会尝试从调试信息、展开信息或编译器生成的机器代码中推断内层帧保存（“被调用者保存”）寄存器的位置。如果某个寄存器未被保存，并且 <small class="sc">GDB</small> 知道该寄存器是“调用者保存”的（通过其自身对 ABI 的了解，或者因为调试/展开信息明确表示寄存器的值未定义）， <small class="sc">GDB</small>
+会显示 ‘<samp class="samp">&lt;未保存&gt;</samp>’<!-- /@w --> 作为寄存器的值。对于 <small class="sc">GDB</small> 不了解寄存器保存约定的目标，如果被调用者未保存某个寄存器，则假设其在外层帧中的值和位置与内层帧相同。这通常没有问题，因为如果寄存器是调用破坏的，调用者要么不关心调用后寄存器中的内容，要么有代码来恢复它关心的值。但是请注意，如果您在外层帧中更改这样的寄存器，您可能也会影响内层帧。此外，您查看的帧越“外层”，调用破坏的寄存器的值就越有可能是错误的，也就是说，它实际上并不代表调用之前寄存器的值。
+</p>
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF12" id="FOOT12">(12)</a></h5>
+<p>在内存中栈向下增长的机器（现在大多数机器都是这样）上，这是一种从栈中移除一个字的方法。这假设选择了最内层的栈帧；当选择其他栈帧时，不允许设置 <code class="code">$sp</code> 。要从栈中弹出整个帧，无论机器架构如何，使用 <code class="code">return</code>；请参阅 <a class="ref" href="Returning.html">从函数返回</a>。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Floating-Point-Hardware.html">浮点硬件</a>, 上一项： <a href="Convenience-Funs.html">便利函数</a>, 上一项： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>转储/恢复文件（使用GDB进行调试）</title>
+
+<meta name="description" content="Dump/Restore Files (Debugging with GDB)"/>
+<meta name="keywords" content="Dump/Restore Files (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Core-File-Generation.html" rel="next" title="Core File Generation"/>
+<link href="Memory-Region-Attributes.html" rel="prev" title="Memory Region Attributes"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Dump_002fRestore-Files">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Core-File-Generation.html" rel="next">如何从您的程序生成核心文件</a>, 上一项： <a accesskey="p" href="Memory-Region-Attributes.html" rel="prev">内存区域属性</a>, 上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Copy-Between-Memory-and-a-File"><span>10.19 内存和文件之间的复制<a class="copiable-link" href="#Copy-Between-Memory-and-a-File"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-dump_002frestore-files"></a>
+<a class="index-entry-id" id="index-append-data-to-a-file"></a>
+<a class="index-entry-id" id="index-dump-data-to-a-file"></a>
+<a class="index-entry-id" id="index-restore-data-from-a-file"></a>
+
+<p>您可以使用以下命令 <code class="code">dump</code>, <code class="code">append</code>, 和
+<code class="code">restore</code> 在目标内存和文件之间复制数据。
+<code class="code">dump</code> 和 <code class="code">append</code> 命令将数据写入文件，而
+<code class="code">restore</code> 命令从文件中读取数据并将其恢复到被调试程序的内存中。文件可以是二进制、摩托罗拉S记录、英特尔十六进制、泰克十六进制或Verilog十六进制格式；然而， <small class="sc">GDB</small> 只能追加到二进制文件，并且不能从Verilog十六进制文件中读取。
+</p>
+<dl class="table">
+<dt><a id="index-dump"></a><span><code class="code">dump <span class="r">[</span><var class="var">format</var><span class="r">]</span> memory <var class="var">filename</var> <var class="var">start_addr</var> <var class="var">end_addr</var></code><a class="copiable-link" href="#index-dump"> ¶</a></span></dt>
+<dt><code class="code">dump <span class="r">[</span><var class="var">format</var><span class="r">]</span> value <var class="var">filename</var> <var class="var">expr</var></code></dt>
+<dd><p>转储从 <var class="var">起始地址</var> 到 <var class="var">结束地址</var>的内存内容，或者 <var class="var">表达式</var>的值到 <var class="var">文件名</var> 以指定的格式。
+</p>
+<p> <var class="var">格式</var> 参数可以是以下任意一种：
+</p><dl class="table">
+<dt><code class="code">binary</code></dt>
+<dd><p>原始二进制形式。
+</p></dd>
+<dt><code class="code">ihex</code></dt>
+<dd><p>英特尔十六进制格式。
+</p></dd>
+<dt><code class="code">srec</code></dt>
+<dd><p>摩托罗拉S记录格式。
+</p></dd>
+<dt><code class="code">tekhex</code></dt>
+<dd><p>泰克十六进制格式。
+</p></dd>
+<dt><code class="code">verilog</code></dt>
+<dd><p>Verilog十六进制格式。
+</p></dd>
+</dl>
+
+<p><small class="sc">GDB</small> 对这些格式的定义与
+<small class="sc">GNU</small> 二进制实用工具相同，如‘<samp class="samp">objdump</samp>’和‘<samp class="samp">objcopy</samp>’。如果
+<var class="var">格式</var> 被省略， <small class="sc">GDB</small> 将以原始二进制形式转储数据。
+</p>
+</dd>
+<dt><a id="index-append"></a><span><code class="code">append <span class="r">[</span>binary<span class="r">]</span> memory <var class="var">filename</var> <var class="var">start_addr</var> <var class="var">end_addr</var></code><a class="copiable-link" href="#index-append"> ¶</a></span></dt>
+<dt><code class="code">append <span class="r">[</span>binary<span class="r">]</span> value <var class="var">filename</var> <var class="var">expr</var></code></dt>
+<dd><p>以原始二进制形式将从 <var class="var">起始地址</var> 到 <var class="var">结束地址</var>的内存内容，或者 <var class="var">表达式</var>的值追加到文件 <var class="var">文件名</var>中。（<small class="sc">GDB</small> 只能将数据追加到原始二进制形式的文件中。）
+</p>
+</dd>
+<dt><a id="index-restore"></a><span><code class="code">restore <var class="var">filename</var> <span class="r">[</span>binary<span class="r">]</span> <var class="var">bias</var> <var class="var">start</var> <var class="var">end</var></code><a class="copiable-link" href="#index-restore"> ¶</a></span></dt>
+<dd><p>将文件 <var class="var">文件名</var> 的内容恢复到内存中。
+<code class="code">restore</code> 命令可以自动识别任何已知的 <small class="sc">BFD</small>
+文件格式，但原始二进制格式除外。要恢复原始二进制文件，您必须在文件名后指定可选关键字 <code class="code">binary</code> 。
+</p>
+<p>如果 <var class="var">偏移量</var> 不为零，其值将被加到文件中包含的地址上。二进制文件总是从地址零开始，因此它们将被恢复到地址 <var class="var">偏移量</var>。其他bfd文件有内置的位置；它们将从该位置偏移 <var class="var">偏移量</var>
+处恢复。
+</p>
+<p>如果 <var class="var">起始</var> 和/或 <var class="var">结束</var> 不为零，那么只有文件偏移量 <var class="var">起始</var> 和文件偏移量 <var class="var">结束</var> 之间的数据将被恢复。这些偏移量是相对于文件中的地址而言的，在应用 <var class="var">偏移量</var> 参数之前。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Core-File-Generation.html">如何从您的程序生成核心文件</a>, 上一项： <a href="Memory-Region-Attributes.html">内存区域属性</a>, 上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

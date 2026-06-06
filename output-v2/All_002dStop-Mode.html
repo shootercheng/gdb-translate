@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>全停止模式（使用 GDB 调试）</title>
+
+<meta name="description" content="All-Stop Mode (Debugging with GDB)"/>
+<meta name="keywords" content="All-Stop Mode (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Thread-Stops.html" rel="up" title="Thread Stops"/>
+<link href="Non_002dStop-Mode.html" rel="next" title="Non-Stop Mode"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="All_002dStop-Mode">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Non_002dStop-Mode.html" rel="next"></a>，上一项： <a accesskey="u" href="Thread-Stops.html" rel="up">停止和启动多线程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="All_002dStop-Mode-1"><span>5.5.1 全停止模式<a class="copiable-link" href="#All_002dStop-Mode-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-all_002dstop-mode"></a>
+
+<p>在全停止模式下，无论何时您的程序因任何原因停止， <small class="sc">GDB</small> 所有
+<em class="emph">执行线程都会停止，而不仅仅是当前线程。这允许您检查程序的整体状态，包括在线程之间切换，而不必担心情况可能会在您操作时发生变化。</em> 相反，无论何时您重新启动程序，
+</p>
+<p>所有 <em class="emph">线程都会开始执行。</em> 即使在单步执行时也是如此，  <em class="emph">使用像</em> 这样的命令 <code class="code">step</code> 或 <code class="code">next</code>。
+</p>
+<p>特别是， <small class="sc">GDB</small> 不能同步单步执行所有线程。由于线程调度由您的调试目标操作系统决定（不受 <small class="sc">GDB</small>控制），当当前线程完成单步执行时，其他线程可能会执行多条语句。此外，一般来说，当程序停止时，其他线程会在语句中间停止，而不是在清晰的语句边界处停止。
+</p>
+<p>您甚至可能会发现在继续执行甚至单步执行后，程序在另一个线程中停止。只要其他某个线程在第一个线程完成您所请求的操作之前遇到断点、信号或异常，就会发生这种情况。
+</p>
+<a class="index-entry-id" id="index-automatic-thread-selection"></a>
+<a class="index-entry-id" id="index-switching-threads-automatically"></a>
+<a class="index-entry-id" id="index-threads_002c-automatic-switching"></a>
+<p>每当 <small class="sc">GDB</small> 因断点或信号停止您的程序时，它会自动选择发生该断点或信号的线程。  <small class="sc">GDB</small> 会通过一条消息提醒您上下文切换，例如‘<samp class="samp">[切换到线程 <var class="var">n</var>]</samp>’来标识该线程。  
+</p>
+<a class="anchor" id="set-scheduler_002dlocking"></a>
+<p>在某些操作系统上，您可以通过锁定操作系统调度器来修改 <small class="sc">GDB</small>的默认行为，以只允许单个线程运行。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-scheduler-locking-mode"></a>
+<a class="index-entry-id" id="index-lock-scheduler"></a>
+<a id="index-scheduler_002dlocking"></a><span><code class="code">set scheduler-locking <var class="var">mode</var></code><a class="copiable-link" href="#index-scheduler_002dlocking"> ¶</a></span></dt>
+<dd><p>设置调度器锁定模式。它适用于正常执行、记录模式和重放模式。  <var class="var">模式</var> 可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">off</code></dt>
+<dd><p>不进行锁定，任何线程可以在任何时间运行。
+</p>
+</dd>
+<dt><code class="code">on</code></dt>
+<dd><p>当被调试程序恢复运行时，只有当前线程可以运行。由恢复运行的线程创建的新线程会在其入口点停止，在它们执行任何指令之前。
+</p>
+</dd>
+<dt><code class="code">step</code></dt>
+<dd><p>在单步执行时表现得像 <code class="code">on</code> ， <code class="code">off</code> 在其他情况下。当您单步执行时，除当前线程外的其他线程永远没有机会运行，而当您使用像‘<samp class="samp">继续</samp>’、‘<samp class="samp">直到</samp>’或‘<samp class="samp">完成</samp>’这样的命令时，它们可以完全自由地运行。
+</p>
+<p>此模式针对单步执行进行了优化；它可以防止其他线程在您单步执行时抢占当前线程，从而使调试焦点不会意外改变。然而，除非另一个线程在其时间片内遇到断点， <small class="sc">GDB</small>
+不会将当前线程从您正在调试的线程切换走。
+</p>
+</dd>
+<dt><code class="code">replay</code></dt>
+<dd><p>在重放模式下表现得像 <code class="code">on</code> ， <code class="code">off</code> 在记录模式或正常执行期间。这是默认模式。
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">show scheduler-locking</code></dt>
+<dd><p>显示当前的调度器锁定模式。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-resume-threads-of-multiple-processes-simultaneously"></a>
+<p>默认情况下，当您发出诸如
+<code class="code">continue</code>, <code class="code">next</code> 或 <code class="code">step</code>, <small class="sc">GDB</small> 之类的执行命令时，只允许当前被调试程序的线程运行。例如，如果 <small class="sc">GDB</small>
+附加到两个被调试程序，每个被调试程序有两个线程，那么
+<code class="code">continue</code> 命令只会恢复当前被调试程序的两个线程。例如，当您调试一个进行了 fork 操作的程序，并且您希望让父进程停止（这样，例如，它不会运行到退出），而您调试子进程时，这很有用。在其他情况下，您可能对检查 <small class="sc">GDB</small> 所附加的任何进程的当前状态不感兴趣，并且您可能希望让它们全部继续运行，直到遇到某个断点。在后一种情况下，您可以指示 <small class="sc">GDB</small> 允许所有被调试程序的所有线程运行，使用 <code class="code">set schedule-multiple</code><!-- /@w --> 命令。
+</p>
+<dl class="table">
+<dt><a id="index-set-schedule_002dmultiple"></a><span><code class="code">set schedule-multiple</code><a class="copiable-link" href="#index-set-schedule_002dmultiple"> ¶</a></span></dt>
+<dd><p>设置在发出执行命令时允许多个进程的线程恢复运行的模式。当 <code class="code">on</code>, 所有进程的所有线程都被允许运行。当 <code class="code">off</code>, 只有当前进程的线程会恢复运行。默认值是 <code class="code">off</code>. 当设置为
+<code class="code">scheduler-locking</code> 模式时，该模式优先，或者当您单步执行且设置为 <code class="code">on</code>. <code class="code">step</code>显示当前用于恢复多个进程线程执行的模式。
+</p>
+</dd>
+<dt><code class="code">show schedule-multiple</code></dt>
+<dd><p>下一项：
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+非停止模式 <a href="Non_002dStop-Mode.html">, 上一项：</a>停止和启动多线程程序 <a href="Thread-Stops.html">[</a>   目录<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">][</a>索引<a href="Concept-Index.html" rel="index" title="Index">]</a></p>
+</div>
+
+
+
+
+
+</body></html>

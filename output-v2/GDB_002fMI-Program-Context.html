@@ -1,0 +1,213 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 程序上下文（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Program Context (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Program Context (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Thread-Commands.html" rel="next" title="GDB/MI Thread Commands"/>
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="prev" title="GDB/MI Catchpoint Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Program-Context">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Thread-Commands.html" rel="next"><small class="sc">GDB/MI</small> 线程命令</a> <a accesskey="p" href="GDB_002fMI-Catchpoint-Commands.html" rel="prev"><small class="sc">GDB/MI</small> 捕获点命令</a>, 返回： <a accesskey="u" href="GDB_002fMI.html" rel="up"> <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Program-Context"><span>27.10 <small class="sc">GDB/MI</small>  程序上下文<a class="copiable-link" href="#gdb_002fmi-Program-Context"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-_002dexec_002darguments"></a>
+<h4 class="subheading" id="The-_002dexec_002darguments-Command"><span>该 <code class="code">-exec-arguments</code> 命令<a class="copiable-link" href="#The-_002dexec_002darguments-Command"> ¶</a></span></h4>
+
+
+<h4 class="subsubheading" id="Synopsis-21"><span>概要<a class="copiable-link" href="#Synopsis-21"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -exec-arguments <var class="var">参数</var>
+</pre></div>
+
+<p>设置下级程序参数，供下一次
+‘<samp class="samp">-exec-run</samp>’ 使用。
+</p>
+<h4 class="subsubheading" id="gdb-Command-20"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-20"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">set args</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-20"><span>示例<a class="copiable-link" href="#Example-20"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-exec-arguments -v word
+^完成
+(gdb)
+</pre></div>
+
+
+
+
+<a class="index-entry-id" id="index-_002denvironment_002dcd"></a>
+<h4 class="subheading" id="The-_002denvironment_002dcd-Command"><span>该 <code class="code">-environment-cd</code> 命令<a class="copiable-link" href="#The-_002denvironment_002dcd-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-22"><span>概要<a class="copiable-link" href="#Synopsis-22"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -environment-cd <var class="var">路径目录</var>
+</pre></div>
+
+<p>设置 <small class="sc">GDB</small>的工作目录。
+</p>
+<h4 class="subsubheading" id="gdb-Command-21"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-21"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">cd</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-21"><span>示例<a class="copiable-link" href="#Example-21"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-environment-cd /kwikemart/marge/ezannoni/flathead-dev/devo/gdb
+^完成
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002denvironment_002ddirectory"></a>
+<h4 class="subheading" id="The-_002denvironment_002ddirectory-Command"><span>该 <code class="code">-environment-directory</code> 命令<a class="copiable-link" href="#The-_002denvironment_002ddirectory-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-23"><span>概要<a class="copiable-link" href="#Synopsis-23"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -environment-directory [ -r ] [ <var class="var">路径目录</var> ]+
+</pre></div>
+
+<p>将目录 <var class="var">路径目录</var> 添加到源文件搜索路径的开头。
+如果使用 ‘<samp class="samp">-r</samp>’ 选项，搜索路径将重置为默认搜索路径。 如果除了 ‘ <var class="var">路径目录</var> ’ 选项之外还提供了目录<samp class="samp">-r</samp>’ 选项，搜索路径将先重置，然后再正常添加。
+可以指定多个目录，用空格分隔。 在单个命令中指定多个目录会导致这些目录按命令中呈现的顺序添加到搜索路径的开头。
+如果目录名中需要空格，应该在名称周围使用双引号。 在命令输出中，路径将以系统目录分隔符字符分隔显示。 目录分隔符字符不能用于任何目录名中。
+如果未指定任何目录，则显示当前搜索路径。
+</p>
+<h4 class="subsubheading" id="gdb-Command-22"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-22"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">dir</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-22"><span>示例<a class="copiable-link" href="#Example-22"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-environment-directory /kwikemart/marge/ezannoni/flathead-dev/devo/gdb
+^完成，源路径=&#34;/kwikemart/marge/ezannoni/flathead-dev/devo/gdb:$cdir:$cwd&#34;
+(gdb)
+-environment-directory &#34;&#34;
+^完成，源路径=&#34;/kwikemart/marge/ezannoni/flathead-dev/devo/gdb:$cdir:$cwd&#34;
+(gdb)
+-environment-directory -r /home/jjohnstn/src/gdb /usr/src
+^完成，源路径=&#34;/home/jjohnstn/src/gdb:/usr/src:$cdir:$cwd&#34;
+(gdb)
+-environment-directory -r
+^完成，源路径=&#34;$cdir:$cwd&#34;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002denvironment_002dpath"></a>
+<h4 class="subheading" id="The-_002denvironment_002dpath-Command"><span>该 <code class="code">-environment-path</code> 命令<a class="copiable-link" href="#The-_002denvironment_002dpath-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-24"><span>概要<a class="copiable-link" href="#Synopsis-24"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -environment-path [ -r ] [ <var class="var">路径目录</var> ]+
+</pre></div>
+
+<p>将目录 <var class="var">路径目录</var> 添加到目标文件搜索路径的开头。
+如果使用 ‘<samp class="samp">-r</samp>’ 选项，搜索路径将重置为 GDB 启动时存在的原始搜索路径。 如果除了 ‘ <var class="var">路径目录</var> ’ 选项之外还提供了目录<samp class="samp">-r</samp>’ 选项，搜索路径将先重置，然后再正常添加。
+可以指定多个目录，用空格分隔。 在单个命令中指定多个目录会导致这些目录按命令中呈现的顺序添加到搜索路径的开头。
+如果目录名中需要空格，应该在名称周围使用双引号。 在命令输出中，路径将以系统目录分隔符字符分隔显示。 目录分隔符字符不能用于任何目录名中。
+如果未指定任何目录，则显示当前路径。
+</p>
+
+<h4 class="subsubheading" id="gdb-Command-23"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-23"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">路径</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-23"><span>示例<a class="copiable-link" href="#Example-23"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-environment-path
+^完成，路径=&#34;/usr/bin&#34;
+(gdb)
+-environment-path /kwikemart/marge/ezannoni/flathead-dev/ppc-eabi/gdb /bin
+^完成，路径=&#34;/kwikemart/marge/ezannoni/flathead-dev/ppc-eabi/gdb:/bin:/usr/bin&#34;
+(gdb)
+-environment-path -r /usr/local/bin
+^完成，路径=&#34;/usr/local/bin:/usr/bin&#34;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002denvironment_002dpwd"></a>
+<h4 class="subheading" id="The-_002denvironment_002dpwd-Command"><span>该 <code class="code">-environment-pwd</code> 命令<a class="copiable-link" href="#The-_002denvironment_002dpwd-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-25"><span>概要<a class="copiable-link" href="#Synopsis-25"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -environment-pwd
+</pre></div>
+
+<p>显示当前工作目录。
+</p>
+<h4 class="subsubheading" id="gdb-Command-24"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-24"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">pwd</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-24"><span>示例<a class="copiable-link" href="#Example-24"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-environment-pwd
+^完成，当前工作目录=&#34;/kwikemart/marge/ezannoni/flathead-dev/devo/gdb&#34;
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Thread-Commands.html"><small class="sc">GDB/MI</small> 线程命令</a>, 上一项： <a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small> 捕获点命令</a>, 返回： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Fortran 运算符（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Fortran Operators (Debugging with GDB)"/>
+<meta name="keywords" content="Fortran Operators (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Fortran.html" rel="up" title="Fortran"/>
+<link href="Fortran-Intrinsics.html" rel="next" title="Fortran Intrinsics"/>
+<link href="Fortran-Types.html" rel="prev" title="Fortran Types"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Fortran-Operators">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Fortran-Intrinsics.html" rel="next">Fortran 内置函数</a>, 上一项： <a accesskey="p" href="Fortran-Types.html" rel="prev">Fortran 类型</a>, 上级： <a accesskey="u" href="Fortran.html" rel="up">Fortran</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Fortran-Operators-and-Expressions"><span>15.4.6.2 Fortran 运算符和表达式<a class="copiable-link" href="#Fortran-Operators-and-Expressions"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-Fortran-operators-and-expressions"></a>
+
+<p>运算符必须针对特定类型的值进行定义。例如，
+<code class="code">+</code> 是针对数字定义的，但不适用于字符或其他非算术类型。运算符通常针对一组类型进行定义。
+</p>
+<dl class="table">
+<dt><code class="code">**</code></dt>
+<dd><p>幂运算符。它将第一个操作数提升到第二个操作数的幂次。
+</p>
+</dd>
+<dt><code class="code">:</code></dt>
+<dd><p>范围运算符。通常以 array(low:high) 的形式使用，用于表示数组的一个部分。
+</p>
+</dd>
+<dt><code class="code">%</code></dt>
+<dd><p>访问组件运算符。通常用于访问派生类型中的元素。也适用于联合类型。由于联合类型不是常规 Fortran 的一部分，因此只有在访问使用 gdbarch 定义的联合类型的寄存器时才会出现这种情况。
+</p></dd>
+<dt><code class="code">::</code></dt>
+<dd><p>作用域运算符。通常用于访问模块中的变量，或在模块中嵌套的子例程或其他子例程（内部子例程）上设置断点。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

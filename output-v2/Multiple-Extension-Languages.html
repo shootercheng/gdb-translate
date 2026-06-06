@@ -1,0 +1,65 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>多种扩展语言（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Multiple Extension Languages (Debugging with GDB)"/>
+<meta name="keywords" content="Multiple Extension Languages (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Extending-GDB.html" rel="up" title="Extending GDB"/>
+<link href="Auto_002dloading-extensions.html" rel="prev" title="Auto-loading extensions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Multiple-Extension-Languages">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="p" href="Auto_002dloading-extensions.html" rel="prev">自动加载扩展</a>, 上一级： <a accesskey="u" href="Extending-GDB.html" rel="up">扩展 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Multiple-Extension-Languages-1"><span>23.6 多种扩展语言<a class="copiable-link" href="#Multiple-Extension-Languages-1"> ¶</a></span></h3>
+
+<p>Guile 和 Python 扩展语言不共享任何状态，并且通常不会相互干扰。不过，有一些事情需要注意。
+</p>
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Python-comes-first">Python 优先</a></li>
+</ul>
+<div class="subsection-level-extent" id="Python-comes-first">
+<h4 class="subsection"><span>23.6.1 Python 优先<a class="copiable-link" href="#Python-comes-first"> ¶</a></span></h4>
+
+<p>Python 是 <small class="sc">GDB</small>的第一种扩展语言，为了避免破坏现有行为，Python 优先。这通常通过“先到先得”原则来解决。  <small class="sc">GDB</small> 维护一个已启用的扩展语言列表，当它调用扩展语言时（例如，对一个值进行漂亮打印），它会依次尝试每种语言，直到某个扩展语言表明它已经完成了请求（例如，返回了一个值的漂亮打印形式）。这也适用于执行此类请求时出现的错误：例如，如果在尝试对一个对象进行漂亮打印时发生错误，则会报告该错误，并且不会尝试后续的扩展语言。
+</p>
+</div>
+</div>
+
+
+
+
+
+</body></html>

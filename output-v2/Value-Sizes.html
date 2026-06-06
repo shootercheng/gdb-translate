@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>值的大小（使用GDB进行调试）</title>
+
+<meta name="description" content="Value Sizes (Debugging with GDB)"/>
+<meta name="keywords" content="Value Sizes (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Searching-Memory.html" rel="prev" title="Searching Memory"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Value-Sizes">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Searching-Memory.html" rel="prev">搜索内存</a>，上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Value-Sizes-1"><span>10.24 值的大小<a class="copiable-link" href="#Value-Sizes-1"> ¶</a></span></h3>
+
+<p>无论何时 <small class="sc">GDB</small> 打印一个值时，都会在内部分配内存
+<small class="sc">GDB</small> 来保存该值的内容。在一些具有动态类型系统的语言中，一个无效的程序
+可能会指示一个大小不正确的值，这反过来可能会导致
+<small class="sc">GDB</small> 尝试分配过多的内存。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-max_002dvalue_002dsize"></a></dd>
+<dt><a id="index-set-max_002dvalue_002dsize"></a><span><code class="code">set max-value-size <var class="var">bytes</var></code><a class="copiable-link" href="#index-set-max_002dvalue_002dsize"> ¶</a></span></dt>
+<dt><code class="code">set max-value-size unlimited</code></dt>
+<dd><p>设置 <small class="sc">GDB</small> 为一个值的内容分配的最大内存大小为 <var class="var">字节</var>，尝试显示一个需要的内存超过该大小的值将导致错误。
+</p>
+<p>设置此变量不会影响已经在 <small class="sc">GDB</small>内分配的值，仅影响未来的分配。
+</p>
+<p>有一个最小大小， <code class="code">max-value-size</code> 可以设置为该大小，以便 <small class="sc">GDB</small> 仍然能够正确运行，目前这个最小值是16字节。
+</p>
+<p>该限制适用于一些子表达式的结果以及完整的表达式。例如，一个表示简单
+整数组件的表达式，如 <code class="code">x.y.z</code>，如果
+<var class="var">x.y</var> 的大小是动态的并且超过 <var class="var">字节</var>。另一方面，
+<small class="sc">GDB</small> 有时很智能；表达式 <code class="code">A[i]</code>，其中
+<var class="var">A</var> 是一个大小非恒定的数组变量，通常无论 <var class="var">A</var>的边界如何都会成功，只要组件
+大小小于 <var class="var">字节</var>。
+</p>
+<p>的默认值目前是64k。 <code class="code">max-value-size</code> 
+</p>
+</dd>
+<dt><a id="index-show-max_002dvalue_002dsize"></a><span><code class="code">show max-value-size</code><a class="copiable-link" href="#index-show-max_002dvalue_002dsize"> ¶</a></span></dt>
+<dd><p>显示 <small class="sc">GDB</small> 为一个值的内容分配的最大内存大小（以字节为单位）。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Searching-Memory.html">搜索内存</a>，上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

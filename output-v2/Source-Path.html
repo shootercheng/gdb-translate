@@ -1,0 +1,245 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>源路径（使用 GDB 调试）</title>
+
+<meta name="description" content="Source Path (Debugging with GDB)"/>
+<meta name="keywords" content="Source Path (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Source.html" rel="up" title="Source"/>
+<link href="Machine-Code.html" rel="next" title="Machine Code"/>
+<link href="Search.html" rel="prev" title="Search"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Source-Path">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Machine-Code.html" rel="next">源文件和机器代码</a> <a accesskey="p" href="Search.html" rel="prev"></a> <a accesskey="u" href="Source.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h3 class="section" id="Specifying-Source-Directories"><span>9.5 指定源目录<a class="copiable-link" href="#Specifying-Source-Directories"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-source-path"></a>
+<a class="index-entry-id" id="index-directories-for-source-files"></a>
+<p>可执行程序有时不会记录它们所编译自的源文件的目录，而只记录文件名。即使记录了目录，在编译和调试会话之间目录也可能被移动。  <small class="sc">GDB</small> 有一个用于搜索源文件的目录列表；这被称为 <em class="dfn">源路径</em> <small class="sc">GDB</small> 需要源文件时，它会按列表中的顺序尝试列表中的所有目录，直到找到具有所需名称的文件。
+</p>
+<p>例如，假设一个可执行文件引用文件
+<samp class="file">/usr/src/foo - 1.0/lib/foo.c</samp> <em class="dfn"></em>  <samp class="file"></samp>
+<small class="sc">GDB</small> 
+</p>
+<ol class="enumerate">
+<li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+
+</li></ol>
+
+<p>  <small class="sc">GDB</small>  <samp class="file"></samp> <samp class="file"></samp>
+<samp class="file"></samp> <small class="sc">GDB</small> 
+<samp class="file"></samp>
+</p>
+<p> <em class="dfn"></em>  <samp class="file"></samp> <samp class="file"></samp> <small class="sc">GDB</small> 
+</p>
+<ol class="enumerate">
+<li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+
+</li></ol>
+
+<a class="index-entry-id" id="index-cdir"></a>
+<a class="index-entry-id" id="index-cwd"></a>
+<a class="index-entry-id" id="index-_0024cdir_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-_0024cwd_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-compilation-directory"></a>
+<a class="index-entry-id" id="index-current-directory"></a>
+<a class="index-entry-id" id="index-working-directory"></a>
+<a class="index-entry-id" id="index-directory_002c-current"></a>
+<a class="index-entry-id" id="index-directory_002c-compilation"></a>
+<p> <em class="dfn"></em> <samp class="samp"></samp><samp class="samp"></samp>
+</p>
+<p><samp class="samp"></samp> <small class="sc">GDB</small> <samp class="samp"></samp>
+</p>
+<p><samp class="samp"></samp><samp class="samp"></samp> <small class="sc">GDB</small>
+
+</p>
+<p>
+<small class="sc">GDB</small>  <em class="dfn"></em> <small class="sc">GDB</small>  <em class="dfn"></em>
+</p>
+<p>
+<samp class="file"></samp> <samp class="file"></samp> <em class="dfn"></em> 
+<samp class="file"></samp>  <small class="sc">GDB</small>  <samp class="file"></samp> <small class="sc">GDB</small> 
+</p>
+<ol class="enumerate">
+<li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+</li><li> <samp class="file"></samp>
+
+</li></ol>
+
+<p>如果上例中的文件名在可执行文件中记录为相对路径而非绝对路径，那么第一次查找将不会发生，但其余所有步骤将类似。
+</p>
+<p>在 MS - DOS 和 MS - Windows 上搜索源文件时，绝对路径以驱动器盘符开头（例如
+<samp class="file">C:/project/foo.c</samp>） <small class="sc">GDB</small> 将在把文件名附加到
+<em class="dfn">源路径</em>中的搜索目录之前，从文件名中移除驱动器盘符；例如，如果可执行文件引用源文件 <samp class="file">C:/project/foo.c</samp> 并且 <em class="dfn">源路径</em> 设置为
+<samp class="file">D:/mnt/cross</samp>，那么 <small class="sc">GDB</small> 将在以下位置搜索源文件：
+</p>
+<ol class="enumerate">
+<li> <samp class="file">C:/project/foo.c</samp>
+</li><li> <samp class="file">D:/mnt/cross/project/foo.c</samp>
+</li><li> <samp class="file">D:/mnt/cross/foo.c</samp>
+
+</li></ol>
+
+<p>请注意，可执行文件搜索路径 <em class="emph">不</em> 用于定位源文件。
+</p>
+<p>每当你重置或重新排列源路径时， <small class="sc">GDB</small> 会清除它缓存的有关源文件位置以及文件中每行位置的所有信息。
+</p>
+<a class="index-entry-id" id="index-directory"></a>
+<a class="index-entry-id" id="index-dir"></a>
+<p>当你启动 <small class="sc">GDB</small>时，其源路径仅包含 ‘<samp class="samp">$cdir</samp>’ 和 ‘<samp class="samp">$cwd</samp>’，顺序如此。要添加其他目录，请使用 <code class="code">directory</code> 命令。
+</p>
+<p>搜索路径用于查找程序源文件和 <small class="sc">GDB</small>
+脚本文件（使用 ‘<samp class="samp">-command</samp>’ 选项和 ‘<samp class="samp">source</samp>’ 命令读取）。
+</p>
+<p>除了源路径之外， <small class="sc">GDB</small> 还提供了一组命令来管理源路径替换规则列表。一个 <em class="dfn">替换规则</em> 指定了如何重写程序调试信息中存储的源目录，以防在编译和调试之间源文件被移动到不同的目录。规则由两个字符串组成，第一个指定路径中需要重写的内容，第二个指定应如何重写。在 <a class="ref" href="#set-substitute_002dpath">set substitute - path</a>中，我们将这两部分分别命名为 <var class="var">from</var> 和
+<var class="var">to</var> 。  <small class="sc">GDB</small> 会在源文件名的目录部分开头进行简单的字符串替换，将 <var class="var">from</var> 替换为 <var class="var">to</var> ，并使用该结果而不是原始文件名来查找源文件。
+</p>
+<p>使用前面的示例，假设 <samp class="file">foo - 1.0</samp> 目录树已从 <samp class="file">/usr/src</samp> 移动到 <samp class="file">/mnt/cross</samp>，那么你可以告诉
+<small class="sc">GDB</small> 将所有源路径名中的 <samp class="file">/usr/src</samp> 替换为
+<samp class="file">/mnt/cross</samp>。然后第一次查找将是
+<samp class="file">/mnt/cross/foo - 1.0/lib/foo.c</samp> ，而不是原始位置 <samp class="file">/usr/src/foo - 1.0/lib/foo.c</samp>。要定义源路径替换规则，请使用 <code class="code">set substitute-path</code> 命令（参见 <a class="pxref" href="#set-substitute_002dpath">set substitute - path</a>）。
+</p>
+<p>为避免意外的替换结果，只有当目录名的
+<var class="var">from</var> 部分以目录分隔符结尾时，规则才会应用。例如，将  <samp class="file">/usr/source</samp> 替换为
+<samp class="file">/mnt/cross</samp> 的规则将应用于 <samp class="file">/usr/source/foo - 1.0</samp> ，但不会应用于 <samp class="file">/usr/sourceware/foo - 2.0</samp>。并且由于替换仅在目录名开头应用，此规则也不会应用于 <samp class="file">/root/usr/source/baz.c</samp> 。
+</p>
+<p>在许多情况下，你可以使用 <code class="code">directory</code>
+命令实现相同的结果。然而， <code class="code">set substitute-path</code> 在源文件组织在具有多个子目录的复杂目录树中的情况下可能更高效。使用 <code class="code">directory</code> 命令时，你需要添加项目的每个子目录。如果你在保留其内部组织的同时移动了整个目录树，那么 <code class="code">set substitute-path</code>
+允许你通过一个命令将调试器指向所有源文件。
+</p>
+<p><code class="code">set substitute-path</code> 不仅仅是一个快捷命令。源路径仅在原始位置的文件不再存在时使用。另一方面， <code class="code">set substitute-path</code> 会修改调试器的行为，使其查看重写后的位置。因此，如果由于任何原因，与你的可执行文件无关的源文件位于原始位置，替换规则是将 <small class="sc">GDB</small> 指向新位置的唯一可用方法。
+</p>
+<a class="index-entry-id" id="index-_002d_002dwith_002drelocated_002dsources"></a>
+<a class="index-entry-id" id="index-default-source-path-substitution"></a>
+<p>你可以通过使用 ‘ <small class="sc">GDB</small> --with - relocated - sources=<samp class="samp">dir<var class="var">’ 选项配置</var></samp>来配置默认的源路径替换规则。 <var class="var">dir</var>
+应该是 <small class="sc">GDB</small>配置的前缀（使用 ‘<samp class="samp">--prefix</samp>’ 或 ‘<samp class="samp">--exec - prefix</samp>’ 设置）下的一个目录名，并且如果安装的 <var class="var">dir</var> 被移动到新位置，调试信息中的目录名将自动调整。如果 <small class="sc">GDB</small> , 带有调试信息的库或可执行文件以及相应的源代码一起移动，这将很有用。 <small class="sc">GDB</small>将目录
+</p>
+<dl class="table">
+<dt><code class="code">directory <var class="var">dirname</var> …</code></dt>
+<dt><code class="code">dir <var class="var">dirname</var> …</code></dt>
+<dd><p>dirname <var class="var">添加到源路径的开头。可以给此命令提供多个目录名，用 ‘</var> :<samp class="samp">’（在 MS - DOS 和 MS - Windows 上为 ‘</samp>;<samp class="samp">’，因为在这些系统中 ‘</samp>:<samp class="samp">’ 通常是绝对文件名的一部分）或空格分隔。你可以指定一个已经在源路径中的目录；这会将其移到前面，因此</samp>会更早搜索它。 <small class="sc">GDB</small> 特殊字符串 ‘
+</p>
+<p>$cdir<samp class="samp">’（用于引用编译目录，如果有记录的话）和 ‘</samp>$cwd<samp class="samp">’（用于引用当前工作目录）也可以包含在目录列表</samp>dirname <var class="var">中。尽管这些已经在源路径中，但它们会在列表中移到前面，因此</var>会更早搜索它们。 <small class="sc">GDB</small> 将源路径重置为其默认值（在 Unix 系统上为 ‘
+</p>
+</dd>
+<dt><code class="code">directory</code></dt>
+<dd><p>$cdir:$cwd<samp class="samp">’）。这需要确认。</samp>¶
+</p>
+
+</dd>
+<dt><a id="index-set-directories"></a><span><code class="code">set directories <var class="var">path-list</var></code><a class="copiable-link" href="#index-set-directories"> 将源路径设置为</a></span></dt>
+<dd><p>path - list <var class="var">。如果缺少 ‘</var>$cdir:$cwd<samp class="samp">’，则会添加它们。</samp>¶
+</p>
+</dd>
+<dt><a id="index-show-directories"></a><span><code class="code">show directories</code><a class="copiable-link" href="#index-show-directories"> 打印源路径：显示它包含哪些目录。</a></span></dt>
+<dd><p>¶
+</p>
+<a class="anchor" id="set-substitute_002dpath"></a></dd>
+<dt><a id="index-set-substitute_002dpath"></a><span><code class="code">set substitute-path <var class="var">from</var> <var class="var">to</var></code><a class="copiable-link" href="#index-set-substitute_002dpath"> 定义一个源路径替换规则，并将其添加到现有替换规则列表的末尾。如果已经定义了具有相同</a></span></dt>
+<dd><p>from
+<var class="var">的规则，则旧规则也会被删除。</var> 例如，如果文件
+</p>
+<p>/foo/bar/baz.c <samp class="file">被移动到</samp> /mnt/cross/baz.c
+<samp class="file">, 那么命令</samp>(gdb) set substitute - path /foo/bar /mnt/cross
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">将告诉
+</pre></div>
+
+<p>将 ‘ <small class="sc">GDB</small> /foo/bar<samp class="samp">’ 替换为 ‘</samp>/mnt/cross<samp class="samp">’，这将允许</samp>找到文件 <small class="sc">GDB</small> baz.c
+<samp class="file">，即使它被移动了。</samp> 如果定义了多个替换规则，则规则将按定义的顺序逐个评估。如果有匹配的规则，将选择第一个匹配的规则进行替换。
+</p>
+<p>例如，如果我们输入了以下命令：
+</p>
+<p>(gdb) set substitute - path /usr/src/include /mnt/include
+(gdb) set substitute - path /usr/src /mnt/src
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">将把
+</pre></div>
+
+<p><small class="sc">GDB</small> /usr/src/include/defs.h <samp class="file">重写为</samp> /mnt/include/defs.h
+<samp class="file">，使用第一个规则。然而，它将使用第二个规则将</samp> /usr/src/lib/foo.c <samp class="file">重写为</samp> /mnt/src/lib/foo.c
+<samp class="file">。</samp>¶
+</p>
+
+</dd>
+<dt><a id="index-unset-substitute_002dpath"></a><span><code class="code">unset substitute-path [path]</code><a class="copiable-link" href="#index-unset-substitute_002dpath"> 如果指定了一个路径，在当前替换规则列表中搜索可以重写该路径的规则。如果找到则删除该规则。如果未找到规则，调试器将发出警告。</a></span></dt>
+<dd><p>如果未指定路径，则删除所有替换规则。
+</p>
+<p>¶
+</p>
+</dd>
+<dt><a id="index-show-substitute_002dpath"></a><span><code class="code">show substitute-path [path]</code><a class="copiable-link" href="#index-show-substitute_002dpath"> 如果指定了一个路径，则打印可以重写该路径的源路径替换规则（如果有）。</a></span></dt>
+<dd><p>如果未指定路径，则打印所有现有的源路径替换规则。
+</p>
+<p>如果你的源路径中充斥着不再有用的目录，
+</p>
+</dd>
+</dl>
+
+<p>有时可能会因找到错误版本的源文件而造成混淆。你可以按以下方式纠正这种情况： <small class="sc">GDB</small> 使用
+</p>
+<ol class="enumerate">
+<li> 不带参数的命令将源路径重置为其默认值。 <code class="code">directory</code> 使用
+
+</li><li> 带适当参数的命令重新安装你希望在源路径中的目录。你可以在一个命令中添加所有目录。 <code class="code">directory</code> 下一步：
+</li></ol>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+源文件和机器代码 <a href="Machine-Code.html">, 上一步：</a>搜索源文件 <a href="Search.html">, 上一级：</a>检查源文件 <a href="Source.html">[</a>   目录<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">][</a>索引<a href="Concept-Index.html" rel="index" title="Index">]</a>如果源文件不在上述任何位置，则会打印错误信息。</p>
+</div>
+
+
+
+
+
+</body></html>

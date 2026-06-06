@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>断点错误（使用 GDB 调试）</title>
+
+<meta name="description" content="Error in Breakpoints (Debugging with GDB)"/>
+<meta name="keywords" content="Error in Breakpoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Breakpoint_002drelated-Warnings.html" rel="next" title="Breakpoint-related Warnings"/>
+<link href="Static-Probe-Points.html" rel="prev" title="Static Probe Points"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Error-in-Breakpoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Breakpoint_002drelated-Warnings.html" rel="next">“断点地址已调整...”</a>, 上一项： <a accesskey="p" href="Static-Probe-Points.html" rel="prev">静态探测点</a>, 上级： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="g_t_0060_0060Cannot-insert-breakpoints_0027_0027"><span>5.1.11 “无法插入断点”<a class="copiable-link" href="#g_t_0060_0060Cannot-insert-breakpoints_0027_0027"> ¶</a></span></h4>
+
+<p>如果您请求的活动硬件辅助断点和观察点过多，您将看到此错误消息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序已停止；无法插入断点。
+您可能请求了过多的硬件断点和观察点。
+</pre></div>
+
+<p>当您尝试恢复程序时会打印此消息，因为只有在那时 <small class="sc">GDB</small> 才确切知道需要插入多少个硬件断点和观察点。
+</p>
+<p>当打印此消息时，您需要禁用或移除一些硬件辅助断点和观察点，然后继续。
+</p>
+</div>
+
+
+
+
+
+</body></html>

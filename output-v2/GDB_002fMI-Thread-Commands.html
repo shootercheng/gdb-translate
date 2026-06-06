@@ -1,0 +1,181 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 线程命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Thread Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Thread Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Ada-Tasking-Commands.html" rel="next" title="GDB/MI Ada Tasking Commands"/>
+<link href="GDB_002fMI-Program-Context.html" rel="prev" title="GDB/MI Program Context"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Thread-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Ada-Tasking-Commands.html" rel="next"><small class="sc">GDB/MI</small> Ada 任务命令</a>, 上一项： <a accesskey="p" href="GDB_002fMI-Program-Context.html" rel="prev"><small class="sc">GDB/MI</small>  程序上下文</a>, 上级： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Thread-Commands"><span>27.11 <small class="sc">GDB/MI</small> 线程命令<a class="copiable-link" href="#gdb_002fmi-Thread-Commands"> ¶</a></span></h3>
+
+
+<a class="index-entry-id" id="index-_002dthread_002dinfo"></a>
+<h4 class="subheading" id="The-_002dthread_002dinfo-Command"><span>该 <code class="code">-thread-info</code> 命令<a class="copiable-link" href="#The-_002dthread_002dinfo-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-26"><span>概要<a class="copiable-link" href="#Synopsis-26"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-info [ <var class="var">线程 ID</var> ]
+</pre></div>
+
+<p>如果存在
+<var class="var">线程 ID</var> 参数，则报告特定线程的信息；否则报告所有线程的信息。
+<var class="var">线程 ID</var> 是线程的全局线程 ID。在打印所有线程的信息时，还会报告当前线程的全局 ID。
+</p>
+<h4 class="subsubheading" id="gdb-Command-25"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-25"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">info thread</samp>’ 命令会打印所有线程的相同信息。
+</p>
+<h4 class="subsubheading" id="Result-3"><span>结果<a class="copiable-link" href="#Result-3"> ¶</a></span></h4>
+
+<p>结果包含以下属性：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">线程</samp>’</dt>
+<dd><p>一个线程列表。列表元素的格式在
+<a class="ref" href="GDB_002fMI-Thread-Information.html"><small class="sc">GDB/MI</small> 线程信息</a>中描述。
+</p>
+</dd>
+<dt>‘<samp class="samp">当前线程 ID</samp>’</dt>
+<dd><p>当前选定线程的全局 ID。如果没有选定线程（例如，当选定的 inferior 未运行，因此没有线程），或者如果向命令传递了 <var class="var">线程 ID</var> 参数，则省略此字段。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-25"><span>示例<a class="copiable-link" href="#Example-25"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-thread-info
+^完成,线程=[
+{id=&#34;2&#34;,目标 ID=&#34;线程 0xb7e14b90 (LWP 21257)&#34;,
+   帧={级别=&#34;0&#34;,地址=&#34;0xffffe410&#34;,函数=&#34;__kernel_vsyscall&#34;,
+           参数=[]},状态=&#34;运行中&#34;},
+{id=&#34;1&#34;,目标 ID=&#34;线程 0xb7e156b0 (LWP 21254)&#34;,
+   帧={级别=&#34;0&#34;,地址=&#34;0x0804891f&#34;,函数=&#34;foo&#34;,
+           参数=[{名称=&#34;i&#34;,值=&#34;10&#34;}],
+           文件=&#34;/tmp/a.c&#34;,完整名称=&#34;/tmp/a.c&#34;,行号=&#34;158&#34;,架构=&#34;i386:x86_64&#34;},
+           状态=&#34;运行中&#34;}],
+当前线程 ID=&#34;1&#34;
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dthread_002dlist_002dids"></a>
+<h4 class="subheading" id="The-_002dthread_002dlist_002dids-Command"><span>该 <code class="code">-thread-list-ids</code> 命令<a class="copiable-link" href="#The-_002dthread_002dlist_002dids-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-27"><span>概要<a class="copiable-link" href="#Synopsis-27"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-list-ids
+</pre></div>
+
+<p>生成当前已知的全局 <small class="sc">GDB</small> 线程 ID 列表。在列表末尾还会打印此类线程的总数。
+</p>
+<p>由于历史原因保留此命令，应使用
+<code class="code">-thread-info</code> 命令代替。
+</p>
+<h4 class="subsubheading" id="gdb-Command-26"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-26"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">info threads</samp>’ 的一部分提供相同的信息。
+</p>
+<h4 class="subsubheading" id="Example-26"><span>示例<a class="copiable-link" href="#Example-26"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-thread-list-ids
+^完成,线程 ID={线程 ID=&#34;3&#34;,线程 ID=&#34;2&#34;,线程 ID=&#34;1&#34;},
+当前线程 ID=&#34;1&#34;,线程数量=&#34;3&#34;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dthread_002dselect"></a>
+<h4 class="subheading" id="The-_002dthread_002dselect-Command"><span>该 <code class="code">-thread-select</code> 命令<a class="copiable-link" href="#The-_002dthread_002dselect-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-28"><span>概要<a class="copiable-link" href="#Synopsis-28"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -thread-select <var class="var">线程 ID</var>
+</pre></div>
+
+<p>将全局线程编号为 <var class="var">线程 ID</var> 的线程设为当前线程。它会打印新当前线程的编号以及该线程的最顶层帧。
+</p>
+<p>此命令已弃用，建议在每个命令中显式使用<samp class="samp">--线程</samp>’ 选项。
+</p>
+<h4 class="subsubheading" id="gdb-Command-27"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-27"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">线程</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-27"><span>示例<a class="copiable-link" href="#Example-27"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-exec-next
+^运行中
+(gdb)
+*停止,原因=&#34;步进范围结束&#34;,线程 ID=&#34;2&#34;,行号=&#34;187&#34;,
+文件=&#34;../../../devo/gdb/testsuite/gdb.threads/linux-dp.c&#34;
+(gdb)
+-thread-list-ids
+^完成,
+线程 ID={线程 ID=&#34;3&#34;,线程 ID=&#34;2&#34;,线程 ID=&#34;1&#34;},
+线程数量=&#34;3&#34;
+(gdb)
+-thread-select 3
+^完成,新线程 ID=&#34;3&#34;,
+帧={级别=&#34;0&#34;,函数=&#34;vprintf&#34;,
+参数=[{名称=&#34;格式&#34;,值=&#34;0x8048e9c \&#34;%*s%c %d %c\\n\&#34;&#34;},
+{名称=&#34;参数&#34;,值=&#34;0x2&#34;}],文件=&#34;vprintf.c&#34;,行号=&#34;31&#34;,架构=&#34;i386:x86_64&#34;}
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Ada-Tasking-Commands.html"><small class="sc">GDB/MI</small> Ada 任务命令</a>, 上一项： <a href="GDB_002fMI-Program-Context.html"><small class="sc">GDB/MI</small>  程序上下文</a>, 上级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>用于终止的命令（使用GDB调试）</title>
+
+<meta name="description" content="Commands For Killing (Debugging with GDB)"/>
+<meta name="keywords" content="Commands For Killing (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Bindable-Readline-Commands.html" rel="up" title="Bindable Readline Commands"/>
+<link href="Numeric-Arguments.html" rel="next" title="Numeric Arguments"/>
+<link href="Commands-For-Text.html" rel="prev" title="Commands For Text"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Commands-For-Killing">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Numeric-Arguments.html" rel="next">指定数值参数</a>, 上一项： <a accesskey="p" href="Commands-For-Text.html" rel="prev">用于更改文本的命令</a>, 上级： <a accesskey="u" href="Bindable-Readline-Commands.html" rel="up">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Killing-And-Yanking"><span>33.4.4 终止和粘贴<a class="copiable-link" href="#Killing-And-Yanking"> ¶</a></span></h4>
+
+<dl class="ftable">
+<dt><a id="index-kill_002dline-_0028C_002dk_0029"></a><span><code class="code">kill-line (C-k)</code><a class="copiable-link" href="#index-kill_002dline-_0028C_002dk_0029"> ¶</a></span></dt>
+<dd><p>删除从光标位置到行尾的文本。
+如果有负的数值参数，则从光标位置向后删除到当前行的开头。
+</p>
+</dd>
+<dt><a id="index-backward_002dkill_002dline-_0028C_002dx-Rubout_0029"></a><span><code class="code">backward-kill-line (C-x Rubout)</code><a class="copiable-link" href="#index-backward_002dkill_002dline-_0028C_002dx-Rubout_0029"> ¶</a></span></dt>
+<dd><p>从光标位置向后删除到当前行的开头。
+如果有负的数值参数，则从光标位置向前删除到当前行的末尾。
+</p>
+</dd>
+<dt><a id="index-unix_002dline_002ddiscard-_0028C_002du_0029"></a><span><code class="code">unix-line-discard (C-u)</code><a class="copiable-link" href="#index-unix_002dline_002ddiscard-_0028C_002du_0029"> ¶</a></span></dt>
+<dd><p>从光标位置向后删除到当前行的开头。
+</p>
+</dd>
+<dt><a id="index-kill_002dwhole_002dline-_0028_0029"></a><span><code class="code">kill-whole-line ()</code><a class="copiable-link" href="#index-kill_002dwhole_002dline-_0028_0029"> ¶</a></span></dt>
+<dd><p>删除当前行上的所有字符，无论光标位置在哪里。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-kill_002dword-_0028M_002dd_0029"></a><span><code class="code">kill-word (M-d)</code><a class="copiable-link" href="#index-kill_002dword-_0028M_002dd_0029"> ¶</a></span></dt>
+<dd><p>从光标位置删除到当前单词的末尾，如果在单词之间，则删除到下一个单词的末尾。
+单词边界与 <code class="code">forward-word</code>.
+</p>
+</dd>
+<dt><a id="index-backward_002dkill_002dword-_0028M_002dDEL_0029"></a><span><code class="code">backward-kill-word (M-<kbd class="key">DEL</kbd>)</code><a class="copiable-link" href="#index-backward_002dkill_002dword-_0028M_002dDEL_0029"> ¶</a></span></dt>
+<dd><p>删除光标前的单词。
+单词边界与 <code class="code">backward-word</code>.
+</p>
+
+</dd>
+<dt><a id="index-shell_002dtranspose_002dwords-_0028M_002dC_002dt_0029"></a><span><code class="code">shell-transpose-words (M-C-t)</code><a class="copiable-link" href="#index-shell_002dtranspose_002dwords-_0028M_002dC_002dt_0029"> ¶</a></span></dt>
+<dd><p>将光标前的单词移到光标后的单词之后，同时将光标移到该单词之后。
+如果插入点在行尾，则交换该行的最后两个单词。
+单词边界与 <code class="code">shell-forward-word</code> 和
+<code class="code">shell-backward-word</code>.
+</p>
+</dd>
+<dt><a id="index-unix_002dword_002drubout-_0028C_002dw_0029"></a><span><code class="code">unix-word-rubout (C-w)</code><a class="copiable-link" href="#index-unix_002dword_002drubout-_0028C_002dw_0029"> ¶</a></span></dt>
+<dd><p>删除光标前的单词，以空白字符作为单词边界。
+删除的文本会保存到删除环中。
+</p>
+</dd>
+<dt><a id="index-unix_002dfilename_002drubout-_0028_0029"></a><span><code class="code">unix-filename-rubout ()</code><a class="copiable-link" href="#index-unix_002dfilename_002drubout-_0028_0029"> ¶</a></span></dt>
+<dd><p>删除光标前的单词，以空白字符和斜杠字符作为单词边界。
+删除的文本会保存到删除环中。
+</p>
+</dd>
+<dt><a id="index-delete_002dhorizontal_002dspace-_0028_0029"></a><span><code class="code">delete-horizontal-space ()</code><a class="copiable-link" href="#index-delete_002dhorizontal_002dspace-_0028_0029"> ¶</a></span></dt>
+<dd><p>删除光标周围的所有空格和制表符。默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-kill_002dregion-_0028_0029"></a><span><code class="code">kill-region ()</code><a class="copiable-link" href="#index-kill_002dregion-_0028_0029"> ¶</a></span></dt>
+<dd><p>删除当前区域的文本。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-copy_002dregion_002das_002dkill-_0028_0029"></a><span><code class="code">copy-region-as-kill ()</code><a class="copiable-link" href="#index-copy_002dregion_002das_002dkill-_0028_0029"> ¶</a></span></dt>
+<dd><p>将区域内的文本复制到删除缓冲区，以便可以立即粘贴。
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-copy_002dbackward_002dword-_0028_0029"></a><span><code class="code">copy-backward-word ()</code><a class="copiable-link" href="#index-copy_002dbackward_002dword-_0028_0029"> ¶</a></span></dt>
+<dd><p>将光标前的单词复制到删除缓冲区。
+单词边界与 <code class="code">backward-word</code>.
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-copy_002dforward_002dword-_0028_0029"></a><span><code class="code">copy-forward-word ()</code><a class="copiable-link" href="#index-copy_002dforward_002dword-_0028_0029"> ¶</a></span></dt>
+<dd><p>将光标后的单词复制到删除缓冲区。
+单词边界与 <code class="code">forward-word</code>.
+默认情况下，此命令未绑定。
+</p>
+</dd>
+<dt><a id="index-yank-_0028C_002dy_0029"></a><span><code class="code">yank (C-y)</code><a class="copiable-link" href="#index-yank-_0028C_002dy_0029"> ¶</a></span></dt>
+<dd><p>将删除环顶部的内容粘贴到光标位置的缓冲区中。
+</p>
+</dd>
+<dt><a id="index-yank_002dpop-_0028M_002dy_0029"></a><span><code class="code">yank-pop (M-y)</code><a class="copiable-link" href="#index-yank_002dpop-_0028M_002dy_0029"> ¶</a></span></dt>
+<dd><p>旋转删除环，并粘贴新的顶部内容。只有在前一个命令是 <code class="code">yank</code> 或 <code class="code">yank-pop</code>.时才能执行此操作。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Numeric-Arguments.html">指定数值参数</a>, 上一项： <a href="Commands-For-Text.html">用于更改文本的命令</a>, 上级： <a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

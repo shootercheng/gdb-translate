@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>迷你调试信息（使用GDB进行调试）</title>
+
+<meta name="description" content="MiniDebugInfo (Debugging with GDB)"/>
+<meta name="keywords" content="MiniDebugInfo (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB-Files.html" rel="up" title="GDB Files"/>
+<link href="Index-Files.html" rel="next" title="Index Files"/>
+<link href="Separate-Debug-Files.html" rel="prev" title="Separate Debug Files"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="MiniDebugInfo">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Index-Files.html" rel="next">索引文件加速 <small class="sc">GDB</small></a>, 上一项： <a accesskey="p" href="Separate-Debug-Files.html" rel="prev">单独文件中的调试信息</a>, 上一级： <a accesskey="u" href="GDB-Files.html" rel="up"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Debugging-information-in-a-special-section"><span>18.4 特殊节中的调试信息<a class="copiable-link" href="#Debugging-information-in-a-special-section"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-separate-debug-sections"></a>
+<a class="index-entry-id" id="index-_002egnu_005fdebugdata-section"></a>
+
+<p>某些系统会提供预构建的可执行文件和库，这些文件和库有一个特殊的 ‘<samp class="samp">.gnu_debugdata</samp>’ 节。此功能称为
+<em class="dfn">迷你调试信息</em>. 这个节包含一个经过LZMA压缩的对象，用于为回溯提供额外的符号。
+</p>
+<p>这个节的目的是为简单的回溯提供额外的最小调试信息。它并非旨在替代完整的单独调试信息（请参阅 <a class="pxref" href="Separate-Debug-Files.html">单独文件中的调试信息</a>)。下面的示例展示了预期的使用方式；然而，
+<small class="sc">GDB</small> 目前并没有对该节中可能包含的调试信息类型设置限制。
+</p>
+<p><small class="sc">GDB</small> 支持此扩展。如果该节存在，那么在找不到其他调试信息源且 <small class="sc">GDB</small> 已配置为支持LZMA的情况下，会使用该节。
+</p>
+<p>可以使用 <code class="command">objcopy</code> 和其他标准实用工具轻松创建此节：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"># 从主二进制文件中提取动态符号，无需在普通符号表中也包含这些符号。
+nm -D <var class="var">二进制文件</var> --format=posix --defined-only \
+  | awk &#39;{ print $1 }&#39; | sort &gt; dynsyms
+
+# 从调试信息中提取所有文本（即函数）符号。
+# （注意，实际上我们也接受 “D” 符号，这是为了像PowerPC64这样使用函数描述符的平台的便利。）
+nm <var class="var">二进制文件</var> --format=posix --defined-only \
+  | awk &#39;{ if ($2 == &#34;T&#34; || $2 == &#34;t&#34; || $2 == &#34;D&#34;) print $1 }&#39; \
+  | sort &gt; funcsyms
+
+# 保留所有不在动态符号表中的函数符号。
+comm -13 dynsyms funcsyms &gt; keep_symbols
+
+# 将完整的调试信息分离到调试二进制文件中。
+objcopy --only-keep-debug <var class="var">二进制文件</var> 调试文件
+
+# 复制完整的调试信息，只保留最小的符号集并移除一些不必要的节。
+objcopy -S --remove-section .gdb_index --remove-section .comment \
+  --keep-symbols=keep_symbols debug mini_debuginfo
+
+# 从原始二进制文件中删除完整的调试信息。
+strip --strip-all -R .comment <var class="var">二进制文件</var>
+
+# 将压缩数据注入到原始二进制文件的 .gnu_debugdata 节中。
+xz mini_debuginfo
+objcopy --add-section .gnu_debugdata=mini_debuginfo.xz <var class="var">二进制文件</var>
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Index-Files.html">索引文件加速 <small class="sc">GDB</small></a>, 上一项： <a href="Separate-Debug-Files.html">单独文件中的调试信息</a>, 上一级： <a href="GDB-Files.html"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>基本原理（使用 GDB 调试）</title>
+
+<meta name="description" content="Rationale (Debugging with GDB)"/>
+<meta name="keywords" content="Rationale (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Agent-Expressions.html" rel="up" title="Agent Expressions"/>
+<link href="Varying-Target-Capabilities.html" rel="prev" title="Varying Target Capabilities"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Rationale">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Varying-Target-Capabilities.html" rel="prev">不同的目标能力</a>, 上一级： <a accesskey="u" href="Agent-Expressions.html" rel="up">GDB 代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Rationale-1"><span>F.5 基本原理<a class="copiable-link" href="#Rationale-1"> ¶</a></span></h3>
+
+<p>上述一些明显的设计决策是有争议的。
+</p>
+<dl class="table">
+<dt><b class="b">栈溢出/下溢怎么办？</b></dt>
+<dd><p>GDB 应该能够查询目标以发现其栈大小。
+有了这些信息，GDB 可以在翻译时确定给定的表达式是否会使栈溢出。但本规范并不涉及 GDB 应该进行何种错误检查。
+</p>
+</dd>
+<dt><b class="b">为什么所有操作都使用 LONGEST 类型？</b></dt>
+<dd>
+<p>速度并不重要，但代理代码大小很重要；使用 LONGEST 会引入一堆支持代码来执行除法等操作。所以这是一个严重的问题。
+</p>
+<p>首先，请注意，对于不同的操作数大小，不需要不同的字节码。你可以在不 <em class="emph">知道</em> 目标上栈元素实际大小的情况下生成代码。如果目标只支持 32 位整数，并且你不发送任何 64 位字节码，一切都能正常工作。这里的观察结果是，MIPS 和 Alpha 只有固定大小的寄存器，即使大多数指令只对全尺寸字进行操作，你仍然可以获得 C 语言的语义。你只需要确保在正确的时间对所有内容进行正确的符号扩展。所以不需要字节码的 32 位和 64 位变体。只需使用你支持的最大尺寸来实现所有操作。
+</p>
+<p>GDB 当然应该检查目标支持哪些尺寸，这样用户可以更早而不是更晚地得到错误信息。但此信息对于正确性来说并非必需。
+</p>
+
+</dd>
+<dt><b class="b">为什么没有 <code class="code">&gt;</code> 或 <code class="code">&lt;=</code> 运算符？</b></dt>
+<dd><p>我想保持解释器的小型化，而且我们不需要它们。我们可以将 <code class="code">less_</code> 操作码与 <code class="code">log_not</code>结合，并交换操作数的顺序，从而得到所有四种不对称比较运算符。
+例如， <code class="code">(x &lt;= y)</code> 是 <code class="code">! (x &gt; y)</code>，也就是 <code class="code">! (y &lt;
+x)</code>。
+</p>
+</dd>
+<dt><b class="b">为什么要有 <code class="code">log_not</code>？</b></dt>
+<dt><b class="b">为什么要有 <code class="code">ext</code>？</b></dt>
+<dt><b class="b">为什么要有 <code class="code">zero_ext</code>？</b></dt>
+<dd><p>这些都可以很容易地从其他指令合成，但我预计它们会被频繁使用，而且它们很简单，所以我将它们包含进来以保持字节码字符串简短。
+</p>
+<p><code class="code">log_not</code> 等同于 <code class="code">const8 0 equal</code>；它在一半的关系运算符中使用。
+</p>
+<p><code class="code">ext <var class="var">n</var></code> 等同于 <code class="code">const8 <var class="var">s-n</var> lsh const8
+<var class="var">s-n</var> rsh_signed</code>，其中 <var class="var">s</var> 是栈元素的大小；当值应该是有符号数时，它遵循 <code class="code">ref<var class="var">m</var></code> 和 <var class="var">寄存器</var> 字节码。见下一个项目符号项。
+</p>
+<p><code class="code">zero_ext <var class="var">n</var></code> 等同于 <code class="code">const<var class="var">m</var> <var class="var">mask</var>
+log_and</code>；每当我们压入寄存器的值时都会使用它，因为我们不能假设寄存器的高位不是垃圾数据。
+</p>
+</dd>
+<dt><b class="b">为什么没有 <code class="code">ref</code> 运算符的符号扩展变体？</b></dt>
+<dd><p>因为这会使 <code class="code">ref</code> 运算符的数量翻倍，而且无论如何我们都需要 <code class="code">ext</code> 字节码来访问位域。
+</p>
+</dd>
+<dt><b class="b">为什么没有 <code class="code">ref</code> 运算符的常量地址变体？</b></dt>
+<dd><p>因为这会再次使 <code class="code">ref</code> 运算符的数量翻倍，而且
+<code class="code">const32 <var class="var">address</var> ref32</code> 只长一个字节。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">ref<var class="var">n</var></code> 运算符必须支持未对齐的读取？</b></dt>
+<dd><p>只要可执行文件的调试信息指示，GDB 就会生成在未对齐地址处读取多字节值的字节码。
+此外，GDB 在生成字节码时不知道指针的值，所以它无法确定特定的读取是否对齐。
+</p>
+<p>特别是，结构位域可能有几个字节长，但没有对齐规则；打包结构的成员也不一定对齐。
+</p>
+<p>一般来说，在正确的 C 代码中，未对齐引用会在很多情况下出现，要么是程序员明确要求的，要么是编译器自行决定的。因此，让 GDB 代理字节码在所有情况下都能正确工作，比让 GDB 在每种情况下猜测编译器是否做了常规操作要简单。
+</p>
+</dd>
+<dt><b class="b">为什么没有有副作用的运算符？</b></dt>
+<dd><p>是因为我们当前的客户端不想要它们吗？这是个简单的答案。我认为真正的答案是我害怕实现函数调用。我们应该在当前合同交付后重新审视这个问题。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">goto</code> 操作不是相对于程序计数器（PC）的？</b></dt>
+<dd><p>解释器无论如何都有基地址用于 PC 边界检查，这样似乎更简单。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">goto</code> 操作只有一种偏移量大小？</b></dt>
+<dd><p>当前偏移量是 16 位。我对这种情况也不满意：
+</p>
+<p>假设我们有多个具有不同偏移量大小的分支操作。当我从左到右生成代码时，所有的跳转都是向前跳转（表达式中没有循环），所以我在发出跳转操作码时永远不知道目标地址。因此，我要么总是假设最大的偏移量大小，要么在生成代码后对代码进行跳转松弛处理，这似乎很浪费时间。
+</p>
+<p>我可以想象一个合理的表达式长度超过 256 字节。但我无法想象一个表达式长度超过 64k。因此，我们需要 16 位偏移量。这种推理很牵强，但松弛处理也很糟糕。
+</p>
+<p>另一种方法是从右到左生成代码。这样我就总是知道我的偏移量大小。这可能会很有趣。
+</p>
+</dd>
+<dt><b class="b">函数调用字节码在哪里？</b></dt>
+<dd>
+<p>当我们添加副作用时，应该添加这个。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">reg</code> 字节码采用 16 位寄存器编号？</b></dt>
+<dd>
+<p>英特尔的 IA - 64 架构有 128 个通用寄存器，128 个浮点寄存器，而且我确定它还有一些随机控制寄存器。
+</p>
+</dd>
+<dt><b class="b">为什么我们需要 <code class="code">trace</code> 和 <code class="code">trace_quick</code>？</b></dt>
+<dd><p>因为 GDB 需要记录表达式所涉及的所有内存内容和寄存器。如果用户想计算一个表达式
+<code class="code">x-&gt;y-&gt;z</code>, 代理必须记录 <code class="code">x</code> 和
+<code class="code">x-&gt;y</code> 的值以及 <code class="code">x-&gt;y-&gt;z</code>的值。
+</p>
+</dd>
+<dt><b class="b">难道 <code class="code">trace</code> 字节码不会使解释器的通用性降低吗？</b></dt>
+<dd><p>它们确实意味着解释器包含专用代码，但这并不意味着解释器只能用于该目的。如果一个表达式不使用 <code class="code">trace</code> 字节码，它们不会妨碍它。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">trace_quick</code> 不像其他操作那样消耗其参数？</b></dt>
+<dd><p>一般来说，你希望运算符消耗其参数；这是一致的，并且通常可以减少必要的栈重排。然而， <code class="code">trace_quick</code> 是为了节省空间的一种权宜之计；它的存在只是为了让我们不必在每个内存引用前都写 <code class="code">dup const8 <var class="var">SIZE</var> trace</code>
+。因此，它不消耗其参数是可以的；它是为特定的上下文设计的，在这个上下文中我们确切知道它应该如何处理栈。如果我们要采用一种权宜之计，它应该是一种有效的权宜之计。
+</p>
+</dd>
+<dt><b class="b">为什么 <code class="code">trace16</code> 存在？</b></dt>
+<dd><p>那个操作码是由与 Cygnus 签订数据跟踪工作合同的客户添加的。我个人认为它是不必要的；这么大的对象非常罕见，所以在那些情况下使用 <code class="code">dup const16
+<var class="var">size</var> trace</code> 就可以了。
+</p>
+<p>无论我们决定对……做什么 <code class="code">trace16</code>，我们至少应该保留
+操作码 0x30，以保持与添加它的客户的兼容性。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一章： <a href="Varying-Target-Capabilities.html">不同的目标能力</a>，上一级： <a href="Agent-Expressions.html">GDB 代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

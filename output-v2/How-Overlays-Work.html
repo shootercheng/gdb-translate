@@ -1,0 +1,133 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>覆盖层的工作原理（使用 GDB 调试）</title>
+
+<meta name="description" content="How Overlays Work (Debugging with GDB)"/>
+<meta name="keywords" content="How Overlays Work (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Overlays.html" rel="up" title="Overlays"/>
+<link href="Overlay-Commands.html" rel="next" title="Overlay Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="How-Overlays-Work">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Overlay-Commands.html" rel="next">覆盖层命令</a>, 上一项： <a accesskey="u" href="Overlays.html" rel="up">调试使用覆盖层的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="How-Overlays-Work-1"><span>14.1 覆盖层的工作原理<a class="copiable-link" href="#How-Overlays-Work-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-mapped-overlays"></a>
+<a class="index-entry-id" id="index-unmapped-overlays"></a>
+<a class="index-entry-id" id="index-load-address_002c-overlay_0027s"></a>
+<a class="index-entry-id" id="index-mapped-address"></a>
+<a class="index-entry-id" id="index-overlay-area"></a>
+
+<p>假设你有一台计算机，其指令地址空间只有 64 千字节长，但它有更多的内存可以通过其他方式访问，例如特殊指令、段寄存器或内存管理硬件。进一步假设你想让一个大于 64 千字节的程序在这个系统上运行。
+</p>
+<p>一种解决方案是识别程序中相对独立且无需直接相互调用的模块，将这些模块称为
+<em class="dfn">覆盖层</em>。将覆盖层与主程序分离，并将它们的机器码放在更大的内存中。将主程序放在指令内存中，但至少要留出足够的空间来容纳最大的覆盖层。
+</p>
+<p>现在，要调用位于覆盖层中的函数，你必须首先将该覆盖层的机器码从大内存复制到指令内存中为其预留的空间，然后跳转到该空间中的入口点。
+</p>
+
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">    数据             指令            更大的
+地址空间       地址空间        地址空间
++-----------+       +-----------+        +-----------+
+|           |       |           |        |           |
++-----------+       +-----------+        +-----------+&lt;-- 覆盖层 1
+| 程序       |       |   主      |   .----| 覆盖层 1 | 加载地址
+| 变量       |       |  程序     |   |    +-----------+
+| 和堆       |       |           |   |    |           |
++-----------+       |           |   |    +-----------+&lt;-- 覆盖层 2
+|           |       +-----------+   |    |           | 加载地址
++-----------+       |           |   |  .-| 覆盖层 2 |
+                    |           |   |  | |           |
+         映射 ---&gt;+-----------+   |  | +-----------+
+         地址    |           |   |  | |           |
+                    |  覆盖层   | &lt;-&#39;  | |           |
+                    |   区域    |  &lt;---&#39; +-----------+&lt;-- 覆盖层 3
+                    |           | &lt;---.  |           | 加载地址
+                    +-----------+     `--| 覆盖层 3 |
+                    |           |        |           |
+                    +-----------+        |           |
+                                         +-----------+
+                                         |           |
+                                         +-----------+
+
+                    <a class="anchor" id="A-code-overlay"></a>代码覆盖层
+</pre></div></div>
+
+<p>该图（见 <a class="pxref" href="#A-code-overlay">代码覆盖层</a>) 展示了一个具有独立数据和指令地址空间的系统。要映射一个覆盖层，程序将其代码从更大的地址空间复制到指令地址空间。由于这里显示的所有覆盖层都使用相同的映射地址，因此一次只能映射一个。对于数据和指令使用单一地址空间的系统，该图会类似，只是程序变量和堆将与主程序和覆盖层区域共享一个地址空间。
+</p>
+<p>加载到指令内存中并准备好使用的覆盖层称为
+<em class="dfn">已映射的</em> 覆盖层；其 <em class="dfn">映射地址</em> 是它在指令内存中的地址。未存在（或仅部分存在）于指令内存中的覆盖层称为 <em class="dfn">未映射的</em>；其 <em class="dfn">加载地址</em>
+是它在更大内存中的地址。映射地址也称为 <em class="dfn">虚拟内存地址</em>, 或 <em class="dfn">VMA</em>；加载地址也称为 <em class="dfn">加载内存地址</em>, 或 <em class="dfn">LMA</em>.
+</p>
+<p>不幸的是，覆盖层并不是一种完全透明的方式来使程序适应有限的指令内存。它们引入了一组新的全局约束，你在设计程序时必须牢记这些约束：
+</p>
+<ul class="itemize mark-bullet">
+<li>在调用或返回到覆盖层中的函数之前，你的程序必须确保该覆盖层实际上已映射。否则，调用或返回将把控制权转移到正确的地址，但在错误的覆盖层中，你的程序可能会崩溃。
+
+</li><li>如果在你的系统上映射覆盖层的过程代价高昂，你将需要仔细选择覆盖层，以尽量减少它们对程序性能的影响。
+
+</li><li>加载到系统上的可执行文件必须包含每个覆盖层的指令，这些指令出现在覆盖层的加载地址，而不是其映射地址。然而，每个覆盖层的指令必须进行重定位，并且其符号必须定义为好像覆盖层位于其映射地址一样。你可以使用 GNU 链接器脚本为程序的各个部分指定不同的加载和重定位地址；见 <a data-manual="ld.info" href="https://sourceware.org/binutils/docs/ld/Overlay-Description.html#Overlay-Description">覆盖层描述</a> 在 <cite class="cite">《使用 ld：GNU 链接器》</cite>.
+
+</li><li>将可执行文件加载到系统上的过程必须能够将其内容加载到更大的地址空间以及指令和数据空间中。
+
+</li></ul>
+
+<p>上述覆盖层系统相当简单，可以在许多方面进行改进：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果你的系统有合适的存储体切换寄存器或内存管理硬件，你可以使用这些设施使覆盖层的加载区域内容直接出现在指令空间中的映射地址。这可能比通常将覆盖层复制到其映射区域的方式更快。
+
+</li><li>如果你的覆盖层足够小，你可以预留多个覆盖层区域，并同时映射多个覆盖层。
+
+</li><li>你可以使用覆盖层来管理数据以及指令。一般来说，数据覆盖层在设计上比代码覆盖层更不透明：代码覆盖层只在调用或返回到函数时需要注意，而数据覆盖层每次访问数据时都需要注意。此外，如果你更改了数据覆盖层的内容，你必须在将不同的数据覆盖层复制到同一映射区域之前将其内容复制回其加载地址。
+
+</li></ul>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Overlay-Commands.html">覆盖层命令</a>, 上一项： <a href="Overlays.html">调试使用覆盖层的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

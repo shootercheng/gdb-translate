@@ -1,0 +1,86 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪点通过计数（使用GDB进行调试）</title>
+
+<meta name="description" content="Tracepoint Passcounts (Debugging with GDB)"/>
+<meta name="keywords" content="Tracepoint Passcounts (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Tracepoint-Conditions.html" rel="next" title="Tracepoint Conditions"/>
+<link href="Enable-and-Disable-Tracepoints.html" rel="prev" title="Enable and Disable Tracepoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Passcounts">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Tracepoint-Conditions.html" rel="next">跟踪点条件</a> <a accesskey="p" href="Enable-and-Disable-Tracepoints.html" rel="prev">启用和禁用跟踪点</a>, 上一项： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Tracepoint-Passcounts-1"><span>13.1.3 跟踪点通过计数<a class="copiable-link" href="#Tracepoint-Passcounts-1"> ¶</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-tracepoint-pass-count"></a>
+<a id="index-passcount"></a><span><code class="code">passcount <span class="r">[</span><var class="var">n</var> <span class="r">[</span><var class="var">num</var><span class="r">]]</span></code><a class="copiable-link" href="#index-passcount"> ¶</a></span></dt>
+<dd><p>设置 <em class="dfn">通过计数</em> 跟踪点的通过计数。通过计数是一种自动停止跟踪实验的方法。如果一个跟踪点的通过计数是
+<var class="var">n</var>, 那么跟踪实验将在该跟踪点第 <var class="var">n</var>次被触发时自动停止。如果未指定跟踪点编号
+<var class="var">num</var> ，该 <code class="code">passcount</code> 命令将设置最近定义的跟踪点的通过计数。如果未给出通过计数，跟踪实验将运行直到用户明确停止。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">通过计数 5 2</b> // 在第5次执行时停止
+</pre><pre class="exdent">                                   <code class="code">// tracepoint 2</code>
+</pre><pre class="example-preformatted">
+
+(gdb) <b class="b">通过计数 12</b>  // 在第12次执行时停止
+</pre><pre class="exdent">                                   <code class="code">// most recently defined tracepoint.</code>
+</pre><pre class="example-preformatted">(gdb) <b class="b">跟踪 foo</b>
+(gdb) <b class="b">通过 3</b>
+(gdb) <b class="b">跟踪 bar</b>
+(gdb) <b class="b">通过 2</b>
+(gdb) <b class="b">跟踪 baz</b>
+(gdb) <b class="b">通过 1</b>        // 当 foo 被执行时停止跟踪
+</pre><pre class="exdent">                                    <code class="code">// executed 3 times OR when bar has</code>
+</pre><pre class="exdent">                                    <code class="code">// been executed 2 times</code>
+</pre><pre class="exdent">                                    <code class="code">// OR when baz has been executed 1 time.</code>
+</pre></div>
+</dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

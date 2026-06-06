@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>十进制浮点（使用GDB进行调试）</title>
+
+<meta name="description" content="Decimal Floating Point (Debugging with GDB)"/>
+<meta name="keywords" content="Decimal Floating Point (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="C.html" rel="up" title="C"/>
+<link href="Debugging-C-Plus-Plus.html" rel="prev" title="Debugging C Plus Plus"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Decimal-Floating-Point">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Debugging-C-Plus-Plus.html" rel="prev"><small class="sc">GDB</small> C语言的特性<code class="t">++</code></a>, 上一级： <a accesskey="u" href="C.html" rel="up">C和C++<code class="t">++</code></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Decimal-Floating-Point-format"><span>15.4.1.8 十进制浮点格式<a class="copiable-link" href="#Decimal-Floating-Point-format"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-decimal-floating-point-format"></a>
+
+<p><small class="sc">GDB</small> 可以检查、设置并对十进制浮点格式的数字进行计算，在C语言中，这些数字对应于
+<code class="code">_Decimal32</code>, <code class="code">_Decimal64</code> 和 <code class="code">_Decimal128</code> 类型，这些类型是由支持十进制浮点运算的扩展所指定的。
+</p>
+<p>根据架构的不同，有两种编码方式在使用：x86和x86 - 64使用BID（二进制整数十进制），PowerPC和S/390使用DPD（密集打包十进制）。  <small class="sc">GDB</small> 将为配置的目标使用合适的编码。
+</p>
+<p>由于 <samp class="file">libdecnumber</samp>（用于操作十进制浮点数的库）存在限制，无法将宽度超过32位的整数转换（例如使用强制类型转换）为十进制浮点数。 <small class="sc">GDB</small>
+此外，为了模仿
+</p>
+<p>在二进制浮点计算中的行为，十进制浮点运算中的错误检查会忽略下溢、上溢和除零异常。 <small class="sc">GDB</small>在PowerPC架构中，
+</p>
+<p>提供了一组伪寄存器来检查 <small class="sc">GDB</small> 浮点寄存器中存储的值。请参阅 <code class="code">_Decimal128</code> PowerPC <a class="ref" href="PowerPC.html">以获取更多详细信息。</a> 
+</p>
+</div>
+
+
+
+
+
+</body></html>

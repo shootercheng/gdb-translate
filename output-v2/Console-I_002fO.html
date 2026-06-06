@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>控制台输入输出（使用GDB调试）</title>
+
+<meta name="description" content="Console I/O (Debugging with GDB)"/>
+<meta name="keywords" content="Console I/O (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="File-I/O Remote Protocol Extension"/>
+<link href="List-of-Supported-Calls.html" rel="next" title="List of Supported Calls"/>
+<link href="The-Ctrl_002dC-Message.html" rel="prev" title="The Ctrl-C Message"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Console-I_002fO">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="List-of-Supported-Calls.html" rel="next">支持的调用列表</a>, 上一项： <a accesskey="p" href="The-Ctrl_002dC-Message.html" rel="prev">‘<samp class="samp">Ctrl - C</samp>’ 消息</a>, 上级： <a accesskey="u" href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up">文件输入输出远程协议扩展</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Console-I_002fO-1"><span>E.14.6 控制台输入输出<a class="copiable-link" href="#Console-I_002fO-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-console-i_002fo-as-part-of-file_002di_002fo"></a>
+
+<p>默认情况下，若目标系统未显式关闭，文件描述符0、1和2会连接到 <small class="sc">GDB</small> 控制台。在 <small class="sc">GDB</small> 控制台上的输出会像处理其他文件输出操作一样进行处理（<code class="code">write(1, …)</code> 或者 <code class="code">write(2, …)</code>）。控制台输入由 <small class="sc">GDB</small> 处理，这样在目标从文件描述符0发出读取请求后，后续的所有输入都会被缓冲，直到满足以下条件之一：
+</p>
+<ul class="itemize mark-bullet">
+<li>用户输入 <kbd class="kbd">Ctrl - c</kbd>。其行为如上所述，并且
+<code class="code">read</code>
+系统调用被视为完成。
+
+</li><li>用户按下 <kbd class="key">回车键</kbd>。这被视为输入结束，并带有一个尾随换行符。
+
+</li><li>用户输入 <kbd class="kbd">Ctrl - d</kbd>。这被视为输入结束。输入中不会附加尾随字符（既没有换行符也没有‘<samp class="samp">Ctrl - D</samp>’）。
+
+</li></ul>
+
+<p>如果用户输入的字符数量超过了传递给 <code class="code">read</code> 调用的缓冲区所能容纳的数量，多余的字符会被缓冲在 <small class="sc">GDB</small> 中，直到目标再次请求另一个 <code class="code">read(0, …)</code> ，或者用户请求停止调试。
+</p>
+
+</div>
+
+
+
+
+
+</body></html>

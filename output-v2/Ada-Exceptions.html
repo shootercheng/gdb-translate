@@ -1,0 +1,83 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada 异常（使用 GDB 调试）</title>
+
+<meta name="description" content="Ada Exceptions (Debugging with GDB)"/>
+<meta name="keywords" content="Ada Exceptions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Ada-Tasks.html" rel="next" title="Ada Tasks"/>
+<link href="Stopping-Before-Main-Program.html" rel="prev" title="Stopping Before Main Program"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Exceptions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ada-Tasks.html" rel="next">Ada 任务扩展</a>, 上一项： <a accesskey="p" href="Stopping-Before-Main-Program.html" rel="prev">在最开始处停止</a>, 返回上一级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Ada-Exceptions-1"><span>15.4.10.6 Ada 异常<a class="copiable-link" href="#Ada-Exceptions-1"> ¶</a></span></h4>
+
+<p>提供了一个命令来列出所有 Ada 异常：
+</p>
+<dl class="table">
+<dt><a id="index-info-exceptions"></a><span><code class="code">info exceptions</code><a class="copiable-link" href="#index-info-exceptions"> ¶</a></span></dt>
+<dt><code class="code">info exceptions <var class="var">regexp</var></code></dt>
+<dd><p>该 <code class="code">info exceptions</code> 命令允许你列出正在调试的程序中定义的所有 Ada 异常及其地址。使用正则表达式， <var class="var">正则表达式</var>, 作为参数时，仅列出名称与 <var class="var">正则表达式</var> 匹配的异常。
+</p></dd>
+</dl>
+
+<p>下面是一个小示例，展示了如何使用该命令，首先不使用参数，然后使用正则表达式作为参数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info exceptions
+所有已定义的 Ada 异常：
+constraint_error: 0x613da0
+program_error: 0x613d20
+storage_error: 0x613ce0
+tasking_error: 0x613ca0
+const.aint_global_e: 0x613b00
+(gdb) info exceptions const.aint
+所有与正则表达式 &#34;const.aint&#34; 匹配的 Ada 异常：
+constraint_error: 0x613da0
+const.aint_global_e: 0x613b00
+</pre></div>
+
+<p>也可以要求 <small class="sc">GDB</small> 在抛出异常时停止程序执行。更多详细信息，请参阅 <a class="ref" href="Set-Catchpoints.html">设置捕获点</a>.
+</p>
+</div>
+
+
+
+
+
+</body></html>

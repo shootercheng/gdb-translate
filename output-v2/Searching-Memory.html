@@ -1,0 +1,160 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>搜索内存（使用GDB调试）</title>
+
+<meta name="description" content="Searching Memory (Debugging with GDB)"/>
+<meta name="keywords" content="Searching Memory (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Value-Sizes.html" rel="next" title="Value Sizes"/>
+<link href="Caching-Target-Data.html" rel="prev" title="Caching Target Data"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Searching-Memory">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Value-Sizes.html" rel="next">值的大小</a>, 上一项： <a accesskey="p" href="Caching-Target-Data.html" rel="prev">缓存目标数据</a>, 返回上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Search-Memory"><span>10.23 搜索内存<a class="copiable-link" href="#Search-Memory"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-searching-memory"></a>
+
+<p>可以使用以下命令在内存中搜索特定的字节序列
+<code class="code">find</code> 命令。
+</p>
+<dl class="table">
+<dt><a id="index-find"></a><span><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, +<var class="var">len</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, …<span class="r">]</span></code><a class="copiable-link" href="#index-find"> ¶</a></span></dt>
+<dt><code class="code">find <span class="r">[</span>/<var class="var">sn</var><span class="r">]</span> <var class="var">start_addr</var>, <var class="var">end_addr</var>, <var class="var">val1</var> <span class="r">[</span>, <var class="var">val2</var>, …<span class="r">]</span></code></dt>
+<dd><p>在内存中搜索由以下指定的字节序列 <var class="var">值1</var>, <var class="var">值2</var>, 等等。搜索从地址 <var class="var">起始地址</var> 开始，持续搜索
+<var class="var">长度</var> 个字节，或者一直搜索到 <var class="var">结束地址</var> （包含该地址）。
+</p></dd>
+</dl>
+
+<p><var class="var">s</var> 和 <var class="var">n</var> 是可选参数。
+它们可以按任意顺序指定，可以分开指定，也可以一起指定。
+</p>
+<dl class="table">
+<dt><span class="r"><var class="var">s</var>, 搜索查询大小</span></dt>
+<dd><p>每个搜索查询值的大小。
+</p>
+<dl class="table">
+<dt><code class="code">b</code></dt>
+<dd><p>字节
+</p></dd>
+<dt><code class="code">h</code></dt>
+<dd><p>半字（两个字节）
+</p></dd>
+<dt><code class="code">w</code></dt>
+<dd><p>字（四个字节）
+</p></dd>
+<dt><code class="code">g</code></dt>
+<dd><p>巨字（八个字节）
+</p></dd>
+</dl>
+
+<p>所有值都按照当前语言进行解释。
+这意味着，例如，如果当前源语言是C/C<code class="t">++</code>
+那么搜索字符串 “hello” 时会包含结尾的 ’\0’。
+可以通过使用类型转换来去除搜索中的空终止符，例如： ‘<samp class="samp">{char[5]}&#34;hello&#34;</samp>’。
+</p>
+<p>如果未指定值的大小，则从当前语言中值的类型获取。
+当需要将搜索模式指定为不同类型的混合时，这很有用。
+请注意，这意味着，例如，在类似C的语言中，搜索无类型的0x42将搜索 ‘<samp class="samp">(int) 0x42</samp>’
+通常是四个字节。
+</p>
+</dd>
+<dt><span class="r"><var class="var">n</var>, 最大查找次数</span></dt>
+<dd><p>要打印的最大匹配次数。默认是打印所有查找结果。
+</p></dd>
+</dl>
+
+<p>可以使用字符串作为搜索值。用双引号将它们引起来（<code class="code">&#34;</code>)。
+字符串值会逐字节复制到搜索模式中，无论目标的字节序和大小规范如何。
+</p>
+<p>会打印找到的每个匹配项的地址以及找到的匹配项数量。
+</p>
+<p>最后找到的值的地址存储在便利变量 ‘<samp class="samp">$_</samp>’ 中。
+匹配项的数量存储在 ‘<samp class="samp">$numfound</samp>’ 中。
+</p>
+<p>例如，如果在以下位置停止 <code class="code">printf</code> 在这个函数中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+hello ()
+{
+  static char hello[] = &#34;hello-hello&#34;;
+  static struct { char c; short s; int i; }
+    __attribute__ ((packed)) mixed
+    = { &#39;c&#39;, 0x1234, 0x87654321 };
+  printf (&#34;%s\n&#34;, hello);
+}
+</pre></div>
+
+<p>在调试期间会得到以下结果：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) find &amp;hello[0], +sizeof(hello), &#34;hello&#34;
+0x804956d &lt;hello.1620+6&gt;
+找到1个匹配项
+(gdb) find &amp;hello[0], +sizeof(hello), &#39;h&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+找到2个匹配项。
+(gdb) find &amp;hello[0], +sizeof(hello), {char[5]}&#34;hello&#34;
+0x8049567 &lt;hello.1620&gt;
+0x804956d &lt;hello.1620+6&gt;
+找到2个匹配项。
+(gdb) find /b1 &amp;hello[0], +sizeof(hello), &#39;h&#39;, 0x65, &#39;l&#39;
+0x8049567 &lt;hello.1620&gt;
+找到1个匹配项
+(gdb) find &amp;mixed, +sizeof(mixed), (char) &#39;c&#39;, (short) 0x1234, (int) 0x87654321
+0x8049560 &lt;mixed.1625&gt;
+找到1个匹配项
+(gdb) print $numfound
+$1 = 1
+(gdb) print $_
+$2 = (void *) 0x8049560
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Value-Sizes.html">值的大小</a>, 上一项： <a href="Caching-Target-Data.html">缓存目标数据</a>, 返回上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>共享库GDB/MI捕获点命令（使用GDB进行调试）</title>
+
+<meta name="description" content="Shared Library GDB/MI Catchpoint Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Shared Library GDB/MI Catchpoint Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="up" title="GDB/MI Catchpoint Commands"/>
+<link href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="next" title="Ada Exception GDB/MI Catchpoint Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Shared-Library-GDB_002fMI-Catchpoint-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" rel="next">Ada异常 <small class="sc">GDB/MI</small> 捕获点</a>, 上一项： <a accesskey="u" href="GDB_002fMI-Catchpoint-Commands.html" rel="up"><small class="sc">GDB/MI</small> 捕获点命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Shared-Library-gdb_002fmi-Catchpoints"><span>27.9.1 共享库 <small class="sc">GDB/MI</small> 捕获点<a class="copiable-link" href="#Shared-Library-gdb_002fmi-Catchpoints"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-_002dcatch_002dload"></a>
+<h4 class="subheading" id="The-_002dcatch_002dload-Command"><span>该 <code class="code">-catch-load</code> 命令<a class="copiable-link" href="#The-_002dcatch_002dload-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-13"><span>概要<a class="copiable-link" href="#Synopsis-13"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-load [ -t ] [ -d ] <var class="var">正则表达式</var>
+</pre></div>
+
+<p>为库加载事件添加一个捕获点。如果使用‘<samp class="samp">-t</samp>’选项，
+该捕获点是临时的（请参阅 <a class="pxref" href="Set-Breaks.html">设置
+断点</a>)。如果使用‘<samp class="samp">-d</samp>’选项，则捕获点将以禁用状态创建。‘<samp class="samp">正则表达式</samp>’参数是一个正则
+表达式，用于匹配加载的库的名称。
+</p>
+
+<h4 class="subsubheading" id="gdb-Command-12"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-12"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">catch load</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-12"><span>示例<a class="copiable-link" href="#Example-12"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-load -t foo.so
+^完成，断点={编号=&#34;1&#34;,类型=&#34;捕获点&#34;,处置=&#34;删除&#34;,启用=&#34;是&#34;,
+捕获内容=&#34;匹配foo.so的库的加载&#34;,捕获类型=&#34;加载&#34;,次数=&#34;0&#34;}
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dcatch_002dunload"></a>
+<h4 class="subheading" id="The-_002dcatch_002dunload-Command"><span>该 <code class="code">-catch-unload</code> 命令<a class="copiable-link" href="#The-_002dcatch_002dunload-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-14"><span>概要<a class="copiable-link" href="#Synopsis-14"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -catch-unload [ -t ] [ -d ] <var class="var">正则表达式</var>
+</pre></div>
+
+<p>为库卸载事件添加一个捕获点。如果使用‘<samp class="samp">-t</samp>’选项，
+该捕获点是临时的（请参阅 <a class="pxref" href="Set-Breaks.html">设置
+断点</a>)。如果使用‘<samp class="samp">-d</samp>’选项，则捕获点将以禁用状态创建。‘<samp class="samp">正则表达式</samp>’参数是一个正则
+表达式，用于匹配卸载的库的名称。
+</p>
+<h4 class="subsubheading" id="gdb-Command-13"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-13"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是‘<samp class="samp">catch unload</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-13"><span>示例<a class="copiable-link" href="#Example-13"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">-catch-unload -d bar.so
+^完成，断点={编号=&#34;2&#34;,类型=&#34;捕获点&#34;,处置=&#34;保留&#34;,启用=&#34;否&#34;,
+捕获内容=&#34;匹配bar.so的库的加载&#34;,捕获类型=&#34;卸载&#34;,次数=&#34;0&#34;}
+(gdb)
+</pre></div>
+
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>检查（使用GDB进行调试）</title>
+
+<meta name="description" content="Checks (Debugging with GDB)"/>
+<meta name="keywords" content="Checks (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Languages.html" rel="up" title="Languages"/>
+<link href="Supported-Languages.html" rel="next" title="Supported Languages"/>
+<link href="Show.html" rel="prev" title="Show"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Checks">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Supported-Languages.html" rel="next">支持的语言</a>, 上一项： <a accesskey="p" href="Show.html" rel="prev">显示语言</a>, 返回上一级： <a accesskey="u" href="Languages.html" rel="up">使用 <small class="sc">GDB</small> 处理不同语言</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Type-and-Range-Checking"><span>15.3 类型和范围检查<a class="copiable-link" href="#Type-and-Range-Checking"> ¶</a></span></h3>
+
+<p>一些语言旨在通过一系列编译时和运行时检查来防止您犯看似常见的错误。这些检查包括检查函数和运算符的参数类型，并确保在运行时捕获数学溢出。诸如此类的检查有助于在程序编译后确保其正确性，方法是消除类型不匹配，并在程序运行时对范围错误进行主动检查。
+</p>
+<p>默认情况下 <small class="sc">GDB</small> 根据当前源语言的规则检查这些错误。尽管 <small class="sc">GDB</small> 不检查您程序中的语句，但它可以检查直接输入到 <small class="sc">GDB</small> 中通过 <code class="code">print</code> 命令进行求值的表达式，例如。
+</p>
+
+<a class="index-entry-id" id="index-type-checking"></a>
+<a class="index-entry-id" id="index-checks_002c-type"></a>
+<ul class="mini-toc">
+<li><a accesskey="1" href="Type-Checking.html">类型检查概述</a></li>
+<li><a accesskey="2" href="Range-Checking.html">范围检查概述</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

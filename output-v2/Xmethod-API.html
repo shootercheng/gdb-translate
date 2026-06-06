@@ -1,0 +1,149 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>X方法 API（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Xmethod API (Debugging with GDB)"/>
+<meta name="keywords" content="Xmethod API (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Writing-an-Xmethod.html" rel="next" title="Writing an Xmethod"/>
+<link href="Xmethods-In-Python.html" rel="prev" title="Xmethods In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Xmethod-API">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Writing-an-Xmethod.html" rel="next">编写 X 方法</a>, 上一项： <a accesskey="p" href="Xmethods-In-Python.html" rel="prev">Python 中的 X 方法</a>, 上一级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Xmethod-API-1"><span><a class="copiable-link" href="#Xmethod-API-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-xmethod-API"></a>
+
+<p>该 <small class="sc">GDB</small> Python API 提供了类、接口和函数来实现、注册和操作 x 方法。请参阅 <a class="xref" href="Xmethods-In-Python.html">Python 中的 X 方法</a>。
+</p>
+<p>一个 x 方法匹配器应该是从模块中定义的
+<code class="code">XMethodMatcher</code> 派生的类的实例，或者是具有类似接口和属性的对象。 <code class="code">gdb.xmethod</code>的实例具有以下属性：
+<code class="code">XMethodMatcher</code> 变量：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-name"><span class="category-def">name </span><span><strong class="def-name">¶</strong><a class="copiable-link" href="#index-name"> 匹配器的名称。</a></span></dt>
+<dd><p>变量：
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-enabled"><span class="category-def">enabled </span><span><strong class="def-name">¶</strong><a class="copiable-link" href="#index-enabled"> 一个布尔值，指示匹配器是启用还是禁用。</a></span></dt>
+<dd><p>变量：
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-methods"><span class="category-def">methods </span><span><strong class="def-name">¶</strong><a class="copiable-link" href="#index-methods"> 匹配器管理的命名方法列表。列表中的每个对象都是模块中定义的</a></span></dt>
+<dd><p>类的实例，或者是具有以下属性的任何对象： <code class="code">XMethod</code> x 方法的名称，对于匹配器管理的每个 x 方法应该是唯一的。
+<code class="code">gdb.xmethod</code>一个布尔值，指示 x 方法是启用还是禁用。
+</p>
+<dl class="table">
+<dt><code class="code">name</code></dt>
+<dd><p>类
+</p>
+</dd>
+<dt><code class="code">enabled</code></dt>
+<dd><p>是一个便利类，具有与上述相同的属性，以及以下构造函数：
+</p>
+</dd>
+</dl>
+
+<p>函数： <code class="code">XMethod</code> XMethod.__init__
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethod_002e_005f_005finit_005f_005f"><span class="category-def">(self, name) </span><span><strong class="def-name">¶</strong> <var class="def-var-arguments">构造一个具有名称</var><a class="copiable-link" href="#index-XMethod_002e_005f_005finit_005f_005f"> name</a></span></dt>
+<dd><p>的启用的 x 方法。 <var class="var">该</var>类具有以下方法：
+</p></dd></dl>
+</dd></dl>
+
+<p>函数： <code class="code">XMethodMatcher</code> XMethodMatcher.__init__
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodMatcher_002e_005f_005finit_005f_005f"><span class="category-def">(self, name) </span><span><strong class="def-name">¶</strong> <var class="def-var-arguments">构造一个具有名称</var><a class="copiable-link" href="#index-XMethodMatcher_002e_005f_005finit_005f_005f"> name</a></span></dt>
+<dd><p>的启用的 x 方法匹配器。 <var class="var">属性初始化为</var>。
+<code class="code">methods</code> 函数： <code class="code">None</code>XMethodMatcher.match
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodMatcher_002ematch"><span class="category-def">(self, class_type, method_name) </span><span><strong class="def-name">¶</strong> <var class="def-var-arguments">派生类应该重写此方法。它应该返回一个与</var><a class="copiable-link" href="#index-XMethodMatcher_002ematch"> class_type</a></span></dt>
+<dd><p>和 <var class="var">method_name</var> 匹配的 x 方法工作对象（或 x 方法工作对象序列）。 <var class="var">class_type</var>是一个
+<var class="var">对象，并且</var> method_name <code class="code">gdb.Type</code> 是一个字符串值。如果匹配器管理其 <var class="var">属性中列出的命名方法，那么只应返回其对应项在</var>
+列表中启用的那些工作对象。 <code class="code">methods</code> 一个 x 方法工作对象应该是从模块中定义的 <code class="code">methods</code> 派生的类的实例，或者支持以下接口：
+</p></dd></dl>
+
+<p>函数：
+<code class="code">XMethodWorker</code> XMethodWorker.get_arg_types <code class="code">gdb.xmethod</code>(self)
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodWorker_002eget_005farg_005ftypes"><span class="category-def">¶ </span><span><strong class="def-name">此方法返回一个与 x 方法接受的参数相对应的</strong> <var class="def-var-arguments">对象序列。如果 x 方法不接受任何参数，它可以返回一个空序列或</var><a class="copiable-link" href="#index-XMethodWorker_002eget_005farg_005ftypes"> 。如果 x 方法接受单个参数，那么可以返回与之对应的单个</a></span></dt>
+<dd><p>对象。 <code class="code">gdb.Type</code> 函数： <code class="code">None</code> XMethodWorker.get_result_type
+<code class="code">gdb.Type</code> (self, *args)
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodWorker_002eget_005fresult_005ftype"><span class="category-def">¶ </span><span><strong class="def-name">此方法返回一个表示调用此 x 方法的结果类型的</strong> <var class="def-var-arguments">对象。</var><a class="copiable-link" href="#index-XMethodWorker_002eget_005fresult_005ftype"> args</a></span></dt>
+<dd><p>参数是将传递给此工作对象的 <code class="code">gdb.Type</code> 方法的相同参数元组。 <var class="var">函数：</var> XMethodWorker.__call__ <code class="code">__call__</code> (self, *args)
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-XMethodWorker_002e_005f_005fcall_005f_005f"><span class="category-def">¶ </span><span><strong class="def-name">这是执行</strong> <var class="def-var-arguments">工作的方法。</var><a class="copiable-link" href="#index-XMethodWorker_002e_005f_005fcall_005f_005f"> </a></span></dt>
+<dd><p> <em class="emph"></em> x方法的。
+<var class="var">参数</var> 参数是传递给 x 方法的参数元组。此元组中的每个元素都是一个 gdb.Value 对象。第一个元素始终是 <code class="code">this</code> 指针值。
+</p></dd></dl>
+
+<p>对于 <small class="sc">GDB</small> 查找 x 方法，应使用模块中定义的以下函数注册 x 方法匹配器
+<code class="code">gdb.xmethod</code>：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-register_005fxmethod_005fmatcher"><span class="category-def">函数： </span><span><strong class="def-name">register_xmethod_matcher</strong> <var class="def-var-arguments">(locus, matcher, replace=False)</var><a class="copiable-link" href="#index-register_005fxmethod_005fmatcher"> ¶</a></span></dt>
+<dd><p>该 <code class="code">matcher</code> 使用 <code class="code">locus</code>进行注册，替换与 <code class="code">matcher</code> 同名的现有匹配器，如果
+<code class="code">replace</code> 是 <code class="code">True</code>。  <code class="code">locus</code> 可以是一个
+<code class="code">gdb.Objfile</code> 对象（请参阅 <a class="pxref" href="Objfiles-In-Python.html">Python 中的目标文件</a>），或者是一个
+<code class="code">gdb.Progspace</code> 对象（请参阅 <a class="pxref" href="Progspaces-In-Python.html">Python 中的程序空间</a>），或者
+<code class="code">None</code>。如果它是 <code class="code">None</code>，那么 <code class="code">matcher</code> 将全局注册。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Writing-an-Xmethod.html">编写 X 方法</a>，上一项： <a href="Xmethods-In-Python.html">Python 中的 X 方法</a>，上一级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

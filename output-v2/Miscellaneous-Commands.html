@@ -1,0 +1,158 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>杂项命令（使用GDB调试）</title>
+
+<meta name="description" content="Miscellaneous Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Miscellaneous Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Bindable-Readline-Commands.html" rel="up" title="Bindable Readline Commands"/>
+<link href="Keyboard-Macros.html" rel="prev" title="Keyboard Macros"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Miscellaneous-Commands">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Keyboard-Macros.html" rel="prev">键盘宏</a> <a accesskey="u" href="Bindable-Readline-Commands.html" rel="up">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Some-Miscellaneous-Commands"><span>33.4.8 一些杂项命令<a class="copiable-link" href="#Some-Miscellaneous-Commands"> ¶</a></span></h4>
+<dl class="ftable">
+<dt><a id="index-re_002dread_002dinit_002dfile-_0028C_002dx-C_002dr_0029"></a><span><code class="code">re-read-init-file (C-x C-r)</code><a class="copiable-link" href="#index-re_002dread_002dinit_002dfile-_0028C_002dx-C_002dr_0029"> ¶</a></span></dt>
+<dd><p>读取 <var class="var">inputrc</var> 文件的内容，并合并其中找到的任何绑定或变量赋值。
+</p>
+</dd>
+<dt><a id="index-abort-_0028C_002dg_0029"></a><span><code class="code">abort (C-g)</code><a class="copiable-link" href="#index-abort-_0028C_002dg_0029"> ¶</a></span></dt>
+<dd><p>中止当前的编辑命令并
+使终端响铃（取决于
+<code class="code">bell-style</code>）的设置。
+</p>
+</dd>
+<dt><a id="index-do_002dlowercase_002dversion-_0028M_002dA_002c-M_002dB_002c-M_002dx_002c-_2026_0029"></a><span><code class="code">do-lowercase-version (M-A, M-B, M-<var class="var">x</var>, …)</code><a class="copiable-link" href="#index-do_002dlowercase_002dversion-_0028M_002dA_002c-M_002dB_002c-M_002dx_002c-_2026_0029"> ¶</a></span></dt>
+<dd><p>如果带元字符的 <var class="var">x</var> 是大写字母，则运行绑定到相应带元字符的小写字母的命令。
+如果 <var class="var">x</var> 已经是小写字母，则行为未定义。
+</p>
+</dd>
+<dt><a id="index-prefix_002dmeta-_0028ESC_0029"></a><span><code class="code">prefix-meta (<kbd class="key">ESC</kbd>)</code><a class="copiable-link" href="#index-prefix_002dmeta-_0028ESC_0029"> ¶</a></span></dt>
+<dd><p>将下一个输入的字符元化。这适用于没有元键的键盘。输入‘<samp class="samp"><kbd class="key">ESC</kbd> f</samp>’等同于输入
+<kbd class="kbd">M-f</kbd>。
+</p>
+</dd>
+<dt><a id="index-undo-_0028C_002d_005f-or-C_002dx-C_002du_0029"></a><span><code class="code">undo (C-_ or C-x C-u)</code><a class="copiable-link" href="#index-undo-_0028C_002d_005f-or-C_002dx-C_002du_0029"> ¶</a></span></dt>
+<dd><p>增量撤销，对每行分别记录。
+</p>
+</dd>
+<dt><a id="index-revert_002dline-_0028M_002dr_0029"></a><span><code class="code">revert-line (M-r)</code><a class="copiable-link" href="#index-revert_002dline-_0028M_002dr_0029"> ¶</a></span></dt>
+<dd><p>撤销对该行所做的所有更改。这就像多次执行 <code class="code">undo</code>
+命令以回到起始状态。
+</p>
+</dd>
+<dt><a id="index-tilde_002dexpand-_0028M_002d_007e_0029"></a><span><code class="code">tilde-expand (M-~)</code><a class="copiable-link" href="#index-tilde_002dexpand-_0028M_002d_007e_0029"> ¶</a></span></dt>
+<dd><p>对当前单词进行波浪号扩展。
+</p>
+</dd>
+<dt><a id="index-set_002dmark-_0028C_002d_0040_0029"></a><span><code class="code">set-mark (C-@)</code><a class="copiable-link" href="#index-set_002dmark-_0028C_002d_0040_0029"> ¶</a></span></dt>
+<dd><p>将标记设置到当前位置。如果提供了数字参数，则将标记设置到该位置。
+</p>
+</dd>
+<dt><a id="index-exchange_002dpoint_002dand_002dmark-_0028C_002dx-C_002dx_0029"></a><span><code class="code">exchange-point-and-mark (C-x C-x)</code><a class="copiable-link" href="#index-exchange_002dpoint_002dand_002dmark-_0028C_002dx-C_002dx_0029"> ¶</a></span></dt>
+<dd><p>交换当前位置和标记位置。当前光标位置设置为
+保存的位置，旧的光标位置保存为标记。
+</p>
+</dd>
+<dt><a id="index-character_002dsearch-_0028C_002d_005d_0029"></a><span><code class="code">character-search (C-])</code><a class="copiable-link" href="#index-character_002dsearch-_0028C_002d_005d_0029"> ¶</a></span></dt>
+<dd><p>读取一个字符，并将当前位置移动到该字符的下一次出现处。负参数表示搜索前一次出现的位置。
+</p>
+</dd>
+<dt><a id="index-character_002dsearch_002dbackward-_0028M_002dC_002d_005d_0029"></a><span><code class="code">character-search-backward (M-C-])</code><a class="copiable-link" href="#index-character_002dsearch_002dbackward-_0028M_002dC_002d_005d_0029"> ¶</a></span></dt>
+<dd><p>读取一个字符，并将当前位置移动到该字符的前一次出现处。负参数表示搜索后续出现的位置。
+</p>
+</dd>
+<dt><a id="index-skip_002dcsi_002dsequence-_0028_0029"></a><span><code class="code">skip-csi-sequence ()</code><a class="copiable-link" href="#index-skip_002dcsi_002dsequence-_0028_0029"> ¶</a></span></dt>
+<dd><p>读取足够的字符以消耗多键序列，例如为Home和End等键定义的序列。此类序列以
+控制序列指示符（CSI）开头，通常是ESC - [。如果此序列绑定到 &#34;\e[&#34;，则产生此类序列的键将无效，
+除非显式绑定到Readline命令，而不是将杂散字符插入编辑缓冲区。此命令默认未绑定，
+但通常绑定到ESC - [。
+</p>
+</dd>
+<dt><a id="index-insert_002dcomment-_0028M_002d_0023_0029"></a><span><code class="code">insert-comment (M-#)</code><a class="copiable-link" href="#index-insert_002dcomment-_0028M_002d_0023_0029"> ¶</a></span></dt>
+<dd><p>如果没有数字参数，则将 <code class="code">comment-begin</code>
+变量的值插入到当前行的开头。
+如果提供了数字参数，此命令将作为一个切换开关：如果
+行开头的字符与 <code class="code">comment-begin</code>的值不匹配，则插入该值，否则
+从行开头删除 <code class="code">comment-begin</code> 中的字符。
+在任何情况下，该行都将被视为已输入换行符。
+</p>
+</dd>
+<dt><a id="index-dump_002dfunctions-_0028_0029"></a><span><code class="code">dump-functions ()</code><a class="copiable-link" href="#index-dump_002dfunctions-_0028_0029"> ¶</a></span></dt>
+<dd><p>将所有函数及其键绑定打印到
+Readline输出流。如果提供了数字参数，
+输出的格式将使其可以成为 <var class="var">inputrc</var> 文件的一部分。此命令默认未绑定。
+</p>
+</dd>
+<dt><a id="index-dump_002dvariables-_0028_0029"></a><span><code class="code">dump-variables ()</code><a class="copiable-link" href="#index-dump_002dvariables-_0028_0029"> ¶</a></span></dt>
+<dd><p>将所有可设置的变量及其值打印到
+Readline输出流。如果提供了数字参数，
+输出的格式将使其可以成为 <var class="var">inputrc</var> 文件的一部分。此命令默认未绑定。
+</p>
+</dd>
+<dt><a id="index-dump_002dmacros-_0028_0029"></a><span><code class="code">dump-macros ()</code><a class="copiable-link" href="#index-dump_002dmacros-_0028_0029"> ¶</a></span></dt>
+<dd><p>打印所有绑定到宏的Readline键序列及其输出的字符串。如果提供了数字参数，
+输出的格式将使其可以成为 <var class="var">inputrc</var> 文件的一部分。此命令默认未绑定。
+</p>
+
+</dd>
+<dt><a id="index-emacs_002dediting_002dmode-_0028C_002de_0029"></a><span><code class="code">emacs-editing-mode (C-e)</code><a class="copiable-link" href="#index-emacs_002dediting_002dmode-_0028C_002de_0029"> ¶</a></span></dt>
+<dd><p>当处于 <code class="code">vi</code> 命令模式时，这将切换到 <code class="code">emacs</code>
+编辑模式。
+</p>
+</dd>
+<dt><a id="index-vi_002dediting_002dmode-_0028M_002dC_002dj_0029"></a><span><code class="code">vi-editing-mode (M-C-j)</code><a class="copiable-link" href="#index-vi_002dediting_002dmode-_0028M_002dC_002dj_0029"> ¶</a></span></dt>
+<dd><p>当处于 <code class="code">emacs</code> 编辑模式时，这将切换到 <code class="code">vi</code>
+编辑模式。
+</p>
+
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Keyboard-Macros.html">键盘宏</a>, 上一级： <a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

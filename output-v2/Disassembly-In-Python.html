@@ -1,0 +1,556 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的反汇编（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Disassembly In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Disassembly In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Missing-Debug-Info-In-Python.html" rel="next" title="Missing Debug Info In Python"/>
+<link href="TUI-Windows-In-Python.html" rel="prev" title="TUI Windows In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Disassembly-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Missing-Debug-Info-In-Python.html" rel="next">Python 中缺少调试信息</a>, 上一项： <a accesskey="p" href="TUI-Windows-In-Python.html" rel="prev">实现新的 TUI 窗口</a>, 上一级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Instruction-Disassembly-In-Python"><span>23.3.2.41 Python 中的指令反汇编<a class="copiable-link" href="#Instruction-Disassembly-In-Python"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-python-instruction-disassembly"></a>
+
+<p><small class="sc">GDB</small>的内置反汇编器可以使用 Python API 进行扩展，甚至替换。与反汇编器相关的功能包含在 <code class="code">gdb.disassembler</code> 模块：
+</p>
+<a class="anchor" id="DisassembleInfo-Class"></a><dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassembleInfo"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.DisassembleInfo</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassembleInfo"> ¶</a></span></dt>
+<dd><p>反汇编由此类的实例驱动。每次
+<small class="sc">GDB</small> 需要反汇编一条指令时，将创建此类的一个实例并传递给注册的反汇编器。然后反汇编器负责反汇编指令并返回结果。
+</p>
+<p>此类型的实例通常在 <small class="sc">GDB</small>, 但是，可以创建此类型实例的副本，请参阅 <code class="code">__init__</code> 有关更多详细信息。
+</p>
+<p>此类具有以下属性和方法：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassembleInfo_002eaddress"><span class="category-def">变量： </span><span><strong class="def-name"></strong><a class="copiable-link" href="#index-DisassembleInfo_002eaddress"> ¶</a></span></dt>
+<dd><p>一个只读整数，包含 <small class="sc">GDB</small>
+要反汇编单条指令的地址。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassembleInfo_002earchitecture"><span class="category-def">变量： </span><span><strong class="def-name">DisassembleInfo.architecture</strong><a class="copiable-link" href="#index-DisassembleInfo_002earchitecture"> ¶</a></span></dt>
+<dd><p>此 <code class="code">gdb.Architecture</code> （请参阅 <a class="pxref" href="Architectures-In-Python.html">架构的 Python 表示</a>) 对于 <small class="sc">GDB</small> 当前正在反汇编，此属性是只读的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassembleInfo_002eprogspace"><span class="category-def">变量： </span><span><strong class="def-name">DisassembleInfo.progspace</strong><a class="copiable-link" href="#index-DisassembleInfo_002eprogspace"> ¶</a></span></dt>
+<dd><p>此 <code class="code">gdb.Progspace</code> （请参阅 <a class="pxref" href="Progspaces-In-Python.html">Python 中的程序空间</a> <small class="sc">GDB</small> 当前正在反汇编，此属性是只读的。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassembleInfo_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">DisassembleInfo.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-DisassembleInfo_002eis_005fvalid"> </a></span></dt>
+<dd><p>返回 <code class="code">True</code> 如果 <code class="code">DisassembleInfo</code> 对象有效，
+<code class="code">False</code> 如果无效。一个 <code class="code">DisassembleInfo</code> 对象在为其创建的反汇编调用返回后将变为无效。调用其他 <code class="code">DisassembleInfo</code>
+创建的反汇编调用返回后，调用其他方法或访问属性将引发 <code class="code">DisassembleInfo</code>
+方法，或访问 <code class="code">DisassembleInfo</code> 属性，如果对象无效将引发
+<code class="code">RuntimeError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassembleInfo_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">DisassembleInfo.__init__</strong> <var class="def-var-arguments">(信息)</var><a class="copiable-link" href="#index-DisassembleInfo_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>这可用于创建一个新的 <code class="code">DisassembleInfo</code> 对象，它是 <var class="var">信息</var>的副本。副本将具有与 <code class="code">address</code>,
+<code class="code">architecture</code>, 和 <code class="code">progspace</code> 相同的值，并且将与 <var class="var">信息</var>, 同时变为无效。 <var class="var">信息</var>.
+</p>
+<p>此方法存在是为了可以创建 <code class="code">DisassembleInfo</code> 的子类，这些子类必须初始化为现有 <code class="code">DisassembleInfo</code> 对象的副本，但子类可能选择重写 <code class="code">read_memory</code> 方法，从而控制在从内存读取时
+<small class="sc">GDB</small> 看到的内容
+（请参阅 <a class="pxref" href="#builtin_005fdisassemble">内置反汇编</a>)。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassembleInfo_002eread_005fmemory"><span class="category-def">函数： </span><span><strong class="def-name">DisassembleInfo.read_memory</strong> <var class="def-var-arguments">(长度, 偏移量)</var><a class="copiable-link" href="#index-DisassembleInfo_002eread_005fmemory"> ¶</a></span></dt>
+<dd><p>此方法允许反汇编器读取要反汇编的指令的字节。该方法从 <var class="var">长度</var> 字节。 <var class="var">偏移量</var> 开始读取
+<code class="code">DisassembleInfo.address</code>.
+</p>
+<p>重要的是，反汇编器应使用此方法读取指令字节，而不是直接读取 inferior 内存，因为在某些情况下 <small class="sc">GDB</small> 从内部缓冲区而不是直接从 inferior 内存进行反汇编，调用此方法会处理此细节。
+</p>
+<p>返回一个缓冲区对象，其行为类似于数组或字符串，就像 <code class="code">Inferior.read_memory</code> 一样
+（请参阅 <a class="pxref" href="Inferiors-In-Python.html#gdbpy_005finferior_005fread_005fmemory">Inferior.read_memory</a>）。返回的缓冲区长度将始终恰好为 <var class="var">长度</var>.
+</p>
+<p>如果 <small class="sc">GDB</small> 无法读取所需内存，则会
+<code class="code">gdb.MemoryError</code> 引发异常（请参阅 <a class="pxref" href="Exception-Handling.html">异常处理</a>）。
+</p>
+<p>子类可以重写此方法，以控制在从内存读取时
+<small class="sc">GDB</small> 看到的内容
+（请参阅 <a class="pxref" href="#builtin_005fdisassemble">内置反汇编</a>）。重写此方法时，重要的是要理解 <code class="code">builtin_disassemble</code> 如何使用
+此方法。
+</p>
+<p>在反汇编单条指令时，可能会多次调用
+此方法，并且相同的字节可能会被多次读取。任何
+单次调用可能只读取总指令字节的一部分。
+</p>
+<p>如果 <code class="code">read_memory</code> 的实现无法读取
+请求的内存内容，例如，如果有从无效内存地址读取的请求，则会 <code class="code">gdb.MemoryError</code> 引发
+</p>
+<p>引发一个 <code class="code">MemoryError</code> 在 <code class="code">read_memory</code> 内部并不
+自动意味着 <code class="code">MemoryError</code> 会引发
+<code class="code">builtin_disassemble</code>。有可能 <small class="sc">GDB</small>的内置
+反汇编器正在探测可用的字节数。当
+<code class="code">read_memory</code> 引发 <code class="code">MemoryError</code> 内置
+反汇编器可能能够使用其可用的字节进行完整的反汇编，在这种情况下 <code class="code">builtin_disassemble</code> 本身不会引发 <code class="code">MemoryError</code>。
+</p>
+<p>在 <code class="code">read_memory</code> 中引发的任何其他异常类型将传播
+回去，并由 <code class="code">builtin_disassemble</code>重新引发。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassembleInfo_002etext_005fpart"><span class="category-def">函数： </span><span><strong class="def-name">DisassembleInfo.text_part</strong> <var class="def-var-arguments">(样式, 字符串)</var><a class="copiable-link" href="#index-DisassembleInfo_002etext_005fpart"> ¶</a></span></dt>
+<dd><p>创建一个新的 <code class="code">DisassemblerTextPart</code> 表示反汇编指令的一部分。  <var class="var">字符串</var> 应该是一个非空字符串，并且 <var class="var">样式</var> 应该是一个合适的样式常量
+（请参阅 <a class="pxref" href="#Disassembler-Style-Constants">反汇编器样式常量</a>）。
+</p>
+<p>反汇编器部分在创建 <code class="code">DisassemblerResult</code>
+时用于表示指令内的样式
+（请参阅 <a class="pxref" href="#DisassemblerResult-Class">反汇编器结果类</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassembleInfo_002eaddress_005fpart"><span class="category-def">函数： </span><span><strong class="def-name">DisassembleInfo.address_part</strong> <var class="def-var-arguments">(地址)</var><a class="copiable-link" href="#index-DisassembleInfo_002eaddress_005fpart"> ¶</a></span></dt>
+<dd><p>创建一个新的 <code class="code">DisassemblerAddressPart</code>。  <var class="var">地址</var> 是此部分表示的绝对地址的值。一个
+<code class="code">DisassemblerAddressPart</code> 显示为绝对地址和
+关联的符号，地址和符号的样式合适。
+</p></dd></dl>
+
+</dd></dl>
+
+<a class="anchor" id="Disassembler-Class"></a><dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassembler"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.Disassembler</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassembler"> ¶</a></span></dt>
+<dd><p>这是所有用户实现的反汇编器必须继承的基类。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Disassembler_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">Disassembler.__init__</strong> <var class="def-var-arguments">(名称)</var><a class="copiable-link" href="#index-Disassembler_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>构造函数接受 <var class="var">名称</var>, 一个字符串，应该是此反汇编器的简短
+名称。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Disassembler_002e_005f_005fcall_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">Disassembler.__call__</strong> <var class="def-var-arguments">(信息)</var><a class="copiable-link" href="#index-Disassembler_002e_005f_005fcall_005f_005f"> ¶</a></span></dt>
+<dd><p>此 <code class="code">__call__</code> 方法必须由子类重写以
+执行反汇编。调用 <code class="code">__call__</code> 此基类上的方法将
+引发 <code class="code">NotImplementedError</code> 异常。
+</p>
+<p>此 <var class="var">信息</var> 参数是 <code class="code">DisassembleInfo</code>的一个实例，并且
+描述了 <small class="sc">GDB</small> 要反汇编的指令。
+</p>
+<p>如果此函数返回 <code class="code">None</code>, 这向 <small class="sc">GDB</small>
+表明此类不希望反汇编请求的
+指令。  <small class="sc">GDB</small> 然后将使用其内置反汇编器来
+执行反汇编。
+</p>
+<p>或者，此函数可以返回一个 <code class="code">DisassemblerResult</code>
+表示反汇编后的指令，下面将更详细地描述此类型。
+</p>
+<p>此 <code class="code">__call__</code> 方法可以引发 <code class="code">gdb.MemoryError</code>
+异常（请参阅 <a class="pxref" href="Exception-Handling.html">异常处理</a>）以向 <small class="sc">GDB</small>
+表明访问所需内存时出现问题，然后这将由 <small class="sc">GDB</small> 在反汇编器输出中显示。
+</p>
+<p>理想情况下，调用 <code class="code">__call__</code> 的唯一三种结果是返回 <code class="code">None</code>, 成功反汇编后返回一个
+<code class="code">DisassemblerResult</code>, 或者 <code class="code">MemoryError</code> 表示读取内存时出现问题。
+</p>
+<p>然而，由于 <code class="code">__call__</code> 的实现可能由于其他原因失败，例如，执行反汇编所需的某些外部资源暂时不可用，那么，如果 <code class="code">__call__</code>
+引发 <code class="code">GdbError</code>, 异常将转换为字符串
+并打印在反汇编输出的末尾，反汇编
+请求将停止。
+</p>
+<p>由 <code class="code">__call__</code> 方法引发的任何其他异常类型被视为用户代码中的错误，异常将根据 <kbd class="kbd">set python print-stack</kbd> 设置
+（请参阅 <a class="pxref" href="Python-Commands.html#set_005fpython_005fprint_005fstack"><kbd class="kbd">set python print-stack</kbd></a>）。
+</p></dd></dl>
+</dd></dl>
+
+<a class="anchor" id="DisassemblerResult-Class"></a><dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassemblerResult"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.DisassemblerResult</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassemblerResult"> ¶</a></span></dt>
+<dd><p>此类表示单条指令反汇编的结果。此类的一个实例将从
+<code class="code">builtin_disassemble</code> 返回（请参阅 <a class="pxref" href="#builtin_005fdisassemble">内置反汇编</a>），并且如果指令成功反汇编，此类的一个实例应该从
+<code class="code">Disassembler.__call__</code><!-- /@w --> 内创建（请参阅 <a class="pxref" href="#Disassembler-Class">反汇编器类</a>）。
+</p>
+<p>无法对 <code class="code">DisassemblerResult</code> 类进行子类化。
+</p>
+<p>此 <code class="code">DisassemblerResult</code> 类具有以下属性和
+方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-DisassemblerResult_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">DisassemblerResult.__init__</strong> <var class="def-var-arguments">(长度, 字符串, 部分)</var><a class="copiable-link" href="#index-DisassemblerResult_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>初始化此类的一个实例， <var class="var">长度</var> 是反汇编指令的字节长度，必须大于
+零。
+</p>
+<p>仅使用 <var class="var">字符串</var> 或 <var class="var">部分</var> 中的一个来初始化一个新的 <code class="code">DisassemblerResult</code>；另一个应传递值 <code class="code">None</code>. 或者，可以按名称传递参数，并且可以忽略未使用的参数。
+</p>
+<p>此 <var class="var">字符串</var> 参数，如果不是 <code class="code">None</code>, 是一个非空字符串
+表示整个反汇编的指令。使用 <var class="var">字符串</var> 参数构建结果对象不允许在结果中包含任何样式
+信息。  <small class="sc">GDB</small> 将结果样式设置为单个 <code class="code">DisassemblerTextPart</code> 使用 <code class="code">STYLE_TEXT</code>
+样式（请参阅 <a class="pxref" href="#Disassembler-Styling-Parts">反汇编器样式部分</a>）。
+</p>
+<p>此 <var class="var">部分</var> 参数，如果不是 <code class="code">None</code>, 是一个非空序列
+的 <code class="code">DisassemblerPart</code> 对象。每个部分表示反汇编指令的一小部分以及相关的样式
+信息。使用 <var class="var">部分</var> 构建的结果对象可以由 <small class="sc">GDB</small> 显示完整的样式信息
+（请参阅 <a class="pxref" href="Output-Styling.html#style_005fdisassembler_005fenabled"><kbd class="kbd">set style disassembler
+enabled</kbd></a>）。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerResult_002elength"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerResult.length</strong><a class="copiable-link" href="#index-DisassemblerResult_002elength"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含反汇编指令的字节长度，此值始终大于零。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerResult_002estring"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerResult.string</strong><a class="copiable-link" href="#index-DisassemblerResult_002estring"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含一个非空字符串，表示反汇编的指令。此 <var class="var">字符串</var> 是反汇编指令的表示，不包含任何样式信息。要查看指令的样式，请使用 <var class="var">部分</var> 属性。
+</p>
+<p>如果此实例是使用单独的
+<code class="code">DisassemblerPart</code> 对象初始化的， <var class="var">字符串</var> 属性仍然有效。此 <var class="var">字符串</var> 值是通过连接每个组件部分的值创建的
+（请参阅
+<code class="code">DisassemblerPart.string</code> 每个组件部分的值
+（请参阅 <a class="pxref" href="#Disassembler-Styling-Parts">反汇编器样式部分</a>）。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerResult_002eparts"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerResult.parts</strong><a class="copiable-link" href="#index-DisassemblerResult_002eparts"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含一个非空序列的
+<code class="code">DisassemblerPart</code> 对象。每个 <code class="code">DisassemblerPart</code> 对象
+包含指令的一小部分以及有关该部分应如何样式化的信息。  <small class="sc">GDB</small> 使用此信息创建样式化的反汇编器输出
+（请参阅 <a class="pxref" href="Output-Styling.html#style_005fdisassembler_005fenabled"><kbd class="kbd">set style disassembler
+enabled</kbd></a>）。
+</p>
+<p>如果此实例是使用单个字符串而不是使用 <code class="code">DisassemblerPart</code> 对象序列初始化的， <var class="var">部分</var>
+属性仍然有效。在这种情况下， <var class="var">部分</var> 属性将包含一个包含单个 <code class="code">DisassemblerTextPart</code>
+对象的序列，该对象的字符串将表示整个指令，并且其样式将是 <code class="code">STYLE_TEXT</code>.
+</p></dd></dl>
+</dd></dl>
+
+<a class="anchor" id="Disassembler-Styling-Parts"></a><dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassemblerPart"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.DisassemblerPart</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassemblerPart"> ¶</a></span></dt>
+<dd><p>这是不同部分子类继承的父类。Python API 仅返回下面详细说明的子类的实例。
+</p>
+<p>无法直接创建此父类或下面列出的任何子类的实例。下面列出的子类的实例通过调用
+<code class="code">builtin_disassemble</code> 创建（请参阅 <a class="pxref" href="#builtin_005fdisassemble">内置反汇编</a>）并在 <code class="code">DisassemblerResult</code> 对象中返回，或者可以通过调用 <code class="code">text_part</code> 和 <code class="code">address_part</code>
+方法在 <code class="code">DisassembleInfo</code> 类上创建（请参阅 <a class="pxref" href="#DisassembleInfo-Class">DisassembleInfo 类</a>）。
+</p>
+<p>此 <code class="code">DisassemblerPart</code> 类有一个属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerPart_002estring"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerPart.string</strong><a class="copiable-link" href="#index-DisassemblerPart_002estring"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含一个非空字符串，表示反汇编指令的这一部分。此属性中的字符串不包含任何样式信息。
+</p></dd></dl>
+</dd></dl>
+
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassemblerTextPart"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.DisassemblerTextPart</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassemblerTextPart"> ¶</a></span></dt>
+<dd><p>此 <code class="code">DisassemblerTextPart</code> 类表示反汇编指令的一部分以及该部分的关联样式。此类的实例不能直接创建，而是调用
+<code class="code">DisassembleInfo.text_part</code> 创建此类的新实例（请参阅 <a class="pxref" href="#DisassembleInfo-Class">DisassembleInfo 类</a>）。
+</p>
+<p>除了其父类的属性外，
+<code class="code">DisassemblerTextPart</code> 还有以下附加属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerTextPart_002estyle"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerTextPart.style</strong><a class="copiable-link" href="#index-DisassemblerTextPart_002estyle"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含一个定义的样式常量。
+<small class="sc">GDB</small> 在样式化反汇编指令的这一部分时将使用此样式（请参阅 <a class="pxref" href="#Disassembler-Style-Constants">反汇编器样式常量</a>）。
+</p></dd></dl>
+</dd></dl>
+
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002edisassembler_002eDisassemblerAddressPart"><span class="category-def">类： </span><span><strong class="def-name">gdb.disassembler.DisassemblerAddressPart</strong><a class="copiable-link" href="#index-gdb_002edisassembler_002eDisassemblerAddressPart"> ¶</a></span></dt>
+<dd><p>此 <code class="code">DisassemblerAddressPart</code> 类表示反汇编指令中的绝对
+地址。使用
+<code class="code">DisassemblerAddressPart</code> 而不是
+<code class="code">DisassemblerTextPart</code> 与 <code class="code">STYLE_ADDRESS</code> 一起使用是首选的，
+<small class="sc">GDB</small> 将地址显示为绝对地址，并将查找合适的符号显示在地址旁边。使用
+<code class="code">DisassemblerAddressPart</code> 还确保尊重用户设置，例如
+<code class="code">set print max-symbolic-offset</code> 。
+</p>
+<p>以下是一个 x86 - 64 指令的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">call   0x401136 &lt;foo&gt;
+</pre></div>
+
+<p>在此指令中， <code class="code">0x401136 &lt;foo&gt;</code> 是从单个 <code class="code">DisassemblerAddressPart</code>生成的。 <code class="code">0x401136</code> 将使用 <code class="code">STYLE_ADDRESS</code>样式化，并且 <code class="code">foo</code> 将使用
+<code class="code">STYLE_SYMBOL</code>样式化。 <code class="code">&lt;</code> 和 <code class="code">&gt;</code> 将使用
+<code class="code">STYLE_TEXT</code>样式化。
+</p>
+<p>如果不需要包含符号名称，则可以使用
+<code class="code">DisassemblerTextPart</code> 样式的 <code class="code">STYLE_ADDRESS</code> 代替。
+</p>
+<p>此类的实例不能直接创建，而是调用
+<code class="code">DisassembleInfo.address_part</code> 创建此类的新实例（请参阅 <a class="pxref" href="#DisassembleInfo-Class">DisassembleInfo 类</a>）。
+</p>
+<p>除了其父类的属性外，
+<code class="code">DisassemblerAddressPart</code> 还有以下附加属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-DisassemblerAddressPart_002eaddress"><span class="category-def">变量： </span><span><strong class="def-name">DisassemblerAddressPart.address</strong><a class="copiable-link" href="#index-DisassemblerAddressPart_002eaddress"> ¶</a></span></dt>
+<dd><p>一个只读属性，包含传递给此对象的 <var class="var">地址</var> 的 <code class="code">__init__</code> 方法的值。
+</p></dd></dl>
+</dd></dl>
+
+<a class="anchor" id="Disassembler-Style-Constants"></a>
+<p>下表列出了所有可用的反汇编器样式。  <small class="sc">GDB</small> 将这些样式常量映射到其样式设置（请参阅 <a class="pxref" href="Output-Styling.html">输出样式</a>）。在某些情况下，几个样式常量会产生相同的样式设置，因此在屏幕上会产生相同的视觉效果。这在 <small class="sc">GDB</small>的未来版本中可能会改变，因此应谨慎选择正确的样式常量，以确保在 <small class="sc">GDB</small>的未来版本中输出样式正确。
+</p>
+<dl class="vtable">
+<dt><a class="index-entry-id" id="index-STYLE_005fTEXT"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fTEXT"></a><span><code class="code">gdb.disassembler.STYLE_TEXT</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fTEXT"> ¶</a></span></dt>
+<dd><p>这是 <small class="sc">GDB</small> 在样式化反汇编器输出时使用的默认样式。此样式应用于指令中不适合下面列出的任何其他样式的任何部分。
+<small class="sc">GDB</small> 使用其默认样式对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fMNEMONIC"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fMNEMONIC"></a><span><code class="code">gdb.disassembler.STYLE_MNEMONIC</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fMNEMONIC"> ¶</a></span></dt>
+<dd><p>此样式用于样式化主要指令助记符，通常出现在反汇编指令字符串的开头或附近。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+mnemonic</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fSUB_005fMNEMONIC"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fSUB_005fMNEMONIC"></a><span><code class="code">gdb.disassembler.STYLE_SUB_MNEMONIC</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fSUB_005fMNEMONIC"> ¶</a></span></dt>
+<dd><p>此样式用于样式化反汇编指令中的任何子助记符。子助记符是指令中控制指令功能但与主要助记符不连续的任何文本（主要助记符将具有 <code class="code">STYLE_MNEMONIC</code>样式）。
+</p>
+<p>例如，考虑以下 AArch64 指令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">add	w16, w7, w1, lsl #1
+</pre></div>
+
+<p>此 <code class="code">add</code> 是主要指令助记符，将被赋予 <code class="code">STYLE_MNEMONIC</code>样式，而 <code class="code">lsl</code> 是子助记符，将被赋予 <code class="code">STYLE_SUB_MNEMONIC</code>样式。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+mnemonic</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fASSEMBLER_005fDIRECTIVE"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fASSEMBLER_005fDIRECTIVE"></a><span><code class="code">gdb.disassembler.STYLE_ASSEMBLER_DIRECTIVE</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fASSEMBLER_005fDIRECTIVE"> ¶</a></span></dt>
+<dd><p>有时一系列字节无法解码为有效的指令。在这种情况下，反汇编器可能会选择使用汇编指令来表示反汇编的结果，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">.word	0x1234
+</pre></div>
+
+<p>在这种情况下， <code class="code">.word</code> 将被赋予
+<code class="code">STYLE_ASSEMBLER_DIRECTIVE</code> 样式。汇编指令在很多方面类似于助记符，但不是架构指令集的一部分。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+mnemonic</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fREGISTER"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fREGISTER"></a><span><code class="code">gdb.disassembler.STYLE_REGISTER</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fREGISTER"> ¶</a></span></dt>
+<dd><p>此样式用于样式化反汇编指令中表示寄存器名称或寄存器编号的任何文本。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+register</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fADDRESS"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fADDRESS"></a><span><code class="code">gdb.disassembler.STYLE_ADDRESS</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fADDRESS"> ¶</a></span></dt>
+<dd><p>此样式用于样式化反汇编指令中表示绝对地址的数值。
+</p>
+<p>在创建具有此样式的 <code class="code">DisassemblerTextPart</code> 时，应考虑是否 <code class="code">DisassemblerAddressPart</code> 更合适。请参阅 <a class="ref" href="#Disassembler-Styling-Parts">反汇编器样式部分</a> 以了解每个部分的功能描述。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+address</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fADDRESS_005fOFFSET"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fADDRESS_005fOFFSET"></a><span><code class="code">gdb.disassembler.STYLE_ADDRESS_OFFSET</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fADDRESS_005fOFFSET"> ¶</a></span></dt>
+<dd><p>此样式用于样式化反汇编指令中表示地址偏移量的数值。当指令本身要访问内存，并且该值用于偏移要访问的地址时，该值被视为地址偏移量。
+</p>
+<p>例如，架构可能有一条指令，使用寄存器中的地址从内存加载。如果该指令还允许将立即偏移量编码到指令中，这将是一个地址偏移量。类似地，分支指令可能跳转到寄存器中的地址加上编码到指令中的地址偏移量。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+immediate</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fIMMEDIATE"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fIMMEDIATE"></a><span><code class="code">gdb.disassembler.STYLE_IMMEDIATE</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fIMMEDIATE"> ¶</a></span></dt>
+<dd><p>使用 <code class="code">STYLE_IMMEDIATE</code> 对于反汇编指令中的任何数值，当这些值不是地址、地址偏移量或寄存器编号时（在这些情况下可以使用 <code class="code">STYLE_ADDRESS</code>,
+<code class="code">STYLE_ADDRESS_OFFSET</code>, 或 <code class="code">STYLE_REGISTER</code> 样式）。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+immediate</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fSYMBOL"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fSYMBOL"></a><span><code class="code">gdb.disassembler.STYLE_SYMBOL</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fSYMBOL"> ¶</a></span></dt>
+<dd><p>此样式用于样式化反汇编指令中包含的符号的文本名称。符号名称通常包含在反汇编指令中的绝对地址旁边，以便用户更容易理解该地址所指的内容。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">call   0x401136 &lt;foo&gt;
+</pre></div>
+
+<p>这里 <code class="code">foo</code> 是符号的名称，应被赋予
+<code class="code">STYLE_SYMBOL</code> 样式。
+</p>
+<p>像这样在绝对地址旁边添加符号由 <code class="code">DisassemblerAddressPart</code> 类自动处理
+（请参阅 <a class="pxref" href="#Disassembler-Styling-Parts">反汇编器样式部分</a>）。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+symbol</code> 样式设置对具有此样式的文本进行样式化。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-STYLE_005fCOMMENT_005fSTART"></a>
+<a id="index-gdb_002edisassembler_002eSTYLE_005fCOMMENT_005fSTART"></a><span><code class="code">gdb.disassembler.STYLE_COMMENT_START</code><a class="copiable-link" href="#index-gdb_002edisassembler_002eSTYLE_005fCOMMENT_005fSTART"> ¶</a></span></dt>
+<dd><p>此样式用于在反汇编输出中开始行注释。与其他仅应用于单个
+<code class="code">DisassemblerTextPiece</code> 的样式不同，注释样式是粘性的，并且会覆盖此指令中任何后续部分的样式。
+</p>
+<p>这意味着，在看到 <code class="code">STYLE_COMMENT_START</code> 部分后， <small class="sc">GDB</small> 将应用注释样式直到行尾，忽略部分内的特定样式。
+</p>
+<p><small class="sc">GDB</small> 使用 <code class="code">disassembler
+comment</code> 样式设置对具有此样式的文本进行样式化。
+</p></dd>
+</dl>
+
+<p>以下函数也包含在
+<code class="code">gdb.disassembler</code> 模块中：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-register_005fdisassembler"><span class="category-def">函数： </span><span><strong class="def-name">register_disassembler</strong> <var class="def-var-arguments">(反汇编器, 架构)</var><a class="copiable-link" href="#index-register_005fdisassembler"> ¶</a></span></dt>
+<dd><p>此 <var class="var">反汇编器</var> 必须是
+<code class="code">gdb.disassembler.Disassembler</code> 或 <code class="code">None</code>的子类。
+</p>
+<p>可选的 <var class="var">架构</var> 可以是字符串，也可以是值
+<code class="code">None</code>. 如果是字符串，则应该是 <small class="sc">GDB</small>已知的架构名称，如从
+<code class="code">gdb.Architecture.name</code>
+返回的（请参阅 <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005fname">gdb.Architecture.name</a>），或从
+<code class="code">gdb.architecture_names</code>
+返回的（请参阅 <a class="pxref" href="Basic-Python.html#gdb_005farchitecture_005fnames">gdb.architecture_names</a>）。
+</p>
+<p>此 <var class="var">反汇编器</var> 将为
+<var class="var">架构命名的架构安装，如果</var> <var class="var">架构</var> 是 <code class="code">None</code>, 则
+<var class="var">反汇编器</var> 将作为全局反汇编器安装，供所有架构使用。
+</p>
+<a class="index-entry-id" id="index-disassembler-in-Python_002c-global-vs_002e-specific"></a>
+<a class="index-entry-id" id="index-search-order-for-disassembler-in-Python"></a>
+<a class="index-entry-id" id="index-look-up-of-disassembler-in-Python"></a>
+<p><small class="sc">GDB</small> 仅为每个架构记录一个反汇编器，以及一个全局反汇编器。调用
+<code class="code">register_disassembler</code> 为某个架构或全局反汇编器注册，将替换该 <var class="var">架构</var> 值的任何现有反汇编器。返回之前的反汇编器。
+</p>
+<p>如果 <var class="var">反汇编器</var> 是 <code class="code">None</code> , 则当前为 <var class="var">架构</var> 注册的任何反汇编器将被注销并返回。
+</p>
+<p>当 <small class="sc">GDB</small> 寻找要使用的反汇编器时， <small class="sc">GDB</small>
+首先寻找特定架构的反汇编器。如果没有注册，则 <small class="sc">GDB</small> 寻找全局反汇编器（使用 <var class="var">架构</var> 设置为 <code class="code">None</code>注册的）。只调用一个反汇编器来执行反汇编，因此，如果既有特定架构的反汇编器，又有全局反汇编器注册，则将使用特定架构的反汇编器。
+</p>
+<p><small class="sc">GDB</small> 分别跟踪特定架构和全局反汇编器，因此反汇编器的创建或注册顺序无关紧要；如果存在特定架构的反汇编器，总是优先使用它而不是全局反汇编器。
+</p>
+<p>可以使用 <kbd class="kbd">maint info python - disassemblers</kbd> 命令
+（请参阅 <a class="pxref" href="Maintenance-Commands.html#maint-info-python_002ddisassemblers">maint info python - disassemblers</a>) 查看已注册的反汇编器。
+</p></dd></dl>
+
+<a class="anchor" id="builtin_005fdisassemble"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-builtin_005fdisassemble"><span class="category-def">函数： </span><span><strong class="def-name">builtin_disassemble</strong> <var class="def-var-arguments">(信息)</var><a class="copiable-link" href="#index-builtin_005fdisassemble"> ¶</a></span></dt>
+<dd><p>此函数回调到 <small class="sc">GDB</small>的内置反汇编器，以反汇编由 <var class="var">信息</var>, 一个实例或子类的 <code class="code">DisassembleInfo</code>标识的指令。
+</p>
+<p>当内置反汇编器需要读取内存时，将调用
+<code class="code">read_memory</code> 方法在 <var class="var">信息</var> 上。通过对 <code class="code">DisassembleInfo</code> 进行子类化并重写
+<code class="code">read_memory</code> 方法，可以拦截内置反汇编器对
+<code class="code">read_memory</code> 的调用，并修改返回的值。
+</p>
+<p>重要的是要理解，即使
+<code class="code">DisassembleInfo.read_memory</code> 引发 <code class="code">gdb.MemoryError</code>, 也是内部反汇编器本身向
+<small class="sc">GDB</small>报告内存错误。原因是反汇编器可能会探测内存以查看字节是否可读；如果字节无法读取，则反汇编器可能选择不报告错误，而是反汇编其可用的字节。
+</p>
+<p>如果内置反汇编器成功，则从
+<code class="code">DisassemblerResult</code> 返回一个 <code class="code">builtin_disassemble</code>的实例，或者，如果出现问题，将引发异常。
+</p>
+<p>如果 <code class="code">MemoryError</code> 无法读取正确执行反汇编所需的某些内存，将引发 <code class="code">builtin_disassemble</code> 。
+</p>
+<p>在调用 <code class="code">MemoryError</code>时引发的任何不是 <code class="code">read_memory</code>的异常将通过
+<code class="code">builtin_disassemble</code>, 并对调用者可见。
+</p>
+<p>最后，在某些情况下， <small class="sc">GDB</small>的内置反汇编器可能由于
+<code class="code">MemoryError</code>未涵盖的原因失败。在这些情况下，将引发 <code class="code">GdbError</code> 。异常的内容将是一个描述反汇编器遇到的问题的字符串。
+</p></dd></dl>
+
+<p>以下是一个注册全局反汇编器的示例。新的反汇编器调用内置反汇编器，然后在每行反汇编输出中添加一个注释 <code class="code">## Comment</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ExampleDisassembler(gdb.disassembler.Disassembler):
+    def __init__(self):
+        super().__init__(&#34;ExampleDisassembler&#34;)
+
+    def __call__(self, info):
+        result = gdb.disassembler.builtin_disassemble(info)
+        length = result.length
+        text = result.string + &#34;\t## Comment&#34;
+        return gdb.disassembler.DisassemblerResult(length, text)
+
+gdb.disassembler.register_disassembler(ExampleDisassembler())
+</pre></div>
+
+<p>以下示例创建了 <code class="code">DisassembleInfo</code> 的一个子类，以拦截 <code class="code">read_memory</code> 调用，在
+<code class="code">read_memory</code> 中，从内存读取的任何字节的两个 4 位半字节将交换位置。这不是一个非常有用的调整，但作为一个示例。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyInfo(gdb.disassembler.DisassembleInfo):
+    def __init__(self, info):
+        super().__init__(info)
+
+    def read_memory(self, length, offset):
+        buffer = super().read_memory(length, offset)
+        result = bytearray()
+        for b in buffer:
+            v = int.from_bytes(b, &#39;little&#39;)
+            v = (v &lt;&lt; 4) &amp; 0xf0 | (v &gt;&gt; 4)
+            result.append(v)
+        return memoryview(result)
+
+class NibbleSwapDisassembler(gdb.disassembler.Disassembler):
+    def __init__(self):
+        super().__init__(&#34;NibbleSwapDisassembler&#34;)
+
+    def __call__(self, info):
+        info = MyInfo(info)
+        return gdb.disassembler.builtin_disassemble(info)
+
+gdb.disassembler.register_disassembler(NibbleSwapDisassembler())
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Missing-Debug-Info-In-Python.html">Python 中缺少调试信息</a>, 上一项： <a href="TUI-Windows-In-Python.html">实现新的 TUI 窗口</a>, 上一级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

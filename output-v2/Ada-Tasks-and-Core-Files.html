@@ -1,0 +1,60 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada任务和核心文件（使用GDB调试）</title>
+
+<meta name="description" content="Ada Tasks and Core Files (Debugging with GDB)"/>
+<meta name="keywords" content="Ada Tasks and Core Files (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Ravenscar-Profile.html" rel="next" title="Ravenscar Profile"/>
+<link href="Ada-Tasks.html" rel="prev" title="Ada Tasks"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Tasks-and-Core-Files">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ravenscar-Profile.html" rel="next">使用Ravenscar配置文件时的任务支持</a>, 上一项： <a accesskey="p" href="Ada-Tasks.html" rel="prev">Ada任务扩展</a>, 上级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Tasking-Support-when-Debugging-Core-Files"><span>15.4.10.8 调试核心文件时的任务支持<a class="copiable-link" href="#Tasking-Support-when-Debugging-Core-Files"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada-tasking-and-core-file-debugging"></a>
+
+<p>在检查核心文件时，与调试正在运行的程序不同，任务支持可能会受到限制，甚至不可用，这取决于所使用的平台。例如，在x86 - linux上，可以获取任务列表，但不支持任务切换。
+</p>
+<p>在某些平台上，调试器需要进行一些内存写入操作才能提供Ada任务支持。在检查核心文件时，这意味着必须使用命令‘<samp class="samp">&#34;set write on&#34;</samp>’（参见 <a class="pxref" href="Patching.html">修补程序</a>)以读写权限打开核心文件。在这种情况下，在使用 <small class="sc">GDB</small>检查核心文件之前，应该先对其进行备份。
+</p>
+</div>
+
+
+
+
+
+</body></html>

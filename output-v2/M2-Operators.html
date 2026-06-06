@@ -1,0 +1,176 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>M2 运算符（使用 GDB 调试）</title>
+
+<meta name="description" content="M2 Operators (Debugging with GDB)"/>
+<meta name="keywords" content="M2 Operators (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Modula_002d2.html" rel="up" title="Modula-2"/>
+<link href="Built_002dIn-Func_002fProc.html" rel="next" title="Built-In Func/Proc"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-Operators">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Built_002dIn-Func_002fProc.html" rel="next"></a>, 上一级： <a accesskey="u" href="Modula_002d2.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Operators"><span>15.4.9.1 运算符<a class="copiable-link" href="#Operators"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Modula_002d2-operators"></a>
+
+<p>运算符必须定义在特定类型的值上。例如，
+<code class="code">+</code> 定义在数字上，但不在结构体上。运算符通常定义在一组类型上。就 Modula - 2 而言，以下定义成立：
+</p>
+<ul class="itemize mark-bullet">
+<li><em class="emph">整数类型</em> 包括 <code class="code">INTEGER</code>, <code class="code">CARDINAL</code>, 及其子范围。
+
+</li><li><em class="emph">字符类型</em> 包括 <code class="code">CHAR</code> 及其子范围。
+
+</li><li><em class="emph">浮点类型</em> 包括 <code class="code">REAL</code>.
+
+</li><li><em class="emph">指针类型</em> 包括任何声明为 <code class="code">POINTER TO
+<var class="var">type</var></code>.
+
+</li><li><em class="emph">标量类型</em> 包括上述所有类型。
+
+</li><li><em class="emph">集合类型</em> 包括 <code class="code">SET</code> 和 <code class="code">BITSET</code> 类型。
+
+</li><li><em class="emph">布尔类型</em> 包括 <code class="code">BOOLEAN</code>.
+</li></ul>
+
+<p>支持以下运算符，并按优先级递增的顺序出现：
+</p>
+<dl class="table">
+<dt><code class="code">,</code></dt>
+<dd><p>函数参数或数组索引分隔符。
+</p>
+</dd>
+<dt><code class="code">:=</code></dt>
+<dd><p>赋值。 <var class="var">变量</var> <code class="code">:=</code> <var class="var">值</var> 是
+<var class="var">值</var>.
+</p>
+</dd>
+<dt><code class="code">&lt;<span class="r">, </span>&gt;</code></dt>
+<dd><p>小于、大于，用于整数、浮点或枚举类型。
+</p>
+</dd>
+<dt><code class="code">&lt;=<span class="r">, </span>&gt;=</code></dt>
+<dd><p>小于或等于、大于或等于，用于整数、浮点和枚举类型，或集合类型的集合包含关系。与 <code class="code">&lt;</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">=<span class="r">, </span>&lt;&gt;<span class="r">, </span>#</code></dt>
+<dd><p>相等和两种表示不相等的方式，适用于标量类型。与 <code class="code">&lt;</code>. 优先级相同。在 <small class="sc">GDB</small> 脚本中，只有 <code class="code">&lt;&gt;</code> 可用于表示不相等，因为 <code class="code">#</code> 与脚本注释字符冲突。
+</p>
+</dd>
+<dt><code class="code">IN</code></dt>
+<dd><p>集合成员关系。定义在集合类型及其成员类型上。与 <code class="code">&lt;</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">OR</code></dt>
+<dd><p>布尔析取。定义在布尔类型上。
+</p>
+</dd>
+<dt><code class="code">AND<span class="r">, </span>&amp;</code></dt>
+<dd><p>布尔合取。定义在布尔类型上。
+</p>
+</dd>
+<dt><code class="code">@</code></dt>
+<dd><p> <small class="sc">GDB</small> “人工数组”运算符（见 <a class="pxref" href="Expressions.html">表达式</a>).
+</p>
+</dd>
+<dt><code class="code">+<span class="r">, </span>-</code></dt>
+<dd><p>整数和浮点类型的加法和减法，或集合类型的并集和差集。
+</p>
+</dd>
+<dt><code class="code">*</code></dt>
+<dd><p>整数和浮点类型的乘法，或集合类型的交集。
+</p>
+</dd>
+<dt><code class="code">/</code></dt>
+<dd><p>浮点类型的除法，或集合类型的对称差集。与 <code class="code">*</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">DIV<span class="r">, </span>MOD</code></dt>
+<dd><p>整数除法和取余。定义在整数类型上。与 <code class="code">*</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">-</code></dt>
+<dd><p>负号。定义在 <code class="code">INTEGER</code> 和 <code class="code">REAL</code> 数据上。
+</p>
+</dd>
+<dt><code class="code">^</code></dt>
+<dd><p>指针解引用。定义在指针类型上。
+</p>
+</dd>
+<dt><code class="code">NOT</code></dt>
+<dd><p>布尔取反。定义在布尔类型上。与
+<code class="code">^</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">.</code></dt>
+<dd><p><code class="code">RECORD</code> 字段选择器。定义在 <code class="code">RECORD</code> 数据上。与 <code class="code">^</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">[]</code></dt>
+<dd><p>数组索引。定义在 <code class="code">ARRAY</code> 数据上。与 <code class="code">^</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">()</code></dt>
+<dd><p>过程参数列表。定义在 <code class="code">PROCEDURE</code> 对象上。与 <code class="code">^</code>. 优先级相同
+</p>
+</dd>
+<dt><code class="code">::<span class="r">, </span>.</code></dt>
+<dd><p><small class="sc">GDB</small> 和 Modula - 2 作用域运算符。
+</p></dd>
+</dl>
+
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> 集合表达式及其操作尚未得到支持，因此 <small class="sc">GDB</small>
+将使用运算符 <code class="code">IN</code>, 或使用运算符
+<code class="code">+</code>, <code class="code">-</code>, <code class="code">*</code>, <code class="code">/</code>, <code class="code">=</code>, , <code class="code">&lt;&gt;</code>, <code class="code">#</code>,
+<code class="code">&lt;=</code>, 和 <code class="code">&gt;=</code> 在集合上的使用视为错误。
+</p></blockquote>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Built_002dIn-Func_002fProc.html">内置函数和过程</a>, 上一级： <a href="Modula_002d2.html">Modula - 2</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

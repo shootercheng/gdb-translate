@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>字节顺序（使用GDB进行调试）</title>
+
+<meta name="description" content="Byte Order (Debugging with GDB)"/>
+<meta name="keywords" content="Byte Order (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Targets.html" rel="up" title="Targets"/>
+<link href="Target-Commands.html" rel="prev" title="Target Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Byte-Order">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Target-Commands.html" rel="prev">管理目标的命令</a> <a accesskey="u" href="Targets.html" rel="up">指定调试目标</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Choosing-Target-Byte-Order"><span>19.3 选择目标字节顺序<a class="copiable-link" href="#Choosing-Target-Byte-Order"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-choosing-target-byte-order"></a>
+<a class="index-entry-id" id="index-target-byte-order"></a>
+
+<p>某些类型的处理器，例如 <abbr class="acronym">MIPS</abbr>, PowerPC和瑞萨SH，
+提供了运行大端字节序或小端字节序的能力。通常，可执行文件或符号会包含一个位来
+指定字节序，你无需担心使用哪种字节序。但是，你可能仍然会发现手动调整
+<small class="sc">GDB</small>对处理器字节序的理解很有用。
+</p>
+<dl class="table">
+<dt><a id="index-set-endian"></a><span><code class="code">set endian big</code><a class="copiable-link" href="#index-set-endian"> ¶</a></span></dt>
+<dd><p>指示 <small class="sc">GDB</small> 假定目标是大端字节序。
+</p>
+</dd>
+<dt><code class="code">set endian little</code></dt>
+<dd><p>指示 <small class="sc">GDB</small> 假定目标是小端字节序。
+</p>
+</dd>
+<dt><code class="code">set endian auto</code></dt>
+<dd><p>指示 <small class="sc">GDB</small> 使用与可执行文件关联的字节序。
+</p>
+</dd>
+<dt><code class="code">show endian</code></dt>
+<dd><p>显示 <small class="sc">GDB</small>当前对目标字节序的理解。
+</p>
+</dd>
+</dl>
+
+<p>如果 <code class="code">set endian auto</code> 模式有效且未选择任何可执行文件，则使用的字节序是通过 <code class="code">set endian big</code> 和 <code class="code">set endian little</code>
+命令之一选择的最后一个字节序，或者是从最后使用的可执行文件推断出来的。如果之前未选择任何字节序，则此模式的默认值是从目标 <small class="sc">GDB</small> 所构建的环境推断出来的，并且如果目标CPU的名称有
+<code class="code">little</code> 后缀则为 <code class="code">el</code> ，否则为 <code class="code">big</code> 。
+</p>
+<p>请注意，这些命令仅调整主机上符号数据的解释，它们对目标系统绝对没有影响。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Target-Commands.html">管理目标的命令</a>, 上级： <a href="Targets.html">指定调试目标</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

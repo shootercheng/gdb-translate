@@ -1,0 +1,179 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自动加载安全路径（使用GDB调试）</title>
+
+<meta name="description" content="Auto-loading safe path (Debugging with GDB)"/>
+<meta name="keywords" content="Auto-loading safe path (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Auto_002dloading.html" rel="up" title="Auto-loading"/>
+<link href="Auto_002dloading-verbose-mode.html" rel="next" title="Auto-loading verbose mode"/>
+<link href="libthread_005fdb_002eso_002e1-file.html" rel="prev" title="libthread_db.so.1 file"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Auto_002dloading-safe-path">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Auto_002dloading-verbose-mode.html" rel="next">显示尝试自动加载的文件</a>, 上一项： <a accesskey="p" href="libthread_005fdb_002eso_002e1-file.html" rel="prev">自动加载线程调试库</a>, 返回上一级： <a accesskey="u" href="Auto_002dloading.html" rel="up">自动加载关联文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Security-restriction-for-auto_002dloading"><span>22.8.3 自动加载的安全限制<a class="copiable-link" href="#Security-restriction-for-auto_002dloading"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-auto_002dloading-safe_002dpath"></a>
+
+<p>由于被调试程序的文件可能来自不可信的源（例如由
+应用程序用户提交） <small class="sc">GDB</small> 并不总是自动加载任何文件。
+<small class="sc">GDB</small> 提供了 ‘<samp class="samp">设置自动加载安全路径</samp>’ 设置，用于列出
+用户未明确请求加载文件时可信任的目录。
+每个目录也可以是一个shell通配符模式。
+</p>
+<p>如果路径设置不正确，您将看到一条警告，并且文件将不会
+被加载：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ ./gdb -q ./gdb
+正在从 /home/user/gdb/gdb 读取符号...
+警告：文件 &#34;/home/user/gdb/gdb-gdb.gdb&#34; 的自动加载已被
+         您的 `自动加载安全路径` 设置拒绝
+         为 &#34;$debugdir:$datadir/自动加载&#34;。
+警告：文件 &#34;/home/user/gdb/gdb-gdb.py&#34; 的自动加载已被
+         您的 `自动加载安全路径` 设置拒绝
+         为 &#34;$debugdir:$datadir/自动加载&#34;。
+</pre></div>
+
+<p>要指示 <small class="sc">GDB</small> 继续并使用初始化文件，
+请像这样调用 <small class="sc">GDB</small> ：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -q -iex &#34;设置自动加载安全路径 /home/user/gdb&#34; ./gdb
+</pre></div>
+
+<p>可信任目录列表由以下命令控制：
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-auto_002dload-safe_002dpath"></a></dd>
+<dt><a id="index-set-auto_002dload-safe_002dpath"></a><span><code class="code">set auto-load safe-path <span class="r">[</span><var class="var">directories</var><span class="r">]</span></code><a class="copiable-link" href="#index-set-auto_002dload-safe_002dpath"> ¶</a></span></dt>
+<dd><p>设置可信任用于自动
+加载和执行脚本的目录（及其子目录）列表。您也可以输入一个特定的可信任文件。
+每个目录也可以是一个shell通配符模式；通配符不匹配
+目录分隔符 - 请参阅 <code class="code">FNM_PATHNAME</code> 系统函数 <code class="code">fnmatch</code>
+(请参阅 <a data-manual="libc" href="https://www.gnu.org/software/libc/manual/html_node/Wildcard-Matching.html#Wildcard-Matching">fnmatch</a> 在 <cite class="cite">GNU C库参考手册</cite>)。
+如果您省略 <var class="var">目录</var>, ‘<samp class="samp">自动加载安全路径</samp>’ 将被重置为
+编译期间指定的默认值。 <small class="sc">GDB</small> 
+</p>
+<p>目录列表使用路径分隔符 (‘<samp class="samp">:</samp>’ 在GNU和Unix
+系统上，‘<samp class="samp">;</samp>’ 在MS-Windows和MS-DOS上) 来分隔目录，类似于
+环境变量。 <code class="env">PATH</code> 
+</p>
+<a class="anchor" id="show-auto_002dload-safe_002dpath"></a></dd>
+<dt><a id="index-show-auto_002dload-safe_002dpath"></a><span><code class="code">show auto-load safe-path</code><a class="copiable-link" href="#index-show-auto_002dload-safe_002dpath"> ¶</a></span></dt>
+<dd><p>显示可信任用于自动加载和执行脚本的目录列表。
+</p>
+<a class="anchor" id="add_002dauto_002dload_002dsafe_002dpath"></a></dd>
+<dt><a id="index-add_002dauto_002dload_002dsafe_002dpath"></a><span><code class="code">add-auto-load-safe-path</code><a class="copiable-link" href="#index-add_002dauto_002dload_002dsafe_002dpath"> ¶</a></span></dt>
+<dd><p>向可信任用于自动
+加载和执行脚本的目录列表中添加一个条目（或条目列表）。多个条目可以用
+当前主机平台的路径分隔符分隔。
+</p></dd>
+</dl>
+
+<p>此变量默认设置为 <code class="code">--with-auto-load-dir</code> 已配置的值
+(请参阅 <a class="pxref" href="objfile_002dgdbdotext-file.html#with_002dauto_002dload_002ddir">带自动加载目录</a>)。  <samp class="file">$debugdir</samp> 和 <samp class="file">$datadir</samp>
+的替换规则与 <a class="ref" href="objfile_002dgdbdotext-file.html#set-auto_002dload-scripts_002ddirectory">设置自动加载脚本目录</a>相同。
+默认 <code class="code">set auto-load safe-path</code> 值也可以通过
+<small class="sc">GDB</small> 配置选项 <samp class="option">--带自动加载安全路径</samp>覆盖。
+</p>
+<p>将此变量设置为 <samp class="file">/</samp> 将禁用此安全保护，
+对应的 <small class="sc">GDB</small> 配置选项是
+<samp class="option">--不带自动加载安全路径</samp>。
+此变量应该设置为仅系统超级用户可写的系统目录。用户可以在其主目录的初始化文件中添加他们的源目录（请参阅 <a class="pxref" href="Initialization-Files.html#Home-Directory-Init-File">主目录初始化文件</a>)。另请参阅当前目录中已弃用的
+初始化文件
+(请参阅 <a class="pxref" href="Initialization-Files.html#Init-File-in-the-Current-Directory-during-Startup">启动时当前目录中的初始化文件</a>)。
+</p>
+<p>要强制 <small class="sc">GDB</small> 加载上一个示例中拒绝加载的文件，您可以使用以下方法之一：
+</p>
+<dl class="table">
+<dt><samp class="file">~/.gdbinit</samp>: ‘<samp class="samp">添加自动加载安全路径 ~/src/gdb</samp>’</dt>
+<dd><p>将此可信任目录（或文件）指定为列表的附加组件。
+您还必须指定
+‘<samp class="samp">显示自动加载安全路径</samp>’ 显示的任何现有目录（例如 ‘<samp class="samp">/usr:/bin</samp>’ 在这个示例中）。
+</p>
+</dd>
+<dt><kbd class="kbd">gdb -iex &#34;设置自动加载安全路径 /usr:/bin:~/src/gdb&#34; …</kbd></dt>
+<dd><p>像上一种情况一样指定此目录，但仅用于单个
+<small class="sc">GDB</small> 会话。
+</p>
+</dd>
+<dt><kbd class="kbd">gdb -iex &#34;设置自动加载安全路径 /&#34; …</kbd></dt>
+<dd><p>为单个 <small class="sc">GDB</small> 会话禁用自动加载安全保护。
+这假设您在此 <small class="sc">GDB</small> 会话期间调试的所有文件都来自可信任的源。
+</p>
+</dd>
+<dt><kbd class="kbd">./configure --不带自动加载安全路径</kbd></dt>
+<dd><p>在编译 <small class="sc">GDB</small> 时，您可以禁用任何自动加载安全保护。
+这假设您将来使用此 <small class="sc">GDB</small> 调试的所有文件都来自可信任的源。
+</p></dd>
+</dl>
+
+<p>另一方面，您也可以明确禁止自动加载文件，这
+也会抑制任何此类警告消息：
+</p>
+<dl class="table">
+<dt><kbd class="kbd">gdb -iex &#34;设置自动加载为否&#34; …</kbd></dt>
+<dd><p>您可以使用 <small class="sc">GDB</small> 命令行选项用于单个 <small class="sc">GDB</small> 会话。
+</p>
+</dd>
+<dt><samp class="file">~/.gdbinit</samp>: ‘<samp class="samp">设置自动加载为否</samp>’</dt>
+<dd><p>为用户全局禁用自动加载
+(请参阅 <a class="pxref" href="Initialization-Files.html#Home-Directory-Init-File">主目录初始化文件</a>)。虽然可能性不大，但您也可以
+使用系统初始化文件代替（请参阅 <a class="pxref" href="System_002dwide-configuration.html">系统范围的配置和设置</a>)。
+</p></dd>
+</dl>
+
+<p>此设置适用于用户输入的文件名。如果没有匹配项
+<small class="sc">GDB</small> 作为最后手段，会尝试将所有文件名解析为
+其规范形式（通常是解析符号链接），然后再次比较
+这些条目。  <small class="sc">GDB</small> 在开始比较之前，它自己已经将大多数文件名规范化了
+所以建议输入目录的规范形式。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Auto_002dloading-verbose-mode.html">显示尝试自动加载的文件</a>, 上一项： <a href="libthread_005fdb_002eso_002e1-file.html">自动加载线程调试库</a>, 返回上一级： <a href="Auto_002dloading.html">自动加载关联文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

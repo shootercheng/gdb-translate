@@ -1,0 +1,305 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>远程配置（使用 GDB 调试）</title>
+
+<meta name="description" content="Remote Configuration (Debugging with GDB)"/>
+<meta name="keywords" content="Remote Configuration (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Debugging.html" rel="up" title="Remote Debugging"/>
+<link href="Remote-Stub.html" rel="next" title="Remote Stub"/>
+<link href="Server.html" rel="prev" title="Server"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Configuration">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Remote-Stub.html" rel="next"></a>, 上一项： <a accesskey="p" href="Server.html" rel="prev">使用 <code class="code">gdbserver</code> 程序</a> <a accesskey="u" href="Remote-Debugging.html" rel="up">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Remote-Configuration-1"><span><a class="copiable-link" href="#Remote-Configuration-1"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-set-remote"></a>
+<a class="index-entry-id" id="index-show-remote"></a>
+<p>本节记录了调试远程程序时可用的配置选项。有关远程协议的文件 I/O 扩展相关选项，请参阅 <a class="ref" href="system.html"></a>.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-bits-in-remote-address"></a>
+<a id="index-address-size-for-remote-targets"></a><span><code class="code">set remoteaddresssize <var class="var">bits</var></code><a class="copiable-link" href="#index-address-size-for-remote-targets"> ¶</a></span></dt>
+<dd><p>将内存数据包中地址的最大大小设置为指定的位数。  <small class="sc">GDB</small> 
+</p>
+</dd>
+<dt><code class="code">show remoteaddresssize</code></dt>
+<dd><p>显示当前远程地址大小的位数。
+</p>
+</dd>
+<dt><a id="index-baud-rate-for-remote-targets"></a><span><code class="code">set serial baud <var class="var">n</var></code><a class="copiable-link" href="#index-baud-rate-for-remote-targets"> ¶</a></span></dt>
+<dd><p>将远程串行 I/O 的波特率设置为 <var class="var">n</var> 波特。该值用于设置用于调试远程目标的串行端口的速度。
+</p>
+</dd>
+<dt><code class="code">show serial baud</code></dt>
+<dd><p>显示当前远程连接的速度。
+</p>
+</dd>
+<dt><code class="code">set serial parity <var class="var">parity</var></code></dt>
+<dd><p>设置远程串行 I/O 的奇偶校验。支持的 <var class="var">奇偶校验</var> 值有：
+<code class="code">even</code>, <code class="code">none</code>, 和 <code class="code">odd</code>. 默认值是 <code class="code">none</code>.
+</p>
+</dd>
+<dt><code class="code">show serial parity</code></dt>
+<dd><p>显示当前串行端口的奇偶校验设置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BREAK-signal-instead-of-Ctrl_002dC"></a>
+<a id="index-interrupt-remote-programs"></a><span><code class="code">set remotebreak</code><a class="copiable-link" href="#index-interrupt-remote-programs"> ¶</a></span></dt>
+<dd><a class="anchor" id="set-remotebreak"></a><p>如果设置为开启， <small class="sc">GDB</small> 在你输入 <code class="code">BREAK</code> 信号时向远程发送 <kbd class="kbd">Ctrl - c</kbd> 以中断远程上运行的程序。如果设置为关闭， <small class="sc">GDB</small> 则发送 ‘<samp class="samp">Ctrl - C</samp>’
+字符。默认值是关闭，因为大多数远程系统期望看到 ‘<samp class="samp">Ctrl - C</samp>’ 作为中断信号。
+</p>
+</dd>
+<dt><code class="code">show remotebreak</code></dt>
+<dd><p>显示 <small class="sc">GDB</small> 是否发送 <code class="code">BREAK</code> 或 ‘<samp class="samp">Ctrl - C</samp>’ 以中断远程程序。
+</p>
+</dd>
+<dt><a id="index-set-remoteflow"></a><span><code class="code">set remoteflow on</code><a class="copiable-link" href="#index-set-remoteflow"> ¶</a></span></dt>
+<dt><code class="code">set remoteflow off</code></dt>
+<dd><p>启用或禁用用于与远程目标通信的串行端口上的硬件流控制（<code class="code">RTS</code>/<code class="code">CTS</code>)。
+</p>
+</dd>
+<dt><a id="index-show-remoteflow"></a><span><code class="code">show remoteflow</code><a class="copiable-link" href="#index-show-remoteflow"> ¶</a></span></dt>
+<dd><p>显示当前硬件流控制的设置。
+</p>
+</dd>
+<dt><code class="code">set remotelogbase <var class="var">base</var></code></dt>
+<dd><p>将记录串行协议通信的基数（也称为进制）设置为 <var class="var">基数</var>. 支持的 <var class="var">基数</var> 值有：
+<code class="code">ascii</code>, <code class="code">octal</code>, 和 <code class="code">hex</code>. 默认值是
+<code class="code">ascii</code>.
+</p>
+</dd>
+<dt><code class="code">show remotelogbase</code></dt>
+<dd><p>显示当前记录远程串行协议的进制设置。
+</p>
+</dd>
+<dt><a id="index-record-serial-communications-on-file"></a><span><code class="code">set remotelogfile <var class="var">file</var></code><a class="copiable-link" href="#index-record-serial-communications-on-file"> ¶</a></span></dt>
+<dd><p>将远程串行通信记录到指定的 <var class="var">文件</var>. 默认情况下不进行记录。
+</p>
+</dd>
+<dt><code class="code">show remotelogfile</code></dt>
+<dd><p>显示当前用于记录串行通信的文件名设置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-remote-timeout"></a>
+<a id="index-timeout-for-serial-communications"></a><span><code class="code">set remotetimeout <var class="var">num</var></code><a class="copiable-link" href="#index-timeout-for-serial-communications"> ¶</a></span></dt>
+<dd><p>将等待远程目标响应的超时限制设置为
+<var class="var">num</var> 秒。默认值是 2 秒。
+</p>
+</dd>
+<dt><code class="code">show remotetimeout</code></dt>
+<dd><p>显示当前等待远程目标响应的秒数。
+</p>
+<a class="index-entry-id" id="index-limit-hardware-breakpoints-and-watchpoints"></a>
+<a class="index-entry-id" id="index-remote-target_002c-limit-break_002d-and-watchpoints"></a>
+<a class="anchor" id="set-remote-hardware_002dwatchpoint_002dlimit"></a><a class="anchor" id="set-remote-hardware_002dbreakpoint_002dlimit"></a></dd>
+<dt><code class="code">set remote hardware-watchpoint-limit <var class="var">limit</var></code></dt>
+<dt><code class="code">set remote hardware-breakpoint-limit <var class="var">limit</var></code></dt>
+<dd><p>限制 <small class="sc">GDB</small> 使用 <var class="var">限制</var> 远程硬件观察点或断点。 <var class="var">限制</var> 可以设置为 0 以禁用硬件观察点或断点，设置为 <code class="code">unlimited</code> 则表示无限制的观察点或断点。
+</p>
+</dd>
+<dt><code class="code">show remote hardware-watchpoint-limit</code></dt>
+<dt><code class="code">show remote hardware-breakpoint-limit</code></dt>
+<dd><p>显示当前 <small class="sc">GDB</small> 可以使用的硬件观察点或断点的数量限制。
+</p>
+<a class="index-entry-id" id="index-limit-hardware-watchpoints-length"></a>
+<a class="index-entry-id" id="index-remote-target_002c-limit-watchpoints-length"></a>
+<a class="anchor" id="set-remote-hardware_002dwatchpoint_002dlength_002dlimit"></a></dd>
+<dt><code class="code">set remote hardware-watchpoint-length-limit <var class="var">limit</var></code></dt>
+<dd><p>限制 <small class="sc">GDB</small> 使用 <var class="var">限制</var> 字节作为远程硬件观察点的最大长度。 <var class="var">限制</var> 为 0 时禁用硬件观察点，设置为 <code class="code">unlimited</code> 则允许任意长度的观察点。
+</p>
+</dd>
+<dt><code class="code">show remote hardware-watchpoint-length-limit</code></dt>
+<dd><p>显示当前远程硬件观察点的最大长度限制（以字节为单位）。
+</p>
+</dd>
+<dt><code class="code">set remote exec-file <var class="var">filename</var></code></dt>
+<dt><code class="code">show remote exec-file</code></dt>
+<dd><a class="anchor" id="set-remote-exec_002dfile"></a><a class="index-entry-id" id="index-executable-file_002c-for-remote-target"></a>
+<p>选择用于 <code class="code">run</code> 的文件，使用 <code class="code">target
+extended-remote</code>. 这应该设置为目标系统上有效的文件名。如果未设置，目标将使用默认文件名（例如，最后运行的程序）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-select-Ctrl_002dC_002c-BREAK-or-BREAK_002dg"></a>
+<a id="index-interrupt-remote-programs-1"></a><span><code class="code">set remote interrupt-sequence</code><a class="copiable-link" href="#index-interrupt-remote-programs-1"> ¶</a></span></dt>
+<dd><p>允许用户从 ‘<samp class="samp">Ctrl - C</samp>’，一个 <code class="code">BREAK</code> 或者
+‘<samp class="samp">BREAK - g</samp>’ 作为向远程目标发送的序列，以中断执行。
+‘<samp class="samp">Ctrl - C</samp>’ 是默认值。某些系统更喜欢 <code class="code">BREAK</code> 在特定时间内使用高级别的串行线路。
+Linux 内核更喜欢 ‘<samp class="samp">BREAK - g</samp>’，也就是 Magic SysRq g。
+它是 <code class="code">BREAK</code> 字符后面跟随的信号 <code class="code">g</code>.
+</p>
+</dd>
+<dt><code class="code">show remote interrupt-sequence</code></dt>
+<dd><p>显示 ‘<samp class="samp">Ctrl - C</samp>’、 <code class="code">BREAK</code> 或者 <code class="code">BREAK-g</code>
+由 <small class="sc">GDB</small> 发送以中断远程程序。
+<code class="code">BREAK-g</code> 是 BREAK 信号后面跟随 <code class="code">g</code> 并且也被称为 Magic SysRq g。
+</p>
+</dd>
+<dt><a id="index-send-interrupt_002dsequence-on-start"></a><span><code class="code">set remote interrupt-on-connect</code><a class="copiable-link" href="#index-send-interrupt_002dsequence-on-start"> ¶</a></span></dt>
+<dd><p>指定当
+<small class="sc">GDB</small> 连接到远程目标时，是否向其发送中断序列。当你调试
+Linux 内核时，这通常是需要的。Linux 内核期望 <code class="code">BREAK</code> 后面跟随 <code class="code">g</code>
+也就是被称为 Magic SysRq g 的内容，以便进行连接 <small class="sc">GDB</small>.
+</p>
+</dd>
+<dt><code class="code">show remote interrupt-on-connect</code></dt>
+<dd><p>显示当 <small class="sc">GDB</small> 连接到远程目标时，是否向其发送中断序列。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-tcp"></a>
+<a class="index-entry-id" id="index-show-tcp"></a>
+<a id="index-auto_002dretry_002c-for-remote-TCP-target"></a><span><code class="code">set tcp auto-retry on</code><a class="copiable-link" href="#index-auto_002dretry_002c-for-remote-TCP-target"> ¶</a></span></dt>
+<dd><p>启用远程 TCP 连接的自动重试功能。如果远程
+调试代理与 <small class="sc">GDB</small>并行启动，这很有用；因为在 <small class="sc">GDB</small> 尝试连接之前，代理可能还未准备好接受连接，所以存在竞争条件。当启用自动重试时，如果初始连接尝试失败， <small class="sc">GDB</small> 会使用由 
+<code class="code">set tcp connect-timeout</code>指定的超时时间重新尝试建立连接。
+</p>
+</dd>
+<dt><code class="code">set tcp auto-retry off</code></dt>
+<dd><p>不自动重试失败的 TCP 连接。
+</p>
+</dd>
+<dt><code class="code">show tcp auto-retry</code></dt>
+<dd><p>显示当前的自动重试设置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-timeout_002c-for-remote-target-connection"></a>
+<a id="index-connection-timeout_002c-for-remote-TCP-target"></a><span><code class="code">set tcp connect-timeout <var class="var">seconds</var></code><a class="copiable-link" href="#index-connection-timeout_002c-for-remote-TCP-target"> ¶</a></span></dt>
+<dt><code class="code">set tcp connect-timeout unlimited</code></dt>
+<dd><p>将与远程目标建立 TCP 连接的超时时间设置为
+<var class="var">秒</var>. 该超时时间会影响重试失败连接的轮询（由 <code class="code">set tcp auto-retry on</code>启用）以及等待完成较慢的连接，并且表示一个近似的累积值。如果 <var class="var">秒</var> 是 <code class="code">unlimited</code>, 则没有超时时间，并且
+<small class="sc">GDB</small> 将一直尝试建立连接，除非用 <kbd class="kbd">Ctrl - c</kbd>中断。默认值是 15 秒。
+</p>
+</dd>
+<dt><code class="code">show tcp connect-timeout</code></dt>
+<dd><p>显示当前的连接超时设置。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-remote-packets_002c-enabling-and-disabling"></a>
+<p>远程协议会自动检测你的调试桩支持的数据包。如果你需要覆盖自动检测，可以使用这些命令来启用或禁用单个数据包。每个数据包可以设置为 ‘ <small class="sc">GDB</small> <samp class="samp">开启</samp>’（远程目标支持此数据包）、‘<samp class="samp">关闭</samp>’（远程目标不支持此数据包），或者 ‘<samp class="samp">自动</samp>’（检测远程目标对此数据包的支持情况）。它们都默认设置为 ‘<samp class="samp">自动</samp>’。有关每个数据包的更多信息，请参阅 <a class="ref" href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>.
+</p>
+<p>在正常使用中，你通常不需要使用这些命令。如果你使用了，可能是你的远程调试桩存在 bug，或者是 <small class="sc">GDB</small>存在 bug。你可能想向
+<small class="sc">GDB</small> 开发者报告这个问题。
+</p>
+<p>对于每个数据包 <var class="var">名称</var>, 启用或禁用该数据包的命令是 <code class="code">set remote <var class="var">name</var>-packet</code>. 如果你配置了一个数据包，在未选择目标的情况下，该配置将应用于所有未来的远程目标。如果选择了一个目标，则仅更改当前目标的配置。所有其他现有远程目标的功能不受影响。打印数据包当前配置的命令是
+<code class="code">show remote <var class="var">name</var>-packet</code>. 它会显示当前远程目标的配置。如果未选择远程目标，则显示未来连接的默认配置。可用的设置有：
+</p>
+<table class="multitable">
+<tbody><tr><td width="28%">命令名称</td><td width="32%">远程数据包</td><td width="25%">相关功能</td></tr>
+<tr><td width="28%"><code class="code">fetch-register</code></td><td width="32%"><code class="code">p</code></td><td width="25%"><code class="code">info registers</code></td></tr>
+<tr><td width="28%"><code class="code">set-register</code></td><td width="32%"><code class="code">P</code></td><td width="25%"><code class="code">set</code></td></tr>
+<tr><td width="28%"><code class="code">binary-download</code></td><td width="32%"><code class="code">X</code></td><td width="25%"><code class="code">load</code>, <code class="code">set</code></td></tr>
+<tr><td width="28%"><code class="code">read-aux-vector</code></td><td width="32%"><code class="code">qXfer:auxv:read</code></td><td width="25%"><code class="code">info auxv</code></td></tr>
+<tr><td width="28%"><code class="code">symbol-lookup</code></td><td width="32%"><code class="code">qSymbol</code></td><td width="25%">检测多个线程</td></tr>
+<tr><td width="28%"><code class="code">attach</code></td><td width="32%"><code class="code">vAttach</code></td><td width="25%"><code class="code">attach</code></td></tr>
+<tr><td width="28%"><code class="code">verbose-resume</code></td><td width="32%"><code class="code">vCont</code></td><td width="25%">单步执行或恢复多个线程</td></tr>
+<tr><td width="28%"><code class="code">run</code></td><td width="32%"><code class="code">vRun</code></td><td width="25%"><code class="code">run</code></td></tr>
+<tr><td width="28%"><code class="code">software-breakpoint</code></td><td width="32%"><code class="code">Z0</code></td><td width="25%"><code class="code">break</code></td></tr>
+<tr><td width="28%"><code class="code">hardware-breakpoint</code></td><td width="32%"><code class="code">Z1</code></td><td width="25%"><code class="code">hbreak</code></td></tr>
+<tr><td width="28%"><code class="code">write-watchpoint</code></td><td width="32%"><code class="code">Z2</code></td><td width="25%"><code class="code">watch</code></td></tr>
+<tr><td width="28%"><code class="code">read-watchpoint</code></td><td width="32%"><code class="code">Z3</code></td><td width="25%"><code class="code">rwatch</code></td></tr>
+<tr><td width="28%"><code class="code">access-watchpoint</code></td><td width="32%"><code class="code">Z4</code></td><td width="25%"><code class="code">awatch</code></td></tr>
+<tr><td width="28%"><code class="code">pid-to-exec-file</code></td><td width="32%"><code class="code">qXfer:exec-file:read</code></td><td width="25%"><code class="code">attach</code>, <code class="code">run</code></td></tr>
+<tr><td width="28%"><code class="code">target-features</code></td><td width="32%"><code class="code">qXfer:features:read</code></td><td width="25%"><code class="code">set architecture</code></td></tr>
+<tr><td width="28%"><code class="code">library-info</code></td><td width="32%"><code class="code">qXfer:libraries:read</code></td><td width="25%"><code class="code">info sharedlibrary</code></td></tr>
+<tr><td width="28%"><code class="code">memory-map</code></td><td width="32%"><code class="code">qXfer:memory-map:read</code></td><td width="25%"><code class="code">info mem</code></td></tr>
+<tr><td width="28%"><code class="code">read-sdata-object</code></td><td width="32%"><code class="code">qXfer:sdata:read</code></td><td width="25%"><code class="code">print $_sdata</code></td></tr>
+<tr><td width="28%"><code class="code">read-siginfo-object</code></td><td width="32%"><code class="code">qXfer:siginfo:read</code></td><td width="25%"><code class="code">print $_siginfo</code></td></tr>
+<tr><td width="28%"><code class="code">write-siginfo-object</code></td><td width="32%"><code class="code">qXfer:siginfo:write</code></td><td width="25%"><code class="code">set $_siginfo</code></td></tr>
+<tr><td width="28%"><code class="code">threads</code></td><td width="32%"><code class="code">qXfer:threads:read</code></td><td width="25%"><code class="code">info threads</code></td></tr>
+<tr><td width="28%"><code class="code">get-thread-local-<br/>storage-address</code></td><td width="32%"><code class="code">qGetTLSAddr</code></td><td width="25%">显示 <code class="code">__thread</code> 变量</td></tr>
+<tr><td width="28%"><code class="code">get-thread-information-block-address</code></td><td width="32%"><code class="code">qGetTIBAddr</code></td><td width="25%">显示 MS - Windows 线程信息块。</td></tr>
+<tr><td width="28%"><code class="code">search-memory</code></td><td width="32%"><code class="code">qSearch:memory</code></td><td width="25%"><code class="code">find</code></td></tr>
+<tr><td width="28%"><code class="code">supported-packets</code></td><td width="32%"><code class="code">qSupported</code></td><td width="25%">远程通信参数</td></tr>
+<tr><td width="28%"><code class="code">catch-syscalls</code></td><td width="32%"><code class="code">QCatchSyscalls</code></td><td width="25%"><code class="code">catch syscall</code></td></tr>
+<tr><td width="28%"><code class="code">pass-signals</code></td><td width="32%"><code class="code">QPassSignals</code></td><td width="25%"><code class="code">handle <var class="var">signal</var></code></td></tr>
+<tr><td width="28%"><code class="code">program-signals</code></td><td width="32%"><code class="code">QProgramSignals</code></td><td width="25%"><code class="code">handle <var class="var">signal</var></code></td></tr>
+<tr><td width="28%"><code class="code">hostio-close-packet</code></td><td width="32%"><code class="code">vFile:close</code></td><td width="25%"><code class="code">remote get</code>, <code class="code">remote put</code></td></tr>
+<tr><td width="28%"><code class="code">hostio-open-packet</code></td><td width="32%"><code class="code">vFile:open</code></td><td width="25%"><code class="code">remote get</code>, <code class="code">remote put</code></td></tr>
+<tr><td width="28%"><code class="code">hostio-pread-packet</code></td><td width="32%"><code class="code">vFile:pread</code></td><td width="25%"><code class="code">remote get</code>, <code class="code">remote put</code></td></tr>
+<tr><td width="28%"><code class="code">hostio-pwrite-packet</code></td><td width="32%"><code class="code">vFile:pwrite</code></td><td width="25%"><code class="code">remote get</code>, <code class="code">remote put</code></td></tr>
+<tr><td width="28%"><code class="code">hostio-unlink-packet</code></td><td width="32%"><code class="code">vFile:unlink</code></td><td width="25%"><code class="code">remote delete</code></td></tr>
+<tr><td width="28%"><code class="code">hostio-readlink-packet</code></td><td width="32%"><code class="code">vFile:readlink</code></td><td width="25%">主机 I/O</td></tr>
+<tr><td width="28%"><code class="code">hostio-fstat-packet</code></td><td width="32%"><code class="code">vFile:fstat</code></td><td width="25%">主机 I/O</td></tr>
+<tr><td width="28%"><code class="code">hostio-stat-packet</code></td><td width="32%"><code class="code">vFile:stat</code></td><td width="25%">主机 I/O</td></tr>
+<tr><td width="28%"><code class="code">hostio-lstat-packet</code></td><td width="32%"><code class="code">vFile:lstat</code></td><td width="25%">主机 I/O</td></tr>
+<tr><td width="28%"><code class="code">hostio-setfs-packet</code></td><td width="32%"><code class="code">vFile:setfs</code></td><td width="25%">主机 I/O</td></tr>
+<tr><td width="28%"><code class="code">noack-packet</code></td><td width="32%"><code class="code">QStartNoAckMode</code></td><td width="25%">数据包确认</td></tr>
+<tr><td width="28%"><code class="code">osdata</code></td><td width="32%"><code class="code">qXfer:osdata:read</code></td><td width="25%"><code class="code">info os</code></td></tr>
+<tr><td width="28%"><code class="code">query-attached</code></td><td width="32%"><code class="code">qAttached</code></td><td width="25%">查询远程进程附加状态。</td></tr>
+<tr><td width="28%"><code class="code">trace-buffer-size</code></td><td width="32%"><code class="code">QTBuffer:size</code></td><td width="25%"><code class="code">set trace-buffer-size</code></td></tr>
+<tr><td width="28%"><code class="code">trace-status</code></td><td width="32%"><code class="code">qTStatus</code></td><td width="25%"><code class="code">tstatus</code></td></tr>
+<tr><td width="28%"><code class="code">traceframe-info</code></td><td width="32%"><code class="code">qXfer:traceframe-info:read</code></td><td width="25%">跟踪帧信息</td></tr>
+<tr><td width="28%"><code class="code">install-in-trace</code></td><td width="32%"><code class="code">InstallInTrace</code></td><td width="25%">在跟踪中安装跟踪点</td></tr>
+<tr><td width="28%"><code class="code">disable-randomization</code></td><td width="32%"><code class="code">QDisableRandomization</code></td><td width="25%"><code class="code">set disable-randomization</code></td></tr>
+<tr><td width="28%"><code class="code">startup-with-shell</code></td><td width="32%"><code class="code">QStartupWithShell</code></td><td width="25%"><code class="code">set startup-with-shell</code></td></tr>
+<tr><td width="28%"><code class="code">environment-hex-encoded</code></td><td width="32%"><code class="code">QEnvironmentHexEncoded</code></td><td width="25%"><code class="code">set environment</code></td></tr>
+<tr><td width="28%"><code class="code">environment-unset</code></td><td width="32%"><code class="code">QEnvironmentUnset</code></td><td width="25%"><code class="code">unset environment</code></td></tr>
+<tr><td width="28%"><code class="code">environment-reset</code></td><td width="32%"><code class="code">QEnvironmentReset</code></td><td width="25%"><code class="code">Reset the inferior environment (i.e., unset user-set variables)</code></td></tr>
+<tr><td width="28%"><code class="code">set-working-dir</code></td><td width="32%"><code class="code">QSetWorkingDir</code></td><td width="25%"><code class="code">set cwd</code></td></tr>
+<tr><td width="28%"><code class="code">conditional-breakpoints-packet</code></td><td width="32%"><code class="code">Z0 and Z1</code></td><td width="25%"><code class="code">Support for target-side breakpoint condition evaluation</code></td></tr>
+<tr><td width="28%"><code class="code">multiprocess-extensions</code></td><td width="32%"><code class="code">multiprocess extensions</code></td><td width="25%">调试多个进程并识别远程进程 PID</td></tr>
+<tr><td width="28%"><code class="code">swbreak-feature</code></td><td width="32%"><code class="code">swbreak stop reason</code></td><td width="25%"><code class="code">break</code></td></tr>
+<tr><td width="28%"><code class="code">hwbreak-feature</code></td><td width="32%"><code class="code">hwbreak stop reason</code></td><td width="25%"><code class="code">hbreak</code></td></tr>
+<tr><td width="28%"><code class="code">fork-event-feature</code></td><td width="32%"><code class="code">fork stop reason</code></td><td width="25%"><code class="code">fork</code></td></tr>
+<tr><td width="28%"><code class="code">vfork-event-feature</code></td><td width="32%"><code class="code">vfork stop reason</code></td><td width="25%"><code class="code">vfork</code></td></tr>
+<tr><td width="28%"><code class="code">exec-event-feature</code></td><td width="32%"><code class="code">exec stop reason</code></td><td width="25%"><code class="code">exec</code></td></tr>
+<tr><td width="28%"><code class="code">thread-events</code></td><td width="32%"><code class="code">QThreadEvents</code></td><td width="25%">跟踪线程生命周期。</td></tr>
+<tr><td width="28%"><code class="code">thread-options</code></td><td width="32%"><code class="code">QThreadOptions</code></td><td width="25%">设置线程事件报告选项。</td></tr>
+<tr><td width="28%"><code class="code">no-resumed-stop-reply</code></td><td width="32%"><code class="code">no resumed thread left stop reply</code></td><td width="25%">跟踪线程生命周期。</td></tr>
+</tbody>
+</table>
+
+<a class="index-entry-id" id="index-packet-size_002c-remote_002c-configuring"></a>
+<p>可以使用命令
+<code class="code">set remote memory-read-packet-size</code><!-- /@w --> 和
+<code class="code">set remote memory-write-packet-size</code><!-- /@w -->配置远程目标每个内存读取或内存写入数据包的字节数。如果设置为 ‘<samp class="samp">0</samp>’（零），将使用默认的数据包大小。实际限制会根据目标进一步降低。指定 ‘<samp class="samp">固定</samp>’ 以禁用与目标相关的限制，指定 ‘<samp class="samp">限制</samp>’ 以启用它。与启用和禁用远程数据包类似，该命令适用于当前选择的目标（如果可用）。如果未选择远程目标，它将适用于所有未来的远程连接。可以使用命令
+<code class="code">show remote memory-read-packet-size</code><!-- /@w --> 和
+<code class="code">show remote memory-write-packet-size</code><!-- /@w -->显示所选目标的配置。如果未选择远程目标，则显示未来连接的默认配置。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Remote-Stub.html">实现远程桩</a>, 上一项： <a href="Server.html">使用 <code class="code">gdbserver</code> 程序</a>, 上级： <a href="Remote-Debugging.html">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

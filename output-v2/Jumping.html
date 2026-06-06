@@ -1,0 +1,91 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跳跃（使用 GDB 调试）</title>
+
+<meta name="description" content="Jumping (Debugging with GDB)"/>
+<meta name="keywords" content="Jumping (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Signaling.html" rel="next" title="Signaling"/>
+<link href="Assignment.html" rel="prev" title="Assignment"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Jumping">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Signaling.html" rel="next">向你的程序发送信号</a>, 上一项： <a accesskey="p" href="Assignment.html" rel="prev">变量赋值</a> <a accesskey="u" href="Altering.html" rel="up">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Continuing-at-a-Different-Address"><span>17.2 在不同地址继续执行<a class="copiable-link" href="#Continuing-at-a-Different-Address"> ¶</a></span></h3>
+
+<p>通常，当你继续执行程序时，你会使用“continue”命令从程序停止的位置继续执行。你也可以使用以下命令，在你自己选择的地址继续执行： <code class="code">continue</code> 你可以使用以下命令，在你自己选择的地址继续执行：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-j-_0028jump_0029"></a>
+<a id="index-jump"></a><span><code class="code">jump <var class="var">locspec</var></code><a class="copiable-link" href="#index-jump"> ¶</a></span></dt>
+<dt><code class="code">j <var class="var">locspec</var></code></dt>
+<dd><p>在解析“locspec”后得到的代码位置地址处恢复执行。 <var class="var">位置规范</var>。
+请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>，了解不同形式的 <var class="var">位置规范</var>。如果 <var class="var">位置规范</var> 解析出多个地址，则忽略当前编译单元之外的那些地址。如果仅考虑当前编译单元中的地址仍无法得到唯一地址，则在跳转前命令将中止。
+如果该位置有断点，执行将立即再次停止。通常的做法是将“jump”命令与“break”命令结合使用。请参阅 <code class="code">tbreak</code> jump <code class="code">jump</code>。请参阅 <a class="xref" href="Set-Breaks.html">设置断点</a>。
+</p>
+<p>“jump” <code class="code">jump</code> 命令不会改变当前栈帧、栈指针，也不会改变除程序计数器之外的任何内存位置或任何寄存器的内容。如果 <var class="var">位置规范</var> 解析出的地址位于与当前正在执行的函数不同的函数中，如果两个函数期望不同的参数模式或局部变量模式，结果可能会很奇怪。出于这个原因，如果跳转地址不在当前正在执行的函数中，“jump”命令会请求确认。但是，如果你熟悉程序的机器语言代码，即使是奇怪的结果也是可预测的。 <code class="code">jump</code>
+jump
+</p></dd>
+</dl>
+
+<p>在许多系统上，你可以通过将新值存储到寄存器“$pc”中来获得与“jump”命令大致相同的效果。区别在于，这样做不会启动你的程序运行；它只是改变了你继续执行时程序将运行的地址。例如， <code class="code">jump</code>
+jump <code class="code">$pc</code>$pc <em class="emph">将</em> 在你继续执行时运行。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $pc = 0x485
+</pre></div>
+
+<p>使下一个 <code class="code">continue</code> continue <code class="code">0x485</code>处执行，而不是在程序停止的地址处执行。请参阅 <a class="xref" href="Continuing-and-Stepping.html">继续执行和单步执行</a>。
+</p>
+<p>然而，直接写入 <code class="code">$pc</code> $pc <code class="code">jump</code> jump <code class="code">jump</code> jump <code class="code">$pc</code> $pc <code class="code">$npc</code>
+%g7 <code class="code">$pc</code> $pc
+<code class="code">$npc</code> %g7
+</p>
+<p>最常见的使用“jump” <code class="code">jump</code> jump
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Signaling.html">向你的程序发送信号</a>, 上一项： <a href="Assignment.html">变量赋值</a>, 上级： <a href="Altering.html">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

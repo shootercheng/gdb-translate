@@ -1,0 +1,129 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile命令（使用GDB进行调试）</title>
+
+<meta name="description" content="Guile Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Guile Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile.html" rel="up" title="Guile"/>
+<link href="Guile-API.html" rel="next" title="Guile API"/>
+<link href="Guile-Introduction.html" rel="prev" title="Guile Introduction"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Guile-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Guile-API.html" rel="next">Guile API</a>, 上一项： <a accesskey="p" href="Guile-Introduction.html" rel="prev">Guile简介</a>, 上级： <a accesskey="u" href="Guile.html" rel="up">扩展 <small class="sc">GDB</small> 使用Guile</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Guile-Commands-1"><span>23.4.2 Guile命令<a class="copiable-link" href="#Guile-Commands-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-guile-commands"></a>
+<a class="index-entry-id" id="index-commands-to-access-guile"></a>
+
+<p><small class="sc">GDB</small> 提供了两个用于访问Guile解释器的命令：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gr"></a>
+<a id="index-guile_002drepl"></a><span><code class="code">guile-repl</code><a class="copiable-link" href="#index-guile_002drepl"> ¶</a></span></dt>
+<dt><code class="code">gr</code></dt>
+<dd><p>该 <code class="code">guile-repl</code> 命令可用于启动一个交互式的
+Guile提示符或 <em class="dfn">交互式解释器</em>要返回 <small class="sc">GDB</small>,
+输入 <kbd class="kbd">,q</kbd> 或 <code class="code">EOF</code> 字符（例如， <kbd class="kbd">Ctrl - D</kbd> 在
+空提示符下）。这些命令不接受任何参数。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gu"></a>
+<a id="index-guile"></a><span><code class="code">guile <span class="r">[</span><var class="var">scheme-expression</var><span class="r">]</span></code><a class="copiable-link" href="#index-guile"> ¶</a></span></dt>
+<dt><code class="code">gu <span class="r">[</span><var class="var">scheme-expression</var><span class="r">]</span></code></dt>
+<dd><p>该 <code class="code">guile</code> 命令可用于计算一个Scheme表达式。
+</p>
+<p>如果给定一个参数， <small class="sc">GDB</small> 将把该参数传递给Guile
+解释器进行计算。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (display (+ 20 3)) (newline)
+23
+</pre></div>
+
+<p>Scheme表达式的结果将使用正常的Guile规则进行显示。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (+ 20 3)
+23
+</pre></div>
+
+<p>如果不给 <code class="code">guile</code>提供参数，它将作为一个
+多行命令，就像 <code class="code">define</code>一样。在这种情况下，Guile
+脚本由后续的命令行组成，在
+<code class="code">guile</code> 命令之后给出。这个命令列表以包含 <code class="code">end</code>的一行结束。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile
+&gt;(display 23)
+&gt;(newline)
+&gt;end
+23
+</pre></div>
+</dd>
+</dl>
+
+<p>也可以从 <small class="sc">GDB</small>
+解释器执行一个Guile脚本：
+</p>
+<dl class="table">
+<dt><code class="code">source <samp class="file">script-name</samp></code></dt>
+<dd><p>脚本名称必须以‘<samp class="samp">.scm</samp>’结尾，并且 <small class="sc">GDB</small> 必须使用
+ <code class="code">script-extension</code> 设置根据文件名扩展名来识别脚本语言。请参阅 <a class="xref" href="Extending-GDB.html">扩展GDB</a>.
+</p>
+</dd>
+<dt><code class="code">guile (load &#34;script-name&#34;)</code></dt>
+<dd><p>此方法使用 <code class="code">load</code> Guile函数。
+它接受一个字符串参数，该参数是要加载的脚本的名称。
+有关此函数的描述，请参阅Guile文档。
+（请参阅 <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Loading.html#Loading">加载</a> 在 <cite class="cite">GNU Guile参考手册</cite>)。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Guile-API.html">Guile API</a>, 上一项： <a href="Guile-Introduction.html">Guile简介</a>, 上级： <a href="Guile.html">扩展 <small class="sc">GDB</small> 使用Guile</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

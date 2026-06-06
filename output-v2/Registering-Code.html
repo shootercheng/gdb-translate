@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>注册代码（使用 GDB 调试）</title>
+
+<meta name="description" content="Registering Code (Debugging with GDB)"/>
+<meta name="keywords" content="Registering Code (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="JIT-Interface.html" rel="up" title="JIT Interface"/>
+<link href="Unregistering-Code.html" rel="next" title="Unregistering Code"/>
+<link href="Declarations.html" rel="prev" title="Declarations"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Registering-Code">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Unregistering-Code.html" rel="next">注销代码</a>, 上一项： <a accesskey="p" href="Declarations.html" rel="prev">JIT 声明</a>, 上级： <a accesskey="u" href="JIT-Interface.html" rel="up">JIT 编译接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Registering-Code-1"><span>30.2 注册代码<a class="copiable-link" href="#Registering-Code-1"> ¶</a></span></h3>
+
+<p>要向 <small class="sc">GDB</small>注册代码，JIT 应遵循以下协议：
+</p>
+<ul class="itemize mark-bullet">
+<li>在内存中生成一个包含符号和其他所需调试信息的目标文件。该文件必须包含各段的虚拟地址。
+
+</li><li>为该文件创建一个代码条目，该条目给出符号文件的起始位置和大小。
+
+</li><li>将其添加到 JIT 描述符的链表中。
+
+</li><li>将描述符的 relevant_entry 字段指向该条目。
+
+</li><li>设置 <code class="code">action_flag</code> 为 <code class="code">JIT_REGISTER</code> 并调用
+<code class="code">__jit_debug_register_code</code>.
+</li></ul>
+
+<p>当 <small class="sc">GDB</small> 已附加且断点触发时， <small class="sc">GDB</small> 使用
+<code class="code">relevant_entry</code> 指针，这样它就不必遍历列表来查找新代码。但是，仍然必须维护链表，以便
+<small class="sc">GDB</small> 能够附加到正在运行的进程并仍然找到符号文件。
+</p>
+</div>
+
+
+
+
+
+</body></html>

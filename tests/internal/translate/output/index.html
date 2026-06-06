@@ -1,0 +1,979 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>顶部（使用GDB调试）</title>
+
+<meta name="description" content="Top (Debugging with GDB)"/>
+<meta name="keywords" content="Top (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="#Top" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Summary.html" rel="next" title="Summary"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.toc-numbered-mark {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+
+
+
+
+
+
+
+
+
+<p>本文件记录了 <small class="sc">GNU</small> 调试器 <small class="sc">GDB</small>.
+</p>
+<p>这是第十版 <cite class="cite">使用
+<small class="sc">GDB</small>: 即 <small class="sc">GNU</small> 源级调试器</cite> 用于 <small class="sc">GDB</small>
+(GDB) 版本17.2。
+</p>
+<p>版权所有© 1988 - 2025自由软件基金会
+</p>
+<p>允许在GNU自由文档许可证1.3版或自由软件基金会发布的任何更高版本的条款下复制、分发和/或修改本文件；不变章节为“自由软件”和“自由软件需要自由文档”，封面文字为“一本GNU手册”，封底文字如下(a)所述。
+</p>
+<p>(a) 自由软件基金会的封底文字是：“你可以自由复制和修改这本GNU手册。从GNU出版社购买副本支持自由软件基金会开发GNU并推广软件自由。”
+</p>
+
+<div class="top-level-extent" id="Top">
+<div class="nav-panel">
+<p>
+接下来： <a accesskey="n" href="Summary.html" rel="next">总结 <small class="sc">GDB</small></a>   [<a href="#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+
+<h1 class="top" id="Debugging-with-gdb"><span>使用 <small class="sc">GDB</small><a class="copiable-link" href="#Debugging-with-gdb"> ¶</a></span></h1>
+
+<p>本文件描述了 <small class="sc">GDB</small>，即 <small class="sc">GNU</small> 符号调试器。
+</p>
+<p>这是第十版，适用于 <small class="sc">GDB</small>
+(GDB) 版本17.2。
+</p>
+<p>版权所有 (C) 1988 - 2025自由软件基金会
+</p>
+<p>本版GDB手册献给Fred Fish的记忆。Fred是GDB和一般自由软件的长期贡献者。我们会想念他。
+</p>
+
+
+
+<div class="element-contents" id="SEC_Contents">
+<h2 class="contents-heading">目录</h2>
+
+<div class="contents">
+
+<ul class="toc-numbered-mark">
+  <li><a href="Summary.html" id="toc-Summary-of-gdb">总结 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Free-Software.html" id="toc-Free-Software-1">自由软件</a></li>
+    <li><a href="Free-Documentation.html" id="toc-Free-Software-Needs-Free-Documentation">自由软件需要自由文档</a></li>
+    <li><a href="Contributors.html" id="toc-Contributors-to-gdb">贡献者 <small class="sc">GDB</small></a></li>
+  </ul></li>
+  <li><a href="Sample-Session.html" id="toc-A-Sample-gdb-Session">1 一个示例 <small class="sc">GDB</small> 会话</a></li>
+  <li><a href="Invocation.html" id="toc-Getting-In-and-Out-of-gdb">2 进入和退出 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Invoking-GDB.html" id="toc-Invoking-gdb">2.1 调用 <small class="sc">GDB</small></a>
+    <ul class="toc-numbered-mark">
+      <li><a href="File-Options.html" id="toc-Choosing-Files">2.1.1 选择文件</a></li>
+      <li><a href="Mode-Options.html" id="toc-Choosing-Modes">2.1.2 选择模式</a></li>
+      <li><a href="Startup.html" id="toc-What-gdb-Does-During-Startup">2.1.3 启动期间做什么 <small class="sc">GDB</small> </a></li>
+      <li><a href="Initialization-Files.html" id="toc-Initialization-Files-1">2.1.4 初始化文件</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Initialization-Files.html#Home-directory-early-initialization-files" id="toc-Home-directory-early-initialization-files">2.1.4.1 主目录早期初始化文件</a></li>
+        <li><a href="Initialization-Files.html#System-wide-initialization-files" id="toc-System-wide-initialization-files">2.1.4.2 系统范围初始化文件</a></li>
+        <li><a href="Initialization-Files.html#Home-directory-initialization-file" id="toc-Home-directory-initialization-file">2.1.4.3 主目录初始化文件</a></li>
+        <li><a href="Initialization-Files.html#Local-directory-initialization-file" id="toc-Local-directory-initialization-file">2.1.4.4 本地目录初始化文件</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a href="Quitting-GDB.html" id="toc-Quitting-gdb">2.2 退出 <small class="sc">GDB</small></a></li>
+    <li><a href="Shell-Commands.html" id="toc-Shell-Commands-1">2.3 外壳命令</a></li>
+    <li><a href="Logging-Output.html" id="toc-Logging-Output-1">2.4 记录输出</a></li>
+  </ul></li>
+  <li><a href="Commands.html" id="toc-gdb-Commands">3 <small class="sc">GDB</small> 命令</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Command-Syntax.html" id="toc-Command-Syntax-1">3.1 命令语法</a></li>
+    <li><a href="Command-Settings.html" id="toc-Command-Settings-1">3.2 命令设置</a></li>
+    <li><a href="Completion.html" id="toc-Command-Completion">3.3 命令完成</a></li>
+    <li><a href="Filename-Arguments.html" id="toc-Filenames-As-Command-Arguments">3.4 作为命令参数的文件名</a></li>
+    <li><a href="Command-Options.html" id="toc-Command-options">3.5 命令选项</a></li>
+    <li><a href="Help.html" id="toc-Getting-Help">3.6 获取帮助</a></li>
+  </ul></li>
+  <li><a href="Running.html" id="toc-Running-Programs-Under-gdb">4 在以下情况下运行程序 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Compilation.html" id="toc-Compiling-for-Debugging">4.1 为调试而编译</a></li>
+    <li><a href="Starting.html" id="toc-Starting-your-Program">4.2 启动你的程序</a></li>
+    <li><a href="Arguments.html" id="toc-Your-Program_0027s-Arguments">4.3 你的程序的参数</a></li>
+    <li><a href="Environment.html" id="toc-Your-Program_0027s-Environment">4.4 你的程序的环境</a></li>
+    <li><a href="Working-Directory.html" id="toc-Your-Program_0027s-Working-Directory">4.5 你的程序的工作目录</a></li>
+    <li><a href="Input_002fOutput.html" id="toc-Your-Program_0027s-Input-and-Output">4.6 你的程序的输入和输出</a></li>
+    <li><a href="Attach.html" id="toc-Debugging-an-Already_002drunning-Process">4.7 调试正在运行的进程</a></li>
+    <li><a href="Kill-Process.html" id="toc-Killing-the-Child-Process">4.8 终止子进程</a></li>
+    <li><a href="Inferiors-Connections-and-Programs.html" id="toc-Debugging-Multiple-Inferiors-Connections-and-Programs">4.9 调试多个下级连接和程序</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Inferior_002dSpecific-Breakpoints.html" id="toc-Inferior_002dSpecific-Breakpoints-1">4.9.1 特定于下级的断点</a></li>
+    </ul></li>
+    <li><a href="Threads.html" id="toc-Debugging-Programs-with-Multiple-Threads">4.10 调试多线程程序</a></li>
+    <li><a href="Forks.html" id="toc-Debugging-Forks">4.11 调试分叉</a></li>
+    <li><a href="Checkpoint_002fRestart.html" id="toc-Setting-a-Bookmark-to-Return-to-Later">4.12 设置一个 <em class="emph">书签</em> 以便稍后返回</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Checkpoint_002fRestart.html#A-Non_002dobvious-Benefit-of-Using-Checkpoints" id="toc-A-Non_002dobvious-Benefit-of-Using-Checkpoints">4.12.1 使用检查点的一个不明显的好处</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Stopping.html" id="toc-Stopping-and-Continuing">5 停止和继续</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Breakpoints.html" id="toc-Breakpoints_002c-Watchpoints_002c-and-Catchpoints">5.1 断点、观察点和捕获点</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Set-Breaks.html" id="toc-Setting-Breakpoints">5.1.1 设置断点</a></li>
+      <li><a href="Set-Watchpoints.html" id="toc-Setting-Watchpoints">5.1.2 设置观察点</a></li>
+      <li><a href="Set-Catchpoints.html" id="toc-Setting-Catchpoints">5.1.3 设置捕获点</a></li>
+      <li><a href="Delete-Breaks.html" id="toc-Deleting-Breakpoints">5.1.4 删除断点</a></li>
+      <li><a href="Disabling.html" id="toc-Disabling-Breakpoints">5.1.5 禁用断点</a></li>
+      <li><a href="Conditions.html" id="toc-Break-Conditions">5.1.6 断点条件</a></li>
+      <li><a href="Break-Commands.html" id="toc-Breakpoint-Command-Lists">5.1.7 断点命令列表</a></li>
+      <li><a href="Dynamic-Printf.html" id="toc-Dynamic-Printf-1">5.1.8 动态printf</a></li>
+      <li><a href="Save-Breakpoints.html" id="toc-How-to-save-breakpoints-to-a-file">5.1.9 如何将断点保存到文件</a></li>
+      <li><a href="Static-Probe-Points.html" id="toc-Static-Probe-Points-1">5.1.10 静态探测点</a></li>
+      <li><a href="Error-in-Breakpoints.html" id="toc-_0060_0060Cannot-insert-breakpoints_0027_0027">5.1.11 “无法插入断点”</a></li>
+      <li><a href="Breakpoint_002drelated-Warnings.html" id="toc-_0060_0060Breakpoint-address-adjusted_002e_002e_002e_0027_0027">5.1.12 “断点地址已调整...”</a></li>
+    </ul></li>
+    <li><a href="Continuing-and-Stepping.html" id="toc-Continuing-and-Stepping-1">5.2 继续和单步执行</a></li>
+    <li><a href="Skipping-Over-Functions-and-Files.html" id="toc-Skipping-Over-Functions-and-Files-1">5.3 跳过函数和文件</a></li>
+    <li><a href="Signals.html" id="toc-Signals-1">5.4 信号</a></li>
+    <li><a href="Thread-Stops.html" id="toc-Stopping-and-Starting-Multi_002dthread-Programs">5.5 停止和启动多线程程序</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="All_002dStop-Mode.html" id="toc-All_002dStop-Mode-1">5.5.1 全停止模式</a></li>
+      <li><a href="Non_002dStop-Mode.html" id="toc-Non_002dStop-Mode-1">5.5.2 非停止模式</a></li>
+      <li><a href="Background-Execution.html" id="toc-Background-Execution-1">5.5.3 后台执行</a></li>
+      <li><a href="Thread_002dSpecific-Breakpoints.html" id="toc-Thread_002dSpecific-Breakpoints-1">5.5.4 特定于线程的断点</a></li>
+      <li><a href="Interrupted-System-Calls.html" id="toc-Interrupted-System-Calls-1">5.5.5 中断的系统调用</a></li>
+      <li><a href="Observer-Mode.html" id="toc-Observer-Mode-1">5.5.6 观察模式</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Reverse-Execution.html" id="toc-Running-programs-backward">6 反向运行程序</a></li>
+  <li><a href="Process-Record-and-Replay.html" id="toc-Recording-Inferior_0027s-Execution-and-Replaying-It">7记录下级的执行情况并回放</a></li>
+  <li><a href="Stack.html" id="toc-Examining-the-Stack">8检查堆栈</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Frames.html" id="toc-Stack-Frames">8.1堆栈帧</a></li>
+    <li><a href="Backtrace.html" id="toc-Backtraces">8.2回溯</a></li>
+    <li><a href="Selection.html" id="toc-Selecting-a-Frame">8.3选择一个帧</a></li>
+    <li><a href="Frame-Info.html" id="toc-Information-About-a-Frame">8.4关于一个帧的信息</a></li>
+    <li><a href="Frame-Apply.html" id="toc-Applying-a-Command-to-Several-Frames_002e">8.5对多个帧应用命令。</a></li>
+    <li><a href="Frame-Filter-Management.html" id="toc-Management-of-Frame-Filters_002e">8.6帧过滤器的管理。</a></li>
+  </ul></li>
+  <li><a href="Source.html" id="toc-Examining-Source-Files">9检查源文件</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="List.html" id="toc-Printing-Source-Lines">9.1打印源行</a></li>
+    <li><a href="Location-Specifications.html" id="toc-Location-Specifications-1">9.2位置规范</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Linespec-Locations.html" id="toc-Linespec-Locations-1">9.2.1行规范位置</a></li>
+      <li><a href="Explicit-Locations.html" id="toc-Explicit-Locations-1">9.2.2显式位置</a></li>
+      <li><a href="Address-Locations.html" id="toc-Address-Locations-1">9.2.3地址位置</a></li>
+    </ul></li>
+    <li><a href="Edit.html" id="toc-Editing-Source-Files">9.3编辑源文件</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Edit.html#Choosing-your-Editor" id="toc-Choosing-your-Editor">9.3.1选择你的编辑器</a></li>
+    </ul></li>
+    <li><a href="Search.html" id="toc-Searching-Source-Files">9.4搜索源文件</a></li>
+    <li><a href="Source-Path.html" id="toc-Specifying-Source-Directories">9.5指定源目录</a></li>
+    <li><a href="Machine-Code.html" id="toc-Source-and-Machine-Code">9.6源和机器代码</a></li>
+    <li><a href="Disable-Reading-Source.html" id="toc-Disable-Reading-Source-Code">9.7禁用读取源代码</a></li>
+  </ul></li>
+  <li><a href="Data.html" id="toc-Examining-Data">10检查数据</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Expressions.html" id="toc-Expressions-1">10.1表达式</a></li>
+    <li><a href="Ambiguous-Expressions.html" id="toc-Ambiguous-Expressions-1">10.2模糊表达式</a></li>
+    <li><a href="Variables.html" id="toc-Program-Variables">10.3程序变量</a></li>
+    <li><a href="Arrays.html" id="toc-Artificial-Arrays">10.4人工数组</a></li>
+    <li><a href="Output-Formats.html" id="toc-Output-Formats-1">10.5输出格式</a></li>
+    <li><a href="Memory.html" id="toc-Examining-Memory">10.6检查内存</a></li>
+    <li><a href="Memory-Tagging.html" id="toc-Memory-Tagging-1">10.7内存标记</a></li>
+    <li><a href="Auto-Display.html" id="toc-Automatic-Display">10.8自动显示</a></li>
+    <li><a href="Print-Settings.html" id="toc-Print-Settings-1">10.9打印设置</a></li>
+    <li><a href="Pretty-Printing.html" id="toc-Pretty-Printing-1">10.10格式化打印</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Pretty_002dPrinter-Introduction.html" id="toc-Pretty_002dPrinter-Introduction-1">10.10.1格式化打印介绍</a></li>
+      <li><a href="Pretty_002dPrinter-Example.html" id="toc-Pretty_002dPrinter-Example-1">10.10.2格式化打印示例</a></li>
+      <li><a href="Pretty_002dPrinter-Commands.html" id="toc-Pretty_002dPrinter-Commands-1">10.10.3格式化打印命令</a></li>
+    </ul></li>
+    <li><a href="Value-History.html" id="toc-Value-History-1">10.11值历史</a></li>
+    <li><a href="Convenience-Vars.html" id="toc-Convenience-Variables">10.12便利变量</a></li>
+    <li><a href="Convenience-Funs.html" id="toc-Convenience-Functions">10.13便利函数</a></li>
+    <li><a href="Registers.html" id="toc-Registers-1">10.14寄存器</a></li>
+    <li><a href="Floating-Point-Hardware.html" id="toc-Floating-Point-Hardware-1">10.15浮点硬件</a></li>
+    <li><a href="Vector-Unit.html" id="toc-Vector-Unit-1">10.16向量单元</a></li>
+    <li><a href="OS-Information.html" id="toc-Operating-System-Auxiliary-Information">10.17操作系统辅助信息</a></li>
+    <li><a href="Memory-Region-Attributes.html" id="toc-Memory-Region-Attributes-1">10.18内存区域属性</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Memory-Region-Attributes.html#Attributes" id="toc-Attributes">10.18.1属性</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Memory-Region-Attributes.html#Memory-Access-Mode" id="toc-Memory-Access-Mode">10.18.1.1内存访问模式</a></li>
+        <li><a href="Memory-Region-Attributes.html#Memory-Access-Size" id="toc-Memory-Access-Size">10.18.1.2内存访问大小</a></li>
+        <li><a href="Memory-Region-Attributes.html#Data-Cache" id="toc-Data-Cache">10.18.1.3数据缓存</a></li>
+      </ul></li>
+      <li><a href="Memory-Region-Attributes.html#Memory-Access-Checking" id="toc-Memory-Access-Checking">10.18.2内存访问检查</a></li>
+    </ul></li>
+    <li><a href="Dump_002fRestore-Files.html" id="toc-Copy-Between-Memory-and-a-File">10.19内存与文件之间的复制</a></li>
+    <li><a href="Core-File-Generation.html" id="toc-How-to-Produce-a-Core-File-from-Your-Program">10.20如何从你的程序生成核心文件</a></li>
+    <li><a href="Character-Sets.html" id="toc-Character-Sets-1">10.21字符集</a></li>
+    <li><a href="Caching-Target-Data.html" id="toc-Caching-Data-of-Targets">10.22 缓存目标数据</a></li>
+    <li><a href="Searching-Memory.html" id="toc-Search-Memory">10.23 搜索内存</a></li>
+    <li><a href="Value-Sizes.html" id="toc-Value-Sizes-1">10.24 值大小</a></li>
+  </ul></li>
+  <li><a href="Optimized-Code.html" id="toc-Debugging-Optimized-Code">11 调试优化代码</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Inline-Functions.html" id="toc-Inline-Functions-1">11.1 内联函数</a></li>
+    <li><a href="Tail-Call-Frames.html" id="toc-Tail-Call-Frames-1">11.2 尾调用帧</a></li>
+  </ul></li>
+  <li><a href="Macros.html" id="toc-C-Preprocessor-Macros">12 C预处理器宏</a></li>
+  <li><a href="Tracepoints.html" id="toc-Tracepoints-1">13 跟踪点</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Set-Tracepoints.html" id="toc-Commands-to-Set-Tracepoints">13.1 设置跟踪点的命令</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Create-and-Delete-Tracepoints.html" id="toc-Create-and-Delete-Tracepoints-1">13.1.1 创建和删除跟踪点</a></li>
+      <li><a href="Enable-and-Disable-Tracepoints.html" id="toc-Enable-and-Disable-Tracepoints-1">13.1.2 启用和禁用跟踪点</a></li>
+      <li><a href="Tracepoint-Passcounts.html" id="toc-Tracepoint-Passcounts-1">13.1.3 跟踪点通过计数</a></li>
+      <li><a href="Tracepoint-Conditions.html" id="toc-Tracepoint-Conditions-1">13.1.4 跟踪点条件</a></li>
+      <li><a href="Trace-State-Variables.html" id="toc-Trace-State-Variables-1">13.1.5 跟踪状态变量</a></li>
+      <li><a href="Tracepoint-Actions.html" id="toc-Tracepoint-Action-Lists">13.1.6 跟踪点操作列表</a></li>
+      <li><a href="Listing-Tracepoints.html" id="toc-Listing-Tracepoints-1">13.1.7 列出跟踪点</a></li>
+      <li><a href="Listing-Static-Tracepoint-Markers.html" id="toc-Listing-Static-Tracepoint-Markers-1">13.1.8 列出静态跟踪点标记</a></li>
+      <li><a href="Starting-and-Stopping-Trace-Experiments.html" id="toc-Starting-and-Stopping-Trace-Experiments-1">13.1.9 启动和停止跟踪实验</a></li>
+      <li><a href="Tracepoint-Restrictions.html" id="toc-Tracepoint-Restrictions-1">13.1.10 跟踪点限制</a></li>
+    </ul></li>
+    <li><a href="Analyze-Collected-Data.html" id="toc-Using-the-Collected-Data">13.2 使用收集的数据</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="tfind.html" id="toc-tfind-n">13.2.1 <code class="code">tfind <var class="var">n</var></code></a></li>
+      <li><a href="tdump.html" id="toc-tdump-1">13.2.2 <code class="code">tdump</code></a></li>
+      <li><a href="save-tracepoints.html" id="toc-save-tracepoints-filename">13.2.3 <code class="code">save tracepoints <var class="var">filename</var></code></a></li>
+    </ul></li>
+    <li><a href="Tracepoint-Variables.html" id="toc-Convenience-Variables-for-Tracepoints">13.3 跟踪点的便利变量</a></li>
+    <li><a href="Trace-Files.html" id="toc-Using-Trace-Files">13.4 使用跟踪文件</a></li>
+  </ul></li>
+  <li><a href="Overlays.html" id="toc-Debugging-Programs-That-Use-Overlays">14 调试使用覆盖的程序</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="How-Overlays-Work.html" id="toc-How-Overlays-Work-1">14.1 覆盖如何工作</a></li>
+    <li><a href="Overlay-Commands.html" id="toc-Overlay-Commands-1">14.2 覆盖命令</a></li>
+    <li><a href="Automatic-Overlay-Debugging.html" id="toc-Automatic-Overlay-Debugging-1">14.3 自动覆盖调试</a></li>
+    <li><a href="Overlay-Sample-Program.html" id="toc-Overlay-Sample-Program-1">14.4 覆盖示例程序</a></li>
+  </ul></li>
+  <li><a href="Languages.html" id="toc-Using-gdb-with-Different-Languages">15 使用 <small class="sc">GDB</small> 与不同语言</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Setting.html" id="toc-Switching-Between-Source-Languages">15.1 在源语言之间切换</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Filenames.html" id="toc-List-of-Filename-Extensions-and-Languages">15.1.1 文件名扩展名和语言列表</a></li>
+      <li><a href="Manually.html" id="toc-Setting-the-Working-Language">15.1.2 设置工作语言</a></li>
+      <li><a href="Automatically.html" id="toc-Having-gdb-Infer-the-Source-Language">15.1.3 具有 <small class="sc">GDB</small> 推断源语言</a></li>
+    </ul></li>
+    <li><a href="Show.html" id="toc-Displaying-the-Language">15.2 显示语言</a></li>
+    <li><a href="Checks.html" id="toc-Type-and-Range-Checking">15.3 类型和范围检查</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Type-Checking.html" id="toc-An-Overview-of-Type-Checking">15.3.1 类型检查概述</a></li>
+      <li><a href="Range-Checking.html" id="toc-An-Overview-of-Range-Checking">15.3.2 范围检查概述</a></li>
+    </ul></li>
+    <li><a href="Supported-Languages.html" id="toc-Supported-Languages-1">15.4 支持的语言</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="C.html" id="toc-C-and-C_002b_002b">15.4.1 C和C<code class="t">++</code></a>
+      <ul class="toc-numbered-mark">
+        <li><a href="C-Operators.html" id="toc-C-and-C_002b_002b-Operators">15.4.1.1 C和C<code class="t">++</code> 运算符</a></li>
+        <li><a href="C-Constants.html" id="toc-C-and-C_002b_002b-Constants">15.4.1.2 C和C<code class="t">++</code> 常量</a></li>
+        <li><a href="C-Plus-Plus-Expressions.html" id="toc-C_002b_002b-Expressions">15.4.1.3 C<code class="t">++</code> 表达式</a></li>
+        <li><a href="C-Defaults.html" id="toc-C-and-C_002b_002b-Defaults">15.4.1.4 C和C<code class="t">++</code> 默认值</a></li>
+        <li><a href="C-Checks.html" id="toc-C-and-C_002b_002b-Type-and-Range-Checks">15.4.1.5 C和C++<code class="t">++</code> 类型和范围检查</a></li>
+        <li><a href="Debugging-C.html" id="toc-gdb-and-C">15.4.1.6 <small class="sc">GDB</small> 和C++</a></li>
+        <li><a href="Debugging-C-Plus-Plus.html" id="toc-gdb-Features-for-C_002b_002b">15.4.1.7 <small class="sc">GDB</small> C++的特性<code class="t">++</code></a></li>
+        <li><a href="Decimal-Floating-Point.html" id="toc-Decimal-Floating-Point-format">15.4.1.8十进制浮点格式</a></li>
+      </ul></li>
+      <li><a href="D.html" id="toc-D-1">15.4.2 D</a></li>
+      <li><a href="Go.html" id="toc-Go-1">15.4.3 Go</a></li>
+      <li><a href="Objective_002dC.html" id="toc-Objective_002dC-1">15.4.4 Objective-C</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Method-Names-in-Commands.html" id="toc-Method-Names-in-Commands-1">15.4.4.1命令中的方法名</a></li>
+        <li><a href="The-Print-Command-with-Objective_002dC.html" id="toc-The-Print-Command-With-Objective_002dC">15.4.4.2带Objective-C的打印命令</a></li>
+      </ul></li>
+      <li><a href="OpenCL-C.html" id="toc-OpenCL-C-1">15.4.5 OpenCL C</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="OpenCL-C-Datatypes.html" id="toc-OpenCL-C-Datatypes-1">15.4.5.1 OpenCL C数据类型</a></li>
+        <li><a href="OpenCL-C-Expressions.html" id="toc-OpenCL-C-Expressions-1">15.4.5.2 OpenCL C表达式</a></li>
+        <li><a href="OpenCL-C-Operators.html" id="toc-OpenCL-C-Operators-1">15.4.5.3 OpenCL C运算符</a></li>
+      </ul></li>
+      <li><a href="Fortran.html" id="toc-Fortran-1">15.4.6 Fortran</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Fortran-Types.html" id="toc-Fortran-Types-1">15.4.6.1 Fortran类型</a></li>
+        <li><a href="Fortran-Operators.html" id="toc-Fortran-Operators-and-Expressions">15.4.6.2 Fortran运算符和表达式</a></li>
+        <li><a href="Fortran-Intrinsics.html" id="toc-Fortran-Intrinsics-1">15.4.6.3 Fortran内部函数</a></li>
+        <li><a href="Special-Fortran-Commands.html" id="toc-Special-Fortran-Commands-1">15.4.6.4特殊Fortran命令</a></li>
+      </ul></li>
+      <li><a href="Pascal.html" id="toc-Pascal-1">15.4.7 Pascal</a></li>
+      <li><a href="Rust.html" id="toc-Rust-1">15.4.8 Rust</a></li>
+      <li><a href="Modula_002d2.html" id="toc-Modula_002d2-1">15.4.9 Modula-2</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="M2-Operators.html" id="toc-Operators">15.4.9.1运算符</a></li>
+        <li><a href="Built_002dIn-Func_002fProc.html" id="toc-Built_002din-Functions-and-Procedures">15.4.9.2内置函数和过程</a></li>
+        <li><a href="M2-Constants.html" id="toc-Constants-1">15.4.9.3常量</a></li>
+        <li><a href="M2-Types.html" id="toc-Modula_002d2-Types">15.4.9.4 Modula-2类型</a></li>
+        <li><a href="M2-Defaults.html" id="toc-Modula_002d2-Defaults">15.4.9.5 Modula-2默认值</a></li>
+        <li><a href="Deviations.html" id="toc-Deviations-from-Standard-Modula_002d2">与标准Modula-2的偏差</a></li>
+        <li><a href="M2-Checks.html" id="toc-Modula_002d2-Type-and-Range-Checks">15.4.9.7 Modula-2类型和范围检查</a></li>
+        <li><a href="M2-Scope.html" id="toc-The-Scope-Operators-_003a_003a-and-_002e">15.4.9.8作用域运算符 <code class="code">::</code> 和 <code class="code">.</code></a></li>
+        <li><a href="GDB_002fM2.html" id="toc-gdb-and-Modula_002d2">15.4.9.9 <small class="sc">GDB</small> 和Modula-2</a></li>
+      </ul></li>
+      <li><a href="Ada.html" id="toc-Ada-1">15.4.10 Ada</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Ada-Mode-Intro.html" id="toc-Introduction">15.4.10.1引言</a></li>
+        <li><a href="Omissions-from-Ada.html" id="toc-Omissions-from-Ada-1">15.4.10.2 Ada的省略部分</a></li>
+        <li><a href="Additions-to-Ada.html" id="toc-Additions-to-Ada-1">15.4.10.3对Ada的补充</a></li>
+        <li><a href="Overloading-support-for-Ada.html" id="toc-Overloading-support-for-Ada-1">15.4.10.4 Ada的重载支持</a></li>
+        <li><a href="Stopping-Before-Main-Program.html" id="toc-Stopping-at-the-Very-Beginning">15.4.10.5从最开始就停止</a></li>
+        <li><a href="Ada-Exceptions.html" id="toc-Ada-Exceptions-1">15.4.10.6 Ada异常</a></li>
+        <li><a href="Ada-Tasks.html" id="toc-Extensions-for-Ada-Tasks">15.4.10.7 Ada任务的扩展</a></li>
+        <li><a href="Ada-Tasks-and-Core-Files.html" id="toc-Tasking-Support-when-Debugging-Core-Files">15.4.10.8调试核心文件时的任务支持</a></li>
+        <li><a href="Ravenscar-Profile.html" id="toc-Tasking-Support-when-using-the-Ravenscar-Profile">15.4.10.9使用Ravenscar配置文件时的任务支持</a></li>
+        <li><a href="Ada-Source-Character-Set.html" id="toc-Ada-Source-Character-Set-1">15.4.10.10 Ada源字符集</a></li>
+        <li><a href="Ada-Glitches.html" id="toc-Known-Peculiarities-of-Ada-Mode">15.4.10.11 Ada模式的已知特性</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a href="Unsupported-Languages.html" id="toc-Unsupported-Languages-1">15.5不支持的语言</a></li>
+  </ul></li>
+  <li><a href="Symbols.html" id="toc-Examining-the-Symbol-Table">16检查符号表</a></li>
+  <li><a href="Altering.html" id="toc-Altering-Execution">17 改变执行方式</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Assignment.html" id="toc-Assignment-to-Variables">17.1 变量赋值</a></li>
+    <li><a href="Jumping.html" id="toc-Continuing-at-a-Different-Address">17.2 在不同地址继续执行</a></li>
+    <li><a href="Signaling.html" id="toc-Giving-your-Program-a-Signal">17.3 向程序发送信号</a></li>
+    <li><a href="Returning.html" id="toc-Returning-from-a-Function">17.4 从函数返回</a></li>
+    <li><a href="Calling.html" id="toc-Calling-Program-Functions">17.5 调用程序函数</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Calling.html#Calling-functions-with-no-debug-info" id="toc-Calling-functions-with-no-debug-info">17.5.1 调用无调试信息的函数</a></li>
+    </ul></li>
+    <li><a href="Patching.html" id="toc-Patching-Programs">17.6 修补程序</a></li>
+    <li><a href="Compiling-and-Injecting-Code.html" id="toc-Compiling-and-injecting-code-in-gdb">17.7 在其中编译并注入代码 <small class="sc">GDB</small></a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Compiling-and-Injecting-Code.html#Compilation-options-for-the-compile-command" id="toc-Compilation-options-for-the-compile-command">17.7.1 针对该命令的编译选项 <code class="code">compile</code> 命令</a></li>
+      <li><a href="Compiling-and-Injecting-Code.html#Caveats-when-using-the-compile-command" id="toc-Caveats-when-using-the-compile-command">17.7.2 使用该命令时的注意事项 <code class="code">compile</code> 命令</a></li>
+      <li><a href="Compiling-and-Injecting-Code.html#Compiler-search-for-the-compile-command" id="toc-Compiler-search-for-the-compile-command">17.7.3 编译器搜索该命令 <code class="code">compile</code> 命令</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="GDB-Files.html" id="toc-gdb-Files">18 <small class="sc">GDB</small> 文件</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Files.html" id="toc-Commands-to-Specify-Files">18.1 指定文件的命令</a></li>
+    <li><a href="File-Caching.html" id="toc-File-Caching-1">18.2 文件缓存</a></li>
+    <li><a href="Separate-Debug-Files.html" id="toc-Debugging-Information-in-Separate-Files">18.3 单独文件中的调试信息</a></li>
+    <li><a href="MiniDebugInfo.html" id="toc-Debugging-information-in-a-special-section">18.4 特殊段中的调试信息</a></li>
+    <li><a href="Index-Files.html" id="toc-Index-Files-Speed-Up-gdb">18.5 索引文件加速 <small class="sc">GDB</small></a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Index-Files.html#Automatic-symbol-index-cache" id="toc-Automatic-symbol-index-cache">18.5.1 自动符号索引缓存</a></li>
+      <li><a href="Index-Files.html#Building-the-index-with-GNU-gold" id="toc-Building-the-index-with-GNU-gold">18.5.2 使用GNU构建索引 <code class="command">gold</code></a></li>
+    </ul></li>
+    <li><a href="Debug-Names.html" id="toc-Extensions-to-_002edebug_005fnames">18.6 对‘<samp class="samp">.debug_names</samp>’的扩展</a></li>
+    <li><a href="Symbol-Errors.html" id="toc-Errors-Reading-Symbol-Files">18.7 读取符号文件时的错误</a></li>
+    <li><a href="Data-Files.html" id="toc-GDB-Data-Files">18.8 GDB数据文件</a></li>
+  </ul></li>
+  <li><a href="Targets.html" id="toc-Specifying-a-Debugging-Target">19 指定调试目标</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Active-Targets.html" id="toc-Active-Targets-1">19.1 活动目标</a></li>
+    <li><a href="Target-Commands.html" id="toc-Commands-for-Managing-Targets">19.2 管理目标的命令</a></li>
+    <li><a href="Byte-Order.html" id="toc-Choosing-Target-Byte-Order">19.3 选择目标字节序</a></li>
+  </ul></li>
+  <li><a href="Remote-Debugging.html" id="toc-Debugging-Remote-Programs">20 调试远程程序</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Connecting.html" id="toc-Connecting-to-a-Remote-Target">20.1 连接到远程目标</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Connecting.html#Types-of-Remote-Connections" id="toc-Types-of-Remote-Connections">20.1.1 远程连接类型</a></li>
+      <li><a href="Connecting.html#Host-and-Target-Files" id="toc-Host-and-Target-Files">20.1.2 主机和目标文件</a></li>
+      <li><a href="Connecting.html#Remote-Connection-Commands" id="toc-Remote-Connection-Commands">20.1.3 远程连接命令</a></li>
+    </ul></li>
+    <li><a href="File-Transfer.html" id="toc-Sending-files-to-a-remote-system">20.2 向远程系统发送文件</a></li>
+    <li><a href="Server.html" id="toc-Using-the-gdbserver-Program">20.3 使用 <code class="code">gdbserver</code> 程序</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Server.html#Running-gdbserver-1" id="toc-Running-gdbserver-1">20.3.1 运行 <code class="code">gdbserver</code></a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Server.html#Attaching-to-a-Running-Program" id="toc-Attaching-to-a-Running-Program">20.3.1.1 附加到正在运行的程序</a></li>
+        <li><a href="Server.html#TCP-port-allocation-lifecycle-of-gdbserver" id="toc-TCP-port-allocation-lifecycle-of-gdbserver">20.3.1.2 TCP端口分配生命周期 <code class="code">gdbserver</code></a></li>
+        <li><a href="Server.html#Other-Command_002dLine-Arguments-for-gdbserver-1" id="toc-Other-Command_002dLine-Arguments-for-gdbserver-1">20.3.1.3 其他命令行参数用于 <code class="code">gdbserver</code></a></li>
+      </ul></li>
+      <li><a href="Server.html#Connecting-to-gdbserver" id="toc-Connecting-to-gdbserver">20.3.2 连接到 <code class="code">gdbserver</code></a></li>
+      <li><a href="Server.html#Monitor-Commands-for-gdbserver-1" id="toc-Monitor-Commands-for-gdbserver-1">20.3.3 用于的监控命令 <code class="code">gdbserver</code></a></li>
+      <li><a href="Server.html#Tracepoints-support-in-gdbserver" id="toc-Tracepoints-support-in-gdbserver">20.3.4 中的跟踪点支持 <code class="code">gdbserver</code></a></li>
+    </ul></li>
+    <li><a href="Remote-Configuration.html" id="toc-Remote-Configuration-1">20.4 远程配置</a></li>
+    <li><a href="Remote-Stub.html" id="toc-Implementing-a-Remote-Stub">20.5 实现远程存根</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Stub-Contents.html" id="toc-What-the-Stub-Can-Do-for-You">20.5.1 存根能为您做什么</a></li>
+      <li><a href="Bootstrapping.html" id="toc-What-You-Must-Do-for-the-Stub">20.5.2 您必须为存根做什么</a></li>
+      <li><a href="Debug-Session.html" id="toc-Putting-it-All-Together">20.5.3 整合所有内容</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Configurations.html" id="toc-Configuration_002dSpecific-Information">21 特定配置信息</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Native.html" id="toc-Native-1">21.1 原生的</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="BSD-libkvm-Interface.html" id="toc-BSD-libkvm-Interface-1">21.1.1 BSD libkvm 接口</a></li>
+      <li><a href="Process-Information.html" id="toc-Process-Information-1">21.1.2 进程信息</a></li>
+      <li><a href="DJGPP-Native.html" id="toc-Features-for-Debugging-djgpp-Programs">21.1.3 调试功能 <small class="sc">DJGPP</small> 程序</a></li>
+      <li><a href="Cygwin-Native.html" id="toc-Features-for-Debugging-MS-Windows-PE-Executables">21.1.4 调试 MS Windows PE 可执行文件的功能</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Non_002ddebug-DLL-Symbols.html" id="toc-Support-for-DLLs-without-Debugging-Symbols">21.1.4.1 对没有调试符号的 DLL 的支持</a></li>
+        <li><a href="Non_002ddebug-DLL-Symbols.html#DLL-Name-Prefixes" id="toc-DLL-Name-Prefixes">21.1.4.2 DLL 名称前缀</a></li>
+        <li><a href="Non_002ddebug-DLL-Symbols.html#Working-with-Minimal-Symbols" id="toc-Working-with-Minimal-Symbols">21.1.4.3 使用最小符号</a></li>
+      </ul></li>
+      <li><a href="Hurd-Native.html" id="toc-Commands-Specific-to-gnu-Hurd-Systems">21.1.5 特定于……的命令 <small class="sc">GNU</small> Hurd 系统</a></li>
+      <li><a href="Darwin.html" id="toc-Darwin-1">21.1.6 Darwin</a></li>
+      <li><a href="FreeBSD.html" id="toc-FreeBSD-1">21.1.7 FreeBSD</a></li>
+    </ul></li>
+    <li><a href="Embedded-OS.html" id="toc-Embedded-Operating-Systems">21.2 嵌入式操作系统</a></li>
+    <li><a href="Embedded-Processors.html" id="toc-Embedded-Processors-1">21.3 嵌入式处理器</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="ARC.html" id="toc-Synopsys-ARC">21.3.1 Synopsys ARC</a></li>
+      <li><a href="ARM.html" id="toc-ARM-1">21.3.2 ARM</a></li>
+      <li><a href="BPF.html" id="toc-BPF-1">21.3.3 BPF</a></li>
+      <li><a href="M68K.html" id="toc-M68k">21.3.4 M68k</a></li>
+      <li><a href="MicroBlaze.html" id="toc-MicroBlaze-1">21.3.5 MicroBlaze</a></li>
+      <li><a href="MIPS-Embedded.html" id="toc-MIPS-Embedded-1">21.3.6 <abbr class="acronym">MIPS</abbr> 嵌入式</a></li>
+      <li><a href="OpenRISC-1000.html" id="toc-OpenRISC-1000-1">21.3.7 OpenRISC 1000</a></li>
+      <li><a href="PowerPC-Embedded.html" id="toc-PowerPC-Embedded-1">21.3.8 嵌入式 PowerPC</a></li>
+      <li><a href="AVR.html" id="toc-Atmel-AVR">21.3.9 Atmel AVR</a></li>
+      <li><a href="CRIS.html" id="toc-CRIS-1">21.3.10 CRIS</a></li>
+      <li><a href="Super_002dH.html" id="toc-Renesas-Super_002dH">21.3.11 Renesas Super-H</a></li>
+    </ul></li>
+    <li><a href="Architectures.html" id="toc-Architectures-1">21.4 架构</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="AArch64.html" id="toc-AArch64-1">21.4.1 AArch64</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="AArch64.html#AArch64-Scalable-Vector-Extension" id="toc-AArch64-Scalable-Vector-Extension">21.4.1.1 AArch64 可扩展向量扩展</a></li>
+        <li><a href="AArch64.html#AArch64-Scalable-Matrix-Extension" id="toc-AArch64-Scalable-Matrix-Extension">21.4.1.2 AArch64 可扩展矩阵扩展</a></li>
+        <li><a href="AArch64.html#AArch64-Scalable-Matrix-Extension-2" id="toc-AArch64-Scalable-Matrix-Extension-2">21.4.1.3 AArch64 可扩展矩阵扩展 2</a></li>
+        <li><a href="AArch64.html#AArch64-Pointer-Authentication" id="toc-AArch64-Pointer-Authentication">21.4.1.4 AArch64 指针认证</a></li>
+        <li><a href="AArch64.html#AArch64-Memory-Tagging-Extension" id="toc-AArch64-Memory-Tagging-Extension">21.4.1.5 AArch64 内存标记扩展</a></li>
+        <li><a href="AArch64.html#AArch64-Guarded-Control-Stack" id="toc-AArch64-Guarded-Control-Stack">21.4.1.6 AArch64 受保护控制栈</a></li>
+      </ul></li>
+      <li><a href="x86.html" id="toc-x86-1">21.4.2 x86</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="x86.html#x87-registers" id="toc-x87-registers">21.4.2.1 x87 寄存器</a></li>
+        <li><a href="x86.html#Intel-Control_002dFlow-Enforcement-Technology_002e" id="toc-Intel-Control_002dFlow-Enforcement-Technology_002e">21.4.2.2 英特尔控制流强制技术。</a></li>
+      </ul></li>
+      <li><a href="Alpha.html" id="toc-Alpha-1">21.4.3 Alpha</a></li>
+      <li><a href="MIPS.html" id="toc-MIPS-1">21.4.4 <abbr class="acronym">MIPS</abbr></a></li>
+      <li><a href="HPPA.html" id="toc-HPPA-1">21.4.5 HPPA</a></li>
+      <li><a href="PowerPC.html" id="toc-PowerPC-1">21.4.6 PowerPC</a></li>
+      <li><a href="Sparc64.html" id="toc-Sparc64-1">21.4.7 Sparc64</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Sparc64.html#ADI-Support" id="toc-ADI-Support">21.4.7.1 ADI 支持</a></li>
+      </ul></li>
+      <li><a href="S12Z.html" id="toc-S12Z-1">21.4.8 S12Z</a></li>
+      <li><a href="AMD-GPU.html" id="toc-AMD-GPU-1">21.4.9 <abbr class="acronym">AMD图形处理器</abbr></a>
+      <ul class="toc-numbered-mark">
+        <li><a href="AMD-GPU.html#AMD-GPU-Architectures" id="toc-AMD-GPU-Architectures">21.4.9.1 <abbr class="acronym">AMD图形处理器</abbr> 架构</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime" id="toc-AMD-GPU-Device-Driver-and-AMD-ROCm-Runtime">21.4.9.2 <abbr class="acronym">AMD图形处理器</abbr> 设备驱动程序和 <abbr class="acronym">AMD ROCm</abbr> 运行时</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Wavefronts" id="toc-AMD-GPU-Wavefronts">21.4.9.3 <abbr class="acronym">AMD图形处理器</abbr> 波前</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Code-Objects" id="toc-AMD-GPU-Code-Objects">21.4.9.4 <abbr class="acronym">AMD图形处理器</abbr> 代码对象</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables" id="toc-AMD-GPU-Entity-Target-Identifiers-and-Convenience-Variables">21.4.9.5 <abbr class="acronym">AMD图形处理器</abbr> 实体目标标识符和便利变量</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Signals-1" id="toc-AMD-GPU-Signals-1">21.4.9.6 <abbr class="acronym">AMD图形处理器</abbr> 信号</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Memory-Violation-Reporting" id="toc-AMD-GPU-Memory-Violation-Reporting">21.4.9.7 <abbr class="acronym">AMD图形处理器</abbr> 内存违规报告</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Logging" id="toc-AMD-GPU-Logging">21.4.9.8 <abbr class="acronym">AMD图形处理器</abbr> 日志记录</a></li>
+        <li><a href="AMD-GPU.html#AMD-GPU-Restrictions" id="toc-AMD-GPU-Restrictions">21.4.9.9 <abbr class="acronym">AMD图形处理器</abbr> 限制</a></li>
+      </ul></li>
+      <li><a href="RISC_002dV.html" id="toc-RISC_002dV-1">21.4.10 RISC-V</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Controlling-GDB.html" id="toc-Controlling-gdb">22控制 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Prompt.html" id="toc-Prompt-1">22.1提示符</a></li>
+    <li><a href="Editing.html" id="toc-Command-Editing">22.2命令编辑</a></li>
+    <li><a href="Command-History.html" id="toc-Command-History-1">22.3命令历史记录</a></li>
+    <li><a href="Screen-Size.html" id="toc-Screen-Size-1">22.4屏幕大小</a></li>
+    <li><a href="Output-Styling.html" id="toc-Output-Styling-1">22.5输出样式</a></li>
+    <li><a href="Numbers.html" id="toc-Numbers-1">22.6数字</a></li>
+    <li><a href="ABI.html" id="toc-Configuring-the-Current-ABI">22.7配置当前ABI</a></li>
+    <li><a href="Auto_002dloading.html" id="toc-Automatically-loading-associated-files">22.8自动加载关联文件</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Init-File-in-the-Current-Directory.html" id="toc-Automatically-loading-init-file-in-the-current-directory">22.8.1在当前目录中自动加载初始化文件</a></li>
+      <li><a href="libthread_005fdb_002eso_002e1-file.html" id="toc-Automatically-loading-thread-debugging-library">22.8.2自动加载线程调试库</a></li>
+      <li><a href="Auto_002dloading-safe-path.html" id="toc-Security-restriction-for-auto_002dloading">22.8.3自动加载的安全限制</a></li>
+      <li><a href="Auto_002dloading-verbose-mode.html" id="toc-Displaying-files-tried-for-auto_002dload">22.8.4显示尝试自动加载的文件</a></li>
+    </ul></li>
+    <li><a href="Messages_002fWarnings.html" id="toc-Optional-Warnings-and-Messages">22.9可选警告和消息</a></li>
+    <li><a href="Debugging-Output.html" id="toc-Optional-Messages-about-Internal-Happenings">22.10关于内部事件的可选消息</a></li>
+    <li><a href="Other-Misc-Settings.html" id="toc-Other-Miscellaneous-Settings">22.11其他杂项设置</a></li>
+  </ul></li>
+  <li><a href="Extending-GDB.html" id="toc-Extending-gdb">23扩展 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Sequences.html" id="toc-Canned-Sequences-of-Commands">23.1 命令的罐装序列</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Define.html" id="toc-User_002ddefined-Commands">23.1.1 用户定义的命令</a></li>
+      <li><a href="Hooks.html" id="toc-User_002ddefined-Command-Hooks">23.1.2 用户定义的命令钩子</a></li>
+      <li><a href="Command-Files.html" id="toc-Command-Files-1">23.1.3 命令文件</a></li>
+      <li><a href="Output.html" id="toc-Commands-for-Controlled-Output">23.1.4 用于受控输出的命令</a></li>
+      <li><a href="Auto_002dloading-sequences.html" id="toc-Controlling-auto_002dloading-native-gdb-scripts">23.1.5 控制自动加载原生脚本 <small class="sc">GDB</small> 脚本</a></li>
+    </ul></li>
+    <li><a href="Aliases.html" id="toc-Command-Aliases">23.2 命令别名</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Command-aliases-default-args.html" id="toc-Default-Arguments">23.2.1 默认参数</a></li>
+    </ul></li>
+    <li><a href="Python.html" id="toc-Extending-gdb-using-Python">23.3 使用Python扩展 <small class="sc">GDB</small> 使用Python</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Python-Commands.html" id="toc-Python-Commands-1">23.3.1 Python命令</a></li>
+      <li><a href="Python-API.html" id="toc-Python-API-1">23.3.2 Python API</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Basic-Python.html" id="toc-Basic-Python-1">23.3.2.1 基础Python</a></li>
+        <li><a href="Threading-in-GDB.html" id="toc-Threading-in-GDB-1">23.3.2.2 GDB中的线程</a></li>
+        <li><a href="Exception-Handling.html" id="toc-Exception-Handling-1">23.3.2.3 异常处理</a></li>
+        <li><a href="Values-From-Inferior.html" id="toc-Values-From-Inferior-1">23.3.2.4 来自下级进程的值</a></li>
+        <li><a href="Types-In-Python.html" id="toc-Types-In-Python-1">23.3.2.5 Python中的类型</a></li>
+        <li><a href="Pretty-Printing-API.html" id="toc-Pretty-Printing-API-1">23.3.2.6 漂亮打印API</a></li>
+        <li><a href="Selecting-Pretty_002dPrinters.html" id="toc-Selecting-Pretty_002dPrinters-1">23.3.2.7 选择漂亮打印机</a></li>
+        <li><a href="Writing-a-Pretty_002dPrinter.html" id="toc-Writing-a-Pretty_002dPrinter-1">23.3.2.8 编写一个漂亮打印机</a></li>
+        <li><a href="Type-Printing-API.html" id="toc-Type-Printing-API-1">23.3.2.9 类型打印API</a></li>
+        <li><a href="Frame-Filter-API.html" id="toc-Filtering-Frames">23.3.2.10 过滤帧</a></li>
+        <li><a href="Frame-Decorator-API.html" id="toc-Decorating-Frames">23.3.2.11 装饰帧</a></li>
+        <li><a href="Writing-a-Frame-Filter.html" id="toc-Writing-a-Frame-Filter-1">23.3.2.12 编写一个帧过滤器</a></li>
+        <li><a href="Unwinding-Frames-in-Python.html" id="toc-Unwinding-Frames-in-Python-1">23.3.2.13 在Python中展开帧</a></li>
+        <li><a href="Xmethods-In-Python.html" id="toc-Xmethods-In-Python-1">23.3.2.14 Python中的X方法</a></li>
+        <li><a href="Xmethod-API.html" id="toc-Xmethod-API-1">23.3.2.15 X方法API</a></li>
+        <li><a href="Writing-an-Xmethod.html" id="toc-Writing-an-Xmethod-1">23.3.2.16 编写一个X方法</a></li>
+        <li><a href="Inferiors-In-Python.html" id="toc-Inferiors-In-Python-1">23.3.2.17 Python中的下级进程</a></li>
+        <li><a href="Events-In-Python.html" id="toc-Events-In-Python-1">23.3.2.18 Python中的事件</a></li>
+        <li><a href="Threads-In-Python.html" id="toc-Threads-In-Python-1">23.3.2.19 Python中的线程</a></li>
+        <li><a href="Recordings-In-Python.html" id="toc-Recordings-In-Python-1">23.3.2.20 Python中的记录</a></li>
+        <li><a href="CLI-Commands-In-Python.html" id="toc-CLI-Commands-In-Python-1">23.3.2.21 Python中的CLI命令</a></li>
+        <li><a href="GDB_002fMI-Commands-In-Python.html" id="toc-gdb_002fmi-Commands-In-Python">23.3.2.22 <small class="sc">GDB/MI</small> Python中的命令</a></li>
+        <li><a href="GDB_002fMI-Notifications-In-Python.html" id="toc-gdb_002fmi-Notifications-In-Python">23.3.2.23 <small class="sc">GDB/MI</small> Python中的通知</a></li>
+        <li><a href="Parameters-In-Python.html" id="toc-Parameters-In-Python-1">23.3.2.24 Python中的参数</a></li>
+        <li><a href="Functions-In-Python.html" id="toc-Writing-new-convenience-functions">23.3.2.25 编写新的便利函数</a></li>
+        <li><a href="Progspaces-In-Python.html" id="toc-Program-Spaces-In-Python">23.3.2.26 Python中的程序空间</a></li>
+        <li><a href="Objfiles-In-Python.html" id="toc-Objfiles-In-Python-1">23.3.2.27 Python中的目标文件</a></li>
+        <li><a href="Frames-In-Python.html" id="toc-Accessing-inferior-stack-frames-from-Python">23.3.2.28 从Python访问下级进程的栈帧</a></li>
+        <li><a href="Blocks-In-Python.html" id="toc-Accessing-blocks-from-Python">23.3.2.29 从Python访问块</a></li>
+        <li><a href="Symbols-In-Python.html" id="toc-Python-representation-of-Symbols">23.3.2.30 符号的Python表示</a></li>
+        <li><a href="Symbol-Tables-In-Python.html" id="toc-Symbol-table-representation-in-Python">23.3.2.31 Python中的符号表表示</a></li>
+        <li><a href="Line-Tables-In-Python.html" id="toc-Manipulating-line-tables-using-Python">23.3.2.32 使用Python操作行表</a></li>
+        <li><a href="Breakpoints-In-Python.html" id="toc-Manipulating-breakpoints-using-Python">23.3.2.33 使用Python操作断点</a></li>
+        <li><a href="Finish-Breakpoints-in-Python.html" id="toc-Finish-Breakpoints">23.3.2.34 完成断点</a></li>
+        <li><a href="Lazy-Strings-In-Python.html" id="toc-Python-representation-of-lazy-strings">23.3.2.35 惰性字符串的Python表示</a></li>
+        <li><a href="Colors-In-Python.html" id="toc-Python-representation-of-colors">23.3.2.36 颜色的Python表示</a></li>
+        <li><a href="Architectures-In-Python.html" id="toc-Python-representation-of-architectures">23.3.2.37 架构的Python表示</a></li>
+        <li><a href="Registers-In-Python.html" id="toc-Registers-In-Python-1">23.3.2.38 Python中的寄存器</a></li>
+        <li><a href="Connections-In-Python.html" id="toc-Connections-In-Python-1">23.3.2.39 Python中的连接</a></li>
+        <li><a href="TUI-Windows-In-Python.html" id="toc-Implementing-new-TUI-windows">23.3.2.40 实现新的TUI窗口</a></li>
+        <li><a href="Disassembly-In-Python.html" id="toc-Instruction-Disassembly-In-Python">23.3.2.41 Python中的指令反汇编</a></li>
+        <li><a href="Missing-Debug-Info-In-Python.html" id="toc-Missing-Debug-Info-In-Python-1">23.3.2.42 Python中缺失的调试信息</a></li>
+        <li><a href="Missing-Objfiles-In-Python.html" id="toc-Missing-Objfiles-In-Python-1">23.3.2.43 Python中缺失的目标文件</a></li>
+      </ul></li>
+      <li><a href="Python-Auto_002dloading.html" id="toc-Python-Auto_002dloading-1">23.3.3 Python自动加载</a></li>
+      <li><a href="Python-modules.html" id="toc-Python-modules-1">23.3.4 Python模块</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="gdb_002eprinting.html" id="toc-gdb_002eprinting-1">23.3.4.1 gdb.printing</a></li>
+        <li><a href="gdb_002etypes.html" id="toc-gdb_002etypes-1">23.3.4.2 gdb.types</a></li>
+        <li><a href="gdb_002eprompt.html" id="toc-gdb_002eprompt-1">23.3.4.3 gdb.prompt</a></li>
+        <li><a href="gdb_002eptwrite.html" id="toc-gdb_002eptwrite-1">23.3.4.4 gdb.ptwrite</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a href="Guile.html" id="toc-Extending-gdb-using-Guile">23.4 扩展 <small class="sc">GDB</small> 使用Guile</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Guile-Introduction.html" id="toc-Guile-Introduction-1">23.4.1 Guile介绍</a></li>
+      <li><a href="Guile-Commands.html" id="toc-Guile-Commands-1">23.4.2 Guile命令</a></li>
+      <li><a href="Guile-API.html" id="toc-Guile-API-1">23.4.3 Guile API</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Basic-Guile.html" id="toc-Basic-Guile-1">23.4.3.1 基本Guile</a></li>
+        <li><a href="Guile-Configuration.html" id="toc-Guile-Configuration-1">23.4.3.2 Guile配置</a></li>
+        <li><a href="GDB-Scheme-Data-Types.html" id="toc-GDB-Scheme-Data-Types-1">23.4.3.3 GDB Scheme数据类型</a></li>
+        <li><a href="Guile-Exception-Handling.html" id="toc-Guile-Exception-Handling-1">23.4.3.4 Guile异常处理</a></li>
+        <li><a href="Values-From-Inferior-In-Guile.html" id="toc-Values-From-Inferior-In-Guile-1">23.4.3.5 Guile中来自下级的数值</a></li>
+        <li><a href="Arithmetic-In-Guile.html" id="toc-Arithmetic-In-Guile-1">23.4.3.6 Guile中的算术运算</a></li>
+        <li><a href="Types-In-Guile.html" id="toc-Types-In-Guile-1">23.4.3.7 Guile中的类型</a></li>
+        <li><a href="Guile-Pretty-Printing-API.html" id="toc-Guile-Pretty-Printing-API-1">23.4.3.8 Guile漂亮打印API</a></li>
+        <li><a href="Selecting-Guile-Pretty_002dPrinters.html" id="toc-Selecting-Guile-Pretty_002dPrinters-1">23.4.3.9 选择Guile漂亮打印机</a></li>
+        <li><a href="Writing-a-Guile-Pretty_002dPrinter.html" id="toc-Writing-a-Guile-Pretty_002dPrinter-1">23.4.3.10 编写一个Guile漂亮打印机</a></li>
+        <li><a href="Commands-In-Guile.html" id="toc-Commands-In-Guile-1">23.4.3.11 Guile中的命令</a></li>
+        <li><a href="Parameters-In-Guile.html" id="toc-Parameters-In-Guile-1">23.4.3.12 Guile中的参数</a></li>
+        <li><a href="Progspaces-In-Guile.html" id="toc-Program-Spaces-In-Guile">23.4.3.13 Guile中的程序空间</a></li>
+        <li><a href="Objfiles-In-Guile.html" id="toc-Objfiles-In-Guile-1">23.4.3.14 Guile中的目标文件</a></li>
+        <li><a href="Frames-In-Guile.html" id="toc-Accessing-inferior-stack-frames-from-Guile_002e">23.4.3.15 从Guile访问下级堆栈帧。</a></li>
+        <li><a href="Blocks-In-Guile.html" id="toc-Accessing-blocks-from-Guile_002e">23.4.3.16 从Guile访问块。</a></li>
+        <li><a href="Symbols-In-Guile.html" id="toc-Guile-representation-of-Symbols_002e">23.4.3.17 Guile中符号的表示。</a></li>
+        <li><a href="Symbol-Tables-In-Guile.html" id="toc-Symbol-table-representation-in-Guile_002e">23.4.3.18 Guile中符号表的表示。</a></li>
+        <li><a href="Breakpoints-In-Guile.html" id="toc-Manipulating-breakpoints-using-Guile">23.4.3.19 使用Guile操作断点</a></li>
+        <li><a href="Lazy-Strings-In-Guile.html" id="toc-Guile-representation-of-lazy-strings_002e">23.4.3.20 Guile中惰性字符串的表示。</a></li>
+        <li><a href="Architectures-In-Guile.html" id="toc-Guile-representation-of-architectures">23.4.3.21 Guile中架构的表示</a></li>
+        <li><a href="Disassembly-In-Guile.html" id="toc-Disassembly-In-Guile-1">23.4.3.22 Guile中的反汇编</a></li>
+        <li><a href="I_002fO-Ports-in-Guile.html" id="toc-I_002fO-Ports-in-Guile-1">23.4.3.23 Guile中的I/O端口</a></li>
+        <li><a href="Memory-Ports-in-Guile.html" id="toc-Memory-Ports-in-Guile-1">23.4.3.24 Guile中的内存端口</a></li>
+        <li><a href="Iterators-In-Guile.html" id="toc-Iterators-In-Guile-1">23.4.3.25 Guile中的迭代器</a></li>
+        <li><a href="Colors-In-Guile.html" id="toc-Colors-In-Guile-1">23.4.3.26 Guile中的颜色</a></li>
+      </ul></li>
+      <li><a href="Guile-Auto_002dloading.html" id="toc-Guile-Auto_002dloading-1">23.4.4 Guile自动加载</a></li>
+      <li><a href="Guile-Modules.html" id="toc-Guile-Modules-1">23.4.5 Guile模块</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Guile-Printing-Module.html" id="toc-Guile-Printing-Module-1">23.4.5.1 Guile打印模块</a></li>
+        <li><a href="Guile-Types-Module.html" id="toc-Guile-Types-Module-1">23.4.5.2 Guile类型模块</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a href="Auto_002dloading-extensions.html" id="toc-Auto_002dloading-extensions-1">23.5 自动加载扩展</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="objfile_002dgdbdotext-file.html" id="toc-The-objfile_002dgdb_002eext-file">23.5.1 该 <samp class="file"><var class="var">目标文件</var>-调试信息。<var class="var">扩展</var></samp> 文件</a></li>
+      <li><a href="dotdebug_005fgdb_005fscripts-section.html" id="toc-The-_002edebug_005fgdb_005fscripts-section">23.5.2 该 <code class="code">.debug_gdb_scripts</code> 节</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="dotdebug_005fgdb_005fscripts-section.html#Script-File-Entries" id="toc-Script-File-Entries">23.5.2.1 脚本文件条目</a></li>
+        <li><a href="dotdebug_005fgdb_005fscripts-section.html#Script-Text-Entries" id="toc-Script-Text-Entries">23.5.2.2 脚本正文条目</a></li>
+      </ul></li>
+      <li><a href="Which-flavor-to-choose_003f.html" id="toc-Which-flavor-to-choose_003f-1">23.5.3 选择哪种风格？</a></li>
+    </ul></li>
+    <li><a href="Multiple-Extension-Languages.html" id="toc-Multiple-Extension-Languages-1">23.6 多种扩展语言</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Multiple-Extension-Languages.html#Python-comes-first" id="toc-Python-comes-first">23.6.1 Python 优先</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Interpreters.html" id="toc-Command-Interpreters">24 命令解释器</a></li>
+  <li><a href="TUI.html" id="toc-gdb-Text-User-Interface">25 <small class="sc">GDB</small> 文本用户界面</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="TUI-Overview.html" id="toc-TUI-Overview-1">25.1 TUI 概述</a></li>
+    <li><a href="TUI-Keys.html" id="toc-TUI-Key-Bindings">25.2 TUI 键绑定</a></li>
+    <li><a href="TUI-Single-Key-Mode.html" id="toc-TUI-Single-Key-Mode-1">25.3 TUI 单键模式</a></li>
+    <li><a href="TUI-Mouse-Support.html" id="toc-TUI-Mouse-Support-1">25.4 TUI 鼠标支持</a></li>
+    <li><a href="TUI-Commands.html" id="toc-TUI_002dspecific-Commands">25.5 TUI 特定命令</a></li>
+    <li><a href="TUI-Configuration.html" id="toc-TUI-Configuration-Variables">25.6 TUI 配置变量</a></li>
+  </ul></li>
+  <li><a href="Emacs.html" id="toc-Using-gdb-under-gnu-Emacs">26 使用 <small class="sc">GDB</small> 在……之下 <small class="sc">GNU</small> Emacs</a></li>
+  <li><a href="GDB_002fMI.html" id="toc-The-gdb_002fmi-Interface">27 该 <small class="sc">GDB/MI</small> 接口</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="GDB_002fMI.html#Function-and-Purpose" id="toc-Function-and-Purpose">功能与用途</a></li>
+    <li><a href="GDB_002fMI.html#Notation-and-Terminology" id="toc-Notation-and-Terminology">表示法与术语</a></li>
+    <li><a href="GDB_002fMI-General-Design.html" id="toc-gdb_002fmi-General-Design">27.1 <small class="sc">GDB/MI</small> 总体设计</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Context-management.html" id="toc-Context-management-1">27.1.1 上下文管理</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Context-management.html#Threads-and-Frames" id="toc-Threads-and-Frames">27.1.1.1 线程与帧</a></li>
+        <li><a href="Context-management.html#Language" id="toc-Language">27.1.1.2 语言</a></li>
+      </ul></li>
+      <li><a href="Asynchronous-and-non_002dstop-modes.html" id="toc-Asynchronous-command-execution-and-non_002dstop-mode">27.1.2 异步命令执行与不间断模式</a></li>
+      <li><a href="Thread-groups.html" id="toc-Thread-groups-1">27.1.3 线程组</a></li>
+    </ul></li>
+    <li><a href="GDB_002fMI-Command-Syntax.html" id="toc-gdb_002fmi-Command-Syntax">27.2 <small class="sc">GDB/MI</small> 命令语法</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="GDB_002fMI-Input-Syntax.html" id="toc-gdb_002fmi-Input-Syntax">27.2.1 <small class="sc">GDB/MI</small> 输入语法</a></li>
+      <li><a href="GDB_002fMI-Output-Syntax.html" id="toc-gdb_002fmi-Output-Syntax">27.2.2 <small class="sc">GDB/MI</small> 输出语法</a></li>
+    </ul></li>
+    <li><a href="GDB_002fMI-Compatibility-with-CLI.html" id="toc-gdb_002fmi-Compatibility-with-CLI">27.3 <small class="sc">GDB/MI</small> 与 CLI 的兼容性</a></li>
+    <li><a href="GDB_002fMI-Development-and-Front-Ends.html" id="toc-gdb_002fmi-Development-and-Front-Ends">27.4 <small class="sc">GDB/MI</small> 开发与前端</a></li>
+    <li><a href="GDB_002fMI-Output-Records.html" id="toc-gdb_002fmi-Output-Records">27.5 <small class="sc">GDB/MI</small> 输出记录</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="GDB_002fMI-Result-Records.html" id="toc-gdb_002fmi-Result-Records">27.5.1 <small class="sc">GDB/MI</small> 结果记录</a></li>
+      <li><a href="GDB_002fMI-Stream-Records.html" id="toc-gdb_002fmi-Stream-Records">27.5.2 <small class="sc">GDB/MI</small> 流记录</a></li>
+      <li><a href="GDB_002fMI-Async-Records.html" id="toc-gdb_002fmi-Async-Records">27.5.3 <small class="sc">GDB/MI</small> 异步记录</a></li>
+      <li><a href="GDB_002fMI-Breakpoint-Information.html" id="toc-gdb_002fmi-Breakpoint-Information">27.5.4 <small class="sc">GDB/MI</small> 断点信息</a></li>
+      <li><a href="GDB_002fMI-Frame-Information.html" id="toc-gdb_002fmi-Frame-Information">27.5.5 <small class="sc">GDB/MI</small> 帧信息</a></li>
+      <li><a href="GDB_002fMI-Thread-Information.html" id="toc-gdb_002fmi-Thread-Information">27.5.6 <small class="sc">GDB/MI</small> 线程信息</a></li>
+      <li><a href="GDB_002fMI-Ada-Exception-Information.html" id="toc-gdb_002fmi-Ada-Exception-Information">27.5.7 <small class="sc">GDB/MI</small> Ada异常信息</a></li>
+    </ul></li>
+    <li><a href="GDB_002fMI-Simple-Examples.html" id="toc-Simple-Examples-of-gdb_002fmi-Interaction">27.6简单示例 <small class="sc">GDB/MI</small> 交互</a></li>
+    <li><a href="GDB_002fMI-Command-Description-Format.html" id="toc-gdb_002fmi-Command-Description-Format">27.7 <small class="sc">GDB/MI</small> 命令描述格式</a></li>
+    <li><a href="GDB_002fMI-Breakpoint-Commands.html" id="toc-gdb_002fmi-Breakpoint-Commands">27.8 <small class="sc">GDB/MI</small> 断点命令</a></li>
+    <li><a href="GDB_002fMI-Catchpoint-Commands.html" id="toc-gdb_002fmi-Catchpoint-Commands">27.9 <small class="sc">GDB/MI</small> 捕获点命令</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Shared-Library-GDB_002fMI-Catchpoint-Commands.html" id="toc-Shared-Library-gdb_002fmi-Catchpoints">27.9.1共享库 <small class="sc">GDB/MI</small> 捕获点</a></li>
+      <li><a href="Ada-Exception-GDB_002fMI-Catchpoint-Commands.html" id="toc-Ada-Exception-gdb_002fmi-Catchpoints">27.9.2 Ada异常 <small class="sc">GDB/MI</small> 捕获点</a></li>
+      <li><a href="C_002b_002b-Exception-GDB_002fMI-Catchpoint-Commands.html" id="toc-C_002b_002b-Exception-gdb_002fmi-Catchpoints">27.9.3 C<code class="t">++</code> 异常 <small class="sc">GDB/MI</small> 捕获点</a></li>
+    </ul></li>
+    <li><a href="GDB_002fMI-Program-Context.html" id="toc-gdb_002fmi-Program-Context">27.10 <small class="sc">GDB/MI</small>  程序上下文</a></li>
+    <li><a href="GDB_002fMI-Thread-Commands.html" id="toc-gdb_002fmi-Thread-Commands">27.11 <small class="sc">GDB/MI</small> 线程命令</a></li>
+    <li><a href="GDB_002fMI-Ada-Tasking-Commands.html" id="toc-gdb_002fmi-Ada-Tasking-Commands">27.12 <small class="sc">GDB/MI</small> Ada任务命令</a></li>
+    <li><a href="GDB_002fMI-Program-Execution.html" id="toc-gdb_002fmi-Program-Execution">27.13 <small class="sc">GDB/MI</small> 程序执行</a></li>
+    <li><a href="GDB_002fMI-Stack-Manipulation.html" id="toc-gdb_002fmi-Stack-Manipulation-Commands">27.14 <small class="sc">GDB/MI</small> 堆栈操作命令</a></li>
+    <li><a href="GDB_002fMI-Variable-Objects.html" id="toc-gdb_002fmi-Variable-Objects">27.15 <small class="sc">GDB/MI</small> 变量对象</a></li>
+    <li><a href="GDB_002fMI-Data-Manipulation.html" id="toc-gdb_002fmi-Data-Manipulation">27.16 <small class="sc">GDB/MI</small> 数据操作</a></li>
+    <li><a href="GDB_002fMI-Tracepoint-Commands.html" id="toc-gdb_002fmi-Tracepoint-Commands">27.17 <small class="sc">GDB/MI</small> 跟踪点命令</a></li>
+    <li><a href="GDB_002fMI-Symbol-Query.html" id="toc-gdb_002fmi-Symbol-Query-Commands">27.18 <small class="sc">GDB/MI</small> 符号查询命令</a></li>
+    <li><a href="GDB_002fMI-File-Commands.html" id="toc-gdb_002fmi-File-Commands">27.19 <small class="sc">GDB/MI</small> 文件命令</a></li>
+    <li><a href="GDB_002fMI-Target-Manipulation.html" id="toc-gdb_002fmi-Target-Manipulation-Commands">27.20 <small class="sc">GDB/MI</small> 目标操作命令</a></li>
+    <li><a href="GDB_002fMI-File-Transfer-Commands.html" id="toc-gdb_002fmi-File-Transfer-Commands">27.21 <small class="sc">GDB/MI</small> 文件传输命令</a></li>
+    <li><a href="GDB_002fMI-Ada-Exceptions-Commands.html" id="toc-Ada-Exceptions-gdb_002fmi-Commands">27.22 Ada异常 <small class="sc">GDB/MI</small> 命令</a></li>
+    <li><a href="GDB_002fMI-Support-Commands.html" id="toc-gdb_002fmi-Support-Commands">27.23 <small class="sc">GDB/MI</small> 支持命令</a></li>
+    <li><a href="GDB_002fMI-Miscellaneous-Commands.html" id="toc-Miscellaneous-gdb_002fmi-Commands">27.24杂项 <small class="sc">GDB/MI</small> 命令</a></li>
+  </ul></li>
+  <li><a href="Annotations.html" id="toc-gdb-Annotations">28 <small class="sc">GDB</small> 注释</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Annotations-Overview.html" id="toc-What-is-an-Annotation_003f">28.1什么是注释？</a></li>
+    <li><a href="Server-Prefix.html" id="toc-The-Server-Prefix">28.2服务器前缀</a></li>
+    <li><a href="Prompting.html" id="toc-Annotation-for-gdb-Input">28.3用于……的注释 <small class="sc">GDB</small> 输入</a></li>
+    <li><a href="Errors.html" id="toc-Errors-1">28.4错误</a></li>
+    <li><a href="Invalidation.html" id="toc-Invalidation-Notices">28.5无效通知</a></li>
+    <li><a href="Annotations-for-Running.html" id="toc-Running-the-Program">28.6运行程序</a></li>
+    <li><a href="Source-Annotations.html" id="toc-Displaying-Source">28.7显示源代码</a></li>
+  </ul></li>
+  <li><a href="Debugger-Adapter-Protocol.html" id="toc-Debugger-Adapter-Protocol-1">29调试器适配器协议</a></li>
+  <li><a href="JIT-Interface.html" id="toc-JIT-Compilation-Interface">30即时编译接口</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Declarations.html" id="toc-JIT-Declarations">30.1即时声明</a></li>
+    <li><a href="Registering-Code.html" id="toc-Registering-Code-1">30.2注册代码</a></li>
+    <li><a href="Unregistering-Code.html" id="toc-Unregistering-Code-1">30.3注销代码</a></li>
+    <li><a href="Custom-Debug-Info.html" id="toc-Custom-Debug-Info-1">30.4自定义调试信息</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Using-JIT-Debug-Info-Readers.html" id="toc-Using-JIT-Debug-Info-Readers-1">30.4.1使用即时调试信息读取器</a></li>
+      <li><a href="Writing-JIT-Debug-Info-Readers.html" id="toc-Writing-JIT-Debug-Info-Readers-1">30.4.2编写即时调试信息读取器</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="In_002dProcess-Agent.html" id="toc-In_002dProcess-Agent-1">31进程内代理</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="In_002dProcess-Agent-Protocol.html" id="toc-In_002dProcess-Agent-Protocol-1">31.1进程内代理协议</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="IPA-Protocol-Objects.html" id="toc-IPA-Protocol-Objects-1">31.1.1 IPA协议对象</a></li>
+      <li><a href="IPA-Protocol-Commands.html" id="toc-IPA-Protocol-Commands-1">31.1.2 IPA协议命令</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="GDB-Bugs.html" id="toc-Reporting-Bugs-in-gdb">32在……中报告错误 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Bug-Criteria.html" id="toc-Have-You-Found-a-Bug_003f">32.1你发现错误了吗？</a></li>
+    <li><a href="Bug-Reporting.html" id="toc-How-to-Report-Bugs">32.2如何报告错误</a></li>
+  </ul></li>
+  <li><a href="Command-Line-Editing.html" id="toc-Command-Line-Editing-1">33命令行编辑</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Introduction-and-Notation.html" id="toc-Introduction-to-Line-Editing">33.1行编辑简介</a></li>
+    <li><a href="Readline-Interaction.html" id="toc-Readline-Interaction-1">33.2 Readline交互</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Readline-Bare-Essentials.html" id="toc-Readline-Bare-Essentials-1">33.2.1 Readline基础要点</a></li>
+      <li><a href="Readline-Movement-Commands.html" id="toc-Readline-Movement-Commands-1">33.2.2 Readline移动命令</a></li>
+      <li><a href="Readline-Killing-Commands.html" id="toc-Readline-Killing-Commands-1">33.2.3 Readline删除命令</a></li>
+      <li><a href="Readline-Arguments.html" id="toc-Readline-Arguments-1">33.2.4 Readline参数</a></li>
+      <li><a href="Searching.html" id="toc-Searching-for-Commands-in-the-History">33.2.5在历史记录中搜索命令</a></li>
+    </ul></li>
+    <li><a href="Readline-Init-File.html" id="toc-Readline-Init-File-1">33.3 Readline初始化文件</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Readline-Init-File-Syntax.html" id="toc-Readline-Init-File-Syntax-1">33.3.1 Readline初始化文件语法</a></li>
+      <li><a href="Conditional-Init-Constructs.html" id="toc-Conditional-Init-Constructs-1">33.3.2条件初始化结构</a></li>
+      <li><a href="Sample-Init-File.html" id="toc-Sample-Init-File-1">33.3.3示例初始化文件</a></li>
+    </ul></li>
+    <li><a href="Bindable-Readline-Commands.html" id="toc-Bindable-Readline-Commands-1">33.4可绑定的Readline命令</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Commands-For-Moving.html" id="toc-Commands-For-Moving-1">33.4.1移动命令</a></li>
+      <li><a href="Commands-For-History.html" id="toc-Commands-For-Manipulating-The-History">33.4.2操作历史记录的命令</a></li>
+      <li><a href="Commands-For-Text.html" id="toc-Commands-For-Changing-Text">33.4.3更改文本的命令</a></li>
+      <li><a href="Commands-For-Killing.html" id="toc-Killing-And-Yanking">33.4.4删除和粘贴</a></li>
+      <li><a href="Numeric-Arguments.html" id="toc-Specifying-Numeric-Arguments">33.4.5指定数字参数</a></li>
+      <li><a href="Commands-For-Completion.html" id="toc-Letting-Readline-Type-For-You">33.4.6让Readline为你输入</a></li>
+      <li><a href="Keyboard-Macros.html" id="toc-Keyboard-Macros-1">33.4.7 键盘宏</a></li>
+      <li><a href="Miscellaneous-Commands.html" id="toc-Some-Miscellaneous-Commands">33.4.8 一些杂项命令</a></li>
+    </ul></li>
+    <li><a href="Readline-vi-Mode.html" id="toc-Readline-vi-Mode-1">33.5 Readline的vi模式</a></li>
+  </ul></li>
+  <li><a href="Using-History-Interactively.html" id="toc-Using-History-Interactively-1">34 交互式使用历史记录</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="History-Interaction.html" id="toc-History-Expansion">34.1 历史记录扩展</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Event-Designators.html" id="toc-Event-Designators-1">34.1.1 事件指示符</a></li>
+      <li><a href="Word-Designators.html" id="toc-Word-Designators-1">34.1.2 单词指示符</a></li>
+      <li><a href="Modifiers.html" id="toc-Modifiers-1">34.1.3 修改器</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="In-Memoriam.html" id="toc-In-Memoriam-1">附录A 纪念</a></li>
+  <li><a href="Formatting-Documentation.html" id="toc-Formatting-Documentation-1">附录B 格式化文档</a></li>
+  <li><a href="Installing-GDB.html" id="toc-Installing-gdb">附录C 安装 <small class="sc">GDB</small></a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Requirements.html" id="toc-Requirements-for-Building-gdb">C.1 构建要求 <small class="sc">GDB</small></a></li>
+    <li><a href="Running-Configure.html" id="toc-Invoking-the-gdb-configure-Script">C.2 调用 <small class="sc">GDB</small> <samp class="file">配置</samp> 脚本</a></li>
+    <li><a href="Separate-Objdir.html" id="toc-Compiling-gdb-in-Another-Directory">C.3 编译 <small class="sc">GDB</small> 在另一个目录中</a></li>
+    <li><a href="Config-Names.html" id="toc-Specifying-Names-for-Hosts-and-Targets">C.4 指定主机和目标的名称</a></li>
+    <li><a href="Configure-Options.html" id="toc-configure-Options">C.5 <samp class="file">配置</samp> 选项</a></li>
+    <li><a href="System_002dwide-configuration.html" id="toc-System_002dwide-configuration-and-settings">C.6 系统范围的配置和设置</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="System_002dwide-Configuration-Scripts.html" id="toc-Installed-System_002dwide-Configuration-Scripts">C.6.1 系统范围安装的配置脚本</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Maintenance-Commands.html" id="toc-Maintenance-Commands-1">附录D 维护命令</a></li>
+  <li><a href="Remote-Protocol.html" id="toc-gdb-Remote-Serial-Protocol">附录E <small class="sc">GDB</small> 远程串行协议</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Overview.html" id="toc-Overview-1">E.1 概述</a></li>
+    <li><a href="Standard-Replies.html" id="toc-Standard-Replies-1">E.2 标准回复</a></li>
+    <li><a href="Packets.html" id="toc-Packets-1">E.3 数据包</a></li>
+    <li><a href="Stop-Reply-Packets.html" id="toc-Stop-Reply-Packets-1">E.4 停止回复数据包</a></li>
+    <li><a href="General-Query-Packets.html" id="toc-General-Query-Packets-1">E.5 通用查询数据包</a></li>
+    <li><a href="Architecture_002dSpecific-Protocol-Details.html" id="toc-Architecture_002dSpecific-Protocol-Details-1">E.6 特定于体系结构的协议细节</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="ARM_002dSpecific-Protocol-Details.html" id="toc-ARM_002dspecific-Protocol-Details">E.6.1 <abbr class="acronym">ARM</abbr>特定的协议细节</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="ARM-Breakpoint-Kinds.html" id="toc-ARM-Breakpoint-Kinds-1">E.6.1.1 <abbr class="acronym">ARM</abbr> 断点类型</a></li>
+        <li><a href="ARM-Memory-Tag-Types.html" id="toc-ARM-Memory-Tag-Types-1">E.6.1.2 <abbr class="acronym">ARM</abbr> 内存标签类型</a></li>
+      </ul></li>
+      <li><a href="MIPS_002dSpecific-Protocol-Details.html" id="toc-MIPS_002dspecific-Protocol-Details">E.6.2 <abbr class="acronym">MIPS</abbr>特定的协议细节</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="MIPS-Register-packet-Format.html" id="toc-MIPS-Register-Packet-Format">E.6.2.1 <abbr class="acronym">MIPS</abbr> 寄存器数据包格式</a></li>
+        <li><a href="MIPS-Breakpoint-Kinds.html" id="toc-MIPS-Breakpoint-Kinds-1">E.6.2.2 <abbr class="acronym">MIPS</abbr> 断点类型</a></li>
+      </ul></li>
+    </ul></li>
+    <li><a href="Tracepoint-Packets.html" id="toc-Tracepoint-Packets-1">E.7 跟踪点数据包</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Tracepoint-Packets.html#Relocate-instruction-reply-packet" id="toc-Relocate-instruction-reply-packet">E.7.1 重定位指令回复数据包</a></li>
+    </ul></li>
+    <li><a href="Host-I_002fO-Packets.html" id="toc-Host-I_002fO-Packets-1">E.8 主机I/O数据包</a></li>
+    <li><a href="Interrupts.html" id="toc-Interrupts-1">E.9 中断</a></li>
+    <li><a href="Notification-Packets.html" id="toc-Notification-Packets-1">E.10 通知数据包</a></li>
+    <li><a href="Remote-Non_002dStop.html" id="toc-Remote-Protocol-Support-for-Non_002dStop-Mode">E.11 对不间断模式的远程协议支持</a></li>
+    <li><a href="Packet-Acknowledgment.html" id="toc-Packet-Acknowledgment-1">E.12 数据包确认</a></li>
+    <li><a href="Examples.html" id="toc-Examples-1">E.13 示例</a></li>
+    <li><a href="File_002dI_002fO-Remote-Protocol-Extension.html" id="toc-File_002dI_002fO-Remote-Protocol-Extension-1">E.14 文件I/O远程协议扩展</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="File_002dI_002fO-Overview.html" id="toc-File_002dI_002fO-Overview-1">E.14.1 文件I/O概述</a></li>
+      <li><a href="Protocol-Basics.html" id="toc-Protocol-Basics-1">E.14.2 协议基础</a></li>
+      <li><a href="The-F-Request-Packet.html" id="toc-The-F-Request-Packet-1">E.14.3 这个 <code class="code">F</code> 请求数据包</a></li>
+      <li><a href="The-F-Reply-Packet.html" id="toc-The-F-Reply-Packet-1">E.14.4 这个 <code class="code">F</code> 回复数据包</a></li>
+      <li><a href="The-Ctrl_002dC-Message.html" id="toc-The-Ctrl_002dC-Message-1">E.14.5 ‘<samp class="samp">Ctrl-C</samp>’ 消息</a></li>
+      <li><a href="Console-I_002fO.html" id="toc-Console-I_002fO-1">E.14.6 控制台I/O</a></li>
+      <li><a href="List-of-Supported-Calls.html" id="toc-List-of-Supported-Calls-1">E.14.7 支持的调用列表</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="open.html" id="toc-open-1">打开</a></li>
+        <li><a href="close.html" id="toc-close-1">关闭</a></li>
+        <li><a href="read.html" id="toc-read-1">读取</a></li>
+        <li><a href="write.html" id="toc-write-1">写入</a></li>
+        <li><a href="lseek.html" id="toc-lseek-1">lseek</a></li>
+        <li><a href="rename.html" id="toc-rename-1">重命名</a></li>
+        <li><a href="unlink.html" id="toc-unlink-1">删除</a></li>
+        <li><a href="stat_002ffstat.html" id="toc-stat_002ffstat-1">stat/fstat</a></li>
+        <li><a href="gettimeofday.html" id="toc-gettimeofday-1">获取时间</a></li>
+        <li><a href="isatty.html" id="toc-isatty-1">是否为终端设备</a></li>
+        <li><a href="system.html" id="toc-system-1">系统</a></li>
+      </ul></li>
+      <li><a href="Protocol_002dspecific-Representation-of-Datatypes.html" id="toc-Protocol_002dspecific-Representation-of-Datatypes-1">E.14.8 数据类型的协议特定表示</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Integral-Datatypes.html" id="toc-Integral-Datatypes-1">整数数据类型</a></li>
+        <li><a href="Pointer-Values.html" id="toc-Pointer-Values-1">指针值</a></li>
+        <li><a href="Memory-Transfer.html" id="toc-Memory-Transfer-1">内存传输</a></li>
+        <li><a href="struct-stat.html" id="toc-struct-stat-1">struct stat</a></li>
+        <li><a href="struct-timeval.html" id="toc-struct-timeval-1">struct timeval</a></li>
+      </ul></li>
+      <li><a href="Constants.html" id="toc-Constants-2">E.14.9 常量</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="Open-Flags.html" id="toc-Open-Flags-1">打开标志</a></li>
+        <li><a href="mode_005ft-Values.html" id="toc-mode_005ft-Values-1">mode_t值</a></li>
+        <li><a href="Errno-Values.html" id="toc-Errno-Values-1">错误号值</a></li>
+        <li><a href="Lseek-Flags.html" id="toc-Lseek-Flags-1">lseek标志</a></li>
+        <li><a href="Limits.html" id="toc-Limits-1">限制</a></li>
+      </ul></li>
+      <li><a href="File_002dI_002fO-Examples.html" id="toc-File_002dI_002fO-Examples-1">E.14.10 文件I/O示例</a></li>
+    </ul></li>
+    <li><a href="Library-List-Format.html" id="toc-Library-List-Format-1">E.15 库列表格式</a></li>
+    <li><a href="Library-List-Format-for-SVR4-Targets.html" id="toc-Library-List-Format-for-SVR4-Targets-1">E.16 SVR4目标的库列表格式</a></li>
+    <li><a href="Memory-Map-Format.html" id="toc-Memory-Map-Format-1">E.17 内存映射格式</a></li>
+    <li><a href="Thread-List-Format.html" id="toc-Thread-List-Format-1">E.18 线程列表格式</a></li>
+    <li><a href="Traceframe-Info-Format.html" id="toc-Traceframe-Info-Format-1">E.19 跟踪帧信息格式</a></li>
+    <li><a href="Branch-Trace-Format.html" id="toc-Branch-Trace-Format-1">E.20 分支跟踪格式</a></li>
+    <li><a href="Branch-Trace-Configuration-Format.html" id="toc-Branch-Trace-Configuration-Format-1">E.21分支跟踪配置格式</a></li>
+  </ul></li>
+  <li><a href="Agent-Expressions.html" id="toc-The-GDB-Agent-Expression-Mechanism">附录F GDB代理表达式机制</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="General-Bytecode-Design.html" id="toc-General-Bytecode-Design-1">F.1通用字节码设计</a></li>
+    <li><a href="Bytecode-Descriptions.html" id="toc-Bytecode-Descriptions-1">F.2字节码描述</a></li>
+    <li><a href="Using-Agent-Expressions.html" id="toc-Using-Agent-Expressions-1">F.3使用代理表达式</a></li>
+    <li><a href="Varying-Target-Capabilities.html" id="toc-Varying-Target-Capabilities-1">F.4不同的目标能力</a></li>
+    <li><a href="Rationale.html" id="toc-Rationale-1">F.5基本原理</a></li>
+  </ul></li>
+  <li><a href="Target-Descriptions.html" id="toc-Target-Descriptions-1">附录G目标描述</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Retrieving-Descriptions.html" id="toc-Retrieving-Descriptions-1">G.1获取描述</a></li>
+    <li><a href="Target-Description-Format.html" id="toc-Target-Description-Format-1">G.2目标描述格式</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="Target-Description-Format.html#Inclusion" id="toc-Inclusion">G.2.1包含</a></li>
+      <li><a href="Target-Description-Format.html#Architecture" id="toc-Architecture">G.2.2架构</a></li>
+      <li><a href="Target-Description-Format.html#OS-ABI" id="toc-OS-ABI">G.2.3操作系统应用二进制接口</a></li>
+      <li><a href="Target-Description-Format.html#Compatible-Architecture" id="toc-Compatible-Architecture">G.2.4兼容架构</a></li>
+      <li><a href="Target-Description-Format.html#Features" id="toc-Features">G.2.5特性</a></li>
+      <li><a href="Target-Description-Format.html#Types" id="toc-Types">G.2.6类型</a></li>
+      <li><a href="Target-Description-Format.html#Registers-2" id="toc-Registers-2">G.2.7寄存器</a></li>
+    </ul></li>
+    <li><a href="Predefined-Target-Types.html" id="toc-Predefined-Target-Types-1">G.3预定义目标类型</a></li>
+    <li><a href="Enum-Target-Types.html" id="toc-Enum-Target-Types-1">G.4枚举目标类型</a></li>
+    <li><a href="Standard-Target-Features.html" id="toc-Standard-Target-Features-1">G.5标准目标特性</a>
+    <ul class="toc-numbered-mark">
+      <li><a href="AArch64-Features.html" id="toc-AArch64-Features-1">G.5.1 AArch64特性</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="AArch64-Features.html#AArch64-core-registers-feature" id="toc-AArch64-core-registers-feature">G.5.1.1 AArch64核心寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-floating_002dpoint-registers-feature" id="toc-AArch64-floating_002dpoint-registers-feature">G.5.1.2 AArch64浮点寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-SVE-registers-feature" id="toc-AArch64-SVE-registers-feature">G.5.1.3 AArch64 SVE寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-Pointer-Authentication-registers-feature" id="toc-AArch64-Pointer-Authentication-registers-feature">G.5.1.4 AArch64指针认证寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-TLS-registers-feature" id="toc-AArch64-TLS-registers-feature">G.5.1.5 AArch64 TLS寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-MTE-registers-feature" id="toc-AArch64-MTE-registers-feature">G.5.1.6 AArch64 MTE寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-SME-registers-feature" id="toc-AArch64-SME-registers-feature">G.5.1.7 AArch64 SME寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-SME2-registers-feature" id="toc-AArch64-SME2-registers-feature">G.5.1.8 AArch64 SME2寄存器特性</a></li>
+        <li><a href="AArch64-Features.html#AArch64-GCS-registers-feature" id="toc-AArch64-GCS-registers-feature">G.5.1.9 AArch64 GCS寄存器特性</a></li>
+      </ul></li>
+      <li><a href="Alpha-Features.html" id="toc-Alpha-Features-1">G.5.2 Alpha特性</a></li>
+      <li><a href="ARC-Features.html" id="toc-ARC-Features-1">G.5.3 ARC特性</a></li>
+      <li><a href="ARM-Features.html" id="toc-ARM-Features-1">G.5.4 ARM特性</a>
+      <ul class="toc-numbered-mark">
+        <li><a href="ARM-Features.html#Core-register-set-for-non_002dM_002dprofile" id="toc-Core-register-set-for-non_002dM_002dprofile">G.5.4.1非M架构的核心寄存器集</a></li>
+        <li><a href="ARM-Features.html#Core-register-set-for-M_002dprofile" id="toc-Core-register-set-for-M_002dprofile">G.5.4.2 M架构的核心寄存器集</a></li>
+        <li><a href="ARM-Features.html#FPA-registers-feature-_0028obsolete_0029" id="toc-FPA-registers-feature-_0028obsolete_0029">G.5.4.3 FPA寄存器特性（已过时）</a></li>
+        <li><a href="ARM-Features.html#M_002dprofile-Vector-Extension-_0028MVE_0029" id="toc-M_002dprofile-Vector-Extension-_0028MVE_0029">G.5.4.4 M架构向量扩展（MVE）</a></li>
+        <li><a href="ARM-Features.html#XScale-iwMMXt-feature" id="toc-XScale-iwMMXt-feature">G.5.4.5 XScale iwMMXt特性</a></li>
+        <li><a href="ARM-Features.html#Vector-Floating_002dPoint-_0028VFP_0029-feature" id="toc-Vector-Floating_002dPoint-_0028VFP_0029-feature">G.5.4.6向量浮点（VFP）特性</a></li>
+        <li><a href="ARM-Features.html#NEON-architecture-feature" id="toc-NEON-architecture-feature">G.5.4.7 NEON架构特性</a></li>
+        <li><a href="ARM-Features.html#M_002dprofile-Pointer-Authentication-and-Branch-Target-Identification-feature" id="toc-M_002dprofile-Pointer-Authentication-and-Branch-Target-Identification-feature">G.5.4.8 M架构指针认证和分支目标识别特性</a></li>
+        <li><a href="ARM-Features.html#M_002dprofile-system-registers-feature" id="toc-M_002dprofile-system-registers-feature">G.5.4.9 M架构系统寄存器特性</a></li>
+        <li><a href="ARM-Features.html#M_002dprofile-Security-Extensions-feature" id="toc-M_002dprofile-Security-Extensions-feature">G.5.4.10 M架构安全扩展特性</a></li>
+        <li><a href="ARM-Features.html#TLS-registers-feature" id="toc-TLS-registers-feature">G.5.4.11 TLS寄存器特性</a></li>
+      </ul></li>
+      <li><a href="i386-Features.html" id="toc-i386-Features-1">G.5.5 i386特性</a></li>
+      <li><a href="LoongArch-Features.html" id="toc-LoongArch-Features-1">G.5.6龙架构特性</a></li>
+      <li><a href="MicroBlaze-Features.html" id="toc-MicroBlaze-Features-1">G.5.7微处理器特性</a></li>
+      <li><a href="MIPS-Features.html" id="toc-MIPS-Features-1">G.5.8 <abbr class="acronym">MIPS</abbr> 特性</a></li>
+      <li><a href="M68K-Features.html" id="toc-M68K-Features-1">G.5.9 M68K特性</a></li>
+      <li><a href="NDS32-Features.html" id="toc-NDS32-Features-1">G.5.10 NDS32特性</a></li>
+      <li><a href="OpenRISC-1000-Features.html" id="toc-Openrisc-1000-Features">G.5.11 Openrisc 1000特性</a></li>
+      <li><a href="PowerPC-Features.html" id="toc-PowerPC-Features-1">G.5.13 PowerPC特性</a></li>
+      <li><a href="RISC_002dV-Features.html" id="toc-RISC_002dV-Features-1">G.5.14 RISC-V特性</a></li>
+      <li><a href="RX-Features.html" id="toc-RX-Features-1">G.5.15 RX特性</a></li>
+      <li><a href="S_002f390-and-System-z-Features.html" id="toc-S_002f390-and-System-z-Features-1">G.5.16 S/390和System z特性</a></li>
+      <li><a href="Sparc-Features.html" id="toc-Sparc-Features-1">G.5.17 Sparc特性</a></li>
+      <li><a href="TIC6x-Features.html" id="toc-TMS320C6x-Features">G.5.18 TMS320C6x特性</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="Operating-System-Information.html" id="toc-Operating-System-Information-1">附录H操作系统信息</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Process-list.html" id="toc-Process-list-1">H.1进程列表</a></li>
+  </ul></li>
+  <li><a href="Trace-File-Format.html" id="toc-Trace-File-Format-1">附录I跟踪文件格式</a></li>
+  <li><a href="Index-Section-Format.html" id="toc-_002egdb_005findex-section-format">附录J <code class="code">.gdb_index</code> 节格式</a></li>
+  <li><a href="Debuginfod.html" id="toc-Download-debugging-resources-with-Debuginfod">附录K使用Debuginfod下载调试资源</a>
+  <ul class="toc-numbered-mark">
+    <li><a href="Debuginfod-Settings.html" id="toc-Debuginfod-Settings-1">K.1 Debuginfod设置</a></li>
+  </ul></li>
+  <li><a href="Man-Pages.html" id="toc-Manual-pages">附录L手册页</a></li>
+  <li><a href="Copying.html" id="toc-GNU-GENERAL-PUBLIC-LICENSE">附录M GNU通用公共许可证</a></li>
+  <li><a href="GNU-Free-Documentation-License.html" id="toc-GNU-Free-Documentation-License-1">附录N GNU自由文档许可证</a></li>
+  <li><a href="Concept-Index.html" id="toc-Concept-Index-1" rel="index">概念索引</a></li>
+  <li><a href="Command-and-Variable-Index.html" id="toc-Command_002c-Variable_002c-and-Function-Index" rel="index">命令、变量和函数索引</a></li>
+</ul>
+</div>
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一个: <a accesskey="n" href="Summary.html" rel="next">……的总结 <small class="sc">GDB</small></a>   [<a href="#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

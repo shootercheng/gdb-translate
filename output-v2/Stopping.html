@@ -1,0 +1,74 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>停止（使用GDB调试）</title>
+
+<meta name="description" content="Stopping (Debugging with GDB)"/>
+<meta name="keywords" content="Stopping (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Reverse-Execution.html" rel="next" title="Reverse Execution"/>
+<link href="Running.html" rel="prev" title="Running"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Stopping">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Reverse-Execution.html" rel="next">反向运行程序</a>, 上一步： <a accesskey="p" href="Running.html" rel="prev">在……下运行程序 <small class="sc">GDB</small></a>, 上级： <a accesskey="u" href="index.html" rel="up">使用……调试 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Stopping-and-Continuing"><span>5 停止和继续<a class="copiable-link" href="#Stopping-and-Continuing"> ¶</a></span></h2>
+
+<p>使用调试器的主要目的是，你可以在程序终止之前停止它；或者，如果你的程序遇到问题，你可以进行调查并找出原因。
+</p>
+<p>在内部 <small class="sc">GDB</small>, 你的程序可能由于多种原因而停止，例如信号、断点，或者在执行
+<small class="sc">GDB</small> 等命令后到达新的一行。 然后你可以检查和修改变量，设置新的断点或移除旧的断点，然后继续执行。 通常， <code class="code">step</code>显示的消息会充分解释你的程序的状态 —— 但你也可以随时明确请求此信息。 <small class="sc">GDB</small> 
+</p>
+<dl class="table">
+<dt><a id="index-info-program"></a><span><code class="code">info program</code><a class="copiable-link" href="#index-info-program"> ¶</a></span></dt>
+<dd><p>显示有关程序状态的信息：它是否正在运行，它是什么进程，以及它停止的原因。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Breakpoints.html">断点、观察点和捕获点</a></li>
+<li><a accesskey="2" href="Continuing-and-Stepping.html">继续和单步执行</a></li>
+<li><a accesskey="3" href="Skipping-Over-Functions-and-Files.html">跳过函数和文件</a></li>
+<li><a accesskey="4" href="Signals.html">信号</a></li>
+<li><a accesskey="5" href="Thread-Stops.html">停止和启动多线程程序</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

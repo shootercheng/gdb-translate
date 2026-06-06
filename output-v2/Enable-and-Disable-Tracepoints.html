@@ -1,0 +1,71 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>启用和禁用跟踪点（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Enable and Disable Tracepoints (Debugging with GDB)"/>
+<meta name="keywords" content="Enable and Disable Tracepoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Tracepoint-Passcounts.html" rel="next" title="Tracepoint Passcounts"/>
+<link href="Create-and-Delete-Tracepoints.html" rel="prev" title="Create and Delete Tracepoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Enable-and-Disable-Tracepoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Tracepoint-Passcounts.html" rel="next">跟踪点通过计数</a>, 上一项： <a accesskey="p" href="Create-and-Delete-Tracepoints.html" rel="prev">创建和删除跟踪点</a>, 上级： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Enable-and-Disable-Tracepoints-1"><span>13.1.2 启用和禁用跟踪点<a class="copiable-link" href="#Enable-and-Disable-Tracepoints-1"> ¶</a></span></h4>
+
+<p>这些命令已被弃用；它们等同于普通的 <code class="code">disable</code> 和 <code class="code">enable</code>.
+</p>
+<dl class="table">
+<dt><a id="index-disable-tracepoint"></a><span><code class="code">disable tracepoint <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-disable-tracepoint"> ¶</a></span></dt>
+<dd><p>禁用跟踪点 <var class="var">编号</var>, 如果没有给出参数，则禁用所有跟踪点。 禁用的跟踪点在跟踪实验期间将不起作用，但不会被遗忘。 您可以使用
+<var class="var">编号</var> 命令重新启用禁用的跟踪点。
+如果在跟踪实验期间发出此命令，并且调试目标支持在跟踪实验期间禁用跟踪点，那么更改将立即生效。 否则，它将应用于下一次跟踪实验。 <code class="code">enable tracepoint</code> 命令。
+如果在跟踪实验期间发出此命令，并且调试目标支持在跟踪实验期间禁用跟踪点，那么更改将立即生效。 否则，它将应用于下一次跟踪实验。
+</p>
+</dd>
+<dt><a id="index-enable-tracepoint"></a><span><code class="code">enable tracepoint <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-enable-tracepoint"> ¶</a></span></dt>
+<dd><p>启用跟踪点 <var class="var">编号</var>, 或所有跟踪点。 如果在跟踪实验期间发出此命令，并且调试目标支持在跟踪实验期间启用跟踪点，那么启用的跟踪点将立即生效。 否则，它们将在下次运行跟踪实验时生效。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

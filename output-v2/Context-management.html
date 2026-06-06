@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>上下文管理（使用GDB进行调试）</title>
+
+<meta name="description" content="Context management (Debugging with GDB)"/>
+<meta name="keywords" content="Context management (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-General-Design.html" rel="up" title="GDB/MI General Design"/>
+<link href="Asynchronous-and-non_002dstop-modes.html" rel="next" title="Asynchronous and non-stop modes"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Context-management">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Asynchronous-and-non_002dstop-modes.html" rel="next">异步命令执行和非停止模式</a>, 上一项： <a accesskey="u" href="GDB_002fMI-General-Design.html" rel="up"><small class="sc">GDB/MI</small> </a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Context-management-1"><span>27.1.1 上下文管理<a class="copiable-link" href="#Context-management-1"> ¶</a></span></h4>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Threads-and-Frames">线程和帧</a></li>
+<li><a accesskey="2" href="#Language">语言</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Threads-and-Frames">
+<h4 class="subsubsection"><span>27.1.1.1 线程和帧<a class="copiable-link" href="#Threads-and-Frames"> ¶</a></span></h4>
+
+<p>在大多数情况下，当 <small class="sc">GDB</small> 访问目标时，这种访问是在特定线程和帧的上下文中完成的（请参阅 <a class="pxref" href="Frames.html">栈帧</a>）。
+通常，即使在访问全局数据时，目标也要求指定一个线程。CLI接口会维护所选的线程和帧，并在每个命令中将它们提供给目标。这很方便，因为命令行用户不想在每个命令中显式指定该信息，而且因为用户通过单个终端与
+<small class="sc">GDB</small> 进行交互，所以不会对当前的线程和帧产生混淆。
+</p>
+<p>在MI的情况下，所选线程和帧的概念用处较小。首先，前端可以轻松地自己记住这些信息。其次，图形前端可以有多个窗口，每个窗口用于调试不同的线程，并且前端可能出于内部目的想要访问其他线程。这增加了依赖隐式选择的线程时，前端可能操作错误线程的风险。因此，每个MI命令都应明确指定要操作的线程和帧。为了实现这一点，每个MI命令接受‘<samp class="samp">--thread</samp>’和
+‘<samp class="samp">--frame</samp>’选项，每个选项的值是 <small class="sc">GDB</small> 要操作的线程和帧的全局标识符。
+</p>
+<p>通常，前端中的每个顶级窗口允许用户选择一个线程和一个帧，并记住用户的选择以便进行进一步的操作。然而，在某些情况下 <small class="sc">GDB</small> 可能建议更改当前线程或帧。例如，当在断点处停止时，切换到命中断点的线程是合理的。再例如，如果用户通过前端发出CLI的‘<samp class="samp">thread</samp>’或
+‘<samp class="samp">frame</samp>’命令，希望将前端的选择更改为用户指定的选择。  <small class="sc">GDB</small>
+使用‘<samp class="samp">=thread-selected</samp>’通知传达更改当前线程和帧的建议。
+</p>
+<p>请注意，从历史上看，MI与CLI共享所选线程，因此前端使用 <code class="code">-thread-select</code> 在正确的上下文中执行命令。然而，要使其正常工作很麻烦。最简单的方法是前端在每个命令之前发出 <code class="code">-thread-select</code> 命令。这会使需要发送的命令数量增加一倍。另一种方法是如果 <code class="code">-thread-select</code>
+中所选的线程应该与前端想要操作的线程相同时，抑制 <small class="sc">GDB</small> 。然而，正确实现这种优化可能很棘手。特别是，如果前端向 <small class="sc">GDB</small>发送多个命令，并且其中一个命令更改了所选线程，那么后续命令的行为将会改变。因此，前端要么等待此类有问题命令的响应，要么为所有后续命令显式添加 <code class="code">-thread-select</code> 。目前还没有已知的前端能完全正确地做到这一点，因此建议始终传递‘<samp class="samp">--thread</samp>’和
+‘<samp class="samp">--frame</samp>’选项。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="Language">
+<h4 class="subsubsection"><span>27.1.1.2 语言<a class="copiable-link" href="#Language"> ¶</a></span></h4>
+
+<p>几个命令的执行取决于选择的语言。默认情况下，使用当前语言（请参阅 <a class="pxref" href="Show.html#show-language">show language</a>）。但对于已知对语言敏感的命令，建议使用‘<samp class="samp">--language</samp>’选项。此选项接受一个参数，该参数是执行命令时要使用的语言的名称。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-data-evaluate-expression --language c &#34;sizeof (void*)&#34;
+^done,value=&#34;4&#34;
+(gdb) 
+</pre></div>
+
+<p>有效的语言名称与‘<samp class="samp">set language</samp>’命令接受的名称相同（请参阅 <a class="pxref" href="Manually.html">设置工作语言</a>），不包括‘<samp class="samp">auto</samp>’、
+‘<samp class="samp">local</samp>’或‘<samp class="samp">unknown</samp>’。
+</p>
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Asynchronous-and-non_002dstop-modes.html">异步命令执行和非停止模式</a>, 上一项： <a href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small> 总体设计</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

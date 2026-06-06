@@ -1,0 +1,165 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Python Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Python Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python.html" rel="up" title="Python"/>
+<link href="Python-API.html" rel="next" title="Python API"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Python-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Python-API.html" rel="next">Python API</a>, 上一项： <a accesskey="u" href="Python.html" rel="up">扩展 <small class="sc">GDB</small> 使用 Python</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Python-Commands-1"><span>23.3.1 Python 命令<a class="copiable-link" href="#Python-Commands-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-python-commands"></a>
+<a class="index-entry-id" id="index-commands-to-access-python"></a>
+
+<p><small class="sc">GDB</small> 提供了两个用于访问 Python 解释器的命令，以及一个相关设置：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-pi"></a>
+<a id="index-python_002dinteractive"></a><span><code class="code">python-interactive <span class="r">[</span><var class="var">command</var><span class="r">]</span></code><a class="copiable-link" href="#index-python_002dinteractive"> ¶</a></span></dt>
+<dt><code class="code">pi <span class="r">[</span><var class="var">command</var><span class="r">]</span></code></dt>
+<dd><p>不带参数时， <code class="code">python-interactive</code> 命令可用于启动交互式 Python 提示符。要返回 <small class="sc">GDB</small>, 请输入 <code class="code">EOF</code> 字符（例如 <kbd class="kbd">Ctrl - D</kbd> 在空提示符下）。
+</p>
+<p>或者，可以将单行 Python 命令作为参数给出并进行计算。如果命令是一个表达式，则会打印结果；否则，不会打印任何内容。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python - interactive 2 + 3
+5
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-py"></a>
+<a id="index-python-1"></a><span><code class="code">python <span class="r">[</span><var class="var">command</var><span class="r">]</span></code><a class="copiable-link" href="#index-python-1"> ¶</a></span></dt>
+<dt><code class="code">py <span class="r">[</span><var class="var">command</var><span class="r">]</span></code></dt>
+<dd><p>该 <code class="code">python</code> 命令可用于计算 Python 代码。
+</p>
+<p>如果给出参数， <code class="code">python</code> 命令将把该参数作为 Python 命令进行计算。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python print 23
+23
+</pre></div>
+
+<p>如果不给 <code class="code">python</code>提供参数，它将作为多行命令，类似于 <code class="code">define</code>。在这种情况下，Python 脚本由
+<code class="code">python</code> 命令之后给出的后续命令行组成。这个命令列表以包含 <code class="code">end</code>的行结束。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python
+&gt;print 23
+&gt;end
+23
+</pre></div>
+
+<a class="anchor" id="set_005fpython_005fprint_005fstack"></a></dd>
+<dt><a id="index-set-python-print_002dstack"></a><span><code class="code">set python print-stack</code><a class="copiable-link" href="#index-set-python-print_002dstack"> ¶</a></span></dt>
+<dd><p>默认情况下， <small class="sc">GDB</small> 在 Python 脚本中发生错误时，只会打印 Python 异常的消息部分。这可以通过 <code class="code">set python print-stack</code>来控制：如果 <code class="code">full</code>, 则启用完整的 Python 堆栈打印；如果 <code class="code">none</code>, 则禁用 Python 堆栈和消息打印；如果 <code class="code">message</code>, 默认情况下，只打印错误的消息部分。
+</p>
+</dd>
+<dt><a id="index-set-python-ignore_002denvironment"></a><span><code class="code">set python ignore-environment <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-python-ignore_002denvironment"> ¶</a></span></dt>
+<dd><p>默认情况下，此选项为 ‘<samp class="samp">关闭</samp>’，并且当 <small class="sc">GDB</small>
+初始化其内部 Python 解释器时，Python 解释器将检查环境中会影响其行为的变量，例如 <code class="env">PYTHONHOME</code>, 和
+<code class="env">PYTHONPATH</code><a class="footnote" href="#FOOT18" id="DOCF18"><sup>18</sup></a>。
+</p>
+<p>如果在 Python 初始化之前将此选项设置为 ‘<samp class="samp">开启</samp>’，则 Python 将忽略所有此类环境变量。由于 Python 在 <small class="sc">GDB</small>的启动过程中早期初始化，因此此选项必须放在早期初始化文件中（请参阅 <a class="pxref" href="Initialization-Files.html">初始化文件</a>) 才能达到预期效果。
+</p>
+<p>此选项相当于向真正的 <samp class="option">-E</samp> 可执行文件传递
+<code class="command">python</code> 。
+</p>
+</dd>
+<dt><a id="index-set-python-dont_002dwrite_002dbytecode"></a><span><code class="code">set python dont-write-bytecode <span class="r">[</span>auto<span class="r">|</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-python-dont_002dwrite_002dbytecode"> ¶</a></span></dt>
+<dd><p>当此选项为 ‘<samp class="samp">关闭</samp>’ 时，一旦 <small class="sc">GDB</small> 初始化了 Python 解释器，解释器将对其导入的任何 Python 模块进行字节编译，并将字节码写入磁盘上的
+<samp class="file">.pyc</samp> 文件中。
+</p>
+<p>如果在 Python 初始化之前将此选项设置为 ‘<samp class="samp">开启</samp>’，则 Python 将不再将字节码写入磁盘。由于 Python 在 <small class="sc">GDB</small>的启动过程中早期初始化，因此此选项必须放在早期初始化文件中（请参阅 <a class="pxref" href="Initialization-Files.html">初始化文件</a>) 才能达到预期效果。
+</p>
+<p>默认情况下，此选项设置为 ‘<samp class="samp">自动</samp>’。在此模式下，只要 <code class="code">python ignore-environment</code> 设置为 ‘<samp class="samp">关闭</samp>’，就会检查环境变量 <code class="env">PYTHONDONTWRITEBYTECODE</code> 以确定是否应写出字节码。
+<code class="env">PYTHONDONTWRITEBYTECODE</code> 当设置为空字符串或环境变量不存在时，被认为是关闭/禁用的。所有其他设置，包括那些似乎不合理的设置，都表示它是开启/启用的。
+</p>
+<p>此选项相当于向真正的 <samp class="option">-B</samp> 可执行文件传递
+<code class="command">python</code> 。
+</p></dd>
+</dl>
+
+<p>也可以从 <small class="sc">GDB</small>
+解释器执行 Python 脚本：
+</p>
+<dl class="table">
+<dt><code class="code">source <samp class="file">script-name</samp></code></dt>
+<dd><p>脚本名称必须以 ‘<samp class="samp">.py</samp>’ 结尾，并且 <small class="sc">GDB</small> 必须使用 <code class="code">script-extension</code> 设置根据文件名扩展名来识别脚本语言。请参阅 <a class="xref" href="Extending-GDB.html">扩展 GDB</a>。
+</p></dd>
+</dl>
+
+<p>以下命令旨在帮助调试 <small class="sc">GDB</small> 本身：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-debug-py_002dbreakpoint"></a>
+<a id="index-set-debug-py_002dbreakpoint"></a><span><code class="code">set debug py-breakpoint on<span class="r">|</span>off</code><a class="copiable-link" href="#index-set-debug-py_002dbreakpoint"> ¶</a></span></dt>
+<dt><code class="code">show debug py-breakpoint</code></dt>
+<dd><p>当设置为 ‘<samp class="samp">开启</samp>’ 时 <small class="sc">GDB</small> 打印与 Python 断点 API 相关的调试消息。默认情况下为 ‘<samp class="samp">关闭</samp>’。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-debug-py_002dunwind"></a>
+<a id="index-set-debug-py_002dunwind"></a><span><code class="code">set debug py-unwind on<span class="r">|</span>off</code><a class="copiable-link" href="#index-set-debug-py_002dunwind"> ¶</a></span></dt>
+<dt><code class="code">show debug py-unwind</code></dt>
+<dd><p>当设置为 ‘<samp class="samp">开启</samp>’ 时， <small class="sc">GDB</small> 打印与 Python 展开器 API 相关的调试消息。默认情况下为 ‘<samp class="samp">关闭</samp>’。
+</p></dd>
+</dl>
+
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF18" id="FOOT18">(18)</a></h5>
+<p>请参阅
+<code class="command">man 1 python</code> 的 “环境变量” 部分以获取完整列表。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Python-API.html">Python API</a>, 上一项： <a href="Python.html">扩展 <small class="sc">GDB</small> 使用 Python</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

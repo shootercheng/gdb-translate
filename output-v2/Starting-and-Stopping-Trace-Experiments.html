@@ -1,0 +1,172 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>启动和停止跟踪实验（使用GDB进行调试）</title>
+
+<meta name="description" content="Starting and Stopping Trace Experiments (Debugging with GDB)"/>
+<meta name="keywords" content="Starting and Stopping Trace Experiments (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Tracepoint-Restrictions.html" rel="next" title="Tracepoint Restrictions"/>
+<link href="Listing-Static-Tracepoint-Markers.html" rel="prev" title="Listing Static Tracepoint Markers"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Starting-and-Stopping-Trace-Experiments">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Tracepoint-Restrictions.html" rel="next">跟踪点限制</a>, 上一项： <a accesskey="p" href="Listing-Static-Tracepoint-Markers.html" rel="prev">列出静态跟踪点标记</a>, 上一级： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Starting-and-Stopping-Trace-Experiments-1"><span>13.1.9 启动和停止跟踪实验<a class="copiable-link" href="#Starting-and-Stopping-Trace-Experiments-1"> ¶</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-start-a-new-trace-experiment"></a>
+<a class="index-entry-id" id="index-collected-data-discarded"></a>
+<a id="index-tstart-_005b-notes-_005d"></a><span><code class="code">tstart</code><a class="copiable-link" href="#index-tstart-_005b-notes-_005d"> ¶</a></span></dt>
+<dd><p>此命令启动跟踪实验并开始收集数据。
+它会产生丢弃上一次跟踪实验期间跟踪缓冲区中收集的所有数据的副作用。 如果提供了任何参数，它们将被作为注释并与跟踪实验的状态一起存储。 注释可以是任意文本，在多用户环境中的断开式跟踪中特别有用；注释可以解释跟踪正在做什么，提供用户联系信息等等。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-stop-a-running-trace-experiment"></a>
+<a id="index-tstop-_005b-notes-_005d"></a><span><code class="code">tstop</code><a class="copiable-link" href="#index-tstop-_005b-notes-_005d"> ¶</a></span></dt>
+<dd><p>此命令停止跟踪实验。 如果提供了任何参数，它们将作为注释与实验一起记录。 如果你要停止别人启动的跟踪，这很有用，例如如果跟踪干扰了系统的行为，需要迅速停止。
+</p>
+<p><strong class="strong">注意</strong>: 如果任何跟踪点的通过计数达到上限（请参阅 <a class="pxref" href="Tracepoint-Passcounts.html">跟踪点通过计数</a>），或者跟踪缓冲区已满，跟踪实验和数据收集可能会自动停止。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-status-of-trace-data-collection"></a>
+<a class="index-entry-id" id="index-trace-experiment_002c-status-of"></a>
+<a id="index-tstatus"></a><span><code class="code">tstatus</code><a class="copiable-link" href="#index-tstatus"> ¶</a></span></dt>
+<dd><p>此命令显示当前跟踪数据收集的状态。
+</p></dd>
+</dl>
+
+<p>以下是我们到目前为止描述的命令的一个示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">跟踪 gdb_c_test</b>
+(gdb) <b class="b">动作</b>
+为跟踪点 #1 输入动作，每行一个。
+&gt; 收集 $regs, $locals, $args
+&gt; 单步执行 11 次
+  &gt; 收集 $regs
+  &gt; 结束
+&gt; 结束
+(gdb) <b class="b">启动跟踪</b>
+	[一段时间过去 ...]
+(gdb) <b class="b">停止跟踪</b>
+</pre></div>
+
+<a class="anchor" id="disconnected-tracing"></a><a class="index-entry-id" id="index-disconnected-tracing"></a>
+<p>你可以选择即使
+<small class="sc">GDB</small> 与目标断开连接（无论是自愿还是非自愿），仍继续运行跟踪实验。 对于诸如 <code class="code">detach</code>之类的命令，调试器会询问你对跟踪要做什么。 但对于意外终止（<small class="sc">GDB</small> 崩溃、网络中断），丢失来之不易的跟踪数据会很可惜，因此变量
+<code class="code">disconnected-tracing</code> 可以让你决定跟踪是否应该在没有 <small class="sc">GDB</small>的情况下继续运行。
+</p>
+<dl class="table">
+<dt><a id="index-set-disconnected_002dtracing"></a><span><code class="code">set disconnected-tracing on</code><a class="copiable-link" href="#index-set-disconnected_002dtracing"> ¶</a></span></dt>
+<dt><code class="code">set disconnected-tracing off</code></dt>
+<dd><p>选择如果 <small class="sc">GDB</small>
+与目标断开连接，跟踪运行是否应该继续。 请注意， <code class="code">detach</code> 或
+<code class="code">quit</code> 无论此变量的设置如何，都会直接询问你对正在运行的跟踪要做什么，因此该变量主要用于处理意外情况，例如网络中断。
+</p>
+</dd>
+<dt><a id="index-show-disconnected_002dtracing"></a><span><code class="code">show disconnected-tracing</code><a class="copiable-link" href="#index-show-disconnected_002dtracing"> ¶</a></span></dt>
+<dd><p>显示当前断开式跟踪的选择。
+</p>
+</dd>
+</dl>
+
+<p>当你重新连接到目标时，跟踪实验可能仍在运行，也可能已经停止；在此期间跟踪缓冲区可能已经填满，或者由于其他原因停止。 如果它正在运行，重新连接后将继续。
+</p>
+<p>重新连接后，目标将上传有关当前生效的跟踪点的信息。  <small class="sc">GDB</small> 然后将该信息与当前定义的跟踪点集进行比较，并尝试匹配它们，考虑到在此期间由于创建和删除操作，跟踪点编号可能已经改变的可能性。 如果目标的某个跟踪点与 <small class="sc">GDB</small>中的任何跟踪点都不匹配，调试器将创建一个新的跟踪点，以便你有一个编号来指定该跟踪点。 这种匹配过程必然是启发式的，可能会导致创建无用的跟踪点；如果它们没有用，你可以直接删除它们。
+</p>
+<a class="index-entry-id" id="index-circular-trace-buffer"></a>
+<p>如果你的目标代理支持 <em class="dfn">循环跟踪缓冲区</em>, 那么你可以无限期地运行跟踪实验而不会填满跟踪缓冲区；当空间不足时，代理会删除已经收集的跟踪帧，从最旧的开始，直到有足够的空间继续收集。 如果你的跟踪点被频繁命中，并且由于缓冲区已满而导致跟踪过早终止，这尤其有用。 要请求一个循环跟踪缓冲区，只需将 ‘<samp class="samp">循环跟踪缓冲区</samp>’ 设置为开启。 你可以在任何时候进行设置，包括在跟踪期间；如果代理可以做到，它将动态更改缓冲区处理方式，否则直到下一次运行时才会生效。
+</p>
+<dl class="table">
+<dt><a id="index-set-circular_002dtrace_002dbuffer"></a><span><code class="code">set circular-trace-buffer on</code><a class="copiable-link" href="#index-set-circular_002dtrace_002dbuffer"> ¶</a></span></dt>
+<dt><code class="code">set circular-trace-buffer off</code></dt>
+<dd><p>选择跟踪运行应该使用线性还是循环缓冲区来存储跟踪数据。 线性缓冲区不会丢失任何跟踪数据，但可能会过早填满，而循环缓冲区会丢弃旧的跟踪数据，但始终有空间存储最新的跟踪点命中信息。
+</p>
+</dd>
+<dt><a id="index-show-circular_002dtrace_002dbuffer"></a><span><code class="code">show circular-trace-buffer</code><a class="copiable-link" href="#index-show-circular_002dtrace_002dbuffer"> ¶</a></span></dt>
+<dd><p>显示当前跟踪缓冲区的选择。 请注意，这可能与代理当前的缓冲区处理方式不匹配，也不能保证与过去运行期间可能生效的设置相匹配，例如如果你正在查看跟踪文件中的帧。
+</p>
+</dd>
+</dl>
+
+<dl class="table">
+<dt><a id="index-set-trace_002dbuffer_002dsize"></a><span><code class="code">set trace-buffer-size <var class="var">n</var></code><a class="copiable-link" href="#index-set-trace_002dbuffer_002dsize"> ¶</a></span></dt>
+<dt><code class="code">set trace-buffer-size unlimited</code></dt>
+<dd><p>请求目标使用大小为 <var class="var">n</var> 字节的跟踪缓冲区。 并非所有目标都会满足此请求；它们可能有一个编译时确定的跟踪缓冲区大小，或者有其他限制。 将其设置为
+<code class="code">unlimited</code> 或 <code class="code">-1</code> 的值，让目标使用它喜欢的任何大小。 这也是默认设置。
+</p>
+</dd>
+<dt><a id="index-show-trace_002dbuffer_002dsize"></a><span><code class="code">show trace-buffer-size</code><a class="copiable-link" href="#index-show-trace_002dbuffer_002dsize"> ¶</a></span></dt>
+<dd><p>显示当前请求的跟踪缓冲区大小。 请注意，只有当目标支持设置大小并且能够处理请求的大小时，此值才会与实际大小匹配。 例如，如果目标只能在运行之间更改缓冲区大小，此变量直到下一次运行开始才会反映更改。 使用 <code class="code">tstatus</code>
+获取实际缓冲区大小的报告。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="index-set-trace_002duser"></a><span><code class="code">set trace-user <var class="var">text</var></code><a class="copiable-link" href="#index-set-trace_002duser"> ¶</a></span></dt>
+<dt><a id="index-show-trace_002duser"></a><span><code class="code">show trace-user</code><a class="copiable-link" href="#index-show-trace_002duser"> ¶</a></span></dt>
+<dt><a id="index-set-trace_002dnotes"></a><span><code class="code">set trace-notes <var class="var">text</var></code><a class="copiable-link" href="#index-set-trace_002dnotes"> ¶</a></span></dt>
+<dd><p>设置跟踪运行的注释。
+</p>
+</dd>
+<dt><a id="index-show-trace_002dnotes"></a><span><code class="code">show trace-notes</code><a class="copiable-link" href="#index-show-trace_002dnotes"> ¶</a></span></dt>
+<dd><p>显示跟踪运行的注释。
+</p>
+</dd>
+<dt><a id="index-set-trace_002dstop_002dnotes"></a><span><code class="code">set trace-stop-notes <var class="var">text</var></code><a class="copiable-link" href="#index-set-trace_002dstop_002dnotes"> ¶</a></span></dt>
+<dd><p>设置跟踪运行的停止注释。 注释的处理方式与
+<code class="code">tstop</code> 参数相同；设置命令是修正错误或不完整的停止注释的便捷方法。
+</p>
+</dd>
+<dt><a id="index-show-trace_002dstop_002dnotes"></a><span><code class="code">show trace-stop-notes</code><a class="copiable-link" href="#index-show-trace_002dstop_002dnotes"> ¶</a></span></dt>
+<dd><p>显示跟踪运行的停止注释。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Tracepoint-Restrictions.html">跟踪点限制</a>, 上一项： <a href="Listing-Static-Tracepoint-Markers.html">列出静态跟踪点标记</a>, 上一级： <a href="Set-Tracepoints.html">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

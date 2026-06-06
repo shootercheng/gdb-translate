@@ -1,0 +1,275 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>分离调试文件（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Separate Debug Files (Debugging with GDB)"/>
+<meta name="keywords" content="Separate Debug Files (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB-Files.html" rel="up" title="GDB Files"/>
+<link href="MiniDebugInfo.html" rel="next" title="MiniDebugInfo"/>
+<link href="File-Caching.html" rel="prev" title="File Caching"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+pre.display-preformatted {font-family: inherit}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Separate-Debug-Files">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="MiniDebugInfo.html" rel="next"></a>, 上一项： <a accesskey="p" href="File-Caching.html" rel="prev"></a> <a accesskey="u" href="GDB-Files.html" rel="up"><small class="sc">GDB</small> </a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Debugging-Information-in-Separate-Files"><span>18.3 分离文件中的调试信息<a class="copiable-link" href="#Debugging-Information-in-Separate-Files"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-separate-debugging-information-files"></a>
+<a class="index-entry-id" id="index-debugging-information-in-separate-files"></a>
+<a class="index-entry-id" id="index-_002edebug-subdirectories"></a>
+<a class="index-entry-id" id="index-debugging-information-directory_002c-global"></a>
+<a class="index-entry-id" id="index-global-debugging-information-directories"></a>
+<a class="index-entry-id" id="index-build-ID_002c-and-separate-debugging-files"></a>
+<a class="index-entry-id" id="index-_002ebuild_002did-directory"></a>
+
+<p><small class="sc">GDB</small> 允许你将程序的调试信息放在一个与可执行文件本身分离的文件中，这样可以
+<small class="sc">GDB</small> 自动查找并加载调试信息。由于调试信息可能非常大——有时甚至比可执行代码本身还要大——一些系统将其可执行文件的调试信息分发到单独的文件中，用户只有在需要调试问题时才安装这些文件。
+</p>
+<p><small class="sc">GDB</small> 支持两种指定分离调试信息
+文件的方式：
+</p>
+<ul class="itemize mark-bullet">
+<li>可执行文件包含一个 <em class="dfn">调试链接</em> 它指定了分离调试信息文件的名称。分离调试文件的名称通常是 <samp class="file"><var class="var"></var>.debug</samp>, 其中 <var class="var">可执行文件</var> 是相应可执行文件的名称，不包含前导目录（例如， <samp class="file">ls.debug</samp> 对应 <samp class="file">/usr/bin/ls</samp>）。此外，调试链接指定了一个 32 位的 <em class="dfn">循环冗余校验</em> (CRC)
+调试文件的校验和，用于验证可执行文件和调试文件是否来自同一构建。 <small class="sc">GDB</small> 可执行文件包含一个
+
+</li><li><a class="anchor" id="build-ID"></a>构建 ID <em class="dfn">, 一个唯一的位串，该位串也存在于相应的调试信息文件中。（仅在某些操作系统上支持，当二进制文件使用 ELF 或 PE 文件格式以及</em>Binutils 时。）有关此功能的更多详细信息，请参阅 <small class="sc">GNU</small> --build-id <samp class="option">命令行选项的描述，该选项在</samp>
+命令行选项 <a data-manual="ld" href="https://sourceware.org/binutils/docs/ld/Options.html#Options">中，位于</a> 。调试信息文件的名称不是由构建 ID 明确指定的，但可以从构建 ID 计算得出，见下文。 <cite class="cite">GNU 链接器</cite>。
+</li></ul>
+
+<p>根据调试信息文件的指定方式， <small class="sc">GDB</small>
+使用两种不同的方法来查找调试文件：
+</p>
+<ul class="itemize mark-bullet">
+<li>对于“调试链接”方法， <small class="sc">GDB</small> 首先在可执行文件的目录中查找指定名称的文件，然后在该目录的名为 <samp class="file">.debug</samp>的子目录中查找，最后在每个全局调试目录下，在一个名称与可执行文件绝对文件名的前导目录相同的子目录中查找。（在 MS - Windows/MS - DOS 上，可执行文件前导目录的驱动器字母会转换为一个单字母的子目录，即
+<samp class="file">d:/usr/bin/</samp> 会转换为 <samp class="file">/d/usr/bin/</samp>, 因为 Windows 文件系统不允许文件名中包含冒号。）
+
+</li><li>对于“构建 ID”方法， <small class="sc">GDB</small> 在每个全局调试目录的
+<samp class="file">.build - id</samp> 子目录中查找名为 <samp class="file"><var class="var">nn</var>/<var class="var">nnnnnnnn</var>.debug</samp>, 其中 <var class="var">nn</var> 是构建 ID 位串的前 2 个十六进制字符， <var class="var">nnnnnnnn</var>
+是位串的其余部分。（实际的构建 ID 字符串有 32 个或更多十六进制字符，而不是 10 个。）  <small class="sc">GDB</small> 可以自动查询
+<code class="code">debuginfod</code> 服务器，使用构建 ID 下载本地找不到的分离调试文件。有关更多信息，请参阅 <a class="ref" href="Debuginfod.html">使用 Debuginfod 下载调试资源</a>。
+</li></ul>
+
+<p>例如，假设你要求 <small class="sc">GDB</small> 调试
+<samp class="file">/usr/bin/ls</samp>, 它有一个调试链接，指定文件为 <samp class="file">ls.debug</samp>, 并且构建 ID 的十六进制值为
+<code class="code">abcdef1234</code>. 如果全局调试目录列表包括
+<samp class="file">/usr/lib/debug</samp>, 那么 <small class="sc">GDB</small> 将按以下顺序查找以下调试信息文件：
+</p>
+<ul class="itemize mark-minus">
+<li><samp class="file">/usr/lib/debug/.build - id/ab/cdef1234.debug</samp>
+</li><li><samp class="file">/usr/bin/ls.debug</samp>
+</li><li><samp class="file">/usr/bin/.debug/ls.debug</samp>
+</li><li><samp class="file">/usr/lib/debug/usr/bin/ls.debug</samp>.
+</li></ul>
+
+<p>如果仍然没有找到调试文件，并且 <code class="code">debuginfod</code>
+（见 <a class="pxref" href="Debuginfod.html">使用 Debuginfod 下载调试资源</a>）已启用， <small class="sc">GDB</small> 将尝试从 <code class="code">debuginfod</code> 服务器下载该文件。
+</p>
+<a class="anchor" id="debug_002dfile_002ddirectory"></a><p>全局调试信息目录默认为由 <small class="sc">GDB</small>
+配置选项 <samp class="option">--with - separate - debug - dir</samp> 设置的值，并通过 <small class="sc">GDB</small> 配置选项 <samp class="option">--additional - debug - dirs</samp>提供的以冒号分隔的目录列表进行扩充。在 <small class="sc">GDB</small> 运行期间，你还可以设置全局调试信息目录，并查看当前正在使用的列表。
+<small class="sc">GDB</small> 
+</p>
+<dl class="table">
+<dt><a id="index-set-debug_002dfile_002ddirectory"></a><span><code class="code">set debug-file-directory <var class="var">directories</var></code><a class="copiable-link" href="#index-set-debug_002dfile_002ddirectory"> ¶</a></span></dt>
+<dd><p>设置用于 <small class="sc">GDB</small> 搜索分离调试
+信息文件的目录为 <var class="var">目录</var>。可以通过路径分隔符连接多个路径组件来设置多个路径。
+</p>
+</dd>
+<dt><a id="index-show-debug_002dfile_002ddirectory"></a><span><code class="code">show debug-file-directory</code><a class="copiable-link" href="#index-show-debug_002dfile_002ddirectory"> ¶</a></span></dt>
+<dd><p>显示用于 <small class="sc">GDB</small> 搜索分离调试
+信息文件的目录。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-_002egnu_005fdebuglink-sections"></a>
+<a class="index-entry-id" id="index-debug-link-sections"></a>
+<p>调试链接是可执行文件中名为
+<code class="code">.gnu_debuglink</code>的特殊节。该节必须包含：
+</p>
+<ul class="itemize mark-bullet">
+<li>一个文件名，去掉任何前导目录组件，后面跟着
+一个零字节，
+</li><li>根据需要填充零到三个字节，以达到该节内的下一个四字节
+边界，以及
+</li><li>一个四字节的 CRC 校验和，存储的字节序与可执行文件本身使用的字节序相同。校验和是通过下面给出的函数对调试
+信息文件的全部内容进行计算的，将零作为 <var class="var">crc</var> 参数传入。
+</li></ul>
+
+<p>任何可执行文件格式都可以携带调试链接，只要它可以
+包含一个名为 <code class="code">.gnu_debuglink</code> 且内容如上所述的节。
+</p>
+<a class="index-entry-id" id="index-_002enote_002egnu_002ebuild_002did-sections"></a>
+<a class="index-entry-id" id="index-build-ID-sections"></a>
+<p>构建 ID 是可执行文件（以及其他
+ELF 二进制文件中可能会考虑的）中的一个特殊节。这个节通常名为 <small class="sc">GDB</small> ，但这个名称不是必需的。
+它包含构建文件的唯一标识——在同一构建树的多次构建中，该 ID 保持不变。默认算法 SHA1 为构建 ID 字符串生成 160 位（40 个十六进制字符）的内容。在带有符号的原始构建二进制文件、其剥离版本以及分离的调试信息文件中，都存在具有相同值的相同节。 <code class="code">.note.gnu.build-id</code>调试信息文件本身应该是一个普通的
+可执行文件，包含完整的链接器符号、节和
+调试信息。调试信息文件的节应该与原始文件具有相同的名称、地址和大小，但它们不需要包含任何数据——就像普通可执行文件中的
+</p>
+<p>节一样。 <code class="code">.bss</code> 节。
+</p>
+<p> <small class="sc">GNU</small> 二进制工具集（Binutils）包包含“<samp class="samp">objcopy</samp>”工具，它可以使用以下命令生成分离的可执行文件/调试信息文件对：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"><kbd class="kbd">objcopy --only-keep-debug foo foo.debug</kbd>
+<kbd class="kbd">strip -g foo</kbd>
+</pre></div>
+
+<p>这些命令从可执行文件中移除调试
+信息 <samp class="file">foo</samp> 并将其放置在文件
+<samp class="file">foo.debug</samp>中。你可以使用第一种、第二种或两种方法来链接这两个文件：
+</p>
+<ul class="itemize mark-bullet">
+<li>调试链接方法需要以下附加命令，以便在 <samp class="file">foo</samp>中也留下一个调试链接：
+
+<div class="example smallexample">
+<pre class="example-preformatted"><kbd class="kbd">objcopy --add-gnu-debuglink=foo.debug foo</kbd>
+</pre></div>
+
+<p>乌尔里希·德雷珀（Ulrich Drepper）的 <samp class="file">elfutils</samp> 包从 0.53 版本开始，包含一个版本的 <code class="code">strip</code> 命令，使得命令 <kbd class="kbd">strip foo -f
+foo.debug</kbd> 具有与上述两个 <code class="code">objcopy</code> 命令以及 <code class="code">ln -s</code> 命令相同的功能。
+</p>
+</li><li>构建 ID 使用 <code class="code">ld --build-id</code> 或 <small class="sc">GCC</small> 对应的 <code class="code">gcc -Wl,--build-id</code>嵌入到主可执行文件中。自 2.18 版本起， <small class="sc">GNU</small> 二进制工具集（Binutils）包中包含了对构建 ID 的支持以及对调试文件分离的兼容性修复。
+</li></ul>
+
+
+<a class="index-entry-id" id="index-CRC-algorithm-definition"></a>
+<p>中使用的 CRC 是 <code class="code">.gnu_debuglink</code> 由 IEEE 802.3 定义的 CRC - 32，使用多项式：
+</p>
+<div class="display">
+<pre class="display-preformatted"> <em>x</em><sup>32</sup> + <em>x</em><sup>26</sup> + <em>x</em><sup>23</sup> + <em>x</em><sup>22</sup> + <em>x</em><sup>16</sup> + <em>x</em><sup>12</sup> + <em>x</em><sup>11</sup>
+ + <em>x</em><sup>10</sup> + <em>x</em><sup>8</sup> + <em>x</em><sup>7</sup> + <em>x</em><sup>5</sup> + <em>x</em><sup>4</sup> + <em>x</em><sup>2</sup> + <em>x</em> + 1
+</pre></div>
+
+<p>该函数逐字节计算，首先取每个字节的最低有效位。使用初始模式
+<code class="code">0xffffffff</code> 以确保前导零影响 CRC，并且最终结果取反以确保尾随零也影响 CRC。
+</p>
+<p><em class="emph">注意：</em> 这与处理
+<em class="dfn">远程串行协议</em> <code class="code">qCRC</code> 数据包（见 <a class="pxref" href="General-Query-Packets.html#qCRC-packet">qCRC 数据包</a>）时使用的 CRC 多项式相同。
+然而，在远程串行协议的情况下，CRC 是从最高有效位开始计算的，并且结果不取反，因此尾随零对 CRC 值没有影响。
+<em class="emph"></em> 
+</p>
+<p>为了完整描述，我们在下面展示生成 <code class="code">.gnu_debuglink</code>中使用的 CRC 的函数代码。对最初提供的 <code class="code">crc</code> 参数取反意味着对该函数的初始调用传入零将开始使用
+<code class="code">0xffffffff</code>计算 CRC。
+</p>
+<a class="index-entry-id" id="index-gnu_005fdebuglink_005fcrc32"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">unsigned long
+gnu_debuglink_crc32 (unsigned long crc,
+                     unsigned char *buf, size_t len)
+{
+  static const unsigned long crc32_table[256] =
+    {
+      0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419,
+      0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4,
+      0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07,
+      0x90bf1d91, 0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de,
+      0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7, 0x136c9856,
+      0x646ba8c0, 0xfd62f97a, 0x8a65c9ec, 0x14015c4f, 0x63066cd9,
+      0xfa0f3d63, 0x8d080df5, 0x3b6e20c8, 0x4c69105e, 0xd56041e4,
+      0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd, 0xa50ab56b,
+      0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940, 0x32d86ce3,
+      0x45df5c75, 0xdcd60dcf, 0xabd13d59, 0x26d930ac, 0x51de003a,
+      0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423, 0xcfba9599,
+      0xb8bda50f, 0x2802b89e, 0x5f058808, 0xc60cd9b2, 0xb10be924,
+      0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d, 0x76dc4190,
+      0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589, 0x06b6b51f,
+      0x9fbfe4a5, 0xe8b8d433, 0x7807c9a2, 0x0f00f934, 0x9609a88e,
+      0xe10e9818, 0x7f6a0dbb, 0x086d3d2d, 0x91646c97, 0xe6635c01,
+      0x6b6b51f4, 0x1c6c6162, 0x856530d8, 0xf262004e, 0x6c0695ed,
+      0x1b01a57b, 0x8208f4c1, 0xf50fc457, 0x65b0d9c6, 0x12b7e950,
+      0x8bbeb8ea, 0xfcb9887c, 0x62dd1ddf, 0x15da2d49, 0x8cd37cf3,
+      0xfbd44c65, 0x4db26158, 0x3ab551ce, 0xa3bc0074, 0xd4bb30e2,
+      0x4adfa541, 0x3dd895d7, 0xa4d1c46d, 0xd3d6f4fb, 0x4369e96a,
+      0x346ed9fc, 0xad678846, 0xda60b8d0, 0x44042d73, 0x33031de5,
+      0xaa0a4c5f, 0xdd0d7cc9, 0x5005713c, 0x270241aa, 0xbe0b1010,
+      0xc90c2086, 0x5768b525, 0x206f85b3, 0xb966d409, 0xce61e49f,
+      0x5edef90e, 0x29d9c998, 0xb0d09822, 0xc7d7a8b4, 0x59b33d17,
+      0x2eb40d81, 0xb7bd5c3b, 0xc0ba6cad, 0xedb88320, 0x9abfb3b6,
+      0x03b6e20c, 0x74b1d29a, 0xead54739, 0x9dd277af, 0x04db2615,
+      0x73dc1683, 0xe3630b12, 0x94643b84, 0x0d6d6a3e, 0x7a6a5aa8,
+      0xe40ecf0b, 0x9309ff9d, 0x0a00ae27, 0x7d079eb1, 0xf00f9344,
+      0x8708a3d2, 0x1e01f268, 0x6906c2fe, 0xf762575d, 0x806567cb,
+      0x196c3671, 0x6e6b06e7, 0xfed41b76, 0x89d32be0, 0x10da7a5a,
+      0x67dd4acc, 0xf9b9df6f, 0x8ebeeff9, 0x17b7be43, 0x60b08ed5,
+      0xd6d6a3e8, 0xa1d1937e, 0x38d8c2c4, 0x4fdff252, 0xd1bb67f1,
+      0xa6bc5767, 0x3fb506dd, 0x48b2364b, 0xd80d2bda, 0xaf0a1b4c,
+      0x36034af6, 0x41047a60, 0xdf60efc3, 0xa867df55, 0x316e8eef,
+      0x4669be79, 0xcb61b38c, 0xbc66831a, 0x256fd2a0, 0x5268e236,
+      0xcc0c7795, 0xbb0b4703, 0x220216b9, 0x5505262f, 0xc5ba3bbe,
+      0xb2bd0b28, 0x2bb45a92, 0x5cb36a04, 0xc2d7ffa7, 0xb5d0cf31,
+      0x2cd99e8b, 0x5bdeae1d, 0x9b64c2b0, 0xec63f226, 0x756aa39c,
+      0x026d930a, 0x9c0906a9, 0xeb0e363f, 0x72076785, 0x05005713,
+      0x95bf4a82, 0xe2b87a14, 0x7bb12bae, 0x0cb61b38, 0x92d28e9b,
+      0xe5d5be0d, 0x7cdcefb7, 0x0bdbdf21, 0x86d3d2d4, 0xf1d4e242,
+      0x68ddb3f8, 0x1fda836e, 0x81be16cd, 0xf6b9265b, 0x6fb077e1,
+      0x18b74777, 0x88085ae6, 0xff0f6a70, 0x66063bca, 0x11010b5c,
+      0x8f659eff, 0xf862ae69, 0x616bffd3, 0x166ccf45, 0xa00ae278,
+      0xd70dd2ee, 0x4e048354, 0x3903b3c2, 0xa7672661, 0xd06016f7,
+      0x4969474d, 0x3e6e77db, 0xaed16a4a, 0xd9d65adc, 0x40df0b66,
+      0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
+      0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605,
+      0xcdd70693, 0x54de5729, 0x23d967bf, 0xb3667a2e, 0xc4614ab8,
+      0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b,
+      0x2d02ef8d
+    };
+  unsigned char *end;
+
+  crc = ~crc &amp; 0xffffffff;
+  for (end = buf + len; buf &lt; end; ++buf)
+    crc = crc32_table[(crc ^ *buf) &amp; 0xff] ^ (crc &gt;&gt; 8);
+  return ~crc &amp; 0xffffffff;
+}
+</pre></div>
+
+<p>此计算不适用于“构建 ID”方法。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="MiniDebugInfo.html">特殊节中的调试信息</a>, 上一项： <a href="File-Caching.html">文件缓存</a>, 上级： <a href="GDB-Files.html"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

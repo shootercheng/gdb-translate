@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada 的重载支持（使用 GDB 调试）</title>
+
+<meta name="description" content="Overloading support for Ada (Debugging with GDB)"/>
+<meta name="keywords" content="Overloading support for Ada (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Stopping-Before-Main-Program.html" rel="next" title="Stopping Before Main Program"/>
+<link href="Additions-to-Ada.html" rel="prev" title="Additions to Ada"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Overloading-support-for-Ada">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Stopping-Before-Main-Program.html" rel="next"></a>，上一项： <a accesskey="p" href="Additions-to-Ada.html" rel="prev">对 Ada 的扩展</a>，上级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Overloading-support-for-Ada-1"><span>15.4.10.4 Ada 的重载支持<a class="copiable-link" href="#Overloading-support-for-Ada-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-overloading_002c-Ada"></a>
+
+<p>调试器支持有限的重载。给定一个子程序调用，其中函数符号有多个定义，它将使用实际参数的数量以及关于它们类型的一些信息来尝试缩小定义集。它对上下文的使用也非常有限，在“命令”上下文中优先选择过程而不是函数，在其他地方优先选择函数而不是过程。 <code class="code">call</code> 如果在缩小范围后，匹配定义集仍然包含多个定义，
+</p>
+<p>将显示一个菜单来询问应该使用哪一个，例如： <small class="sc">GDB</small> (gdb) print f(1)
+f 有多个匹配项
+[0] 取消
+[1] foo.f (integer) return boolean at foo.adb:23
+[2] foo.f (foo.new_integer) return boolean at foo.adb:28
+&gt;
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">在这种情况下，只需选择一个菜单项来取消表达式求值（输入 
+</pre></div>
+
+<p>0 <kbd class="kbd">并按</kbd> 回车键 <kbd class="key">) 或使用特定实例继续求值（输入相应的数字并按</kbd>回车键 <kbd class="key">)。</kbd>以下是几个用于自定义
+</p>
+<p>在这种情况下的行为的命令： <small class="sc">GDB</small>¶
+</p>
+<dl class="table">
+<dt><a id="index-set-ada-print_002dsignatures"></a><span><code class="code">set ada print-signatures</code><a class="copiable-link" href="#index-set-ada-print_002dsignatures"> 控制在重载选择菜单中是否显示参数类型和返回类型。默认情况下是</a></span></dt>
+<dd><p>显示的。
+请参阅 <code class="code">on</code> Ada 的重载支持 <a class="xref" href="#Overloading-support-for-Ada">.</a>¶
+</p>
+</dd>
+<dt><a id="index-show-ada-print_002dsignatures"></a><span><code class="code">show ada print-signatures</code><a class="copiable-link" href="#index-show-ada-print_002dsignatures"> 显示重载选择菜单中显示参数类型和返回类型的当前设置。
+请参阅</a></span></dt>
+<dd><p>Ada 的重载支持 <a class="xref" href="#Overloading-support-for-Ada">.</a>
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

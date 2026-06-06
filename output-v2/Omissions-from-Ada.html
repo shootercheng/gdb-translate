@@ -1,0 +1,149 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada 中的缺失内容（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Omissions from Ada (Debugging with GDB)"/>
+<meta name="keywords" content="Omissions from Ada (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Additions-to-Ada.html" rel="next" title="Additions to Ada"/>
+<link href="Ada-Mode-Intro.html" rel="prev" title="Ada Mode Intro"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Omissions-from-Ada">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Additions-to-Ada.html" rel="next">Ada 的新增内容</a>, 上一项： <a accesskey="p" href="Ada-Mode-Intro.html" rel="prev">简介</a> <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Omissions-from-Ada-1"><span>15.4.10.2 Ada 中的缺失内容<a class="copiable-link" href="#Omissions-from-Ada-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-omissions-from"></a>
+
+<p>以下是该子集显著的缺失内容：
+</p>
+<ul class="itemize mark-bullet">
+<li>仅支持部分属性：
+
+<ul class="itemize mark-minus">
+<li><code class="t">&#39;First</code>, <code class="t">&#39;Last</code>和 <code class="t">&#39;Length</code>
+ 在数组对象上（不在类型和子类型上）。
+
+</li><li><code class="t">&#39;Min</code> 和 <code class="t">&#39;Max</code>.  
+
+</li><li><code class="t">&#39;Pos</code> 和 <code class="t">&#39;Val</code>. 
+
+</li><li><code class="t">&#39;Tag</code>.
+
+</li><li><code class="t">&#39;Range</code> 在数组对象上（不是子类型），但仅作为成员关系（<code class="code">in</code>) 运算符的右操作数。
+
+</li><li><code class="t">&#39;Access</code>, <code class="t">&#39;Unchecked_Access</code>和 
+<code class="t">&#39;Unrestricted_Access</code> （GNAT 扩展）。
+
+</li><li><code class="t">&#39;Address</code>.
+
+</li><li><code class="t">&#39;Size</code> 可用于对象（不是类型）。
+
+</li><li><code class="t">&#39;Object_Size</code> 可用，但不适用于不定类型。
+</li></ul>
+
+</li><li>中的名称 <code class="code">Characters.Latin_1</code> 不可用。
+
+</li><li>数组的相等性测试（‘<samp class="samp">=</samp>’ 和 ‘<samp class="samp">/=</samp>’）测试表示形式的按位相等性。它们通常对字符串和元素为整数或枚举类型的数组能正确工作。对于元素类型具有用户定义相等性的数组、实值数组（特别是符合 IEEE 标准的浮点数，因为存在负零和 NaN）以及元素包含具有不确定值的未使用位的数组，它们可能无法正确工作。  
+
+</li><li>其他逐个组件的数组操作（<code class="code">and</code>, <code class="code">or</code>, 
+<code class="code">xor</code>, <code class="code">not</code>, 以及除相等性之外的关系测试）未实现。 
+
+</li><li><a class="index-entry-id" id="index-array-aggregates-_0028Ada_0029"></a>
+<a class="index-entry-id" id="index-record-aggregates-_0028Ada_0029"></a>
+<a class="index-entry-id" id="index-aggregates-_0028Ada_0029"></a>
+对数组和记录聚合的支持有限。它们仅允许在赋值语句的右侧使用，例如以下示例：
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set An_Array := (1, 2, 3, 4, 5, 6)
+(gdb) set An_Array := (1, others =&gt; 0)
+(gdb) set An_Array := (0|4 =&gt; 1, 1..3 =&gt; 2, 5 =&gt; 6)
+(gdb) set A_2D_Array := ((1, 2, 3), (4, 5, 6), (7, 8, 9))
+(gdb) set A_Record := (1, &#34;Peter&#34;, True);
+(gdb) set A_Record := (Name =&gt; &#34;Peter&#34;, Id =&gt; 1, Alive =&gt; True)
+</pre></div>
+
+<p>如果记录中使用了判别式，通过赋值聚合来更改判别式的值会产生未定义的效果。但是，你可以先通过直接赋值来修改判别式（这在 Ada 中通常是不允许的），然后再进行聚合赋值。例如，给定一个变量 <code class="code">A_Rec</code> 
+声明为具有如下类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">type Rec (Len : Small_Integer := 0) is record
+    Id : Integer;
+    Vals : IntArray (1 .. Len);
+end record;
+</pre></div>
+
+<p>你可以通过两次赋值来为不同大小的 <code class="code">Vals</code> 赋值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set A_Rec.Len := 4
+(gdb) set A_Rec := (Id =&gt; 42, Vals =&gt; (1, 2, 3, 4))
+</pre></div>
+
+<p>如这个示例所示， <small class="sc">GDB</small> 对于聚合的通常规则非常宽松。你可以省略数组或记录聚合的一些组件（例如在对 <code class="code">Len</code> 
+的赋值中的组件）；赋值时它们将保留其原始值。你可以自由地使用动态值作为组件关联中的索引。你甚至可以使用重叠或冗余的组件关联，尽管在这种情况下哪些组件值会被赋值是未定义的。 <code class="code">A_Rec</code> 
+</p>
+</li><li>对分派子程序的调用未实现。
+
+</li><li>重载算法比真正的 Ada 要受限得多（即选择性更低）。它仅有限地利用子表达式出现的上下文来解析其含义，并且在允许类型匹配的规则上要宽松得多。因此，一些函数调用会有歧义，用户将被要求选择合适的解决方案。
+
+</li><li>该 <code class="code">new</code> 运算符未实现。
+
+</li><li>入口调用未实现。
+
+</li><li>除了打印之外，不支持对原生 VAX 浮点格式进行算术运算。
+
+</li><li>无法对打包数组进行切片。
+
+</li><li>名称 <code class="code">True</code> 和 <code class="code">False</code>, 当不是限定名称的一部分时，无论上下文如何，都被解释为好像隐式地以 <code class="code">Standard</code>为前缀。如果你的程序在包或过程中重新定义了这些名称（这充其量是一种可疑的做法），你将不得不使用完全限定名称来访问它们的新定义。
+
+</li><li>基于实数的字面量未实现。
+</li></ul>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Additions-to-Ada.html">Ada 的新增内容</a>, 上一项： <a href="Ada-Mode-Intro.html">简介</a>, 上一项： <a href="Ada.html">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

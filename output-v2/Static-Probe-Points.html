@@ -1,0 +1,144 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>静态探测点（使用 GDB 调试）</title>
+
+<meta name="description" content="Static Probe Points (Debugging with GDB)"/>
+<meta name="keywords" content="Static Probe Points (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Error-in-Breakpoints.html" rel="next" title="Error in Breakpoints"/>
+<link href="Save-Breakpoints.html" rel="prev" title="Save Breakpoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Static-Probe-Points">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Error-in-Breakpoints.html" rel="next">“无法插入断点”</a>, 上一项： <a accesskey="p" href="Save-Breakpoints.html" rel="prev">如何将断点保存到文件</a>, 上级： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Static-Probe-Points-1"><span>5.1.10 静态探测点<a class="copiable-link" href="#Static-Probe-Points-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-static-probe-point_002c-SystemTap"></a>
+<a class="index-entry-id" id="index-static-probe-point_002c-DTrace"></a>
+<p><small class="sc">GDB</small> 支持 <em class="dfn">SDT</em> 代码中的探测点。  <abbr class="acronym">SDT</abbr> 代表静态定义跟踪，这些探测点设计为具有极小的运行时代码和数据占用空间，并且无需动态重定位。
+</p>
+<p>目前，在与 ELF 兼容的系统上支持以下类型的探测点：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">SystemTap</code> (<a class="uref" href="http://sourceware.org/systemtap/">http://sourceware.org/systemtap/</a>)
+<abbr class="acronym">SDT</abbr> 探测点<a class="footnote" href="#FOOT5" id="DOCF5"><sup>5</sup></a>.  <code class="code">SystemTap</code> 探测点可在汇编、C 和 C<code class="t">++</code> 语言中使用<a class="footnote" href="#FOOT6" id="DOCF6"><sup>6</sup></a>.  
+
+</li><li><code class="code">DTrace</code> (<a class="uref" href="http://oss.oracle.com/projects/DTrace">http://oss.oracle.com/projects/DTrace</a>)
+<abbr class="acronym">USDT</abbr> 探测点。  <code class="code">DTrace</code> 探测点可在 C 和
+C<code class="t">++</code> 语言中使用。
+</li></ul>
+
+<a class="index-entry-id" id="index-semaphores-on-static-probe-points"></a>
+<p>一些 <code class="code">SystemTap</code> 探测点有一个关联的信号量变量；例如，如果您使用 DTrace 风格的 <samp class="file">.d</samp> 文件定义了探测点，就会自动出现这种情况。 如果您的探测点有信号量，
+<small class="sc">GDB</small> 当您使用 ‘<samp class="samp">-probe-stap</samp>’ 表示法指定断点时，会自动启用它。 但是，如果您通过其他方法（例如
+<code class="code">break file:line</code>）在探测点位置设置断点，那么 <small class="sc">GDB</small> 不会自动设置信号量。  <code class="code">DTrace</code> 探测点不支持信号量。
+</p>
+<p>您可以使用 <code class="code">info
+probes</code>, 并可选择使用参数：
+</p>
+<dl class="table">
+<dt><a id="index-info-probes"></a><span><code class="code">info probes <span class="r">[</span><var class="var">type</var><span class="r">]</span> <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#index-info-probes"> ¶</a></span></dt>
+<dd><p>如果提供， <var class="var">类型</var> 可以是 <code class="code">stap</code> 用于列出
+<code class="code">SystemTap</code> 探测点，或者 <code class="code">dtrace</code> 用于列出 <code class="code">DTrace</code>
+探测点。 如果省略，则列出所有类型的探测点。
+</p>
+<p>如果提供， <var class="var">提供者</var> 是一个正则表达式，用于在选择要列出的探测点时与提供者名称进行匹配。 如果省略，则列出所有提供者的所有探测点。
+</p>
+<p>如果提供， <var class="var">名称</var> 是一个正则表达式，用于在选择要列出的探测点时与探测点名称进行匹配。 如果省略，则在决定是否显示探测点时不考虑探测点名称。
+</p>
+<p>如果提供， <var class="var">目标文件</var> 是一个正则表达式，用于选择要检查的目标文件（可执行文件或共享库）。 如果未提供，则考虑所有目标文件。
+</p>
+</dd>
+<dt><code class="code">info probes all</code></dt>
+<dd><p>列出所有类型的可用静态探测点。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-enabling-and-disabling-probes"></a>
+<p>一些探测点可以启用和/或禁用。 启用或禁用探测点的效果取决于所处理的探测点类型。 一些 <code class="code">DTrace</code> 探测点可以启用或禁用，但 <code class="code">SystemTap</code> 探测点不能禁用。
+</p>
+<p>您可以使用以下命令启用（或禁用）一个或多个探测点，并可选择使用参数：
+</p>
+<a class="anchor" id="enable-probes"></a><dl class="table">
+<dt><a id="index-enable-probes"></a><span><code class="code">enable probes <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#index-enable-probes"> ¶</a></span></dt>
+<dd><p>如果提供， <var class="var">提供者</var> 是一个正则表达式，用于在选择要启用的探测点时与提供者名称进行匹配。 如果省略，则启用所有提供者的所有探测点。
+</p>
+<p>如果提供， <var class="var">名称</var> 是一个正则表达式，用于在选择要启用的探测点时与探测点名称进行匹配。 如果省略，则在决定是否启用探测点时不考虑探测点名称。
+</p>
+<p>如果提供， <var class="var">目标文件</var> 是一个正则表达式，用于选择要检查的目标文件（可执行文件或共享库）。 如果未提供，则考虑所有目标文件。
+</p>
+</dd>
+<dt><a id="index-disable-probes"></a><span><code class="code">disable probes <span class="r">[</span><var class="var">provider</var> <span class="r">[</span><var class="var">name</var> <span class="r">[</span><var class="var">objfile</var><span class="r">]</span><span class="r">]</span><span class="r">]</span></code><a class="copiable-link" href="#index-disable-probes"> ¶</a></span></dt>
+<dd><p>请参阅上面的 <code class="code">enable probes</code> 命令，以了解此命令接受的可选参数的描述。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-_0024_005fprobe_005farg_002c-convenience-variable"></a>
+<p>一个探测点最多可以指定十二个参数。 这些参数在探测点定义的位置可用，即当当前程序计数器位于探测点位置时。 可以使用便利变量访问这些参数（请参阅 <a class="pxref" href="Convenience-Vars.html">便利变量</a>)
+<code class="code">$_probe_arg0</code>…<code class="code">$_probe_arg11</code>. 在 <code class="code">SystemTap</code>
+探测点中，每个探测点参数都是一个适当大小的整数；类型不会被保留。 在 <code class="code">DTrace</code> 探测点中，如果类型能被 <small class="sc">GDB</small>识别，则类型会被保留；否则，探测点参数的值将是一个长整数。 便利变量 <code class="code">$_probe_argc</code> 保存当前探测点的参数数量。
+</p>
+<p>这些变量始终可用，但在探测点以外的任何位置尝试访问它们将导致 <small class="sc">GDB</small> 给出错误消息。
+</p>
+
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF5" id="FOOT5">(5)</a></h5>
+<p>请参阅
+<a class="uref" href="http://sourceware.org/systemtap/wiki/AddingUserSpaceProbingToApps">http://sourceware.org/systemtap/wiki/AddingUserSpaceProbingToApps</a>
+有关如何添加的更多信息 <code class="code">SystemTap</code> <abbr class="acronym">SDT</abbr>
+应用程序中的探测点。</p>
+<h5 class="footnote-body-heading"><a href="#DOCF6" id="FOOT6">(6)</a></h5>
+<p>请参阅
+<a class="uref" href="http://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation">http://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation</a>
+关于如何实现 <abbr class="acronym">SDT</abbr> 探测点的良好参考。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Error-in-Breakpoints.html">“无法插入断点”</a>, 上一项： <a href="Save-Breakpoints.html">如何将断点保存到文件</a>, 上级： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

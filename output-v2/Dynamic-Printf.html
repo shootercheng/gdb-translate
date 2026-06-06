@@ -1,0 +1,138 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>动态打印（使用GDB调试）</title>
+
+<meta name="description" content="Dynamic Printf (Debugging with GDB)"/>
+<meta name="keywords" content="Dynamic Printf (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Save-Breakpoints.html" rel="next" title="Save Breakpoints"/>
+<link href="Break-Commands.html" rel="prev" title="Break Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Dynamic-Printf">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Save-Breakpoints.html" rel="next">如何将断点保存到文件</a>，上一个： <a accesskey="p" href="Break-Commands.html" rel="prev">断点命令列表</a>，向上： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Dynamic-Printf-1"><span>5.1.8动态打印<a class="copiable-link" href="#Dynamic-Printf-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-dynamic-printf"></a>
+<a class="index-entry-id" id="index-dprintf"></a>
+<p>动态打印命令 <code class="code">dprintf</code> 将断点与程序数据的格式化打印相结合，让你获得即时插入 <code class="code">printf</code> 调用到程序中的效果，而无需重新编译它。
+</p>
+<p>在其最基本的形式中，输出会发送到GDB控制台。 但是， <code class="code">dprintf-style</code> 你可以设置变量 <code class="code">printf</code> 以进行其他处理。例如，你可以通过调用程序的
+</p>
+<p>如果你正在使用存根或代理进行远程调试，你还可以要求远程代理处理打印输出。除了确保输出与程序可能产生的任何其他输出一起发送到远程程序的设备外，你还可以要求即使在与远程目标断开连接后，dprintf仍保持活动状态。使用存根/代理也更高效，因为它可以在无需与 <small class="sc">GDB</small>通信的情况下完成所有操作。
+</p>
+<dl class="table">
+<dt><a id="index-dprintf-1"></a><span><code class="code">dprintf <var class="var">locspec</var>,<var class="var">template</var>,<var class="var">expression</var>[,<var class="var">expression</var>…]</code><a class="copiable-link" href="#index-dprintf-1"> ¶</a></span></dt>
+<dd><p>每当执行到达由解析
+<var class="var">位置规范</var>产生的代码位置时，在 <var class="var">表达式</var> 的控制下，根据 <var class="var">模板</var>打印一个或多个
+</p>
+</dd>
+<dt><code class="code">set dprintf-style <var class="var">style</var></code></dt>
+<dd><p>将dprintf输出设置为以下几种不同样式之一进行处理。样式的更改会立即影响所有现有的动态打印。（如果你需要对打印命令进行单独控制，只需使用显式提供的命令列表定义普通断点。）
+</p>
+<dl class="table">
+<dt><a id="index-dprintf_002dstyle-gdb"></a><span><code class="code">gdb</code><a class="copiable-link" href="#index-dprintf_002dstyle-gdb"> ¶</a></span></dt>
+<dd><p>使用 <small class="sc">GDB</small> <code class="code">printf</code> 命令处理输出。使用此样式时，可以使用‘<samp class="samp">%V</samp>’格式说明符（见 <a class="pxref" href="Output.html#g_t_0025V-Format-Specifier">%V格式说明符</a>）。
+</p>
+</dd>
+<dt><a id="index-dprintf_002dstyle-call"></a><span><code class="code">call</code><a class="copiable-link" href="#index-dprintf_002dstyle-call"> ¶</a></span></dt>
+<dd><p>通过调用程序中的函数（通常是
+<code class="code">printf</code>）来处理输出。使用此样式时，支持的格式说明符完全取决于所调用的函数。
+</p>
+<p>大多数 <small class="sc">GDB</small>的格式说明符与 <code class="code">printf</code> 函数支持的格式说明符一致，但是， <small class="sc">GDB</small>的‘<samp class="samp">%V</samp>’格式说明符扩展不被 <code class="code">printf</code>支持。使用‘<samp class="samp">调用</samp>’样式的dprintf时，应注意仅使用输出函数支持的格式说明符，否则结果将是未定义的。
+</p>
+</dd>
+<dt><a id="index-dprintf_002dstyle-agent"></a><span><code class="code">agent</code><a class="copiable-link" href="#index-dprintf_002dstyle-agent"> ¶</a></span></dt>
+<dd><p>让远程调试代理（如 <code class="code">gdbserver</code>）本身处理输出。此样式仅适用于支持在目标上运行命令的代理。此样式不支持‘<samp class="samp">%V</samp>’格式说明符。
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">set dprintf-function <var class="var">function</var></code></dt>
+<dd><p>设置如果dprintf样式为 <code class="code">call</code>时要调用的函数。默认情况下，其值为 <code class="code">printf</code>。你可以将其设置为任何可以根据 <small class="sc">GDB</small> 命令求值为函数的表达式。 <code class="code">call</code>
+command.
+</p>
+</dd>
+<dt><code class="code">set dprintf-channel <var class="var">channel</var></code></dt>
+<dd><p>为dprintf设置一个“通道”。如果设置为非空值，
+<small class="sc">GDB</small> 将其求值为一个表达式，并将结果作为第一个参数传递给 <code class="code">dprintf-function</code>，方式与
+<code class="code">fprintf</code> 及类似函数相同。否则，dprintf格式字符串将作为第一个参数，方式与 <code class="code">printf</code>相同。
+</p>
+<p>例如，如果要将 <code class="code">dprintf</code> 输出发送到分配给变量 <code class="code">mylog</code>的标准I/O流日志文件中，你可以执行以下操作：
+</p>
+<div class="example">
+<pre class="example-preformatted">(gdb) set dprintf-style call
+(gdb) set dprintf-function fprintf
+(gdb) set dprintf-channel mylog
+(gdb) dprintf 25,&#34;at line 25, glob=%d\n&#34;,glob
+Dprintf 1 at 0x123456: file main.c, line 25.
+(gdb) info break
+1       dprintf        keep y   0x00123456 in main at main.c:25
+        call (void) fprintf (mylog,&#34;at line 25, glob=%d\n&#34;,glob)
+        continue
+(gdb)
+</pre></div>
+
+<p>请注意， <code class="code">info break</code> 将动态打印命令显示为普通断点命令；因此你可以轻松看到变量设置的效果。
+</p>
+</dd>
+<dt><a id="index-set-disconnected_002ddprintf"></a><span><code class="code">set disconnected-dprintf on</code><a class="copiable-link" href="#index-set-disconnected_002ddprintf"> ¶</a></span></dt>
+<dt><code class="code">set disconnected-dprintf off</code></dt>
+<dd><p>选择如果 <code class="code">dprintf</code> 命令在
+<small class="sc">GDB</small> 与目标断开连接后是否应继续运行。这仅适用于 <code class="code">dprintf-style</code> 是 <code class="code">agent</code>的情况。
+</p>
+</dd>
+<dt><a id="index-show-disconnected_002ddprintf"></a><span><code class="code">show disconnected-dprintf off</code><a class="copiable-link" href="#index-show-disconnected_002ddprintf"> ¶</a></span></dt>
+<dd><p>显示当前对于断开连接的 <code class="code">dprintf</code>的选择。
+</p>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> 不会检查函数和通道的有效性，依赖于你提供在使用它们的上下文中有意义的值。例如，函数和通道可能是局部变量的值，但如果是这种情况，那么所有启用的动态打印必须位于这些局部变量的作用域内的位置。如果求值失败， <small class="sc">GDB</small> 将报告错误。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Save-Breakpoints.html">如何将断点保存到文件</a>，上一个： <a href="Break-Commands.html">断点命令列表</a>，向上： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

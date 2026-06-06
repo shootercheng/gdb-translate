@@ -1,0 +1,181 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>调试 C++（使用 GDB 调试）</title>
+
+<meta name="description" content="Debugging C Plus Plus (Debugging with GDB)"/>
+<meta name="keywords" content="Debugging C Plus Plus (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="C.html" rel="up" title="C"/>
+<link href="Decimal-Floating-Point.html" rel="next" title="Decimal Floating Point"/>
+<link href="Debugging-C.html" rel="prev" title="Debugging C"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Debugging-C-Plus-Plus">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Decimal-Floating-Point.html" rel="next">十进制浮点格式</a>, 上一项： <a accesskey="p" href="Debugging-C.html" rel="prev"><small class="sc">GDB</small> 和 C</a>, 返回上一级： <a accesskey="u" href="C.html" rel="up">C 和 C<code class="t">++</code></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="gdb-Features-for-C_002b_002b"><span>15.4.1.7 <small class="sc">GDB</small> C 的特性<code class="t">++</code><a class="copiable-link" href="#gdb-Features-for-C_002b_002b"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-commands-for-C_002b_002b"></a>
+
+<p>一些 <small class="sc">GDB</small> 命令在处理 C 时特别有用，还有一些是专门为 C 设计的。 以下是一个总结：<code class="t">++</code>, 并且有些是专门为与 C 一起使用而设计的。<code class="t">++</code>以下是一个总结：
+</p>
+<dl class="table">
+<dt><a id="index-break-in-overloaded-functions"></a><span><code class="code"><span class="r">breakpoint menus</span></code><a class="copiable-link" href="#index-break-in-overloaded-functions"> ¶</a></span></dt>
+<dd><p>当你想在一个名称重载的函数中设置断点时，
+<small class="sc">GDB</small> 有能力显示一个可能的断点位置菜单，以帮助你指定你想要的函数定义。 请参阅 <a class="xref" href="Ambiguous-Expressions.html">模糊表达式</a>.
+</p>
+</dd>
+<dt><a id="index-overloading-in-C_002b_002b"></a><span><code class="code">rbreak <var class="var">regex</var></code><a class="copiable-link" href="#index-overloading-in-C_002b_002b"> ¶</a></span></dt>
+<dd><p>使用正则表达式设置断点有助于在不属于任何特殊类的重载函数上设置断点。 请参阅 <a class="xref" href="Set-Breaks.html">设置断点</a>.
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-exception-handling"></a><span><code class="code">catch throw</code><a class="copiable-link" href="#index-C_002b_002b-exception-handling"> ¶</a></span></dt>
+<dt><code class="code">catch rethrow</code></dt>
+<dt><code class="code">catch catch</code></dt>
+<dd><p>调试 C<code class="t">++</code> 使用这些命令处理异常。 请参阅 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>.
+</p>
+</dd>
+<dt><a id="index-inheritance"></a><span><code class="code">ptype <var class="var">typename</var></code><a class="copiable-link" href="#index-inheritance"> ¶</a></span></dt>
+<dd><p>打印类型的继承关系以及其他信息
+<var class="var">类型名</var>. 请参阅 <a class="xref" href="Symbols.html">检查符号表</a>.
+</p>
+</dd>
+<dt><code class="code">info vtbl <var class="var">expression</var>.</code></dt>
+<dd><p>该 <code class="code">info vtbl</code> 命令可用于显示由 <var class="var">表达式计算出的对象的虚方法表。 这会为每个虚表显示一个条目；当使用多重继承时，可能会有多个虚表。</var>当使用多重继承时，可能会有多个虚表。
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-demangling"></a><span><code class="code">demangle <var class="var">name</var></code><a class="copiable-link" href="#index-C_002b_002b-demangling"> ¶</a></span></dt>
+<dd><p>反修饰 <var class="var">名称</var>. 请参阅 <a class="xref" href="Symbols.html">检查符号表</a>, 以获取关于 <code class="code">demangle</code> 命令的更完整描述。
+</p>
+</dd>
+<dt><a id="index-C_002b_002b-symbol-display"></a><span><code class="code">set print demangle</code><a class="copiable-link" href="#index-C_002b_002b-symbol-display"> ¶</a></span></dt>
+<dt><code class="code">show print demangle</code></dt>
+<dt><code class="code">set print asm-demangle</code></dt>
+<dt><code class="code">show print asm-demangle</code></dt>
+<dd><p>控制 C<code class="t">++</code> 符号是否以其源代码形式显示，无论是在将代码显示为 C<code class="t">++</code> 源代码还是在显示反汇编时。 请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>.
+</p>
+</dd>
+<dt><code class="code">set print object</code></dt>
+<dt><code class="code">show print object</code></dt>
+<dd><p>选择打印对象的派生（实际）类型还是声明类型。 请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>.
+</p>
+</dd>
+<dt><code class="code">set print vtbl</code></dt>
+<dt><code class="code">show print vtbl</code></dt>
+<dd><p>控制打印虚函数表的格式。 请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>.
+( <code class="code">vtbl</code> 命令在使用 HP ANSI C<code class="t">++</code> 编译器编译的程序上不起作用（<code class="code">aCC</code>).)
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-overloaded-functions_002c-overload-resolution"></a>
+<a id="index-set-overload_002dresolution"></a><span><code class="code">set overload-resolution on</code><a class="copiable-link" href="#index-set-overload_002dresolution"> ¶</a></span></dt>
+<dd><p>启用 C<code class="t">++</code> 表达式求值的重载解析。 默认是启用的。 对于重载函数， <small class="sc">GDB</small> 会计算参数并使用标准 C<code class="t">++</code> 转换规则（请参阅 <a class="ref" href="C-Plus-Plus-Expressions.html">C<code class="t">++</code> 表达式</a>, 了解详细信息）搜索签名与参数类型匹配的函数。 如果找不到匹配项，它会发出一条消息。
+</p>
+</dd>
+<dt><code class="code">set overload-resolution off</code></dt>
+<dd><p>禁用 C<code class="t">++</code> 表达式求值的重载解析。 对于非类成员函数的重载函数， <small class="sc">GDB</small>
+会选择符号表中找到的第一个指定名称的函数，无论其参数类型是否正确。 对于类成员函数的重载函数， <small class="sc">GDB</small>
+会搜索签名 <em class="emph">完全</em> 匹配参数类型的函数。
+</p>
+</dd>
+<dt><a id="index-show-overload_002dresolution"></a><span><code class="code">show overload-resolution</code><a class="copiable-link" href="#index-show-overload_002dresolution"> ¶</a></span></dt>
+<dd><p>显示当前的重载解析设置。
+</p>
+</dd>
+<dt><code class="code"><span class="r">Overloaded symbol names</span></code></dt>
+<dd><p>你可以使用在 C 中声明此类符号的相同表示法指定重载符号的特定定义：<code class="t">++</code>类型
+<code class="code"><var class="var">symbol</var>(<var class="var">types</var>)</code> 而不仅仅是 <var class="var">符号</var>. 你还可以使用 <small class="sc">GDB</small> 命令行单词补全功能列出可用选项，或为你完成类型列表。 请参阅 <a class="xref" href="Completion.html">命令补全</a>, 了解如何执行此操作的详细信息。
+</p>
+</dd>
+<dt><code class="code"><span class="r">Breakpoints in template functions</span></code></dt>
+<dd>
+<p>与处理重载符号的方式类似， <small class="sc">GDB</small> 在遇到包含 C<code class="t">++</code> 模板的符号时，会忽略模板参数列表。 这允许在模板函数族或参数包含模板类型的函数上设置断点。
+</p>
+<p>该 <kbd class="kbd">限定</kbd> 标志可用于覆盖此行为，使
+<small class="sc">GDB</small> 搜索特定的函数或类型。
+</p>
+<p>该 <small class="sc">GDB</small> 命令行单词补全功能也理解模板参数，可用于列出可用选项或为你完成模板参数列表。 请参阅 <a class="xref" href="Completion.html">命令补全</a>, 了解如何执行此操作的详细信息。
+</p>
+</dd>
+<dt><code class="code"><span class="r">Breakpoints in functions with ABI tags</span></code></dt>
+<dd>
+<p>GNU C<code class="t">++</code> 编译器引入了 ABI “标签” 的概念，这些标签对应于类型、函数或变量的 ABI 变化，而这些变化在修饰名中不会体现。 请参阅
+<a class="url" href="https://developers.redhat.com/blog/2015/02/05/gcc5-and-the-c11-abi/">https://developers.redhat.com/blog/2015/02/05/gcc5-and-the-c11-abi/</a>
+以获取更多详细信息。
+</p>
+<p>ABI 标签在 C<code class="t">++</code> 反修饰名中可见。 例如，一个返回 std::string 的函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">std::string function(int);
+</pre></div>
+
+<p>当为 C++11 ABI 编译时，会标记有 <code class="code">cxx11</code> ABI 标签，并且 <small class="sc">GDB</small> 符号显示如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">function[abi:cxx11](int)
+</pre></div>
+
+<p>你可以像没有标签一样简单地在这类函数上设置断点。 例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b function(int)
+断点 2 在 0x40060d: 文件 main.cc，第 10 行。
+(gdb) info breakpoints
+编号    类型          处置 启用 地址     位置
+1       断点         保留 y  0x0040060d 在 function[abi:cxx11](int)
+                                           于 main.cc:10
+</pre></div>
+
+<p>在极少数情况下，你需要区分不同的 ABI 标签，你可以通过在函数名中包含 ABI 标签来实现，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) b ambiguous[abi:other_tag](int)
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Decimal-Floating-Point.html">十进制浮点格式</a>, 上一项： <a href="Debugging-C.html"><small class="sc">GDB</small> 和 C</a>, 返回上一级： <a href="C.html">C 和 C<code class="t">++</code></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

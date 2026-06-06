@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>断点相关警告（使用 GDB 调试）</title>
+
+<meta name="description" content="Breakpoint-related Warnings (Debugging with GDB)"/>
+<meta name="keywords" content="Breakpoint-related Warnings (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Error-in-Breakpoints.html" rel="prev" title="Error in Breakpoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Breakpoint_002drelated-Warnings">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Error-in-Breakpoints.html" rel="prev">“无法插入断点”</a>, 上级： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="g_t_0060_0060Breakpoint-address-adjusted_002e_002e_002e_0027_0027"><span>5.1.12 “断点地址已调整...”<a class="copiable-link" href="#g_t_0060_0060Breakpoint-address-adjusted_002e_002e_002e_0027_0027"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-breakpoint-address-adjusted"></a>
+
+<p>某些处理器架构对断点可以设置的地址施加了限制。对于有此类限制的架构，
+<small class="sc">GDB</small> 将尝试调整断点的地址以符合架构规定的限制。
+</p>
+<p>这样的架构的一个例子是富士通 FR - V。FR - V 是一种 VLIW 架构，其中多个类似 RISC 的指令可以捆绑在一起进行并行执行。FR - V 架构将断点指令在这样一个捆绑中的位置限制为地址最低的指令。  <small class="sc">GDB</small>
+通过将断点的地址调整为捆绑中的第一个指令来遵守此限制。
+</p>
+<p>优化后的代码通常会有包含来自不同源语句的指令的捆绑，因此可能会发生断点的地址从一个源语句调整到另一个源语句的情况。由于这种调整可能会显著改变 <small class="sc">GDB</small>的断点相关行为，使其与用户的预期不同，因此在首次设置断点时以及断点命中时都会打印警告信息。
+</p>
+<p>当设置一个经过地址调整的断点时，会打印如下所示的警告信息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">警告：断点地址已从 0x00010414 调整到 0x00010410。
+</pre></div>
+
+<p>此类警告既会针对用户可设置的断点，也会针对 <small class="sc">GDB</small>的内部断点打印。如果您看到这些警告之一，您应该验证在调整后的地址设置的断点是否会产生预期的效果。如果没有，相关的断点可以被移除，并设置其他会产生预期行为的断点。例如，将断点设置在后续的指令处可能就足够了。在某些情况下，条件断点也可能有助于防止断点触发过于频繁。
+</p>
+<p><small class="sc">GDB</small> 在遇到这些调整后的断点之一而停止时，也会发出警告：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">警告：断点 1 的地址先前已从 0x00010414 调整到 0x00010410。
+</pre></div>
+
+<p>当遇到此警告时，除了在断点比预期更早或更频繁命中的情况下，采取补救措施可能已经太晚了。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Error-in-Breakpoints.html">“无法插入断点”</a>, 上级： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

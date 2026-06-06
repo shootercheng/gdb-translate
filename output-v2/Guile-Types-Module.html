@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile类型模块（使用GDB调试）</title>
+
+<meta name="description" content="Guile Types Module (Debugging with GDB)"/>
+<meta name="keywords" content="Guile Types Module (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-Modules.html" rel="up" title="Guile Modules"/>
+<link href="Guile-Printing-Module.html" rel="prev" title="Guile Printing Module"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-Types-Module">
+<div class="nav-panel">
+<p>
+上一个： <a accesskey="p" href="Guile-Printing-Module.html" rel="prev">Guile打印模块</a>, 上一级： <a accesskey="u" href="Guile-Modules.html" rel="up">Guile模块</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Guile-Types-Module-1"><span>23.4.5.2 Guile类型模块<a class="copiable-link" href="#Guile-Types-Module-1"> ¶</a></span></h4>
+
+<p>此模块提供了一组用于处理
+<code class="code">&lt;gdb:type&gt;</code> 对象的实用工具。
+</p>
+<p>用法：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb types))
+</pre></div>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-get_002dbasic_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">get-basic-type</strong> <var class="def-var-arguments">类型</var><a class="copiable-link" href="#index-get_002dbasic_002dtype"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">类型</var> 去除了const和volatile限定符，
+并将typedef和C<code class="t">++</code> 引用转换为底层类型。
+</p>
+<p>C<code class="t">++</code> 示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">typedef const int const_int;
+const_int foo (3);
+const_int&amp; foo_ref (foo);
+int main () { return 0; }
+</pre></div>
+
+<p>然后在gdb中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) start
+(gdb) guile (use-modules (gdb) (gdb types))
+(gdb) guile (define foo-ref (parse-and-eval &#34;foo_ref&#34;))
+(gdb) guile (get-basic-type (value-type foo-ref))
+#&lt;gdb:type int&gt;
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dhas_002dfield_002ddeep_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">type-has-field-deep?</strong> <var class="def-var-arguments">类型 字段</var><a class="copiable-link" href="#index-type_002dhas_002dfield_002ddeep_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">类型</var>（假定为具有字段的类型，
+例如，结构体或联合体）具有字段 <var class="var">字段</var>。
+否则返回 <code class="code">#f</code>。
+这会搜索基类，而 <code class="code">type-has-field?</code> 不会。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002denum_002dhashtable"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-enum-hashtable</strong> <var class="def-var-arguments">枚举类型</var><a class="copiable-link" href="#index-make_002denum_002dhashtable"> ¶</a></span></dt>
+<dd><p>返回一个由 <var class="var">枚举类型</var>生成的Guile哈希表。
+哈希表中的元素通过 <code class="code">hashq-ref</code>引用。
+</p></dd></dl>
+
+</div>
+
+
+
+
+
+</body></html>

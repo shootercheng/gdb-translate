@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>注释概述（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Annotations Overview (Debugging with GDB)"/>
+<meta name="keywords" content="Annotations Overview (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Annotations.html" rel="up" title="Annotations"/>
+<link href="Server-Prefix.html" rel="next" title="Server Prefix"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Annotations-Overview">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Server-Prefix.html" rel="next">服务器前缀</a>, 上一项： <a accesskey="u" href="Annotations.html" rel="up"><small class="sc">GDB</small> 注释</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="What-is-an-Annotation_003f"><span>28.1 什么是注释？<a class="copiable-link" href="#What-is-an-Annotation_003f"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-annotations"></a>
+
+<p>注释以换行符、两个 ‘<samp class="samp">控制 - Z</samp>’ 字符和注释名称开头。如果没有与该注释相关的额外信息，注释名称后面紧接着一个换行符。如果有额外信息，注释名称后面跟着一个空格、额外信息和一个换行符。额外信息不能包含换行符。
+</p>
+<p>任何不以换行符和两个 ‘<samp class="samp">控制 - Z</samp>’ 字符开头的输出表示来自 <small class="sc">GDB</small>. 目前不需要 <small class="sc">GDB</small> 输出一个换行符后接两个 ‘<samp class="samp">控制 - Z</samp>’ 字符，但如果有这样的需求，注释可以通过 ‘<samp class="samp">转义</samp>’ 注释进行扩展，该注释表示输出这三个字符。
+</p>
+<p>注释 <var class="var">级别</var>, 它使用
+<samp class="option">--annotate</samp> 命令行选项指定（请参阅 <a class="pxref" href="Mode-Options.html">选择模式</a>），控制 <small class="sc">GDB</small> 与其提示符、表达式的值、源代码行和其他类型的输出一起打印多少信息。级别 0 表示不使用注释，级别 1 用于 <small class="sc">GDB</small> 作为 <small class="sc">GNU</small> Emacs 的子进程运行时，级别 3 是适合控制 <small class="sc">GDB</small>的程序的最大注释级别，级别 2 的注释已被弃用（请参阅 <a data-manual="annotate" href="../annotate_html/Limitations.html#Limitations">注释接口的限制</a> 在 <cite class="cite">GDB 的弃用注释</cite>）。
+</p>
+<dl class="table">
+<dt><a id="index-set-annotate"></a><span><code class="code">set annotate <var class="var">level</var></code><a class="copiable-link" href="#index-set-annotate"> ¶</a></span></dt>
+<dd><p>该 <small class="sc">GDB</small> 命令 <code class="code">set annotate</code> 将注释级别设置为指定的 <var class="var">级别</var>.
+</p>
+</dd>
+<dt><a id="index-show-annotate"></a><span><code class="code">show annotate</code><a class="copiable-link" href="#index-show-annotate"> ¶</a></span></dt>
+<dd><p>显示当前的注释级别。
+</p></dd>
+</dl>
+
+<p>本章描述级别 3 的注释。
+</p>
+<p>启动 <small class="sc">GDB</small> 并使用注释的一个简单示例是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ <kbd class="kbd">gdb --annotate=3</kbd>
+GNU gdb 6.0
+版权所有 2003 自由软件基金会，Inc.
+GDB 是自由软件，受 GNU 通用公共许可证保护，
+并且在某些条件下，欢迎您对其进行修改和/或分发副本。
+输入 &#34;show copying&#34; 查看条件。
+GDB 绝对没有任何保证。输入 &#34;show warranty&#34; 了解详情。
+此 GDB 配置为 &#34;i386 - pc - linux - gnu&#34;
+
+^Z^Zpre - prompt
+(gdb)
+^Z^Zprompt
+<kbd class="kbd">quit</kbd>
+
+^Z^Zpost - prompt
+$
+</pre></div>
+
+<p>这里 ‘<samp class="samp">quit</samp>’ 是输入给 <small class="sc">GDB</small>的；其余是来自
+<small class="sc">GDB</small>的输出。以 ‘<samp class="samp">^Z^Z</samp>’ 开头的三行（其中 ‘<samp class="samp">^Z</samp>’ 表示一个 ‘<samp class="samp">控制 - Z</samp>’ 字符）是注释；其余是来自 <small class="sc">GDB</small>的输出。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Server-Prefix.html">服务器前缀</a>, 上一项： <a href="Annotations.html"><small class="sc">GDB</small> 注释</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

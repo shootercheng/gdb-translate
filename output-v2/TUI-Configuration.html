@@ -1,0 +1,145 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>TUI配置（使用GDB调试）</title>
+
+<meta name="description" content="TUI Configuration (Debugging with GDB)"/>
+<meta name="keywords" content="TUI Configuration (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="TUI.html" rel="up" title="TUI"/>
+<link href="TUI-Commands.html" rel="prev" title="TUI Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-Configuration">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="TUI-Commands.html" rel="prev"></a>, 上级： <a accesskey="u" href="TUI.html" rel="up"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="TUI-Configuration-Variables"><span>25.6 TUI配置变量<a class="copiable-link" href="#TUI-Configuration-Variables"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-TUI-configuration-variables"></a>
+
+<p>有几个配置变量控制TUI窗口的外观。
+</p>
+<dl class="table">
+<dt><a id="index-set-tui-border_002dkind"></a><span><code class="code">set tui border-kind <var class="var">kind</var></code><a class="copiable-link" href="#index-set-tui-border_002dkind"> ¶</a></span></dt>
+<dd><p>选择源窗口、汇编窗口和寄存器窗口的边框外观。
+可能的值如下：
+</p><dl class="table">
+<dt><code class="code">space</code></dt>
+<dd><p>使用空格字符绘制边框。
+</p>
+</dd>
+<dt><code class="code">ascii</code></dt>
+<dd><p>使用 <small class="sc">ASCII</small> 字符 ‘<samp class="samp">+</samp>’、‘<samp class="samp">-</samp>’ 和 ‘<samp class="samp">|</samp>’ 绘制边框。
+</p>
+</dd>
+<dt><code class="code">acs</code></dt>
+<dd><p>使用备用字符集绘制边框。 如果终端支持，边框将使用字符线条图形绘制。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-set-tui-active_002dborder_002dmode"></a><span><code class="code">set tui border-mode <var class="var">mode</var></code><a class="copiable-link" href="#index-set-tui-active_002dborder_002dmode"> ¶</a></span></dt>
+<dd><a class="index-entry-id" id="index-set-tui-border_002dmode"></a>
+</dd>
+<dt><code class="code">set tui active-border-mode <var class="var">mode</var></code></dt>
+<dd><p>选择非活动窗口或活动窗口边框的显示属性。 该 <var class="var">模式</var> 可以是以下之一：
+</p><dl class="table">
+<dt><code class="code">normal</code></dt>
+<dd><p>使用正常属性显示边框。
+</p>
+</dd>
+<dt><code class="code">standout</code></dt>
+<dd><p>使用突出显示模式。
+</p>
+</dd>
+<dt><code class="code">reverse</code></dt>
+<dd><p>使用反显模式。
+</p>
+</dd>
+<dt><code class="code">half</code></dt>
+<dd><p>使用半亮模式。
+</p>
+</dd>
+<dt><code class="code">half-standout</code></dt>
+<dd><p>使用半亮和突出显示模式。
+</p>
+</dd>
+<dt><code class="code">bold</code></dt>
+<dd><p>使用超亮或粗体模式。
+</p>
+</dd>
+<dt><code class="code">bold-standout</code></dt>
+<dd><p>使用超亮或粗体和突出显示模式。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-tabset"></a>
+<a id="index-set-tui-tab_002dwidth"></a><span><code class="code">set tui tab-width <var class="var">nchars</var></code><a class="copiable-link" href="#index-set-tui-tab_002dwidth"> ¶</a></span></dt>
+<dd><p>将制表位宽度设置为 <var class="var">nchars</var> 个字符。 此设置会影响源窗口和汇编窗口中制表符的显示。
+</p>
+</dd>
+<dt><a id="index-set-tui-compact_002dsource"></a><span><code class="code">set tui compact-source <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-tui-compact_002dsource"> ¶</a></span></dt>
+<dd><p>设置TUI源窗口是否以“紧凑”形式显示。
+默认显示为行号使用更多空间；紧凑显示仅使用当前文件中行号所需的空间。
+</p>
+<a class="anchor" id="tui_002dmouse_002devents"></a></dd>
+<dt><a id="index-set-tui-mouse_002devents"></a><span><code class="code">set tui mouse-events <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-tui-mouse_002devents"> ¶</a></span></dt>
+<dd><p>开启时（默认），鼠标点击可控制TUI（请参阅 <a class="pxref" href="TUI-Mouse-Support.html">TUI鼠标支持</a>）。
+关闭时，鼠标点击由终端处理，可启用终端原生的文本选择。
+</p>
+</dd>
+<dt><a id="index-set-debug-tui"></a><span><code class="code">set debug tui <span class="r">[</span>on|off<span class="r">]</span></code><a class="copiable-link" href="#index-set-debug-tui"> ¶</a></span></dt>
+<dd><p>开启或关闭显示 <small class="sc">GDB</small> 与TUI相关的内部调试消息。
+</p>
+</dd>
+<dt><a id="index-show-debug-tui"></a><span><code class="code">show debug tui</code><a class="copiable-link" href="#index-show-debug-tui"> ¶</a></span></dt>
+<dd><p>显示与TUI相关的内部调试消息的当前显示状态。 <small class="sc">GDB</small> 
+</p>
+</dd>
+</dl>
+
+<p>请注意，可以使用相应的 <code class="code">set style</code> 命令来控制TUI边框的颜色。 请参阅 <a class="xref" href="Output-Styling.html">输出样式设置</a>。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="TUI-Commands.html">TUI特定命令</a>, 上级： <a href="TUI.html"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

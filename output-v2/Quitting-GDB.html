@@ -1,0 +1,82 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>退出 GDB（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Quitting GDB (Debugging with GDB)"/>
+<meta name="keywords" content="Quitting GDB (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Invocation.html" rel="up" title="Invocation"/>
+<link href="Shell-Commands.html" rel="next" title="Shell Commands"/>
+<link href="Invoking-GDB.html" rel="prev" title="Invoking GDB"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Quitting-GDB">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Shell-Commands.html" rel="next"> shell 命令</a>, 上一项： <a accesskey="p" href="Invoking-GDB.html" rel="prev">调用 <small class="sc">GDB</small></a>, 上级： <a accesskey="u" href="Invocation.html" rel="up">进入和退出 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Quitting-gdb"><span>2.2 退出 <small class="sc">GDB</small><a class="copiable-link" href="#Quitting-gdb"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-exiting-gdb"></a>
+<a class="index-entry-id" id="index-leaving-gdb"></a>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-exit-_005bexpression_005d"></a>
+<a class="index-entry-id" id="index-q-_0028quit_0029"></a>
+<a id="index-quit-_005bexpression_005d"></a><span><code class="code">quit <span class="r">[</span><var class="var">expression</var><span class="r">]</span></code><a class="copiable-link" href="#index-quit-_005bexpression_005d"> ¶</a></span></dt>
+<dt><code class="code">exit <span class="r">[</span><var class="var">expression</var><span class="r">]</span></code></dt>
+<dt><code class="code">q</code></dt>
+<dd><p>要退出 <small class="sc">GDB</small>, 请使用 <code class="code">quit</code> 命令（缩写为
+<code class="code">q</code>）、 <code class="code">exit</code> 命令，或者输入文件结束符
+（通常是 <kbd class="kbd">Ctrl - d</kbd>）。如果不提供 <var class="var">表达式</var>,
+<small class="sc">GDB</small> 将正常终止；否则，它将使用
+ <var class="var">表达式</var> 的结果作为错误代码终止。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-interrupt"></a>
+<p>中断（通常是 <kbd class="kbd">Ctrl - c</kbd>）不会从 <small class="sc">GDB</small>退出，而是
+终止任何正在进行的 <small class="sc">GDB</small> 命令的操作，并
+返回到 <small class="sc">GDB</small> 命令级别。随时输入中断字符都是安全的，因为 <small class="sc">GDB</small> 直到安全的时候才会让它生效。
+</p>
+<p>如果您一直在使用 <small class="sc">GDB</small> 来控制一个已附加的进程或
+设备，您可以使用 <code class="code">detach</code> 命令
+（请参阅 <a class="pxref" href="Attach.html">调试一个正在运行的进程</a>）来释放它。
+</p>
+</div>
+
+
+
+
+
+</body></html>

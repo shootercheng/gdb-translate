@@ -1,0 +1,188 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的线程（使用 GDB 调试）</title>
+
+<meta name="description" content="Threads In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Threads In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Recordings-In-Python.html" rel="next" title="Recordings In Python"/>
+<link href="Events-In-Python.html" rel="prev" title="Events In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Threads-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Recordings-In-Python.html" rel="next">Python 中的记录</a>, 上一项： <a accesskey="p" href="Events-In-Python.html" rel="prev">Python 中的事件</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Threads-In-Python-1"><span>23.3.2.19 Python 中的线程<a class="copiable-link" href="#Threads-In-Python-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-threads-in-python"></a>
+
+<a class="index-entry-id" id="index-gdb_002eInferiorThread"></a>
+<p> <small class="sc">GDB</small>通过 <code class="code">gdb.InferiorThread</code> 类。
+</p>
+<p>以下与线程相关的函数在 <code class="code">gdb</code>
+模块中可用：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005fthread"><span class="category-def">函数： </span><span><strong class="def-name">gdb.selected_thread</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005fthread"> ¶</a></span></dt>
+<dd><p>此函数返回选定线程的线程对象。如果没有选定的线程，将返回 <code class="code">None</code>.
+</p></dd></dl>
+
+<p>要获取 inferior 的线程列表，请使用 <code class="code">Inferior.threads()</code>
+方法。请参阅 <a class="xref" href="Inferiors-In-Python.html">Python 中的 Inferiors</a>.
+</p>
+<p>一个 <code class="code">gdb.InferiorThread</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002ename"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.name</strong><a class="copiable-link" href="#index-InferiorThread_002ename"> ¶</a></span></dt>
+<dd><p>线程的名称。如果用户使用
+<code class="code">thread name</code>, 指定了名称，则返回该名称。否则，如果操作系统提供了名称，则返回该名称。否则，返回 <code class="code">None</code>.
+</p>
+<p>可以为该属性赋值。新值必须是字符串对象，用于设置新名称，或者 <code class="code">None</code>, 用于删除用户指定的线程名称。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002enum"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.num</strong><a class="copiable-link" href="#index-InferiorThread_002enum"> ¶</a></span></dt>
+<dd><p>由 GDB 分配的每个 inferior 中的线程编号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002eglobal_005fnum"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.global_num</strong><a class="copiable-link" href="#index-InferiorThread_002eglobal_005fnum"> ¶</a></span></dt>
+<dd><p>由 GDB 分配的线程全局 ID。例如，您可以使用此 ID 使 Python 断点特定于线程（请参阅 <a class="pxref" href="Breakpoints-In-Python.html#python_005fbreakpoint_005fthread">Breakpoint.thread 属性</a>).
+</p></dd></dl>
+
+<a class="anchor" id="inferior_005fthread_005fptid"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002eptid"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.ptid</strong><a class="copiable-link" href="#index-InferiorThread_002eptid"> ¶</a></span></dt>
+<dd><p>由操作系统分配的线程 ID。此属性是一个包含三个整数的元组。第一个是进程 ID（PID）；第二个是轻量级进程 ID（LWPID），第三个是线程 ID（TID）。LWPID 或 TID 可能为 0，表示操作系统不使用该标识符。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002eptid_005fstring"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.ptid_string</strong><a class="copiable-link" href="#index-InferiorThread_002eptid_005fstring"> ¶</a></span></dt>
+<dd><p>此只读属性包含一个表示
+<code class="code">InferiorThread.ptid</code>. 的字符串。这是 <small class="sc">GDB</small> 在‘<samp class="samp">目标 ID</samp>’列中使用的字符串，在 <kbd class="kbd">info threads</kbd> 输出中（请参阅 <a class="pxref" href="Threads.html#info_005fthreads">‘<samp class="samp">info threads</samp>’</a>).
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002einferior"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.inferior</strong><a class="copiable-link" href="#index-InferiorThread_002einferior"> ¶</a></span></dt>
+<dd><p>此线程所属的 inferior。此属性表示为一个 <code class="code">gdb.Inferior</code> 对象。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-InferiorThread_002edetails"><span class="category-def">变量： </span><span><strong class="def-name">InferiorThread.details</strong><a class="copiable-link" href="#index-InferiorThread_002edetails"> ¶</a></span></dt>
+<dd><p>包含目标特定线程状态信息的字符串。此字符串的格式因目标而异。如果此线程没有额外的状态信息，则此属性包含
+<code class="code">None</code>.
+</p>
+<p>例如，在 <small class="sc">GNU</small>/Linux 系统上，正在退出的线程将返回字符串‘<samp class="samp">正在退出</samp>’。对于远程目标，如果目标支持，将使用‘ <code class="code">details</code> qThreadExtraInfo<samp class="samp">’远程数据包获取该字符串（请参阅</samp>‘ <a class="pxref" href="General-Query-Packets.html#qThreadExtraInfo">qThreadExtraInfo<samp class="samp">’</samp>).</a>在
+</p>
+<p><small class="sc">GDB</small> ‘ <code class="code">details</code> 目标 ID<samp class="samp">’列中显示该字符串，在</samp>输出中（请参阅 <code class="code">info threads</code> ‘ <a class="pxref" href="Threads.html#info_005fthreads">info threads<samp class="samp">’</samp>’</a>).
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.InferiorThread</code> 对象具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">True</code> 如果该 <code class="code">gdb.InferiorThread</code> 对象有效，
+<code class="code">False</code> 如果无效。一个 <code class="code">gdb.InferiorThread</code> 对象在以下情况下将变为无效：线程退出，或者该线程所属的 inferior 被删除。所有其他 <code class="code">gdb.InferiorThread</code> 方法在调用时如果对象无效，将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002eswitch"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.switch</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002eswitch"> ¶</a></span></dt>
+<dd><p>这会将 <small class="sc">GDB</small>当前选定的线程更改为该对象所代表的线程。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002eis_005fstopped"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.is_stopped</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002eis_005fstopped"> ¶</a></span></dt>
+<dd><p>返回一个布尔值，指示线程是否已停止。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002eis_005frunning"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.is_running</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002eis_005frunning"> ¶</a></span></dt>
+<dd><p>返回一个布尔值，指示线程是否正在运行。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002eis_005fexited"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.is_exited</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002eis_005fexited"> ¶</a></span></dt>
+<dd><p>返回一个布尔值，指示线程是否已退出。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-InferiorThread_002ehandle"><span class="category-def">函数： </span><span><strong class="def-name">InferiorThread.handle</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-InferiorThread_002ehandle"> ¶</a></span></dt>
+<dd><p>返回线程对象的句柄，以 Python <code class="code">bytes</code>
+对象表示。可以通过以下方式构造句柄的表示形式： <code class="code">gdb.Value</code> 其中 <code class="code">gdb.Value(bufobj, type)</code>  <var class="var">bufobj</var> 是句柄的 Python <code class="code">bytes</code> 表示形式，并且 <var class="var">type</var> 是句柄类型的 <code class="code">gdb.Type</code> 。可以像在普通 Python 中一样为
+</p></dd></dl>
+
+<p>对象添加任意属性。例如，如果需要对与线程相关的信息进行额外记录，这将很有用。 <code class="code">gdb.InferiorThread</code> 请参阅
+</p>
+<p>选择属性名称 <a class="xref" href="Inferiors-In-Python.html#choosing-attribute-names">, 以获取为新属性选择合适名称的指导。</a>在这个人为构造的示例中，我们记录线程最后一次停止的时间：
+</p>
+<p>
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python
+import datetime
+
+def thread_stopped(event):
+    if event.inferior_thread is not None:
+        thread = event.inferior_thread
+    else:
+        thread = gdb.selected_thread()
+    thread._last_stop_time = datetime.datetime.today()
+
+gdb.events.stop.connect(thread_stopped)
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) file /tmp/hello
+Reading symbols from /tmp/hello...
+(gdb) start
+Temporary breakpoint 1 at 0x401198: file /tmp/hello.c, line 18.
+Starting program: /tmp/hello
+
+Temporary breakpoint 1, main () at /tmp/hello.c:18
+18	  printf (&#34;Hello World\n&#34;);
+(gdb) python print(gdb.selected_thread()._last_stop_time)
+2024-01-04 14:48:41.347036
+</pre></div></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Recordings-In-Python.html">Python 中的记录</a>, 上一项： <a href="Events-In-Python.html">Python 中的事件</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

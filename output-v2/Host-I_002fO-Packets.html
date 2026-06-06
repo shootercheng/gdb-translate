@@ -1,0 +1,152 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>主机 I/O 数据包（使用 GDB 调试）</title>
+
+<meta name="description" content="Host I/O Packets (Debugging with GDB)"/>
+<meta name="keywords" content="Host I/O Packets (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Interrupts.html" rel="next" title="Interrupts"/>
+<link href="Tracepoint-Packets.html" rel="prev" title="Tracepoint Packets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Host-I_002fO-Packets">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Interrupts.html" rel="next"></a> <a accesskey="p" href="Tracepoint-Packets.html" rel="prev"></a> <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Host-I_002fO-Packets-1"><span><a class="copiable-link" href="#Host-I_002fO-Packets-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-Host-I_002fO_002c-remote-protocol"></a>
+<a class="index-entry-id" id="index-file-transfer_002c-remote-protocol"></a>
+
+<p> <em class="dfn"></em> 数据包允许 <small class="sc">GDB</small> 在远程链接的另一端执行 I/O 操作。例如，主机 I/O 用于向具有自己文件系统的远程目标上传和下载文件。主机 I/O 使用与目标发起的文件 I/O 协议相同的常量值和数据结构布局。但是，主机 I/O 数据包的结构不同。目标发起的协议依赖目标内存来存储参数和缓冲区。主机 I/O 请求由 <small class="sc">GDB</small>, 并且不涉及目标的内存。请参阅 <a class="xref" href="File_002dI_002fO-Remote-Protocol-Extension.html">文件 I/O 远程协议扩展</a>
+</p>
+<p>
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">vFile:<var class="var">操作</var>: <var class="var">参数</var>…</samp>’</dt>
+<dd><p><var class="var">操作</var> 是特定请求的名称；目标在检查支持的操作时，应比较整个数据包名称直到第二个冒号。 <var class="var">参数</var> 的格式取决于操作。数字总是以十六进制传递。负数有明确的负号（即不使用补码）。字符串（例如文件名）编码为一系列十六进制字节。系统调用的最后一个参数可能是一个转义二进制数据的缓冲区（请参阅 <a class="pxref" href="Overview.html#Binary-Data">二进制数据</a>）。
+</p>
+</dd>
+</dl>
+
+<p>主机 I/O 数据包的有效响应如下：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">F <var class="var">结果</var> [, <var class="var">错误号</var>] [; <var class="var">附件</var>]</samp>’</dt>
+<dd><p><var class="var">结果</var> 是此操作返回的整数值，通常成功时为非负数，错误时为 -1。如果发生错误，
+<var class="var">错误号</var> 将包含在结果中，指定由文件 I/O 协议定义的值（请参阅 <a class="pxref" href="Errno-Values.html">错误号值</a>）。对于返回数据的操作， <var class="var">附件</var> 以二进制缓冲区的形式提供数据。响应数据包中的二进制缓冲区以正常方式转义（请参阅 <a class="pxref" href="Overview.html#Binary-Data">二进制数据</a>）。请参阅各个数据包文档以了解 <var class="var">结果</var> 和
+<var class="var">附件</var>的解释。
+</p>
+</dd>
+<dt>‘<samp class="samp"><!-- /@w --></samp>’</dt>
+<dd><p>空响应表示此操作未被识别。
+</p>
+</dd>
+</dl>
+
+<p>以下是支持的主机 I/O 操作：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">vFile:open: <var class="var">文件名</var>, <var class="var">标志</var>, <var class="var">模式</var></samp>’</dt>
+<dd><p>打开 <var class="var">文件名</var> 对应的文件并返回其文件描述符，如果发生错误则返回 -1。 <var class="var">文件名</var> 是一个字符串，
+<var class="var">标志</var> 是一个整数，表示打开标志的掩码（请参阅 <a class="pxref" href="Open-Flags.html">打开标志</a>），并且 <var class="var">模式</var> 是一个整数，表示如果创建文件时要使用的模式位掩码（请参阅 <a class="pxref" href="mode_005ft-Values.html">模式类型值</a>）。请参阅 <a class="xref" href="open.html">open</a>，了解打开标志和模式值的详细信息。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:close: <var class="var">文件描述符</var></samp>’</dt>
+<dd><p>关闭与 <var class="var">文件描述符</var> 对应的打开文件并返回 0，如果发生错误则返回 -1。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:pread: <var class="var">文件描述符</var>, <var class="var">计数</var>, <var class="var">偏移量</var></samp>’</dt>
+<dd><p>从与 <var class="var">文件描述符</var>对应的打开文件中读取数据。从文件起始位置的
+<var class="var">字节。目标可能读取的字节数较少；常见原因包括数据包大小限制和文件结束条件。返回读取的字节数。只有在文件末尾成功读取或</var> 处开始，最多将从文件中读取 <var class="var">偏移量</var>
+
+<var class="var">计数</var> 为零时，才应返回零。
+</p>
+<p>成功时，读取的数据应作为二进制附件返回。如果读取的字节数为零，响应应包含一个空的二进制附件（即尾随分号）。返回值是读取的目标字节数；如果某些字符被转义，二进制附件可能会更长。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:pwrite: <var class="var">文件描述符</var>, <var class="var">偏移量</var>, <var class="var">数据</var></samp>’</dt>
+<dd><p>将 <var class="var">数据</var> （一个二进制缓冲区）写入与 <var class="var">文件描述符</var>对应的打开文件。从文件起始位置的 <var class="var">偏移量</var> 处开始写入。与许多 <code class="code">write</code> 系统调用不同，没有单独的 <var class="var">计数</var> 参数；使用数据包中 <var class="var">数据</var> 的长度。‘<samp class="samp">vFile:pwrite</samp>’ 返回写入的字节数，可能比 <var class="var">数据</var>的长度短，或者如果发生错误则返回 -1。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:fstat: <var class="var">文件描述符</var></samp>’</dt>
+<dd><p>获取与 <var class="var">文件描述符</var>对应的打开文件的信息。成功时，信息作为二进制附件返回，返回值是该附件的字节大小。如果发生错误，返回值为 -1。返回的二进制附件的格式如 <a class="ref" href="struct-stat.html">结构体 stat</a>中所述。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:stat: <var class="var">文件名</var></samp>’</dt>
+<dd><p>获取目标上 <var class="var">文件名</var> 对应的文件的信息，就好像是通过‘<samp class="samp">stat</samp>’ 调用一样。成功时，信息作为二进制附件返回，返回值是该附件的字节大小。如果发生错误，返回值为 -1。返回的二进制附件的格式如 <a class="ref" href="struct-stat.html">结构体 stat</a>中所述。
+</p>
+<p>如果 <var class="var">文件名</var> 是一个符号链接，那么返回的信息是关于该链接所指向的文件的，这与‘<samp class="samp">stat</samp>’ 库调用一致。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:lstat: <var class="var">文件名</var></samp>’</dt>
+<dd><p>获取目标上 <var class="var">文件名</var> 对应的文件的信息，就好像是通过‘<samp class="samp">lstat</samp>’ 调用一样。成功时，信息作为二进制附件返回，返回值是该附件的字节大小。如果发生错误，返回值为 -1。返回的二进制附件的格式如 <a class="ref" href="struct-stat.html">结构体 stat</a>.
+</p>
+<p>此数据包与‘<samp class="samp">vFile:stat</samp>’ 相同，除了如果
+<var class="var">文件名</var> 是一个符号链接，那么此数据包返回关于该链接本身的信息，而不是该链接所指向的文件的信息，这与‘<samp class="samp">lstat</samp>’ 库调用一致。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:unlink: <var class="var">文件名</var></samp>’</dt>
+<dd><p>删除目标上 <var class="var">文件名</var> 对应的文件。返回 0，如果发生错误则返回 -1。 <var class="var">文件名</var> 是一个字符串。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:readlink: <var class="var">文件名</var></samp>’</dt>
+<dd><p>读取目标上 <var class="var">文件名</var> 对应的符号链接的值。返回读取的字节数，如果发生错误则返回 -1。
+</p>
+<p>成功时，读取的数据应作为二进制附件返回。如果读取的字节数为零，响应应包含一个空的二进制附件（即尾随分号）。返回值是读取的目标字节数；如果某些字符被转义，二进制附件可能会更长。
+</p>
+</dd>
+<dt>‘<samp class="samp">vFile:setfs: <var class="var">进程 ID</var></samp>’</dt>
+<dd><p>选择 <code class="code">vFile</code> 操作将在其上进行的文件系统。这对于
+<var class="var">文件名</var> 参数的操作是必需的，以便能够访问远程目标上的文件，其中远程存根与下级进程不共享公共文件系统。
+<small class="sc">GDB</small> 
+</p>
+<p>如果 <var class="var">进程 ID</var> 不为零，则选择进程
+<var class="var">进程 ID</var>所看到的文件系统。如果 <var class="var">进程 ID</var> 为零，则选择远程存根所看到的文件系统。成功时返回 0，如果发生错误则返回 -1。如果 <code class="code">vFile:setfs:</code> 表示成功，所选文件系统将保持选中状态，直到下一次成功的 <code class="code">vFile:setfs:</code>
+操作。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Interrupts.html">中断</a>, 上一项： <a href="Tracepoint-Packets.html">跟踪点数据包</a>, 上级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

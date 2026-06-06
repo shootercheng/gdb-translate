@@ -1,0 +1,73 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>线程组（使用GDB进行调试）</title>
+
+<meta name="description" content="Thread groups (Debugging with GDB)"/>
+<meta name="keywords" content="Thread groups (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-General-Design.html" rel="up" title="GDB/MI General Design"/>
+<link href="Asynchronous-and-non_002dstop-modes.html" rel="prev" title="Asynchronous and non-stop modes"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Thread-groups">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Asynchronous-and-non_002dstop-modes.html" rel="prev"></a> <a accesskey="u" href="GDB_002fMI-General-Design.html" rel="up"><small class="sc">GDB/MI</small> </a>   目录<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">][</a>索引<a href="Concept-Index.html" rel="index" title="Index">]</a></p>
+</div>
+<hr/>
+<h4 class="subsection" id="Thread-groups-1"><span>27.1.3 线程组<a class="copiable-link" href="#Thread-groups-1"> ¶</a></span></h4>
+<p><small class="sc">GDB</small> 可用于同时调试多个进程。
+在某些平台上， <small class="sc">GDB</small> 可能支持对多个硬件系统进行调试，每个系统有多个核心，每个核心上运行着多个不同的进程。本节描述了支持此类调试场景的MI机制。
+</p>
+<p>关键的观察结果是，无论目标的结构如何，MI都可以有一个全局的线程列表，因为大多数接受‘<samp class="samp">--线程</samp>’选项的命令不需要知道该线程属于哪个进程。因此，在MI接口中既不需要引入额外的‘<samp class="samp">--进程</samp>’选项，也不需要引入当前进程的概念。唯一严格需要的新特性是能够找出线程如何分组到进程中。
+</p>
+<p>为了让用户能够发现这种分组，并支持机器/核心/进程的任意层次结构，MI引入了一个概念，即
+<em class="dfn">线程组</em>。线程组是线程和其他线程组的集合。线程组总是有一个字符串标识符、一个类型，并且可能有特定于该类型的额外属性。一个新的命令 <code class="code">-list-thread-groups</code>返回顶级线程组的列表，这些线程组对应于当前正在调试的进程。通过将线程组的标识符传递给 <small class="sc">GDB</small> 命令，可以获取特定线程组的成员。 <code class="code">-list-thread-groups</code> 为了让用户能够轻松发现他想要调试的进程和其他对象，引入了
+</p>
+<p>可用线程组 <em class="dfn">的概念。可用线程组是一个尚未被调试，但可以使用</em> 命令进行附加的线程组。可以使用‘
+<small class="sc">GDB</small> -list-thread-groups --available
+<code class="code">-target-attach</code> ’获取可用的顶级线程组列表。
+一般来说，只有在附加到某个线程组之后才能检索该线程组的内容。<samp class="samp">线程组与下级程序相关（参见</samp>调试多个下级程序连接和程序
+</p>
+<p>）。每个下级程序对应于一种特殊类型‘ <a class="pxref" href="Inferiors-Connections-and-Programs.html">进程</a>’的线程组，并且允许对这类线程组进行一些额外的操作。<samp class="samp">上一章：</samp>异步命令执行和非停止模式
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+, 上一级： <a href="Asynchronous-and-non_002dstop-modes.html">通用设计</a>通用设计 <a href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small> [</a>   目录<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">][</a>索引<a href="Concept-Index.html" rel="index" title="Index">]</a>[</p>
+</div>
+
+
+
+
+
+</body></html>

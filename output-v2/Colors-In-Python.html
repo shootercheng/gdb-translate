@@ -1,0 +1,148 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的颜色（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Colors In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Colors In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Architectures-In-Python.html" rel="next" title="Architectures In Python"/>
+<link href="Lazy-Strings-In-Python.html" rel="prev" title="Lazy Strings In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Colors-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Architectures-In-Python.html" rel="next">架构的 Python 表示形式</a>, 上一项： <a accesskey="p" href="Lazy-Strings-In-Python.html" rel="prev">惰性字符串的 Python 表示形式</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Python-representation-of-colors"><span>23.3.2.36 颜色的 Python 表示形式<a class="copiable-link" href="#Python-representation-of-colors"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-colors-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eColor"></a>
+<p>您可以将 <code class="code">gdb.Color</code> 的实例赋值给使用 <code class="code">value</code> 。 <code class="code">Parameter</code> 实例的 <code class="code">PARAM_COLOR</code>创建的
+</p>
+<p><code class="code">gdb.Color</code> 可以引用调色板中的索引，或者包含某个颜色空间中的颜色分量。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Color_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">Color.__init__</strong> <var class="def-var-arguments">(<span class="r">[</span>值 <span class="r">[</span>, 颜色空间<span class="r">]</span><span class="r">]</span>)</var><a class="copiable-link" href="#index-Color_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd>
+<p><var class="var">值</var> 可以是 <code class="code">None</code> （表示终端的默认颜色）、调色板中颜色的整数索引、包含颜色分量的元组或字符串。字符串可以是 ‘<samp class="samp">#RRGGBB</samp>’ 格式的十六进制 RGB 三元组，或者是以下颜色名称之一：
+‘<samp class="samp">无</samp>’（表示终端的默认颜色）、‘<samp class="samp">黑色</samp>’、‘<samp class="samp">红色</samp>’、
+‘<samp class="samp">绿色</samp>’、‘<samp class="samp">黄色</samp>’、‘<samp class="samp">蓝色</samp>’、‘<samp class="samp">品红色</samp>’、‘<samp class="samp">青色</samp>’、
+或 ‘<samp class="samp">白色</samp>’。
+</p>
+<p><var class="var">颜色空间</var> 应该是下面列出的 ‘<samp class="samp">COLORSPACE_</samp>’ 常量之一。此参数告诉 <small class="sc">GDB</small> 该
+<var class="var">值</var> 所属的颜色空间。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Color_002eis_005fnone"><span class="category-def">变量： </span><span><strong class="def-name">Color.is_none</strong><a class="copiable-link" href="#index-Color_002eis_005fnone"> ¶</a></span></dt>
+<dd><p>此属性为布尔值。如果其值为 <code class="code">True</code> ，则颜色为终端的默认颜色。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Color_002eis_005findexed"><span class="category-def">变量： </span><span><strong class="def-name">Color.is_indexed</strong><a class="copiable-link" href="#index-Color_002eis_005findexed"> ¶</a></span></dt>
+<dd><p>此属性为布尔值。如果其值为 <code class="code">True</code> ，则颜色是索引颜色，即属于某个调色板。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Color_002eis_005fdirect"><span class="category-def">变量： </span><span><strong class="def-name">Color.is_direct</strong><a class="copiable-link" href="#index-Color_002eis_005fdirect"> ¶</a></span></dt>
+<dd><p>此属性为布尔值。如果其值为 <code class="code">True</code> ，则此对象描述的是 ISO/IEC 8613 - 6 意义上的直接颜色。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Color_002eindex"><span class="category-def">变量： </span><span><strong class="def-name">Color.index</strong><a class="copiable-link" href="#index-Color_002eindex"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">is_indexed</code> 为 <code class="code">True</code>，则此属性存在。其整数值是调色板中颜色的索引。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Color_002ecomponents"><span class="category-def">变量： </span><span><strong class="def-name">Color.components</strong><a class="copiable-link" href="#index-Color_002ecomponents"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">is_direct</code> 为 <code class="code">True</code>，则此属性存在。其值是包含颜色整数分量的元组。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Color_002eescape_005fsequence"><span class="category-def">函数： </span><span><strong class="def-name">Color.escape_sequence</strong> <var class="def-var-arguments">(是否为前景色)</var><a class="copiable-link" href="#index-Color_002eescape_005fsequence"> ¶</a></span></dt>
+<dd><p>返回将终端颜色更改为该颜色的字符串。
+</p>
+<p>如果 <var class="var">是否为前景色</var> 为 <code class="code">True</code>, 则返回的序列将更改前景色。否则，返回的序列将更改背景色。
+</p>
+<p>如果当前样式已禁用（请参阅 <a class="pxref" href="Output-Styling.html"><kbd class="kbd">设置样式启用</kbd></a>），则此方法将返回空字符串。
+</p></dd></dl>
+
+<p>初始化颜色时，必须指定其颜色空间。可用的颜色空间由以下模块中定义的常量表示 <code class="code">gdb</code>
+模块：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002eCOLORSPACE_005fMONOCHROME"></a>
+<a id="index-COLORSPACE_005fMONOCHROME"></a><span><code class="code">gdb.COLORSPACE_MONOCHROME</code><a class="copiable-link" href="#index-COLORSPACE_005fMONOCHROME"> ¶</a></span></dt>
+<dd><p>仅包含终端默认颜色的调色板。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eCOLORSPACE_005fANSI_005f8COLOR"></a>
+<a id="index-COLORSPACE_005fANSI_005f8COLOR"></a><span><code class="code">gdb.COLORSPACE_ANSI_8COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fANSI_005f8COLOR"> ¶</a></span></dt>
+<dd><p>包含 ISO/IEC 6429 标准的八种标准颜色（“黑色”、“红色”、“绿色”等）的调色板。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eCOLORSPACE_005fAIXTERM_005f16COLOR"></a>
+<a id="index-COLORSPACE_005fAIXTERM_005f16COLOR"></a><span><code class="code">gdb.COLORSPACE_AIXTERM_16COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fAIXTERM_005f16COLOR"> ¶</a></span></dt>
+<dd><p>包含 16 种颜色的调色板。前八种是 ISO/IEC 6429 的标准颜色（“黑色”、“红色”、“绿色”等）。接下来的八种是它们的亮色版本。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eCOLORSPACE_005fXTERM_005f256COLOR"></a>
+<a id="index-COLORSPACE_005fXTERM_005f256COLOR"></a><span><code class="code">gdb.COLORSPACE_XTERM_256COLOR</code><a class="copiable-link" href="#index-COLORSPACE_005fXTERM_005f256COLOR"> ¶</a></span></dt>
+<dd><p>包含 256 种颜色的调色板。前 16 种来自 COLORSPACE_AIXTERM_16COLOR。接下来的 216 种颜色是 6x6x6 的 RGB 立方体。最后 24 种颜色构成灰度渐变。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eCOLORSPACE_005fRGB_005f24BIT"></a>
+<a id="index-COLORSPACE_005fRGB_005f24BIT"></a><span><code class="code">gdb.COLORSPACE_RGB_24BIT</code><a class="copiable-link" href="#index-COLORSPACE_005fRGB_005f24BIT"> ¶</a></span></dt>
+<dd><p>直接的 24 位 RGB 颜色。
+</p>
+</dd>
+</dl>
+
+<p>无法对 <code class="code">Color</code> 类进行子类化。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Architectures-In-Python.html">架构的 Python 表示形式</a>, 上一项： <a href="Lazy-Strings-In-Python.html">惰性字符串的 Python 表示形式</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

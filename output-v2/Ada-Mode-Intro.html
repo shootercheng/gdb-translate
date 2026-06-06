@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada模式介绍（使用GDB调试）</title>
+
+<meta name="description" content="Ada Mode Intro (Debugging with GDB)"/>
+<meta name="keywords" content="Ada Mode Intro (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Omissions-from-Ada.html" rel="next" title="Omissions from Ada"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Mode-Intro">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Omissions-from-Ada.html" rel="next">Ada的遗漏</a>, 上一项： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Introduction"><span>15.4.10.1 简介<a class="copiable-link" href="#Introduction"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada-mode_002c-general"></a>
+
+<p>的Ada模式 <small class="sc">GDB</small> 支持相当大的一部分Ada表达式语法，并带有一些扩展。
+设计这一子集背后的理念是 
+</p>
+<ul class="itemize mark-bullet">
+<li>它 <small class="sc">GDB</small> 应提供基本的字面量以及对算术、解引用、字段选择、索引和子程序调用操作的访问，
+将更复杂的计算留给编写到程序中的子程序（因此可以从 <small class="sc">GDB</small>）调用。
+
+</li><li>类型安全和严格遵守Ada语言限制对 <small class="sc">GDB</small> 用户来说不是特别重要。
+
+</li><li>简洁对 <small class="sc">GDB</small> 用户来说很重要。
+</li></ul>
+
+<p>因此，为了简洁起见，调试器的行为就好像用户编写的包中声明的所有名称都是直接可见的，即使根据Ada规则它们不可见，这样就不必在大多数情况下用包名完全限定名称，无论上下文如何。当这导致歧义时， <small class="sc">GDB</small> 会询问用户的意图。
+</p>
+<p>如果调试器检测到一个Ada主程序，它将以Ada模式启动。
+对于其他语言，当在从Ada源文件翻译而来的程序中停止时，它将进入Ada模式。
+</p>
+<p>在Ada模式下，您可以使用‘<code class="t">--</code>’进行注释。这主要用于记录命令文件。标准的 <small class="sc">GDB</small> 注释（‘<samp class="samp">#</samp>’）在Ada模式下仍可在一行的开头使用，但不能在中间使用（以允许使用带基的字面量）。
+</p>
+</div>
+
+
+
+
+
+</body></html>

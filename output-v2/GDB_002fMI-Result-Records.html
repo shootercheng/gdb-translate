@@ -1,0 +1,90 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI结果记录（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI Result Records (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Result Records (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI Output Records"/>
+<link href="GDB_002fMI-Stream-Records.html" rel="next" title="GDB/MI Stream Records"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Result-Records">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Stream-Records.html" rel="next"><small class="sc">GDB/MI</small> </a>, 上一项： <a accesskey="u" href="GDB_002fMI-Output-Records.html" rel="up"><small class="sc">GDB/MI</small> 输出记录</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="gdb_002fmi-Result-Records"><span>27.5.1 <small class="sc">GDB/MI</small> 结果记录<a class="copiable-link" href="#gdb_002fmi-Result-Records"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-result-records-in-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-result-records"></a>
+<p>除了一些带外通知外，对命令的响应包含以下结果指示之一：
+<small class="sc">GDB/MI</small> 
+</p>
+<dl class="table">
+<dt><a id="index-_005edone"></a><span><code class="code">&#34;^done&#34; [ &#34;,&#34; <var class="var">results</var> ]</code><a class="copiable-link" href="#index-_005edone"> ¶</a></span></dt>
+<dd><p>同步操作成功， <code class="code"><var class="var">results</var></code> 是返回值。
+</p>
+</dd>
+<dt><a id="index-_005erunning"></a><span><code class="code">&#34;^running&#34;</code><a class="copiable-link" href="#index-_005erunning"> ¶</a></span></dt>
+<dd><p>此结果记录等同于 ‘<samp class="samp">^完成</samp>’。从历史上看，如果命令恢复了目标，则会输出此结果记录而不是 ‘<samp class="samp">^完成</samp>’。为了向后兼容，保留了此行为，但所有前端都应将 ‘<samp class="samp">^完成</samp>’ 和 ‘<samp class="samp">^运行中</samp>’ 视为相同，并依靠 ‘<samp class="samp">*运行中</samp>’ 输出记录来确定哪些线程已恢复。
+</p>
+</dd>
+<dt><a id="index-_005econnected"></a><span><code class="code">&#34;^connected&#34;</code><a class="copiable-link" href="#index-_005econnected"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 已连接到远程目标。
+</p>
+</dd>
+<dt><a id="index-_005eerror"></a><span><code class="code">&#34;^error&#34; &#34;,&#34; &#34;msg=&#34; <var class="var">c-string</var> [ &#34;,&#34; &#34;code=&#34; <var class="var">c-string</var> ]</code><a class="copiable-link" href="#index-_005eerror"> ¶</a></span></dt>
+<dd><p>操作失败。 <code class="code">msg=<var class="var">c-string</var></code> 变量包含相应的错误消息。
+</p>
+<p>如果存在， <code class="code">code=<var class="var">c-string</var></code> 变量提供一个错误代码，使用者可以依靠该代码来检测相应的错误条件。目前，仅定义了一个错误代码：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">&#34;未定义的命令&#34;</samp>’</dt>
+<dd><p>表示导致错误的命令不存在。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-_005eexit"></a><span><code class="code">&#34;^exit&#34;</code><a class="copiable-link" href="#index-_005eexit"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 已终止。
+</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

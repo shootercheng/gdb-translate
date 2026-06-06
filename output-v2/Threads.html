@@ -1,0 +1,416 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>线程（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Threads (Debugging with GDB)"/>
+<meta name="keywords" content="Threads (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Forks.html" rel="next" title="Forks"/>
+<link href="Inferiors-Connections-and-Programs.html" rel="prev" title="Inferiors Connections and Programs"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Threads">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Forks.html" rel="next">调试分叉</a>, 上一项： <a accesskey="p" href="Inferiors-Connections-and-Programs.html" rel="prev">调试多个下级进程连接和程序</a>, 上级： <a accesskey="u" href="Running.html" rel="up">在 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Debugging-Programs-with-Multiple-Threads"><span>4.10 调试多线程程序<a class="copiable-link" href="#Debugging-Programs-with-Multiple-Threads"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-threads-of-execution"></a>
+<a class="index-entry-id" id="index-multiple-threads"></a>
+<a class="index-entry-id" id="index-switching-threads"></a>
+<p>在某些操作系统中，如 GNU/Linux 和 Solaris，一个程序可能有多个 <em class="dfn">线程</em> 执行。  线程的确切语义在不同的操作系统中有所不同，但一般来说，一个程序的线程类似于多个进程 —— 除了它们共享一个地址空间（即它们都可以检查和修改相同的变量）。  另一方面，每个线程都有自己的寄存器和执行栈，可能还有私有内存。
+</p>
+<p><small class="sc">GDB</small> 提供了这些用于调试多线程程序的工具：
+</p>
+<ul class="itemize mark-bullet">
+<li>新线程的自动通知
+</li><li>‘<samp class="samp">线程 <var class="var">线程 ID</var></samp>’，一个用于在线程之间切换的命令
+</li><li>‘<samp class="samp">info threads</samp>’，一个用于查询现有线程的命令
+</li><li>‘<samp class="samp">thread apply [<var class="var">线程 ID 列表</var> | all] <var class="var">参数</var></samp>’，
+一个将命令应用于线程列表的命令
+</li><li>特定线程的断点
+</li><li><samp class="samp">set print thread-events</samp>’，它控制线程启动和退出消息的打印。
+</li><li><samp class="samp">set libthread-db-search-path <var class="var">路径</var></samp>’，它允许用户指定如果默认选择与程序不兼容时要使用的 <code class="code">libthread_db</code> 如果默认选择与程序不兼容时使用。
+</li></ul>
+
+<a class="index-entry-id" id="index-focus-of-debugging"></a>
+<a class="index-entry-id" id="index-current-thread"></a>
+<p> <small class="sc">GDB</small> 线程调试工具允许你在程序运行时观察所有线程 —— 但每当 <small class="sc">GDB</small> 控制时，特定的一个线程始终是调试的焦点。  这个线程称为 <em class="dfn">当前线程</em>.  调试命令从当前线程的角度显示程序信息。
+</p>
+<a class="index-entry-id" id="index-New-systag-message"></a>
+<a class="index-entry-id" id="index-thread-identifier-_0028system_0029"></a>
+<p>每当 <small class="sc">GDB</small> 检测到程序中有新线程时，它会以 ‘<samp class="samp">[新 <var class="var">系统标签</var>]</samp>’ 的形式显示目标系统对该线程的标识，其中 <var class="var">系统标签</var> 是一个线程标识符，其形式因特定系统而异。  例如，在
+<small class="sc">GNU</small>/Linux 上，你可能会看到
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">[新线程 0x41e02940 (LWP 25582)]
+</pre></div>
+
+<p>当 <small class="sc">GDB</small> 注意到新线程时。  相比之下，在其他系统上 <var class="var">系统标签</var> 只是类似于 ‘<samp class="samp">进程 368</samp>’ 这样的东西，没有进一步的限定。
+</p>
+
+<a class="anchor" id="thread-numbers"></a><a class="index-entry-id" id="index-thread-number_002c-per-inferior"></a>
+<a class="index-entry-id" id="index-thread-identifier-_0028GDB_0029"></a>
+<p>为了调试目的 <small class="sc">GDB</small> 为下级进程的每个线程关联自己的线程编号 —— 始终是一个单一的整数。  这个编号在一个下级进程的所有线程之间是唯一的，但在不同下级进程的线程之间不是唯一的。
+</p>
+<a class="index-entry-id" id="index-qualified-thread-ID"></a>
+<p>你可以使用限定的
+<var class="var">下级进程编号</var>.<var class="var">线程编号</var> 语法，也称为
+<em class="dfn">限定线程 ID</em>, 其中 <var class="var">下级进程编号</var> 是下级进程编号， <var class="var">线程编号</var> 是给定下级进程的线程编号。  例如，线程 <code class="code">2.3</code> 指的是下级进程 2 的线程编号 3。  如果你省略 <var class="var">下级进程编号</var> （例如 <code class="code">thread 3</code>），那么 <small class="sc">GDB</small> 推断你指的是当前下级进程的线程。
+</p>
+<p>在你创建第二个下级进程之前 <small class="sc">GDB</small> 不会显示线程 ID 的
+<var class="var">下级进程编号</var> 部分，即使你始终可以使用完整的 <var class="var">下级进程编号</var>.<var class="var">线程编号</var> 形式来引用初始下级进程 1 的线程。
+</p>
+<a class="anchor" id="thread-ID-lists"></a><a class="index-entry-id" id="index-thread-ID-lists"></a>
+<p>一些命令接受以空格分隔的 <em class="dfn">线程 ID 列表</em> 作为参数。  列表元素可以是：
+</p>
+<ol class="enumerate">
+<li> 如 ‘<samp class="samp">info threads</samp>’ 显示的第一个字段所示的线程 ID，可以带有或不带有下级进程限定符。  例如，‘<samp class="samp">2.1</samp>’ 或
+‘<samp class="samp">1</samp>’。
+
+</li><li> 线程编号的范围，同样可以带有或不带有下级进程限定符，如下所示 <var class="var">下级进程</var>.<var class="var">线程 1</var>-<var class="var">线程 2</var> 或
+<var class="var">线程 1</var>-<var class="var">线程 2</var>.  例如，‘<samp class="samp">1.2 - 4</samp>’ 或 ‘<samp class="samp">2 - 4</samp>’。
+
+</li><li> 一个下级进程的所有线程，使用星号通配符指定，可以带有或不带有下级进程限定符，如下所示 <var class="var">下级进程</var>.<code class="code">*</code> （例如，
+‘<samp class="samp">1.*</samp>’）或 <code class="code">*</code>.  前一种形式指的是给定下级进程的所有线程，而后一种没有下级进程限定符的形式指的是当前下级进程的所有线程。
+
+</li></ol>
+
+<p>例如，如果当前下级进程是 1，并且下级进程 7 有一个 ID 为 7.1 的线程，线程列表 ‘<samp class="samp">1 2 - 3 4.5 6.7 - 9 7.*</samp>’
+包括下级进程 1 的线程 1 到 3、下级进程 4 的线程 5、下级进程 6 的线程 7 到 9 以及下级进程 7 的所有线程。  也就是说，以展开的限定形式表示，与 ‘<samp class="samp">1.1 1.2 1.3 4.5 6.7 6.8 6.9
+7.1</samp>’ 相同。
+</p>
+
+<a class="anchor" id="global-thread-numbers"></a><a class="index-entry-id" id="index-global-thread-number"></a>
+<a class="index-entry-id" id="index-global-thread-identifier-_0028GDB_0029"></a>
+<p>除了每个下级进程有一个 <em class="emph">编号外，每个线程还被分配了一个唯一的</em>  <em class="emph">全局</em> 编号，也称为 <em class="dfn">全局
+线程 ID</em>, 一个单一的整数。  与线程 ID 中的线程编号部分不同，即使在调试多个下级进程时，没有两个线程有相同的全局 ID。
+</p>
+<p>从 <small class="sc">GDB</small>的角度来看，一个进程至少有一个
+线程。  换句话说， <small class="sc">GDB</small> 即使程序不是多线程的，也会给程序的 “主线程” 分配一个线程编号。
+</p>
+<a class="index-entry-id" id="index-_0024_005fthread_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-_0024_005fgthread_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-_0024_005finferior_005fthread_005fcount_002c-convenience-variable"></a>
+<p>调试器便利变量 ‘<samp class="samp">$_thread</samp>’ 和
+‘<samp class="samp">$_gthread</samp>’ 分别包含当前线程的每个下级进程的线程编号和全局线程编号。  你可能会发现这在编写断点条件表达式、命令脚本等方面很有用。  便利变量 ‘<samp class="samp">$_inferior_thread_count</samp>’
+包含当前下级进程中活动线程的数量。
+请参阅 <a class="xref" href="Convenience-Vars.html">便利变量</a>, 以获取有关便利变量的一般信息。
+</p>
+<p>当以非停止模式运行时（请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>），在这种模式下，新线程可以随时创建，现有线程也可以随时退出，
+‘<samp class="samp">$_inferior_thread_count</samp>’ 每次计算时可能会返回不同的值。
+</p>
+<p>如果 <small class="sc">GDB</small> 检测到程序是多线程的，它会在通常的在断点处停止的消息中增加命中断点的线程的 ID 和名称。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">线程 2 &#34;客户端&#34; 命中断点 1，在 client.c:68 处调用 send_message ()
+</pre></div>
+
+<p>同样，当程序收到信号时：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">线程 1 &#34;主程序&#34; 收到信号 SIGINT，中断。
+</pre></div>
+
+<dl class="table">
+<dd><a class="anchor" id="info_005fthreads"></a></dd>
+<dt><a id="index-info-threads"></a><span><code class="code">info threads <span class="r">[</span>-gid<span class="r">]</span> <span class="r">[</span>-stopped<span class="r">]</span> <span class="r">[</span>-running<span class="r">]</span> <span class="r">[</span><var class="var">thread-id-list</var><span class="r">]</span></code><a class="copiable-link" href="#index-info-threads"> ¶</a></span></dt>
+<dd>
+<p>显示一个或多个线程的信息。  如果没有参数，则显示所有线程的信息。  你可以使用线程 ID 列表语法指定要显示的线程列表（请参阅 <a class="pxref" href="#thread-ID-lists">线程 ID 列表</a>）。
+</p>
+<p><small class="sc">GDB</small> 为每个线程显示（按此顺序）：
+</p>
+<ol class="enumerate">
+<li> 由 <small class="sc">GDB</small>
+
+</li><li> 由 <small class="sc">GDB</small>, 如果指定了 ‘<samp class="samp">-gid</samp>’
+选项
+
+</li><li> 目标系统的线程标识符（<var class="var">系统标签</var>)
+
+</li><li> 线程的名称（如果已知）。  线程可以由用户命名（请参阅 <code class="code">thread name</code>, 如下），或者在某些情况下，由程序本身命名。
+
+</li><li> 该线程的当前栈帧摘要
+</li></ol>
+
+<p>星号 ‘<samp class="samp">*</samp>’ 在 <small class="sc">GDB</small> 线程编号
+左侧表示当前线程。
+</p>
+<p>例如，
+</p></dd>
+</dl>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info threads
+  Id   目标 Id             帧
+* 1    进程 35 线程 13  主函数 (argc = 1, argv = 0x7ffffff8)
+  2    进程 35 线程 23  0x34e5 处调用 sigpause ()
+  3    进程 35 线程 27  0x34e5 处调用 sigpause ()
+    在 threadtest.c:68 处
+</pre></div>
+
+<p>如果你正在调试多个下级进程， <small class="sc">GDB</small> 使用限定的 <var class="var">下级进程编号</var>.<var class="var">线程编号</var> 格式显示线程 ID。
+否则，只显示 <var class="var">线程编号</var> 。
+</p>
+<p>如果你指定 ‘<samp class="samp">-stopped</samp>’ 选项， <small class="sc">GDB</small> 过滤命令的输出，只打印停止的线程。  同样，
+如果你指定 ‘<samp class="samp">-running</samp>’ 选项， <small class="sc">GDB</small> 过滤输出，只打印正在运行的线程。  如果有大量线程，这些选项有助于减少输出列表。  如果你同时指定这两个选项， <small class="sc">GDB</small> 将打印停止和正在运行的线程。
+</p>
+<p>如果你指定 ‘<samp class="samp">-gid</samp>’ 选项， <small class="sc">GDB</small> 显示一列，指示每个线程的全局线程 ID：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info threads
+  Id   GId  目标 Id             帧
+  1.1  1    进程 35 线程 13  主函数 (argc = 1, argv = 0x7ffffff8)
+  1.2  3    进程 35 线程 23  0x34e5 处调用 sigpause ()
+  1.3  4    进程 35 线程 27  0x34e5 处调用 sigpause ()
+* 2.1  2    进程 65 线程 1   主函数 (argc = 1, argv = 0x7ffffff8)
+</pre></div>
+
+<p>在 Solaris 上，你可以使用特定于 Solaris 的命令显示有关用户线程的更多信息：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-thread-info-_0028Solaris_0029"></a>
+<a id="index-maint-info-sol_002dthreads"></a><span><code class="code">maint info sol-threads</code><a class="copiable-link" href="#index-maint-info-sol_002dthreads"> ¶</a></span></dt>
+<dd><p>显示 Solaris 用户线程的信息。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><a id="index-thread-thread_002did"></a><span><code class="code">thread <var class="var">thread-id</var></code><a class="copiable-link" href="#index-thread-thread_002did"> ¶</a></span></dt>
+<dd><p>使线程 ID <var class="var">线程 ID</var> 成为当前线程。  命令参数 <var class="var">线程 ID</var> 是 <small class="sc">GDB</small> 线程 ID，如 ‘<samp class="samp">info threads</samp>’ 显示的第一个字段所示，可以带有或不带有下级进程限定符（例如，‘<samp class="samp">2.1</samp>’ 或 ‘<samp class="samp">1</samp>’）。
+</p>
+<p><small class="sc">GDB</small> 通过显示你选择的线程的系统标识符及其当前栈帧摘要来响应：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) thread 2
+[切换到线程 2 (线程 0xb7fdab70 (LWP 12747))]
+#0  某个函数 (ignore = 0x0) 在 example.c:8 处
+8	    printf (&#34;hello\n&#34;);
+</pre></div>
+
+<p>与 ‘<samp class="samp">[新 …]</samp>’ 消息一样，‘<samp class="samp">切换到</samp>’ 后面的文本形式取决于你系统识别线程的约定。
+</p>
+<a class="anchor" id="thread-apply-all"></a></dd>
+<dt><a class="index-entry-id" id="index-apply-command-to-several-threads"></a>
+<a id="index-thread-apply"></a><span><code class="code">thread apply [<var class="var">thread-id-list</var> | all [-ascending]] [<var class="var">flag</var>]… <var class="var">command</var></code><a class="copiable-link" href="#index-thread-apply"> ¶</a></span></dt>
+<dd><p>该 <code class="code">thread apply</code> 命令允许你将指定的
+<var class="var">命令</var> 应用于一个或多个线程。  使用线程 ID 列表语法指定你要影响的线程（请参阅 <a class="pxref" href="#thread-ID-lists">线程 ID 列表</a>），或者指定 <code class="code">all</code> 应用于所有线程。  要按降序将命令应用于所有线程，请输入 <kbd class="kbd">thread apply all
+<var class="var">命令</var></kbd>.  要按升序将命令应用于所有线程，请输入 <kbd class="kbd">thread apply all -ascending <var class="var">命令</var></kbd>.
+</p>
+<p>该 <var class="var">标志</var> 参数控制产生什么输出以及在将 <var class="var">命令</var> 应用于线程时如何处理错误。  <var class="var">标志</var>
+必须以一个 <code class="code">-</code> 直接后跟一个字母开始
+<code class="code">qcs</code>.  如果提供了多个标志，它们必须单独给出，例如 <code class="code">-c -q</code>.
+</p>
+<p>默认情况下， <small class="sc">GDB</small> 在 <var class="var">命令</var>产生的输出之前显示一些线程信息，并且在执行 <var class="var">命令</var> 期间引发的错误将导致中止 <code class="code">thread apply</code>.  可以使用以下标志来微调此行为：
+</p>
+<dl class="table">
+<dt><code class="code">-c</code></dt>
+<dd><p>标志 <code class="code">-c</code>, 代表 ‘<samp class="samp">继续</samp>’，会导致 <var class="var">命令</var> 中的任何错误被显示，然后执行继续。
+<code class="code">thread apply</code> 
+</p></dd>
+<dt><code class="code">-s</code></dt>
+<dd><p>标志 <code class="code">-s</code>, 代表 ‘<samp class="samp">静音</samp>’，会导致 <var class="var">命令</var> 产生的任何错误或空输出被静默忽略。  也就是说，执行继续，但不打印线程信息和错误。
+</p></dd>
+<dt><code class="code">-q</code></dt>
+<dd><p>标志 <code class="code">-q</code> (‘<samp class="samp">安静</samp>’) 禁用打印线程信息。
+</p></dd>
+</dl>
+
+<p>标志 <code class="code">-c</code> 和 <code class="code">-s</code> 不能一起使用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-apply-command-to-all-threads-_0028ignoring-errors-and-empty-output_0029"></a>
+<a id="index-taas"></a><span><code class="code">taas [<var class="var">option</var>]… <var class="var">command</var></code><a class="copiable-link" href="#index-taas"> ¶</a></span></dt>
+<dd><p>的快捷方式。
+将 <code class="code">thread apply all -s [<var class="var">option</var>]… <var class="var">command</var></code> <var class="var">命令</var> 应用于所有线程，忽略错误和空输出。
+</p>
+<p>该 <code class="code">taas</code> 命令接受与 <code class="code">thread
+apply all</code> 命令相同的选项。  请参阅 <a class="xref" href="#thread-apply-all">thread apply all</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-apply-a-command-to-all-frames-of-all-threads-_0028ignoring-errors-and-empty-output_0029"></a>
+<a id="index-tfaas"></a><span><code class="code">tfaas [<var class="var">option</var>]… <var class="var">command</var></code><a class="copiable-link" href="#index-tfaas"> ¶</a></span></dt>
+<dd><p>的快捷方式。
+将 <code class="code">thread apply all -s -- frame apply all -s [<var class="var">option</var>]… <var class="var">command</var></code> <var class="var">命令</var> 应用于所有线程的所有帧，忽略错误和空输出。  请注意，标志 <code class="code">-s</code> 被指定了两次：
+第一次 <code class="code">-s</code> 确保 <code class="code">thread apply</code> 只显示 <code class="code">frame apply</code> 产生一些输出的线程的线程信息。  第二次 <code class="code">-s</code> 是为了确保 <code class="code">frame
+apply</code> 只显示
+<var class="var">命令</var> 成功产生一些输出的帧的帧信息。
+</p>
+<p>例如，它可以用于在不知道变量或参数所在的线程或帧的情况下打印局部变量或函数参数，使用：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) tfaas p 我不记得在哪里的某个局部变量
+</pre></div>
+
+<p>该 <code class="code">tfaas</code> 命令接受与 <code class="code">frame
+apply</code> 命令相同的选项。  请参阅 <a class="xref" href="Frame-Apply.html">frame apply</a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-name-a-thread"></a>
+<a id="index-thread-name"></a><span><code class="code">thread name [<var class="var">name</var>]</code><a class="copiable-link" href="#index-thread-name"> ¶</a></span></dt>
+<dd><p>此命令为当前线程分配一个名称。  如果没有给出参数，则删除任何现有的用户指定的名称。  线程名称会出现在 ‘<samp class="samp">info threads</samp>’ 显示中。
+</p>
+<p>在某些系统上，如 <small class="sc">GNU</small>/Linux <small class="sc">GDB</small> 能够确定操作系统给出的线程名称。  在这些系统上，使用 ‘<samp class="samp">thread name</samp>’ 指定的名称将覆盖系统给出的名称，并且删除用户指定的名称将导致
+<small class="sc">GDB</small> 再次显示系统指定的名称。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-search-for-a-thread"></a>
+<a id="index-thread-find"></a><span><code class="code">thread find [<var class="var">regexp</var>]</code><a class="copiable-link" href="#index-thread-find"> ¶</a></span></dt>
+<dd><p>搜索并显示名称或 <var class="var">系统标签</var>
+与提供的正则表达式匹配的线程 ID。
+</p>
+<p>除了是 ‘<samp class="samp">thread name</samp>’ 命令的补充外，
+此命令还允许你通过其目标 
+<var class="var">系统标签</var>.  例如，在 <small class="sc">GNU</small>/Linux 上，目标 <var class="var">系统标签</var>
+是 LWP ID。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) thread find 26688
+线程 4 的目标 ID 为 &#39;线程 0x41e02940 (LWP 26688)&#39;
+(gdb) info thread 4
+  Id   目标 Id         帧 
+  4    线程 0x41e02940 (LWP 26688) 0x00000031ca6cd372 处调用 select ()
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-print-messages-on-thread-start-and-exit"></a>
+<a id="index-set-print-thread_002devents"></a><span><code class="code">set print thread-events</code><a class="copiable-link" href="#index-set-print-thread_002devents"> ¶</a></span></dt>
+<dt><code class="code">set print thread-events on</code></dt>
+<dt><code class="code">set print thread-events off</code></dt>
+<dd><p>该 <code class="code">set print thread-events</code> 命令允许你启用或禁用在 <small class="sc">GDB</small> 注意到新线程启动或线程退出时打印消息。  默认情况下，如果目标支持检测这些事件，则会打印这些消息。  请注意，并非所有目标都可以禁用这些消息。
+</p>
+</dd>
+<dt><a id="index-show-print-thread_002devents"></a><span><code class="code">show print thread-events</code><a class="copiable-link" href="#index-show-print-thread_002devents"> ¶</a></span></dt>
+<dd><p>显示在 <small class="sc">GDB</small> 检测到线程启动和退出时是否会打印消息。
+</p></dd>
+</dl>
+
+<p>请参阅 <a class="xref" href="Thread-Stops.html">停止和启动多线程程序</a>, 以获取有关 <small class="sc">GDB</small> 在停止和启动多线程程序时的行为的更多信息。
+</p>
+<p>请参阅 <a class="xref" href="Set-Watchpoints.html">设置观察点</a>, 以获取有关多线程程序中观察点的信息。
+</p>
+<a class="anchor" id="set-libthread_002ddb_002dsearch_002dpath"></a><dl class="table">
+<dt><a class="index-entry-id" id="index-search-path-for-libthread_005fdb"></a>
+<a id="index-set-libthread_002ddb_002dsearch_002dpath"></a><span><code class="code">set libthread-db-search-path <span class="r">[</span><var class="var">path</var><span class="r">]</span></code><a class="copiable-link" href="#index-set-libthread_002ddb_002dsearch_002dpath"> ¶</a></span></dt>
+<dd><p>如果设置了此变量 <var class="var">路径</var> 是一个以冒号分隔的目录列表 <small class="sc">GDB</small> 将用于搜索 <code class="code">libthread_db</code>.
+如果你省略 <var class="var">路径</var>, ‘<samp class="samp">libthread-db-search-path</samp>’ 将重置为其默认值（<code class="code">$sdir:$pdir</code> 在 <small class="sc">GNU</small>/Linux 和 Solaris 系统上）。
+在内部，默认值来自 <code class="code">LIBTHREAD_DB_SEARCH_PATH</code>
+宏。
+</p>
+<p>在 <small class="sc">GNU</small>/Linux 和 Solaris 系统上 <small class="sc">GDB</small> 使用一个 “辅助”
+<code class="code">libthread_db</code> 库来获取下级进程中线程的信息。  <small class="sc">GDB</small> 将使用 ‘<samp class="samp">libthread-db-search-path</samp>’
+来查找 <code class="code">libthread_db</code>.  <small class="sc">GDB</small> 如果通过 ‘<samp class="samp">set auto-load libthread-db</samp>’ 启用了下级进程特定的线程调试库加载，也会首先进行查询（请参阅 <a class="pxref" href="libthread_005fdb_002eso_002e1-file.html">自动加载线程调试库</a>)。
+</p>
+<p>‘<samp class="samp">$sdir</samp>’ 对于 ‘<samp class="samp">libthread-db-search-path</samp>’ 的一个特殊条目指的是通常用于加载共享库的默认系统目录。  ‘<samp class="samp">$sdir</samp>’ 条目是唯一不需要通过 ‘<samp class="samp">set auto-load libthread-db</samp>’ 启用的类型（请参阅 <a class="pxref" href="libthread_005fdb_002eso_002e1-file.html">自动加载线程调试库</a>)。
+</p>
+<p>‘<samp class="samp">$pdir</samp>’ 对于 ‘<samp class="samp">libthread-db-search-path</samp>’ 的一个特殊条目指的是下级进程中 <code class="code">libpthread</code>
+被加载的目录。
+</p>
+<p>对于 <code class="code">libthread_db</code> 库 <small class="sc">GDB</small> 在上述目录中找到的任何库
+<small class="sc">GDB</small> 尝试使用当前下级进程对其进行初始化。
+如果此初始化失败（这可能是由于 <code class="code">libthread_db</code> 和 <code class="code">libpthread</code>之间的版本不匹配） <small class="sc">GDB</small>
+将卸载 <code class="code">libthread_db</code>, 并继续下一个目录。
+如果没有一个 <code class="code">libthread_db</code> 库成功初始化
+<small class="sc">GDB</small> 将发出警告并禁用线程调试。
+</p>
+<p>设置 <code class="code">libthread-db-search-path</code> 目前仅在某些平台上实现。
+</p>
+</dd>
+<dt><a id="index-show-libthread_002ddb_002dsearch_002dpath"></a><span><code class="code">show libthread-db-search-path</code><a class="copiable-link" href="#index-show-libthread_002ddb_002dsearch_002dpath"> ¶</a></span></dt>
+<dd><p>显示当前的 libthread_db 搜索路径。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-debug-libthread_002ddb"></a>
+<a class="index-entry-id" id="index-debugging-libthread_005fdb"></a>
+<a id="index-set-debug-libthread_002ddb"></a><span><code class="code">set debug libthread-db</code><a class="copiable-link" href="#index-set-debug-libthread_002ddb"> ¶</a></span></dt>
+<dt><code class="code">show debug libthread-db</code></dt>
+<dd><p>打开或关闭与 <code class="code">libthread_db</code>相关事件的显示。
+使用 <code class="code">1</code> 启用， <code class="code">0</code> 禁用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-debug-threads"></a>
+<a class="index-entry-id" id="index-debugging-threads"></a>
+<a id="index-set-debug-threads"></a><span><code class="code">set debug threads <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-set-debug-threads"> ¶</a></span></dt>
+<dt><code class="code">show debug threads</code></dt>
+<dd><p>当 ‘<samp class="samp">开启</samp>’ <small class="sc">GDB</small> 将在创建和删除线程时打印额外的消息。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-thread-local-storage"></a>
+<a class="index-entry-id" id="index-TLS"></a>
+<p>对于某些调试目标 <small class="sc">GDB</small> 支持访问位于线程本地存储（<abbr class="acronym">TLS</abbr>) 中的变量。
+<abbr class="acronym">TLS</abbr> 变量类似于全局变量，不同之处在于每个线程都有自己的变量副本。  虽然通常在多线程程序中使用 <abbr class="acronym">TLS</abbr> 变量也可以在没有线程的程序中使用。  C 库变量 <var class="var">errno</var> 可能是最突出的一个 <abbr class="acronym">TLS</abbr> 变量的例子，它经常在非线程程序中使用。  对于
+<small class="sc">GDB</small> 没有良好 <abbr class="acronym">TLS</abbr> 支持的目标，打印或更改 <var class="var">errno</var> 的值可能无法直接实现。
+</p>
+<p><small class="sc">GNU</small>/Linux 和 FreeBSD 目标支持访问
+<abbr class="acronym">TLS</abbr> 变量。  在 <small class="sc">GNU</small>/Linux 上，辅助库
+<code class="code">libthread_db</code>, 用于帮助解析
+<abbr class="acronym">TLS</abbr> 变量的地址。  一些 FreeBSD 和一些 <small class="sc">GNU</small>/Linux 目标也有 <small class="sc">GDB</small>内部 <abbr class="acronym">TLS</abbr> 解析代码。
+<small class="sc">GNU</small>/Linux 目标将尝试使用 <abbr class="acronym">TLS</abbr> 地址查找功能，但在 <code class="code">libthread_db</code>, 不可用时将回退到使用其内部 <abbr class="acronym">TLS</abbr> 支持。  这可能在交叉调试场景中发生，或者在调试以某种方式链接的程序时发生，例如
+<code class="code">libthread_db</code>  <code class="code">libthread_db</code> 支持不可用 —— 这包括静态链接的程序、链接早于 2.34 版本的 <abbr class="acronym">GLIBC</abbr>
+，但不包括 <code class="code">libpthread</code>, 以及使用其他（非<abbr class="acronym">GLIBC</abbr>) C 库。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-maint-show-force_002dinternal_002dtls_002daddress_002dlookup"></a>
+<a class="index-entry-id" id="index-internal-TLS-address-lookup"></a>
+<a id="index-maint-set-force_002dinternal_002dtls_002daddress_002dlookup"></a><span><code class="code">maint set force-internal-tls-address-lookup</code><a class="copiable-link" href="#index-maint-set-force_002dinternal_002dtls_002daddress_002dlookup"> ¶</a></span></dt>
+<dt><code class="code">maint show force-internal-tls-address-lookup</code></dt>
+<dd><p>打开或关闭强制使用 <small class="sc">GDB</small>内部 <abbr class="acronym">TLS</abbr>
+地址查找代码。  使用 <code class="code">on</code> 启用，使用 <code class="code">off</code> 禁用。  此设置的默认值是 <code class="code">off</code>.
+</p>
+<p>禁用时 <small class="sc">GDB</small> 将尝试使用辅助
+<code class="code">libthread_db</code> 库（如果可能），但必要时将回退到使用其自己的内部 <abbr class="acronym">TLS</abbr> 地址查找机制。
+</p>
+<p>启用时 <small class="sc">GDB</small> 将仅使用 <small class="sc">GDB</small>的内部
+<abbr class="acronym">TLS</abbr> 地址查找机制（如果存在）。
+</p>
+<p>此命令仅适用于 <small class="sc">GNU</small>/Linux 目标。  它的主要用途是用于测试 —— <small class="sc">GDB</small> 测试套件中的某些测试使用此命令强制使用内部 TLS 地址查找。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Forks.html">调试分叉</a>, 上一项： <a href="Inferiors-Connections-and-Programs.html">调试多个下级进程连接和程序</a>, 上级： <a href="Running.html">在 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>错误报告（使用GDB进行调试）</title>
+
+<meta name="description" content="Bug Reporting (Debugging with GDB)"/>
+<meta name="keywords" content="Bug Reporting (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB-Bugs.html" rel="up" title="GDB Bugs"/>
+<link href="Bug-Criteria.html" rel="prev" title="Bug Criteria"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Bug-Reporting">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="p" href="Bug-Criteria.html" rel="prev"></a>, 上一级： <a accesskey="u" href="GDB-Bugs.html" rel="up">报告 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index"></a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="How-to-Report-Bugs"><span>32.2 如何报告错误<a class="copiable-link" href="#How-to-Report-Bugs"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-bug-reports"></a>
+<a class="index-entry-id" id="index-gdb-bugs_002c-reporting"></a>
+
+<p>许多公司和个人为 <small class="sc">GNU</small> 产品提供支持。
+如果您从支持机构获得了 <small class="sc">GDB</small> ，我们建议您首先联系该机构。
+</p>
+<p>您可以在文件 <samp class="file">etc/SERVICE</samp> 中找到许多支持公司和个人的联系信息，该文件位于 <small class="sc">GNU</small> Emacs发行版中。
+</p>
+<p>无论如何，我们还建议您将
+<small class="sc">GDB</small> 的错误报告提交到 <a class="uref" href="https://www.gnu.org/software/gdb/bugs/">https://www.gnu.org/software/gdb/bugs/</a>。
+</p>
+<p>有效报告错误的基本原则是：
+<strong class="strong">报告所有事实</strong>。如果您不确定是否要陈述某个事实，那就陈述它！
+</p>
+<p>人们常常会遗漏一些事实，因为他们认为自己知道问题的原因，并假设某些细节无关紧要。因此，您可能会认为示例中使用的变量名无关紧要。嗯，可能确实无关紧要，但不能确定。也许这个错误是一个偶然的内存引用，恰好从存储该名称的内存位置获取数据；也许，如果名称不同，该位置的内容会使调试器尽管存在错误却做出正确的操作。为了保险起见，给出一个具体、完整的示例。这对您来说是最容易做的事情，也是最有帮助的。
+</p>
+<p>请记住，错误报告的目的是让我们能够修复错误。可能该错误之前已经被报告过，但除非您的错误报告完整且独立，否则您和我们都无法知道这一点。
+</p>
+<p>有时人们给出一些粗略的事实并问：“这有印象吗？” 那些错误报告是无用的，我们敦促每个人
+<em class="emph">拒绝回复它们</em> 除非是责备发送者正确地报告错误。
+</p>
+<p>为了让我们能够修复错误，您应该包含以下所有内容：
+</p>
+<ul class="itemize mark-bullet">
+<li>的版本 <small class="sc">GDB</small>。  <small class="sc">GDB</small> 如果您不带任何参数启动它，它会显示版本信息；您也可以随时使用 <code class="code">show
+version</code>打印版本信息。
+
+<p>没有这个信息，我们将不知道是否有必要在当前版本的 <small class="sc">GDB</small>中查找错误。
+</p>
+</li><li>您使用的机器类型、操作系统名称和版本号。
+
+</li><li>的详细信息 <small class="sc">GDB</small> 编译时的配置。
+<small class="sc">GDB</small> 如果您使用
+<samp class="option">--configuration</samp> 命令行选项调用它，或者在
+<code class="code">show configuration</code> 的提示符下输入 <small class="sc">GDB</small>，它会显示这些详细信息。
+
+</li><li>用于编译 <small class="sc">GDB</small>的编译器（及其版本），例如 “gcc–2.8.1”。
+
+</li><li>用于编译您正在调试的程序的编译器（及其版本），例如 “gcc–2.8.1”，或 “HP92453-01 A.10.32.03 HP C编译器”。对于 <small class="sc">GCC</small>, 您可以说 <kbd class="kbd">gcc --version</kbd>
+来获取此信息；对于其他编译器，请参阅那些编译器的文档。
+
+</li><li>您给编译器的用于编译示例并观察错误的命令参数。例如，您是否使用了 ‘<samp class="samp">-O</samp>’？为了确保您不会遗漏重要信息，请列出所有参数。一份Makefile的副本（或make的输出）就足够了。
+
+<p>如果我们试图猜测参数，我们可能会猜错，然后可能不会遇到错误。
+</p>
+</li><li>一个完整的输入脚本和所有必要的源文件，这些文件将重现错误。
+
+</li><li>对您认为不正确的行为的描述。例如，“它收到一个致命信号。”
+
+<p>当然，如果错误是 <small class="sc">GDB</small> 收到一个致命信号，那么我们肯定会注意到。但如果错误是输出不正确，除非明显错误，否则我们可能不会注意到。您不妨不给我们犯错的机会。
+</p>
+<p>即使您遇到的问题是一个致命信号，您也应该明确说明。假设出现了一些奇怪的情况，例如，您的 <small class="sc">GDB</small> 副本不同步，或者您在系统的C库中遇到了错误。（这种情况确实发生过！）您的副本可能会崩溃，而我们的不会。如果您告诉我们预计会崩溃，那么当我们的没有崩溃时，我们就会知道错误对我们来说没有发生。如果您没有告诉我们预计会崩溃，那么我们就无法从我们的观察中得出任何结论。
+</p>
+<a class="index-entry-id" id="index-script"></a>
+<a class="index-entry-id" id="index-recording-a-session-script"></a>
+<p>为了收集所有这些信息，您可以使用一个会话记录程序，例如 <code class="command">script</code>, 它在许多Unix系统上都可用。
+只需在 <small class="sc">GDB</small> 中运行您的 <code class="command">script</code> 会话，然后将 <samp class="file">类型文件包含在您的错误报告中。</samp> 
+</p>
+<p>另一种记录 <small class="sc">GDB</small> 会话的方法是在Emacs中运行 <small class="sc">GDB</small>
+，然后将整个缓冲区保存到一个文件中。
+</p>
+</li><li>如果您想对 <small class="sc">GDB</small> 源代码提出更改建议，请向我们发送上下文差异。如果您甚至在讨论 <small class="sc">GDB</small> 源代码中的内容，请通过上下文引用，而不是行号。
+
+<p>我们开发源代码中的行号与您的源代码中的行号不匹配。您的行号对我们来说没有任何有用的信息。
+</p>
+</li></ul>
+
+<p>以下是一些不必要的内容：
+</p>
+<ul class="itemize mark-bullet">
+<li>对错误范围的描述。
+
+<p>经常遇到错误的人会花很多时间研究对输入文件的哪些更改会使错误消失，哪些更改不会影响它。
+</p>
+<p>这通常很耗时且不太有用，因为我们找到错误的方法是在调试器下使用断点运行单个示例，而不是从一系列示例中进行纯粹的推理。我们建议您把时间花在其他事情上。
+</p>
+<p>当然，如果您能找到一个更简单的示例来报告 <em class="emph">而不是原始示例，这对我们来说会更方便。输出中的错误会更容易发现，在调试器下运行所需的时间会更少，等等。</em>
+然而，简化并不是至关重要的；如果您不想这样做，无论如何都要报告错误，并向我们发送您使用的整个测试用例。
+</p>
+<p>
+</p>
+</li><li>针对错误的补丁。
+
+<p>如果是一个好的补丁，它确实对我们有帮助。但不要因为假设补丁就是我们所需要的一切而省略必要的信息，例如测试用例。我们可能会发现您的补丁有问题，并决定以另一种方式修复问题，或者我们可能根本不理解它。
+</p>
+<p>有时对于像 <small class="sc">GDB</small> 这样复杂的程序，很难构造一个能使程序按照特定路径执行代码的示例。如果您不向我们发送示例，我们将无法构造一个，因此我们将无法验证错误是否已修复。
+</p>
+<p>如果我们不明白您试图修复什么错误，或者为什么您的补丁应该是一种改进，我们将不会安装它。一个测试用例将帮助我们理解。
+</p>
+</li><li>对错误是什么或它依赖于什么的猜测。
+
+<p>这种猜测通常是错误的。即使是我们，在没有首先使用调试器找出事实之前，也无法猜对这些事情。
+</p></li></ul>
+
+
+
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一页： <a href="Bug-Criteria.html">您发现错误了吗？</a>, 上一级： <a href="GDB-Bugs.html">报告 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

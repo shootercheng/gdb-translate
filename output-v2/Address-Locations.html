@@ -1,0 +1,96 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>地址位置（使用 GDB 调试）</title>
+
+<meta name="description" content="Address Locations (Debugging with GDB)"/>
+<meta name="keywords" content="Address Locations (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Location-Specifications.html" rel="up" title="Location Specifications"/>
+<link href="Explicit-Locations.html" rel="prev" title="Explicit Locations"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Address-Locations">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Explicit-Locations.html" rel="prev">显式位置</a>, 上一级： <a accesskey="u" href="Location-Specifications.html" rel="up">位置规范</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Address-Locations-1"><span>9.2.3 地址位置<a class="copiable-link" href="#Address-Locations-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-address-locations"></a>
+
+<p><em class="dfn">地址位置</em> 表示一个特定的程序地址。 它们具有
+通用形式 *<var class="var">地址</var>.
+</p>
+<p>对于面向行的命令，例如 <code class="code">list</code> 和 <code class="code">edit</code>, 这
+指定了包含 <var class="var">地址</var>. 对于 <code class="code">break</code> 和
+其他面向断点的命令，这可用于在
+程序中没有调试信息或
+源文件的部分设置断点。
+</p>
+<p>这里 <var class="var">地址</var> 可以是当前工作
+语言中有效的任何表达式（请参阅 <a class="pxref" href="Languages.html">工作语言</a>)，该表达式指定一个代码
+地址。 此外，为了方便起见， <small class="sc">GDB</small> 扩展了位置中使用的表达式的语义，以涵盖调试期间经常出现的几种情况。 以下是各种形式的 <var class="var">地址</var>:
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">expression</var></code></dt>
+<dd><p>当前工作语言中有效的任何表达式。
+</p>
+</dd>
+<dt><code class="code"><var class="var">funcaddr</var></code></dt>
+<dd><p>从函数或过程名称派生的函数或过程的地址。 在 C、
+C<code class="t">++</code>, Objective - C、Fortran、Pascal、Modula - 2、minimal 和汇编中，这仅仅是函数的名称 <var class="var">函数</var> （实际上是有效表达式的一种特殊情况）。 在 Ada 中，这是 <code class="code"><var class="var">function</var>&#39;Address</code>
+（尽管 <code class="code">&amp;<var class="var">function</var></code> 也可以）。
+</p>
+<p>这种形式指定了函数第一条指令的地址，
+在设置堆栈帧和参数之前。
+</p>
+</dd>
+<dt><code class="code">&#39;<var class="var">filename</var>&#39;::<var class="var">funcaddr</var></code></dt>
+<dd><p>像 <var class="var">funcaddr</var> 上面的形式，但也明确指定了源
+文件的名称。 如果函数的名称不能明确指定函数，例如，如果在不同的源文件中有几个
+名称相同的函数，这很有用，
+请参阅 <a class="ref" href="Variables.html#variable-name-conflict">变量名冲突</a>. 并非所有
+语言都支持此功能，请参阅 <a class="ref" href="Expressions.html">表达式</a>.
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Explicit-Locations.html">显式位置</a>, 上一级： <a href="Location-Specifications.html">位置规范</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

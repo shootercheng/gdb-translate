@@ -1,0 +1,187 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>帧应用（使用GDB调试）</title>
+
+<meta name="description" content="Frame Apply (Debugging with GDB)"/>
+<meta name="keywords" content="Frame Apply (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Stack.html" rel="up" title="Stack"/>
+<link href="Frame-Filter-Management.html" rel="next" title="Frame Filter Management"/>
+<link href="Frame-Info.html" rel="prev" title="Frame Info"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frame-Apply">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Frame-Filter-Management.html" rel="next"></a>, 上一项： <a accesskey="p" href="Frame-Info.html" rel="prev">帧信息</a>, 上级： <a accesskey="u" href="Stack.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Applying-a-Command-to-Several-Frames_002e"><span>8.5 对多个帧应用命令。<a class="copiable-link" href="#Applying-a-Command-to-Several-Frames_002e"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-frame-apply"></a>
+<a class="index-entry-id" id="index-apply-command-to-several-frames"></a>
+<dl class="table">
+<dt><code class="code">frame apply [all | <var class="var">count</var> | <var class="var">-count</var> | level <var class="var">level</var>…] [<var class="var">option</var>]… <var class="var">command</var></code></dt>
+<dd><p>该 <code class="code">frame apply</code> 命令允许你将指定的
+<var class="var">命令</var> 应用到一个或多个帧。
+</p>
+<dl class="table">
+<dt><code class="code"><code class="code">all</code></code></dt>
+<dd><p>指定 <code class="code">all</code> 以应用 <var class="var">命令</var> 到所有帧。
+</p>
+</dd>
+<dt><code class="code"><var class="var">count</var></code></dt>
+<dd><p>使用 <var class="var">计数</var> 以应用 <var class="var">命令</var> 到最内层的 <var class="var">计数</var>
+个帧，其中 <var class="var">计数</var> 是一个正数。
+</p>
+</dd>
+<dt><code class="code"><var class="var">-count</var></code></dt>
+<dd><p>使用 <var class="var">-计数</var> 以应用 <var class="var">命令</var> 到最外层的 <var class="var">计数</var>
+个帧，其中 <var class="var">计数</var> 是一个正数。
+</p>
+</dd>
+<dt><code class="code"><code class="code">level</code></code></dt>
+<dd><p>使用 <code class="code">level</code> 以应用 <var class="var">命令</var> 到由 <var class="var">级别</var> 列表标识的帧集合。  <var class="var">级别</var> 是一个帧级别或帧级别的范围，格式为 <var class="var">级别1</var>-<var class="var">级别2</var>. 帧级别是 ‘<samp class="samp">backtrace</samp>’ 命令输出中第一个字段显示的数字。
+例如，‘<samp class="samp">2-4 6-8 3</samp>’ 表示对级别为2、3、4、6、7、8的帧应用 <var class="var">命令</var> ，然后再次对级别为3的帧应用。
+</p>
+</dd>
+</dl>
+
+<p>请注意， <code class="code">frame apply</code> 应用命令的帧也会受到 <code class="code">set backtrace</code> 设置的影响，例如 <code class="code">set
+backtrace past-main</code> 和 <code class="code">set backtrace limit N</code>.
+请参阅 <a class="xref" href="Backtrace.html">回溯</a>.
+</p>
+<p>该 <code class="code">frame apply</code> 命令还支持一些选项，这些选项允许覆盖相关的 <code class="code">set backtrace</code> 设置：
+</p>
+<dl class="table">
+<dt><code class="code">-past-main [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>回溯是否应继续超过 <code class="code">main</code>.
+相关设置： <a class="ref" href="Backtrace.html#set-backtrace-past_002dmain">set backtrace past-main</a>.
+</p>
+</dd>
+<dt><code class="code">-past-entry [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>回溯是否应继续超过程序的入口点。
+相关设置： <a class="ref" href="Backtrace.html#set-backtrace-past_002dentry">set backtrace past-entry</a>.
+</p></dd>
+</dl>
+
+<p>默认情况下， <small class="sc">GDB</small> 在 <var class="var">命令</var>产生的输出之前显示一些帧信息，并且在执行 <var class="var">命令</var> 期间引发的错误将中止 <code class="code">frame apply</code>. 可以使用以下选项来微调这些行为：
+</p>
+<dl class="table">
+<dt><code class="code">-c</code></dt>
+<dd><p>标志 <code class="code">-c</code>, 它代表 ‘<samp class="samp">继续</samp>’，会导致 <var class="var">命令</var> 中的任何错误被显示，然后继续执行
+<code class="code">frame apply</code> 。
+</p></dd>
+<dt><code class="code">-s</code></dt>
+<dd><p>标志 <code class="code">-s</code>, 它代表 ‘<samp class="samp">静默</samp>’，会导致 <var class="var">命令</var> 产生的任何错误或空输出被静默忽略。
+也就是说，执行继续，但不打印帧信息和错误。
+</p></dd>
+<dt><code class="code">-q</code></dt>
+<dd><p>标志 <code class="code">-q</code> (‘<samp class="samp">安静</samp>’) 禁用帧信息的打印。
+</p></dd>
+</dl>
+
+<p>以下示例展示了这些标志的使用方法 <code class="code">-c</code> 和 <code class="code">-s</code> 在应用该命令时是有效的
+适用于所有帧，其中
+变量 <code class="code">p j</code> 只能在最外层成功打印 <code class="code">j</code> 帧。
+<code class="code">#1 main</code> 
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all p j
+#0  some_function (i=5) at fun.c:4
+当前上下文中没有符号 &#34;j&#34;。
+(gdb) frame apply all -c p j
+#0  some_function (i=5) at fun.c:4
+当前上下文中没有符号 &#34;j&#34;。
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$1 = 5
+(gdb) frame apply all -s p j
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$2 = 5
+(gdb)
+</pre></div></div>
+
+<p>默认情况下，‘<samp class="samp">frame apply</samp>’ 在命令输出之前打印帧位置
+信息：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all p $sp
+#0  some_function (i=5) at fun.c:4
+$4 = (void *) 0xffffd1e0
+#1  0x565555fb in main (argc=1, argv=0xffffd2c4) at fun.c:11
+$5 = (void *) 0xffffd1f0
+(gdb)
+</pre></div></div>
+
+<p>如果给出标志 <code class="code">-q</code> 则不打印帧信息：
+</p><div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) frame apply all -q p $sp
+$12 = (void *) 0xffffd1e0
+$13 = (void *) 0xffffd1f0
+(gdb)
+</pre></div></div>
+
+</dd>
+</dl>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-apply-a-command-to-all-frames-_0028ignoring-errors-and-empty-output_0029"></a>
+<a id="index-faas"></a><span><code class="code">faas <var class="var">command</var></code><a class="copiable-link" href="#index-faas"> ¶</a></span></dt>
+<dd><p>的快捷方式 <code class="code">frame apply all -s <var class="var">command</var></code>.
+应用 <var class="var">命令</var> 到所有帧，忽略错误和空输出。
+</p>
+<p>例如，它可用于在不知道变量或参数所在帧的情况下打印局部变量或函数
+参数，使用：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) faas p some_local_var_i_do_not_remember_where_it_is
+</pre></div>
+
+<p>该 <code class="code">faas</code> 命令接受与 <code class="code">frame
+apply</code> 命令相同的选项。 请参阅 <a class="xref" href="#Frame-Apply">frame apply</a>.
+</p>
+<p>请注意，命令 <code class="code">tfaas <var class="var">command</var></code> 应用 <var class="var">命令</var>
+到所有线程的所有帧。 请参阅 <a class="xref" href="Threads.html">线程</a>.
+</p></dd>
+</dl>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Frame-Filter-Management.html">帧过滤器管理。</a>, 上一项： <a href="Frame-Info.html">帧信息</a>, 上级： <a href="Stack.html">检查栈</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

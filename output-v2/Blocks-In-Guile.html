@@ -1,0 +1,181 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的块（使用 GDB 调试）</title>
+
+<meta name="description" content="Blocks In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Blocks In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Symbols-In-Guile.html" rel="next" title="Symbols In Guile"/>
+<link href="Frames-In-Guile.html" rel="prev" title="Frames In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Blocks-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Symbols-In-Guile.html" rel="next">符号的 Guile 表示。</a>, 上一项： <a accesskey="p" href="Frames-In-Guile.html" rel="prev">从 Guile 访问 inferior 栈帧。</a>, 上级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Accessing-blocks-from-Guile_002e"><span>23.4.3.16 从 Guile 访问块。<a class="copiable-link" href="#Accessing-blocks-from-Guile_002e"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-blocks-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003ablock_003e"></a>
+
+<p>在 <small class="sc">GDB</small>, 符号存储在块中。块大致对应于源代码中的一个作用域。块是分层组织的，在 Guile 中分别表示为类型为 <code class="code">&lt;gdb:block&gt;</code>. 块依赖于可用的调试信息。
+</p>
+<p>一个帧有一个块。请参阅 <a class="ref" href="Frames-In-Guile.html">从 Guile 访问 inferior 栈帧。</a>, 以获取关于帧的更深入讨论。
+</p>
+<p>最外层的块称为 <em class="dfn">全局块</em>. 全局块通常包含公共全局变量和函数。
+</p>
+<p>嵌套在全局块内的块是 <em class="dfn">静态块</em>. 静态块通常包含文件作用域的变量和函数。
+</p>
+<p><small class="sc">GDB</small> 提供了一种获取块的父块的方法，但目前没有办法检查块的子块，也无法遍历符号表中的所有块（请参阅 <a class="pxref" href="Symbol-Tables-In-Guile.html">Guile 中的符号表表示。</a>)。
+</p>
+<p>以下是一个简短的示例，有助于解释块：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* 这在全局块中。  */
+int global;
+
+/* 这在静态块中。  */
+static int file_scope;
+
+/* &#39;function&#39; 在全局块中，&#39;argument&#39; 在 &#39;function&#39; 内部嵌套的块中。  */
+int function (int argument)
+{
+  /* &#39;local&#39; 在 &#39;function&#39; 内部的一个块中。它可能与 &#39;argument&#39; 在同一个块中，也可能不在。  */
+  int local;
+
+  {
+     /* &#39;inner&#39; 在一个块中，该块的父块是包含 &#39;local&#39; 的块。  */
+     int inner;
+
+     /* 如果此调用被编译器展开，你可能会在这里看到一个嵌套块，其函数为 &#39;inline_function&#39;，父块是包含 &#39;inner&#39; 的块。  */
+     inline_function ();
+  }
+}
+</pre></div>
+
+<p>以下与块相关的过程由
+<code class="code">(gdb)</code> 模块提供：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">是否为块？</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-block_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:block&gt;</code> 对象。否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dvalid_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块是否有效？</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dvalid_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var> 有效，
+<code class="code">#f</code> 如果无效。如果块所引用的块在 inferior 中不再存在，则块对象可能会变得无效。如果在调用过程时块无效，所有其他
+<code class="code">&lt;gdb:block&gt;</code> 方法都会抛出异常。在遍历块的符号时也会检查块的有效性。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dstart"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块的起始地址</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dstart"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dend"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块的结束地址</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dend"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dfunction"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块所属的函数</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dfunction"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var> 所代表的
+<code class="code">&lt;gdb:symbol&gt;</code> 对象的名称。如果块没有名称，则返回 <code class="code">#f</code> 。
+</p>
+<p>对于普通的函数块，父块是静态块。但是，你应该注意，函数块的父块可能不是静态块，例如内联函数就是这种情况。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dsuperblock"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块的父块</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dsuperblock"> ¶</a></span></dt>
+<dd><p>返回包含 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>.的块。如果父块不存在，则返回 <code class="code">#f</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dglobal_002dblock"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块的全局块</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dglobal_002dblock"> ¶</a></span></dt>
+<dd><p>返回与 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>关联的全局块。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dstatic_002dblock"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块的静态块</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dstatic_002dblock"> ¶</a></span></dt>
+<dd><p>返回与 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>关联的静态块。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dglobal_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块是否为全局块？</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dglobal_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var> 是全局块。否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dstatic_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块是否为静态块？</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-block_002dstatic_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var> 是静态块。否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dsymbols"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块中的符号</strong><a class="copiable-link" href="#index-block_002dsymbols"> ¶</a></span></dt>
+<dd><p>返回
+<code class="code">&lt;gdb:block&gt;</code> <var class="var">块</var>中所有符号（作为 &lt;gdb:symbol&gt; 对象）的列表。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dblock_002dsymbols_002diterator"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">创建块符号迭代器</strong> <var class="def-var-arguments">块</var><a class="copiable-link" href="#index-make_002dblock_002dsymbols_002diterator"> ¶</a></span></dt>
+<dd><p>返回一个类型为 <code class="code">&lt;gdb:iterator&gt;</code> 的对象，该对象将遍历块中的所有符号。Guile 程序不应假设特定的块对象总是包含给定的符号，因为 <small class="sc">GDB</small> 特性和基础设施的变化可能会导致符号在符号表中的块之间移动。请参阅 <a class="xref" href="Iterators-In-Guile.html">Guile 中的迭代器</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-block_002dsymbols_002dprogress_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">块符号进度对象？</strong><a class="copiable-link" href="#index-block_002dsymbols_002dprogress_003f"> ¶</a></span></dt>
+<dd><p>如果对象是 &lt;gdb:block-symbols-progress&gt; 对象，则返回 #t。此对象将从 <code class="code">progress</code> 元素中获取，该元素来自
+<code class="code">&lt;gdb:iterator&gt;</code> 返回的对象。 <code class="code">make-block-symbols-iterator</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lookup_002dblock"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">查找块</strong> <var class="def-var-arguments">程序计数器</var><a class="copiable-link" href="#index-lookup_002dblock"> ¶</a></span></dt>
+<dd><p>返回包含给定 <code class="code">&lt;gdb:block&gt;</code> 程序计数器 <var class="var">值的最内层</var>
+块。如果找不到指定 <var class="var">程序计数器</var> 值对应的块，函数将返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Symbols-In-Guile.html">符号的 Guile 表示。</a>, 上一项： <a href="Frames-In-Guile.html">从 Guile 访问 inferior 栈帧。</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

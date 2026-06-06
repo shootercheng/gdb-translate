@@ -1,0 +1,96 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>异步和非停止模式（使用 GDB 调试）</title>
+
+<meta name="description" content="Asynchronous and non-stop modes (Debugging with GDB)"/>
+<meta name="keywords" content="Asynchronous and non-stop modes (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-General-Design.html" rel="up" title="GDB/MI General Design"/>
+<link href="Thread-groups.html" rel="next" title="Thread groups"/>
+<link href="Context-management.html" rel="prev" title="Context management"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Asynchronous-and-non_002dstop-modes">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Thread-groups.html" rel="next">线程组</a>, 上一项： <a accesskey="p" href="Context-management.html" rel="prev">上下文管理</a>, 上一级： <a accesskey="u" href="GDB_002fMI-General-Design.html" rel="up"><small class="sc">GDB/MI</small> 总体设计</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Asynchronous-command-execution-and-non_002dstop-mode"><span>27.1.2 异步命令执行和非停止模式<a class="copiable-link" href="#Asynchronous-command-execution-and-non_002dstop-mode"> ¶</a></span></h4>
+
+<p>在某些目标系统上， <small class="sc">GDB</small> 即使目标正在运行，也能够处理 MI 命令。这被称为 <em class="dfn">异步命令执行</em> （请参阅 <a class="pxref" href="Background-Execution.html">后台执行</a>）。前端可以使用
+<code class="code">-gdb-set mi-async 1</code> 命令指定对异步执行的偏好，该命令应在运行可执行文件或附加到目标之前发出。在前端启动可执行文件或附加到目标之后，可以使用
+<code class="code">-list-target-features</code> 命令来确定是否启用了异步执行。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-background-execution-1"></a>
+<a class="index-entry-id" id="index-asynchronous-execution-1"></a>
+<a class="index-entry-id" id="index-execution_002c-foreground_002c-background-and-asynchronous-1"></a>
+<a class="index-entry-id" id="index-set-mi_002dasync"></a>
+<a id="index-foreground-execution-1"></a><span><code class="code">-gdb-set mi-async <span class="r">[</span>on<span class="r">|</span>off<span class="r">]</span></code><a class="copiable-link" href="#index-foreground-execution-1"> ¶</a></span></dt>
+<dd><p>设置 MI 是否处于异步模式。
+</p>
+<p>当 <code class="code">off</code>（这是默认值）时，MI 执行命令（例如
+<code class="code">-exec-continue</code>）是前台命令，并且 <small class="sc">GDB</small> 会等待程序停止后再处理进一步的命令。
+</p>
+<p>当 <code class="code">on</code>时，MI 执行命令是后台执行命令（例如 <code class="code">-exec-continue</code> 相当于
+<code class="code">c&amp;</code> CLI 命令），因此 <small class="sc">GDB</small> 即使目标正在运行，也能够处理 MI 命令。
+</p>
+</dd>
+<dt><a id="index-show-mi_002dasync"></a><span><code class="code">-gdb-show mi-async</code><a class="copiable-link" href="#index-show-mi_002dasync"> ¶</a></span></dt>
+<dd><p>显示是否启用了 MI 异步模式。
+</p></dd>
+</dl>
+
+<p>注意：在 <small class="sc">GDB</small> 7.7 版本及更早版本中，此选项称为
+<code class="code">target-async</code> 而不是 <code class="code">mi-async</code>，它的作用是将 MI 置于异步模式并使 CLI 后台命令成为可能。如果目标支持，现在 CLI 后台命令“开箱即用”总是可行的。为了向后兼容，旧的拼写方式作为已弃用的别名保留。
+</p>
+<p>即使 <small class="sc">GDB</small> 在目标运行时可以接受命令，但许多访问目标的命令在目标运行时不起作用。因此，异步命令执行与非停止模式结合使用时最为有用（请参阅 <a class="pxref" href="Non_002dStop-Mode.html">非停止模式</a>）。这样，在其他线程运行时，可以检查一个线程的状态。
+</p>
+<p>当给定线程正在运行时，尝试在该线程的上下文中访问目标的 MI 命令可能不起作用，或者可能仅在某些目标上起作用。特别是，尝试对线程的堆栈进行操作的命令在任何目标上都不起作用。读取内存或修改断点的命令是否起作用取决于目标。请注意，即使是对全局状态进行操作的命令，例如 <code class="code">print</code>,
+<code class="code">set</code>, 以及断点命令，仍然会在特定线程的上下文中访问目标，因此前端应该尝试找到一个停止的线程，并在该线程上执行操作（使用‘<samp class="samp">--线程</samp>’选项）。
+</p>
+<p>哪些命令在运行线程的上下文中起作用高度依赖于目标。但是，两个命令
+<code class="code">-exec-interrupt</code>, 用于停止一个线程，以及 <code class="code">-thread-info</code>, 用于查找线程的状态，总是会起作用。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Thread-groups.html">线程组</a>, 上一项： <a href="Context-management.html">上下文管理</a>, 上一级： <a href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small> 总体设计</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

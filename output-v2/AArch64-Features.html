@@ -1,0 +1,309 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>AArch64 特性（使用 GDB 进行调试）</title>
+
+<meta name="description" content="AArch64 Features (Debugging with GDB)"/>
+<meta name="keywords" content="AArch64 Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features"/>
+<link href="Alpha-Features.html" rel="next" title="Alpha Features"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AArch64-Features">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Alpha-Features.html" rel="next">Alpha 特性</a>, 上一项： <a accesskey="u" href="Standard-Target-Features.html" rel="up">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="AArch64-Features-1"><span>G.5.1 AArch64 特性<a class="copiable-link" href="#AArch64-Features-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-AArch64-features"></a>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#AArch64-core-registers-feature">AArch64 核心寄存器特性</a></li>
+<li><a accesskey="2" href="#AArch64-floating_002dpoint-registers-feature">AArch64 浮点寄存器特性</a></li>
+<li><a accesskey="3" href="#AArch64-SVE-registers-feature">AArch64 SVE 寄存器特性</a></li>
+<li><a accesskey="4" href="#AArch64-Pointer-Authentication-registers-feature">AArch64 指针认证寄存器特性</a></li>
+<li><a accesskey="5" href="#AArch64-TLS-registers-feature">AArch64 TLS 寄存器特性</a></li>
+<li><a accesskey="6" href="#AArch64-MTE-registers-feature">AArch64 MTE 寄存器特性</a></li>
+<li><a accesskey="7" href="#AArch64-SME-registers-feature">AArch64 SME 寄存器特性</a></li>
+<li><a accesskey="8" href="#AArch64-SME2-registers-feature">AArch64 SME2 寄存器特性</a></li>
+<li><a accesskey="9" href="#AArch64-GCS-registers-feature">AArch64 GCS 寄存器特性</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AArch64-core-registers-feature">
+<h4 class="subsubsection"><span><a class="copiable-link" href="#AArch64-core-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.core</samp>’ 特性是 AArch64 目标所必需的。它必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">x0</samp>’ 到 ‘<samp class="samp">x30</samp>’，通用寄存器，大小为 64 位。寄存器 ‘<samp class="samp">x30</samp>’ 也被称为 <em class="dfn">链接寄存器</em>,
+或 ‘<samp class="samp">lr</samp>’.
+</li><li>‘<samp class="samp">sp</samp>’，栈指针寄存器或 ‘<samp class="samp">x31</samp>’。它的大小为 64 位，类型为 ‘<samp class="samp">数据指针</samp>’。
+</li><li>‘<samp class="samp">pc</samp>’，程序计数器寄存器。它的大小为 64 位，类型为 ‘<samp class="samp">代码指针</samp>’。
+</li><li>‘<samp class="samp">cpsr</samp>’，当前程序状态寄存器。它的大小为 32 位，并且有一个自定义标志类型。
+</li></ul>
+
+<p>‘<samp class="samp">cpsr</samp>’ 中各个标志和字段的语义可能会随着新的架构特性的添加而改变。当前的布局可以在 aarch64 - core.xml 文件中找到。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-floating_002dpoint-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.2 AArch64 浮点寄存器特性<a class="copiable-link" href="#AArch64-floating_002dpoint-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.fpu</samp>’ 特性是可选的。如果存在，它必须包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">v0</samp>’ 到 ‘<samp class="samp">v31</samp>’，向量寄存器，大小为 128 位。类型是一个自定义向量类型。
+</li><li>‘<samp class="samp">fpsr</samp>’，浮点状态寄存器。它的大小为 32 位，并且有一个自定义标志类型。
+</li><li>‘<samp class="samp">fpcr</samp>’，浮点控制寄存器。它的大小为 32 位，并且有一个自定义标志类型。
+</li></ul>
+
+<p>‘<samp class="samp">fpsr</samp>’ 和 ‘<samp class="samp">fpcr</samp>’
+中各个标志和字段的语义可能会随着新的架构特性的添加而改变。
+</p>
+<p>向量寄存器、‘<samp class="samp">fpsr</samp>’ 和 ‘<samp class="samp">fpcr</samp>’ 寄存器的类型可以在 aarch64 - fpu.xml 文件中找到。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-SVE-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.3 AArch64 SVE 寄存器特性<a class="copiable-link" href="#AArch64-SVE-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.sve</samp>’ 特性是可选的。如果存在，这意味着目标支持可扩展向量扩展，并且必须包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">z0</samp>’ 到 ‘<samp class="samp">z31</samp>’，可扩展向量寄存器。它们的大小是可变的，并且是 128 位的倍数，最大为 2048 位。它们的类型是一个自定义联合类型，有助于可视化不同大小的子向量。
+</li><li>‘<samp class="samp">fpsr</samp>’，浮点状态寄存器。它的大小为 32 位，并且有一个自定义标志类型。
+</li><li>‘<samp class="samp">fpcr</samp>’，浮点控制寄存器。它的大小为 32 位，并且有一个自定义标志类型。
+</li><li>‘<samp class="samp">p0</samp>’ 到 ‘<samp class="samp">p15</samp>’，谓词寄存器。它们的大小是可变的，基于当前向量长度，并且是 16 位的倍数。它们的类型是一个自定义联合类型，有助于可视化子元素。
+</li><li>‘<samp class="samp">ffr</samp>’，首次故障寄存器。它的大小基于当前向量长度可变，并且是 16 位的倍数。其类型与谓词寄存器相同。
+</li><li>‘<samp class="samp">vg</samp>’，向量粒度。它表示 ‘<samp class="samp">z</samp>’ 寄存器中 64 位块的数量。它与当前向量长度密切相关。它的类型是 ‘<samp class="samp">整数</samp>’。
+</li></ul>
+
+<p>当 <small class="sc">GDB</small> 检测到 SVE 特性时，它将假定支持可扩展向量扩展，并将根据 ‘<samp class="samp">z</samp>’、‘<samp class="samp">p</samp>’
+和 ‘<samp class="samp">ffr</samp>’ 寄存器的大小进行相应调整，基于 ‘<samp class="samp">vg</samp>’ 的值。
+</p>
+<p><small class="sc">GDB</small> 还将创建与 ‘<samp class="samp">v</samp>’
+向量寄存器等效的伪寄存器，该向量寄存器来自 ‘<samp class="samp">org.gnu.gdb.aarch64.fpu</samp>’ 特性。
+</p>
+<p>‘<samp class="samp">z</samp>’ 寄存器的前 128 位与 ‘<samp class="samp">v</samp>’ 寄存器的 128 位重叠，因此更改其中一个将触发另一个的更改。
+</p>
+<p>关于 ‘<samp class="samp">z</samp>’、‘<samp class="samp">p</samp>’ 和 ‘<samp class="samp">ffr</samp>’ 寄存器的类型，请查看 aarch64 - sve.c 文件。由于此特性是根据当前向量长度动态生成的，因此没有可用的 XML 文件。
+</p>
+<p>‘<samp class="samp">fpsr</samp>’ 和 ‘<samp class="samp">fpcr</samp>’
+中各个标志和字段的语义可能会随着新的架构特性的添加而改变。
+</p>
+<p>‘<samp class="samp">fpsr</samp>’ 和 ‘<samp class="samp">fpcr</samp>’ 寄存器的类型可以在 aarch64 - sve.c 文件中找到，并且应该与 aarch64 - fpu.xml 中描述的内容相匹配。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Pointer-Authentication-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.4 AArch64 指针认证寄存器特性<a class="copiable-link" href="#AArch64-Pointer-Authentication-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.pauth</samp>’ 可选特性被引入，以便
+<small class="sc">GDB</small> 可以检测对指针认证扩展的支持。如果存在，它必须包含两组可能的寄存器之一。
+</p>
+<p>用户模式的指针认证掩码：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">pauth_dmask</samp>’，数据指针的用户模式指针认证掩码。它的大小为 64 位。
+</li><li>‘<samp class="samp">pauth_cmask</samp>’，代码指针的用户模式指针认证掩码。它的大小为 64 位。
+</li></ul>
+
+<p>用户模式和内核模式的指针认证掩码：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">pauth_dmask</samp>’，数据指针的用户模式指针认证掩码。它的大小为 64 位。
+</li><li>‘<samp class="samp">pauth_cmask</samp>’，代码指针的用户模式指针认证掩码。它的大小为 64 位。
+</li><li>‘<samp class="samp">pauth_dmask_high</samp>’，数据指针的内核模式指针认证掩码。它的大小为 64 位。
+</li><li>‘<samp class="samp">pauth_cmask_high</samp>’，代码指针的内核模式指针认证掩码。它的大小为 64 位。
+</li></ul>
+
+<p>如果 <small class="sc">GDB</small> 检测到此特性中的两组寄存器中的任何一组，它将假定目标能够对指针进行签名。如果是这样， <small class="sc">GDB</small> 将在回溯信息中用 ‘<samp class="samp">[PAC]</samp>’ 标记装饰具有需要解掩码/解码的签名链接寄存器值的函数。
+</p>
+<p><small class="sc">GDB</small> 还将使用掩码从指针中移除非地址位。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+<p>请注意，‘<samp class="samp">org.gnu.gdb.aarch64.pauth</samp>’ 特性字符串已被弃用，并且只能用于与旧版本的
+<small class="sc">GDB</small> 和 <code class="command">gdbserver</code>. 支持指针认证的目标必须通过使用 ‘<samp class="samp">org.gnu.gdb.aarch64.pauth_v2</samp>’ 特性字符串来声明这种能力。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.pauth_v2</samp>’ 特性的内容与特性 ‘<samp class="samp">org.gnu.gdb.aarch64.pauth</samp>’ 完全相同。
+</p>
+<p>引入特性 ‘<samp class="samp">org.gnu.gdb.aarch64.pauth_v2</samp>’ 的原因是之前版本的 <small class="sc">GDB</small> （版本 9、10、11 和 12）存在一个 bug。这个 bug 导致 <small class="sc">GDB</small> 每当目标报告支持指针认证（使用特性字符串 ‘<samp class="samp">org.gnu.gdb.aarch64.pauth</samp>’）并且还报告了
+<small class="sc">GDB</small>未考虑到的额外系统寄存器时就会崩溃。这在使用模拟器和裸机调试场景中更为常见。
+</p>
+<p>如果使用较新的 gdbserver 与存在此 bug 的旧 <small class="sc">GDB</small> 一起使用，也可能会发生这种情况。在这种情况下，较新的 gdbserver 可能会通过 ‘<samp class="samp">org.gnu.gdb.aarch64.pauth</samp>’ 特性字符串报告指针认证支持，并且还会报告旧的 <small class="sc">GDB</small> 不知道的额外寄存器，这可能会导致崩溃。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-TLS-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.5 AArch64 TLS 寄存器特性<a class="copiable-link" href="#AArch64-TLS-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.tls</samp>’ 可选特性被引入，以便将 TLS 寄存器暴露给 <small class="sc">GDB</small>. 如果存在，它必须包含以下寄存器集之一。
+</p>
+<p>仅 ‘<samp class="samp">tpidr</samp>’：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">tpidr</samp>’，软件线程 ID 寄存器。它的大小为 64 位，类型为 ‘<samp class="samp">数据指针</samp>’。
+</li></ul>
+
+<p>‘<samp class="samp">tpidr</samp>’ 和 ‘<samp class="samp">tpidr2</samp>’。
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">tpidr</samp>’，软件线程 ID 寄存器。它的大小为 64 位，类型为 ‘<samp class="samp">数据指针</samp>’。
+</li><li>‘<samp class="samp">tpidr2</samp>’，第二个软件线程 ID 寄存器。它的大小为 64 位，类型为 ‘<samp class="samp">数据指针</samp>’。它可能会在未来与可扩展矩阵扩展一起用于延迟恢复方案。
+</li></ul>
+
+<p>如果 <small class="sc">GDB</small> 检测到这个特性，它将尝试找到寄存器集的一种变体。如果 ‘<samp class="samp">tpidr2</samp>’ 可用，
+<small class="sc">GDB</small> 可能会在未来对其进行操作以显示额外的数据。
+</p>
+<p>此特性没有 XML 文件，因为 ‘<samp class="samp">tpidr2</samp>’ 的存在是在运行时动态确定的。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-MTE-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.6 AArch64 MTE 寄存器特性<a class="copiable-link" href="#AArch64-MTE-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.mte</samp>’ 可选特性被引入，以便
+<small class="sc">GDB</small> 可以检测对内存标记扩展的支持并控制内存标记设置。如果存在，此特性必须有以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">tag_ctl</samp>’，标记控制寄存器。它的大小为 64 位，类型为 ‘<samp class="samp">无符号 64 位整数</samp>’。
+</li></ul>
+
+<p>内存标记检测是通过运行时检查完成的，因此此特性和寄存器的存在不足以启用内存标记支持。
+</p>
+<p>此限制可能会在未来解除。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-SME-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.7 AArch64 SME 寄存器特性<a class="copiable-link" href="#AArch64-SME-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.sme</samp>’ 特性是可选的。如果存在，它应该包含寄存器 <code class="code">ZA</code>, <code class="code">SVG</code> 和 <code class="code">SVCR</code>.
+请参阅 <a class="xref" href="AArch64.html#AArch64-SME">AArch64 SME</a>.
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">ZA</code> 是一个由 <var class="var">svl</var>x<var class="var">svl</var>
+字节的向量表示的寄存器。请参阅 <a class="xref" href="AArch64.html#svl">svl</a>.
+
+</li><li><code class="code">SVG</code> 是一个 64 位寄存器，包含 <var class="var">svg</var>. 的值。请参阅 <a class="xref" href="AArch64.html#svg">svg</a>.
+
+</li><li><code class="code">SVCR</code> 是一个 64 位状态伪寄存器，有两个有效位。位 0
+(<small class="sc">SM</small>) 显示流 <abbr class="acronym">SVE</abbr> 模式是启用还是禁用。
+位 1 (<small class="sc">ZA</small>) 显示 <code class="code">ZA</code> 寄存器状态是活动（正在使用）还是非活动。
+请参阅 <a class="xref" href="AArch64.html#aarch64-sme-svcr">aarch64 sme svcr</a>.
+
+<p>此伪寄存器的其余未使用位是未定义和保留的。这些位不应使用，可能会由未来的架构扩展定义。 <code class="code">SVCR</code> 
+</p>
+</li></ul>
+
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.sme</samp>’ 特性在目标还报告支持 ‘<samp class="samp">org.gnu.gdb.aarch64.sme2</samp>’ 特性时是必需的。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-SME2-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.8 AArch64 SME2 寄存器特性<a class="copiable-link" href="#AArch64-SME2-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.sme2</samp>’ 特性是可选的。如果存在，那么 ‘<samp class="samp">org.gnu.gdb.aarch64.sme</samp>’ 特性也必须存在。‘<samp class="samp">org.gnu.gdb.aarch64.sme2</samp>’ 特性应该包含以下内容：
+请参阅 <a class="xref" href="AArch64.html#AArch64-SME2">AArch64 SME2</a>.
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">ZT0</code> 是一个 512 位（64 字节）的寄存器。它被定义为一个字节向量。
+
+</li></ul>
+
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-GCS-registers-feature">
+<h4 class="subsubsection"><span>G.5.1.9 AArch64 GCS 寄存器特性<a class="copiable-link" href="#AArch64-GCS-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.gcs</samp>’ 特性是可选的。如果存在，这意味着目标支持受保护的控制栈，并且必须包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">gcspr</code>, 它指向线程的受保护控制栈。它的大小为 64 位，类型为 ‘<samp class="samp">数据指针</samp>’。
+
+</li></ul>
+
+<p>‘<samp class="samp">org.gnu.gdb.aarch64.gcs.linux</samp>’ 特性是可选的。如果存在，那么 ‘<samp class="samp">org.gnu.gdb.aarch64.gcs</samp>’ 特性也必须存在。‘<samp class="samp">org.gnu.gdb.aarch64.gcs.linux</samp>’ 特性表示 Linux 内核为 GCS 支持提供的功能，应该包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">gcs_features_enabled</code> 显示当前通过 prctl 或 ptrace 系统调用启用的特性。它被表示为一个具有自定义标志类型的 64 位寄存器。
+
+</li><li><code class="code">gcs_features_locked</code> 显示当前通过 prctl 或 ptrace 系统调用锁定的特性。它被表示为一个具有自定义标志类型的 64 位寄存器。
+
+</li></ul>
+
+<p>自定义标志类型允许 <small class="sc">GDB</small> 以人类友好的方式打印 <code class="code">gcs_features_enabled</code> 和
+<code class="code">gcs_features_locked</code> 并且应该包含：
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">PR_SHADOW_STACK_ENABLE</code>
+
+</li><li><code class="code">PR_SHADOW_STACK_WRITE</code>
+
+</li><li><code class="code">PR_SHADOW_STACK_PUSH</code>
+
+</li></ul>
+
+<p>有关更多信息，请参阅
+<a class="uref" href="https://www.kernel.org/doc/html/latest/arch/arm64/gcs.html">文档</a> 在 Linux 内核中。
+</p>
+<p>这些特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Alpha-Features.html">Alpha 特性</a>, 上一项： <a href="Standard-Target-Features.html">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

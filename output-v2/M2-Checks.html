@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>M2 检查（使用 GDB 调试）</title>
+
+<meta name="description" content="M2 Checks (Debugging with GDB)"/>
+<meta name="keywords" content="M2 Checks (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Modula_002d2.html" rel="up" title="Modula-2"/>
+<link href="M2-Scope.html" rel="next" title="M2 Scope"/>
+<link href="Deviations.html" rel="prev" title="Deviations"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="M2-Checks">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="M2-Scope.html" rel="next">作用域运算符 <code class="code">::</code> 和 <code class="code">.</code></a>, 上一项： <a accesskey="p" href="Deviations.html" rel="prev">与标准 Modula - 2 的偏差</a>, 返回上一级： <a accesskey="u" href="Modula_002d2.html" rel="up">Modula - 2</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Modula_002d2-Type-and-Range-Checks"><span>15.4.9.7 Modula - 2 类型和范围检查<a class="copiable-link" href="#Modula_002d2-Type-and-Range-Checks"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Modula_002d2-checks"></a>
+
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> 在这个版本中， <small class="sc">GDB</small> 尚未执行类型或范围检查。
+</p></blockquote>
+
+<p><small class="sc">GDB</small> 如果满足以下条件，则认为两个 Modula - 2 变量类型等效：
+</p>
+<ul class="itemize mark-bullet">
+<li>它们的类型已通过 <code class="code">TYPE
+<var class="var">t1</var> = <var class="var">t2</var></code> 语句声明为等效
+
+</li><li>它们在同一行声明。（注意：Modula - 2 编译器是这样，但其他编译器可能不是。）
+<small class="sc">GNU</small> 
+</li></ul>
+
+<p>只要启用了类型检查，任何尝试组合类型不等效的变量的操作都是错误的。
+</p>
+<p>所有数学运算、赋值、数组索引边界以及所有内置函数和过程都会进行范围检查。
+</p>
+</div>
+
+
+
+
+
+</body></html>

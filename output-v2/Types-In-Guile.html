@@ -1,0 +1,386 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的类型（使用 GDB 调试）</title>
+
+<meta name="description" content="Types In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Types In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Guile-Pretty-Printing-API.html" rel="next" title="Guile Pretty Printing API"/>
+<link href="Arithmetic-In-Guile.html" rel="prev" title="Arithmetic In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Types-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Guile-Pretty-Printing-API.html" rel="next">Guile 漂亮打印 API</a>, 上一项： <a accesskey="p" href="Arithmetic-In-Guile.html" rel="prev">Guile 中的算术运算</a>, 上级： <a accesskey="u" href="Guile-API.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Types-In-Guile-1"><span>23.4.3.7 Guile 中的类型<a class="copiable-link" href="#Types-In-Guile-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-types-in-guile"></a>
+<a class="index-entry-id" id="index-guile_002c-working-with-types"></a>
+
+<a class="index-entry-id" id="index-_003cgdb_003atype_003e"></a>
+<p><small class="sc">GDB</small> 在类型为的对象中表示来自下级的类型
+<code class="code">&lt;gdb:type&gt;</code>.
+</p>
+<p>
+<code class="code">(gdb)</code> 模块。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-type_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">object</var> 是一个类型为 <code class="code">&lt;gdb:type&gt;</code>.否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lookup_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">lookup-type</strong> <var class="def-var-arguments">name <span class="r">[</span><span class="r">]</span></var><a class="copiable-link" href="#index-lookup_002dtype"> ¶</a></span></dt>
+<dd><p> <var class="var">name</var>, 它必须是一个字符串。
+</p>
+<p> <var class="var">block</var> 如果提供了 <code class="code">&lt;gdb:block&gt;</code>, 它是一个类型为 <var class="var">name</var> 的对象，并在该作用域中查找。否则，在全局范围内查找。
+</p>
+<p>通常，此函数将返回一个 <code class="code">&lt;gdb:type&gt;</code>的实例。如果找不到指定名称的类型，则会抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dcode"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-code</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dcode"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">type</var>的类型代码。类型代码将是下面定义的常量之一。
+<code class="code">TYPE_CODE_</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dtag"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-tag</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dtag"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">type</var>的标签名。标签名是在
+<code class="code">struct</code>, <code class="code">union</code>, 或 <code class="code">enum</code> 之后的名称，在 C 和 C++ 中；并非所有语言都有这个概念。如果此类型没有标签名，则返回<code class="t">++</code>
+<code class="code">#f</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dname"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-name</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dname"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">type</var>的名称。如果此类型没有名称，则返回 <code class="code">#f</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dprint_002dname"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-print-name</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dprint_002dname"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">type</var>的打印名称。即使是匿名类型也会返回一些内容。例如，对于一个匿名 C 结构体，返回 <code class="code">&#34;struct {...}&#34;</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dsizeof"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-sizeof</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dsizeof"> ¶</a></span></dt>
+<dd><p>返回此类型在目标 <code class="code">char</code> 单位中的大小。通常，目标的 <code class="code">char</code> 类型将是一个 8 位字节。但是，在某些不寻常的平台上，此类型可能具有不同的大小。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dstrip_002dtypedefs"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-strip-typedefs</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dstrip_002dtypedefs"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> ，它表示 <var class="var">type</var>去除所有 typedef 层后的实际类型。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002darray"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-array</strong> <var class="def-var-arguments">type n1 <span class="r">[</span>n2<span class="r">]</span></var><a class="copiable-link" href="#index-type_002darray"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示此类型的数组。如果提供一个参数，它是数组的包含上限；在这种情况下，下限为零。如果提供两个参数，第一个参数是数组的下限，第二个参数是数组的上限。数组的长度不能为负，但边界可以为负。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dvector"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-vector</strong> <var class="def-var-arguments">type n1 <span class="r">[</span>n2<span class="r">]</span></var><a class="copiable-link" href="#index-type_002dvector"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示此类型的向量。如果提供一个参数，它是向量的包含上限；在这种情况下，下限为零。如果提供两个参数，第一个参数是向量的下限，第二个参数是向量的上限。向量的长度不能为负，但边界可以为负。
+</p>
+<p>数组和 <code class="code">array</code> 向量之间的区别在于 <code class="code">vector</code> 数组的行为类似于 C 语言中的数组：在表达式中使用时，它们会退化为指向第一个元素的指针，而向量被视为一等值。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dpointer"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-pointer</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dpointer"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示指向
+<var class="var">type</var>的指针。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002drange"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-range</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002drange"> ¶</a></span></dt>
+<dd><p>返回一个包含两个元素的列表： <var class="var">type</var>的下限和上限。如果 <var class="var">type</var> 没有范围，则抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dreference"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-reference</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dreference"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示对
+<var class="var">type</var>的引用。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dtarget"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-target</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dtarget"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示 <var class="var">type</var>.
+</p>
+<p>对于指针类型，目标类型是所指向对象的类型。对于数组类型（即类似 C 语言的数组），目标类型是数组元素的类型。对于函数或方法类型，目标类型是返回值的类型。对于复杂类型，目标类型是元素的类型。对于 typedef，目标类型是别名类型。
+</p>
+<p>如果该类型没有目标，则此方法将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dconst"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-const</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dconst"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示一个
+<code class="code">const</code>-限定的 <var class="var">type</var>变体。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dvolatile"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-volatile</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dvolatile"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示一个
+<code class="code">volatile</code>-限定的 <var class="var">type</var>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dunqualified"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-unqualified</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dunqualified"> ¶</a></span></dt>
+<dd><p>返回一个新的 <code class="code">&lt;gdb:type&gt;</code> 对象，该对象表示一个未限定的 <var class="var">type</var>变体。也就是说，结果既不是 <code class="code">const</code> 也不是
+<code class="code">volatile</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dnum_002dfields"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-num-fields</strong><a class="copiable-link" href="#index-type_002dnum_002dfields"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:type&gt;</code> <var class="var">type</var>的字段数量。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dfields"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-fields</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-type_002dfields"> ¶</a></span></dt>
+<dd><p>以列表形式返回 <var class="var">type</var> 的字段。对于结构和联合类型， <code class="code">fields</code> 具有通常的含义。范围类型有两个字段，即最小值和最大值。枚举类型每个枚举常量有一个字段。函数和方法类型每个参数有一个字段。C 语言类的基类型也表示为字段。如果该类型没有字段，或者不属于这些类别之一，则返回一个空列表。请参阅<code class="t">++</code>  <a class="xref" href="#Fields-of-a-type-in-Guile">Guile 中类型的字段</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dfield_002diterator"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">make-field-iterator</strong> <var class="def-var-arguments">type</var><a class="copiable-link" href="#index-make_002dfield_002diterator"> ¶</a></span></dt>
+<dd><p>以 &lt;gdb:iterator&gt; 对象的形式返回 <var class="var">type</var> 的字段。请参阅 <a class="xref" href="Iterators-In-Guile.html">Guile 中的迭代器</a>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dfield"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-field</strong> <var class="def-var-arguments">type field-name</var><a class="copiable-link" href="#index-type_002dfield"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">field-name</var> type <var class="var">中名为</var>的字段。结果是一个类型为 <code class="code">&lt;gdb:field&gt;</code>的对象。请参阅 <a class="xref" href="#Fields-of-a-type-in-Guile">Guile 中类型的字段</a>.如果该类型没有字段，或者 <var class="var">field-name</var> 不是 <var class="var">type</var>的字段，则抛出异常。
+</p>
+<p>例如，如果 <code class="code">some-type</code> 是一个 <code class="code">&lt;gdb:type&gt;</code> 实例，持有一个结构类型，你可以使用以下方式访问其 <code class="code">foo</code> 字段：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define bar (type-field some-type &#34;foo&#34;))
+</pre></div>
+
+<p><code class="code">bar</code> 将是一个 <code class="code">&lt;gdb:field&gt;</code> 对象。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-type_002dhas_002dfield_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">type-has-field?</strong> <var class="def-var-arguments">type name</var><a class="copiable-link" href="#index-type_002dhas_002dfield_003f"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">#t</code>  <code class="code">&lt;gdb:type&gt;</code> <var class="var">type</var> 有一个名为 <var class="var">name</var>的字段，则返回 <code class="code">#f</code>.否则返回
+</p></dd></dl>
+
+<p>每个类型都有一个代码，该代码指示此类型属于哪个类别。可用的类型类别由 <code class="code">(gdb)</code> 模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a id="index-TYPE_005fCODE_005fPTR-1"></a><span><code class="code">TYPE_CODE_PTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fPTR-1"> ¶</a></span></dt>
+<dd><p>该类型是一个指针。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fARRAY-1"></a><span><code class="code">TYPE_CODE_ARRAY</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fARRAY-1"> ¶</a></span></dt>
+<dd><p>该类型是一个数组。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSTRUCT-1"></a><span><code class="code">TYPE_CODE_STRUCT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSTRUCT-1"> ¶</a></span></dt>
+<dd><p>该类型是一个结构。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fUNION-1"></a><span><code class="code">TYPE_CODE_UNION</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fUNION-1"> ¶</a></span></dt>
+<dd><p>该类型是一个联合。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fENUM-1"></a><span><code class="code">TYPE_CODE_ENUM</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fENUM-1"> ¶</a></span></dt>
+<dd><p>该类型是一个枚举。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFLAGS-1"></a><span><code class="code">TYPE_CODE_FLAGS</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFLAGS-1"> ¶</a></span></dt>
+<dd><p>一种位标志类型，用于状态寄存器等。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFUNC-1"></a><span><code class="code">TYPE_CODE_FUNC</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFUNC-1"> ¶</a></span></dt>
+<dd><p>该类型是一个函数。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fINT-1"></a><span><code class="code">TYPE_CODE_INT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fINT-1"> ¶</a></span></dt>
+<dd><p>该类型是一个整数类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fFLT-1"></a><span><code class="code">TYPE_CODE_FLT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fFLT-1"> ¶</a></span></dt>
+<dd><p>一种浮点类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fVOID-1"></a><span><code class="code">TYPE_CODE_VOID</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fVOID-1"> ¶</a></span></dt>
+<dd><p>特殊类型 <code class="code">void</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSET-1"></a><span><code class="code">TYPE_CODE_SET</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSET-1"> ¶</a></span></dt>
+<dd><p>一种 Pascal 集合类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fRANGE-1"></a><span><code class="code">TYPE_CODE_RANGE</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fRANGE-1"> ¶</a></span></dt>
+<dd><p>一种范围类型，即具有边界的整数类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fSTRING-1"></a><span><code class="code">TYPE_CODE_STRING</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fSTRING-1"> ¶</a></span></dt>
+<dd><p>一种字符串类型。请注意，这仅用于某些具有语言定义字符串类型的语言；C 字符串不是以这种方式表示的。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fBITSTRING-1"></a><span><code class="code">TYPE_CODE_BITSTRING</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fBITSTRING-1"> ¶</a></span></dt>
+<dd><p>一串位。已弃用。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fERROR-1"></a><span><code class="code">TYPE_CODE_ERROR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fERROR-1"> ¶</a></span></dt>
+<dd><p>一种未知或错误的类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMETHOD-1"></a><span><code class="code">TYPE_CODE_METHOD</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMETHOD-1"> ¶</a></span></dt>
+<dd><p>一种方法类型，如在 C 语言中找到的。<code class="t">++</code>.
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMETHODPTR-1"></a><span><code class="code">TYPE_CODE_METHODPTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMETHODPTR-1"> ¶</a></span></dt>
+<dd><p>一种指向成员函数的指针。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fMEMBERPTR-1"></a><span><code class="code">TYPE_CODE_MEMBERPTR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fMEMBERPTR-1"> ¶</a></span></dt>
+<dd><p>一种指向成员的指针。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fREF-1"></a><span><code class="code">TYPE_CODE_REF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fREF-1"> ¶</a></span></dt>
+<dd><p>一种引用类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fRVALUE_005fREF-1"></a><span><code class="code">TYPE_CODE_RVALUE_REF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fRVALUE_005fREF-1"> ¶</a></span></dt>
+<dd><p>一种 C<code class="t">++</code>11 右值引用类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fCHAR-1"></a><span><code class="code">TYPE_CODE_CHAR</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fCHAR-1"> ¶</a></span></dt>
+<dd><p>一种字符类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fBOOL-1"></a><span><code class="code">TYPE_CODE_BOOL</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fBOOL-1"> ¶</a></span></dt>
+<dd><p>一种布尔类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fCOMPLEX-1"></a><span><code class="code">TYPE_CODE_COMPLEX</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fCOMPLEX-1"> ¶</a></span></dt>
+<dd><p>一种复数浮点类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fTYPEDEF-1"></a><span><code class="code">TYPE_CODE_TYPEDEF</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fTYPEDEF-1"> ¶</a></span></dt>
+<dd><p>一种对其他类型的 typedef。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fNAMESPACE-2"></a><span><code class="code">TYPE_CODE_NAMESPACE</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fNAMESPACE-2"> ¶</a></span></dt>
+<dd><p>一种 C<code class="t">++</code> 命名空间。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fDECFLOAT-1"></a><span><code class="code">TYPE_CODE_DECFLOAT</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fDECFLOAT-1"> ¶</a></span></dt>
+<dd><p>一种十进制浮点类型。
+</p>
+</dd>
+<dt><a id="index-TYPE_005fCODE_005fINTERNAL_005fFUNCTION-1"></a><span><code class="code">TYPE_CODE_INTERNAL_FUNCTION</code><a class="copiable-link" href="#index-TYPE_005fCODE_005fINTERNAL_005fFUNCTION-1"> ¶</a></span></dt>
+<dd><p>内部函数 <small class="sc">GDB</small>. 这是用于表示便利函数的类型（请参阅 <a class="pxref" href="Convenience-Funs.html">便利函数</a>)。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fXMETHOD-1"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fXMETHOD-1"></a><span><code class="code">gdb.TYPE_CODE_XMETHOD</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fXMETHOD-1"> ¶</a></span></dt>
+<dd><p>内部方法 <small class="sc">GDB</small>. 这是用于表示 x 方法的类型（请参阅 <a class="pxref" href="Writing-an-Xmethod.html">编写 X 方法</a>)。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fFIXED_005fPOINT-1"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fFIXED_005fPOINT-1"></a><span><code class="code">gdb.TYPE_CODE_FIXED_POINT</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fFIXED_005fPOINT-1"> ¶</a></span></dt>
+<dd><p>一种定点数。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-TYPE_005fCODE_005fNAMESPACE-3"></a>
+<a id="index-gdb_002eTYPE_005fCODE_005fNAMESPACE-2"></a><span><code class="code">gdb.TYPE_CODE_NAMESPACE</code><a class="copiable-link" href="#index-gdb_002eTYPE_005fCODE_005fNAMESPACE-2"> ¶</a></span></dt>
+<dd><p>一种 Fortran 命名列表。
+</p></dd>
+</dl>
+
+<p>在 <code class="code">(gdb types)</code>
+Guile 模块中提供了对类型的进一步支持（请参阅 <a class="pxref" href="Guile-Types-Module.html">Guile 类型模块</a>)。
+</p>
+<a class="anchor" id="Fields-of-a-type-in-Guile"></a><p>每个字段都表示为一个类型为 <code class="code">&lt;gdb:field&gt;</code>的对象。
+</p>
+<p>以下与字段相关的过程由
+<code class="code">(gdb)</code> 模块提供：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field?</strong> <var class="def-var-arguments">object</var><a class="copiable-link" href="#index-field_003f"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">#t</code>  <var class="var">object</var> 是一个类型为 <code class="code">&lt;gdb:field&gt;</code>的对象，则返回 <code class="code">#f</code>.否则返回
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dname"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-name</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dname"> ¶</a></span></dt>
+<dd><p>返回字段的名称，对于匿名字段返回 <code class="code">#f</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dtype"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-type</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dtype"> ¶</a></span></dt>
+<dd><p>返回字段的类型。这通常是一个
+<code class="code">&lt;gdb:type&gt;</code>的实例，但在某些情况下可能是 <code class="code">#f</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002denumval"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-enumval</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002denumval"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var>所表示的枚举值。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbitpos"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-bitpos</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbitpos"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var>的位位置。此属性对于 <code class="code">static</code> 字段（如在 C 语言中）不可用。<code class="t">++</code>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbitsize"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-bitsize</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbitsize"> ¶</a></span></dt>
+<dd><p>如果字段是打包的，或者是位字段，则返回
+<code class="code">&lt;gdb:field&gt;</code> <var class="var">field</var> 的位大小。否则，返回零；在这种情况下，字段的大小由其类型给出。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dartificial_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-artificial?</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dartificial_003f"> ¶</a></span></dt>
+<dd><p>如果字段是人为的，通常意味着它是由编译器提供的而不是用户提供的，则返回 <code class="code">#t</code> 。否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-field_002dbase_002dclass_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">field-base-class?</strong> <var class="def-var-arguments">field</var><a class="copiable-link" href="#index-field_002dbase_002dclass_003f"> ¶</a></span></dt>
+<dd><p>如果字段表示 C 语言结构的基类，则返回 <code class="code">#t</code> 。否则返回<code class="t">++</code>
+。 <code class="code">#f</code>
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Guile-Pretty-Printing-API.html">Guile 漂亮打印 API</a>, 上一项： <a href="Arithmetic-In-Guile.html">Guile 中的算术运算</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

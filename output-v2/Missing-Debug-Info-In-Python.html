@@ -1,0 +1,149 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中缺少调试信息（使用 GDB 调试）</title>
+
+<meta name="description" content="Missing Debug Info In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Missing Debug Info In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Missing-Objfiles-In-Python.html" rel="next" title="Missing Objfiles In Python"/>
+<link href="Disassembly-In-Python.html" rel="prev" title="Disassembly In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Missing-Debug-Info-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Missing-Objfiles-In-Python.html" rel="next">Python 中缺失的目标文件</a>, 上一项： <a accesskey="p" href="Disassembly-In-Python.html" rel="prev">Python 中的指令反汇编</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Missing-Debug-Info-In-Python-1"><span>23.3.2.42 Python 中缺少调试信息<a class="copiable-link" href="#Missing-Debug-Info-In-Python-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-python_002c-handle-missing-debug-information"></a>
+
+<p>当 <small class="sc">GDB</small> 遇到一个新的目标文件（参见 <a class="pxref" href="Objfiles-In-Python.html">Python 中的目标文件</a>），例如主可执行文件，或被调试程序使用的任何共享库时， <small class="sc">GDB</small> 将尝试为该目标文件加载相应的调试信息。 调试信息可能在目标文件本身中找到，或者在一个单独的目标文件中，而
+<small class="sc">GDB</small> 将自动定位并加载该文件。
+</p>
+<p>不过，有时 <small class="sc">GDB</small> 可能找不到某个目标文件的任何调试信息，在这种情况下，调试体验将受到限制。
+</p>
+<p>如果 <small class="sc">GDB</small> 无法为某个特定的目标文件找到任何调试信息，Python 扩展就有机会介入。 Python 扩展可以通过一些特定于平台或项目的步骤潜在地定位缺失的调试信息，并将其位置告知
+<small class="sc">GDB</small> 。 或者 Python 扩展可以向用户提供一些特定于平台或项目的建议，说明如何获取缺失的调试信息。
+</p>
+<p>一个缺失调试信息的 Python 扩展由一个处理程序对象组成，该对象具有 <code class="code">name</code> 和 <code class="code">enabled</code> 属性，并实现了 <code class="code">__call__</code> 方法。 当 <small class="sc">GDB</small> 遇到一个无法找到任何调试信息的目标文件时，它会调用 <code class="code">__call__</code> 方法。 关于如何编写处理程序的详细信息可以在下面找到。
+</p>
+<h4 class="subheading" id="The-gdb_002emissing_005fdebug-Module"><span>该 <code class="code">gdb.missing_debug</code> 模块<a class="copiable-link" href="#The-gdb_002emissing_005fdebug-Module"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 附带一个 <code class="code">gdb.missing_debug</code> 模块，其中包含以下类和全局函数：
+</p>
+<dl class="first-deftp">
+<dt class="deftp" id="index-gdb_002emissing_005fdebug_002eMissingDebugHandler"><span class="category-def">类： </span><span><strong class="def-name">gdb.missing_debug.MissingDebugHandler</strong><a class="copiable-link" href="#index-gdb_002emissing_005fdebug_002eMissingDebugHandler"> ¶</a></span></dt>
+<dd>
+<p><code class="code">MissingDebugHandler</code> 是一个基类，用户创建的处理程序可以从该基类派生，不过处理程序不一定要从这个类派生，只要任何用户创建的处理程序具有
+<code class="code">name</code> 和 <code class="code">enabled</code> 属性，并实现了
+<code class="code">__call__</code> 方法。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingDebugHandler_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">MissingDebugHandler.__init__</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-MissingDebugHandler_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>该 <var class="var">名称</var> 是一个字符串，用于在某些 <small class="sc">GDB</small> 命令中引用这个缺失调试信息处理程序。 有效的名称由字符 <code class="code">[-_a-zA-Z0-9]</code>组成，创建一个名称无效的处理程序会引发一个 <code class="code">ValueError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-MissingDebugHandler_002e_005f_005fcall_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">MissingDebugHandler.__call__</strong> <var class="def-var-arguments">(objfile)</var><a class="copiable-link" href="#index-MissingDebugHandler_002e_005f_005fcall_005f_005f"> ¶</a></span></dt>
+<dd><p>子类必须重写 <code class="code">__call__</code> 方法。 该
+<var class="var">目标文件</var> 参数将是一个 <code class="code">gdb.Objfile</code>, 这是 <small class="sc">GDB</small> 无法找到任何调试信息的目标文件。
+</p>
+<p>从 <code class="code">__call__</code> 方法返回的值指示
+<small class="sc">GDB</small> 接下来应该做什么。 可能的返回值有：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">None</code>
+
+<p>这表明该处理程序无法帮助处理 <var class="var">目标文件</var>,
+<small class="sc">GDB</small> 应该调用任何其他已注册的处理程序。
+</p>
+</li><li><code class="code">True</code>
+
+<p>这表明该处理程序已将调试信息安装到 <small class="sc">GDB</small> 在查找单独的调试信息文件时通常期望找到的位置（参见 <a class="pxref" href="Separate-Debug-Files.html">单独文件中的调试信息</a>)。  <small class="sc">GDB</small> 将重复正常的查找过程，现在应该能找到单独的调试文件。
+</p>
+<p>如果 <small class="sc">GDB</small> 在第二次尝试后仍然找不到单独的调试信息文件，那么 Python 缺失调试信息处理程序不会被再次调用，这可以防止行为不当的处理程序导致 <small class="sc">GDB</small> 陷入循环。  <small class="sc">GDB</small>
+将在没有任何调试信息的情况下继续处理 <var class="var">目标文件</var>.
+</p>
+</li><li><code class="code">False</code>
+
+<p>这表明该处理程序已经对 <var class="var">目标文件</var>做了它打算做的一切，但找不到单独的调试信息。  <small class="sc">GDB</small> 不会为
+<var class="var">目标文件</var>调用任何其他已注册的处理程序。  <small class="sc">GDB</small> 将在没有调试信息的情况下继续处理 <var class="var">目标文件</var>.
+</p>
+</li><li>一个字符串
+
+<p>返回的字符串应该包含一个文件名。  <small class="sc">GDB</small> 不会再调用任何其他已注册的处理程序，而是将从返回的文件名所标识的文件中加载调试信息。
+</p></li></ul>
+
+<p>从这个基类调用 <code class="code">__call__</code> 方法将引发一个
+<code class="code">NotImplementedError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingDebugHandler_002ename"><span class="category-def">变量： </span><span><strong class="def-name">MissingDebugHandler.name</strong><a class="copiable-link" href="#index-MissingDebugHandler_002ename"> ¶</a></span></dt>
+<dd><p>一个只读属性，是一个字符串，是传递给该处理程序的名称 <code class="code">__init__</code> 方法。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-MissingDebugHandler_002eenabled"><span class="category-def">变量： </span><span><strong class="def-name">MissingDebugHandler.enabled</strong><a class="copiable-link" href="#index-MissingDebugHandler_002eenabled"> ¶</a></span></dt>
+<dd><p>一个包含布尔值的可修改属性；当 <code class="code">True</code>, 该处理程序启用，并将被 <small class="sc">GDB</small>使用。 当
+<code class="code">False</code>, 该处理程序已禁用，将不会被使用。
+</p></dd></dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002emissing_005fdebug_002eregister_005fhandler"><span class="category-def">函数： </span><span><strong class="def-name">gdb.missing_debug.register_handler</strong> <var class="def-var-arguments">(locus, handler, replace=<code class="code">False</code>)</var><a class="copiable-link" href="#index-gdb_002emissing_005fdebug_002eregister_005fhandler"> ¶</a></span></dt>
+<dd><p>向 <small class="sc">GDB</small>注册一个新的缺少调试信息处理程序。
+</p>
+<p><var class="var">处理程序</var> 是
+<code class="code">MissingDebugHandler</code>的子类的实例，或者至少是一个具有与 <code class="code">MissingDebugHandler</code>相同属性和方法的对象的实例。
+</p>
+<p><var class="var">locus</var> 指定要将 <var class="var">处理程序</var>添加到哪个处理程序列表的开头。
+它可以是一个 <code class="code">gdb.Progspace</code> （参见 <a class="pxref" href="Progspaces-In-Python.html">Python 中的程序空间</a>) 或者 <code class="code">None</code>, 在这种情况下，处理程序将全局注册。 新注册的 <var class="var">处理程序</var> 将在同一 locus 中的任何其他处理程序之前被调用。 同一 locus 中的两个处理程序不能有相同的名称，尝试添加一个已存在名称的处理程序会引发异常，除非 <var class="var">replace</var> 为 <code class="code">True</code>, 在这种情况下，旧的处理程序将被删除，新的处理程序将被添加到所选处理程序列表的开头。
+</p>
+<p><small class="sc">GDB</small> 首先调用当前程序空间的处理程序，然后调用全局注册的处理程序。 一旦某个处理程序返回的值不是 <code class="code">None</code>, 就不会再为该 objfile 调用其他处理程序。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Missing-Objfiles-In-Python.html">Python 中缺失的目标文件</a>, 上一项： <a href="Disassembly-In-Python.html">Python 中的指令反汇编</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

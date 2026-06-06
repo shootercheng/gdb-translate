@@ -1,0 +1,82 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪点限制（使用GDB进行调试）</title>
+
+<meta name="description" content="Tracepoint Restrictions (Debugging with GDB)"/>
+<meta name="keywords" content="Tracepoint Restrictions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Starting-and-Stopping-Trace-Experiments.html" rel="prev" title="Starting and Stopping Trace Experiments"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tracepoint-Restrictions">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Starting-and-Stopping-Trace-Experiments.html" rel="prev">开始和停止跟踪实验</a>, 上一级： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Tracepoint-Restrictions-1"><span>13.1.10 跟踪点限制<a class="copiable-link" href="#Tracepoint-Restrictions-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-tracepoint-restrictions"></a>
+<p>使用跟踪点存在一些限制。如上所述，跟踪点数据收集在目标设备上进行，无需来自……的交互。因此，在数据收集期间，调试器的全部功能不可用，而在数据检查时，您将仅受限于所收集到的内容。以下项目描述了一些常见问题，但并不详尽，您可能还会遇到此处未提及的其他困难。 <small class="sc">GDB</small>跟踪点表达式旨在收集对象（左值）。因此，GDB表达式求值器的全部灵活性不可用。您不能调用函数、将对象强制转换为聚合类型、访问便利变量或修改值（除非通过对跟踪状态变量进行赋值）。某些语言特性可能会隐式调用函数（例如带有访问器的Objective - C字段），因此也无法收集。
+</p>
+<ul class="itemize mark-bullet">
+<li>跟踪点表达式旨在收集对象（左值）。因此，GDB表达式求值器的全部灵活性不可用。您不能调用函数、将对象强制转换为聚合类型、访问便利变量或修改值（除非通过对跟踪状态变量进行赋值）。某些语言特性可能会隐式调用函数（例如带有访问器的Objective - C字段），因此也无法收集。
+
+</li><li>局部变量的收集，无论是单独收集还是批量使用……
+<code class="code">$locals</code> 或 <code class="code">$args</code>, 在……期间 <code class="code">while-stepping</code> 可能表现不稳定。单步执行操作可能会进入一个新的作用域（例如单步进入一个函数），或者变量的位置可能会改变（例如它被加载到一个寄存器中）。记录的跟踪点数据使用的是跟踪点位置处变量的正确位置信息。一般来说，当创建跟踪点时，不可能确定……序列的单步执行将使程序前进到何处——特别是如果单步执行的是一个条件分支。 <code class="code">while-stepping</code> 序列将使程序前进到何处——特别是如果单步执行的是一个条件分支。
+
+</li><li>收集未完全初始化或部分销毁的对象可能会导致某些…… <small class="sc">GDB</small> 无法显示，或以误导性的方式显示。
+
+</li><li>当…… <small class="sc">GDB</small> 显示一个指向字符的指针时，它会自动解引用该指针以显示所指向字符串的字符。然而，在跟踪期间收集指针并不会自动收集字符串。如果您不仅想收集指针，还想收集所指向的内存，您需要显式地解引用指针并提供大小信息。例如，
+<code class="code">*ptr@50</code> 可用于收集……所指向的50个元素的数组。 <code class="code">ptr</code>.
+
+</li><li>在跟踪点无法收集完整的堆栈回溯。相反，您可以使用类似……的方法收集寄存器和从堆栈指针开始的几百字节数据。 <code class="code">*(unsigned char *)$esp@300</code>
+（根据您目标架构上实际的堆栈指针寄存器名称进行调整，并确定您希望捕获的堆栈量）。然后， <code class="code">backtrace</code> 命令在使用跟踪帧时将显示部分堆栈回溯。可检查的堆栈帧数取决于收集的堆栈中帧的大小。请注意，如果您请求的块太大，以至于超出了堆栈底部，目标代理可能会报告从无效地址读取的错误。
+
+</li><li>如果您在跟踪点不收集寄存器， <small class="sc">GDB</small> 可以推断……的值 <code class="code">$pc</code> 必须与跟踪点的地址相同，并在查看该跟踪点的跟踪帧时使用该地址。然而，如果跟踪点有多个位置（例如，如果它设置在一个内联函数中），或者它有一个…… <code class="code">while-stepping</code> 循环。在这些情况下
+<small class="sc">GDB</small> 将警告您无法推断…… <code class="code">$pc</code>, 并将其默认设置为零。
+
+</li></ul>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Starting-and-Stopping-Trace-Experiments.html">开始和停止跟踪实验</a>, 上一级： <a href="Set-Tracepoints.html">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

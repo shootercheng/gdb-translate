@@ -1,0 +1,302 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>字节码描述（使用 GDB 调试）</title>
+
+<meta name="description" content="Bytecode Descriptions (Debugging with GDB)"/>
+<meta name="keywords" content="Bytecode Descriptions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Agent-Expressions.html" rel="up" title="Agent Expressions"/>
+<link href="Using-Agent-Expressions.html" rel="next" title="Using Agent Expressions"/>
+<link href="General-Bytecode-Design.html" rel="prev" title="General Bytecode Design"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Bytecode-Descriptions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Using-Agent-Expressions.html" rel="next">使用代理表达式</a>, 上一项： <a accesskey="p" href="General-Bytecode-Design.html" rel="prev"></a>, 上一级： <a accesskey="u" href="Agent-Expressions.html" rel="up">GDB 代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h3 class="section" id="Bytecode-Descriptions-1"><span>F.2 字节码描述<a class="copiable-link" href="#Bytecode-Descriptions-1"> </a></span></h3>
+
+<p>
+</p>
+<dl class="table">
+<dt><code class="code">add</code> (0x02): <var class="var"></var> <var class="var">b</var>  <var class="var">a 加 b</var></dt>
+<dd>
+<p>弹出栈顶的两个元素， <var class="var"></var>  <var class="var">b</var>
+</p>
+</dd>
+</dl>
+
+<p>在这个例子中， <code class="code">add</code> 是字节码的名称，并且
+<code class="code">(0x02)</code> <var class="var"></var> <var class="var">b</var> ⇒ <var class="var">a 加 b</var>”显示了字节码执行前后的栈状态。在此之前，栈中必须至少包含两个值， <var class="var">a</var> 和 <var class="var">b</var>；由于栈顶在右侧， <var class="var">b</var> 在栈顶，并且
+<var class="var">a</var>  <var class="var">a</var> 和 <var class="var">b</var> 从栈中弹出，并将它们替换为一个单一的值， <var class="var">a 加 b</var>. 栈中可能在所示元素下方还有其他值，但字节码仅影响所示元素。
+</p>
+<p>这里是另一个例子：
+</p>
+<dl class="table">
+<dt><code class="code">const8</code>  <var class="var"></var>: ⇒ <var class="var">n</var></dt>
+<dd><p>将 8 位整数常量 <var class="var">n</var> 压入栈中，不进行符号扩展。
+</p>
+</dd>
+</dl>
+
+<p>在这个例子中，字节码 <code class="code">const8</code> 从字节码流中直接获取一个操作数 <var class="var">n</var>
+；操作数紧跟在 <code class="code">const8</code>
+字节码本身之后。我们在字节码名称之后、冒号之前立即写出任何这样的操作数，并在字节码描述的主体中描述操作数在字节码流中的精确编码。
+</p>
+<p>对于 <code class="code">const8</code> 字节码，在 ⇒ 之前没有给出栈元素；这仅仅意味着该字节码不从栈中消耗任何值。如果一个字节码不消耗任何值，或者不产生任何值，⇒ 两侧的列表可能为空。
+</p>
+<p>如果一个值被写成 <var class="var">a</var>, <var class="var">b</var>, 或 <var class="var">n</var>, 那么字节码将其视为一个整数。如果一个值被写成 <var class="var">地址</var>, 那么字节码将其视为一个地址。
+</p>
+<p>我们在这里没有完全描述浮点运算；虽然这个设计可以以一种简洁的方式扩展以处理浮点值，但客户目前对它们不感兴趣，所以我们避免描述它们以节省时间。
+</p>
+
+<dl class="table">
+<dt><code class="code">float</code> (0x01): ⇒</dt>
+<dd>
+<p>浮点字节码的前缀。尚未实现。
+</p>
+</dd>
+<dt><code class="code">add</code> (0x02): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 加 b</var></dt>
+<dd><p>从栈中弹出两个整数，并将它们的和作为整数压入栈中。
+</p>
+</dd>
+<dt><code class="code">sub</code> (0x03): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 减 b</var></dt>
+<dd><p>从栈中弹出两个整数，从次顶值中减去顶值，并将差压入栈中。
+</p>
+</dd>
+<dt><code class="code">mul</code> (0x04): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 乘 b</var></dt>
+<dd><p>从栈中弹出两个整数，将它们相乘，并将乘积压入栈中。请注意，当两个 <var class="var">n</var>位的数相乘得到另一个 <var class="var">n</var>位的数时，这些数是否有符号无关紧要；结果是相同的。
+</p>
+</dd>
+<dt><code class="code">div_signed</code> (0x05): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 除以 b</var></dt>
+<dd><p>从栈中弹出两个有符号整数；将次顶值除以顶值，并将商压入栈中。如果除数为零，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">div_unsigned</code> (0x06): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 除以 b</var></dt>
+<dd><p>从栈中弹出两个无符号整数；将次顶值除以顶值，并将商压入栈中。如果除数为零，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">rem_signed</code> (0x07): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 模 b</var></dt>
+<dd><p>从栈中弹出两个有符号整数；将次顶值除以顶值，并将余数压入栈中。如果除数为零，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">rem_unsigned</code> (0x08): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 模 b</var></dt>
+<dd><p>从栈中弹出两个无符号整数；将次顶值除以顶值，并将余数压入栈中。如果除数为零，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">lsh</code> (0x09): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 左移 b 位</var></dt>
+<dd><p>从栈中弹出两个整数；设 <var class="var">a</var> 为次顶值，并且 <var class="var">b</var> 为顶值。将 <var class="var">a</var> 左移 <var class="var">b</var> 位，并将结果压入栈中。
+</p>
+</dd>
+<dt><code class="code">rsh_signed</code> (0x0a): <var class="var">a</var> <var class="var">b</var> ⇒ <code class="code">(signed)</code><var class="var">a 右移 b 位（算术右移）</var></dt>
+<dd><p>从栈中弹出两个整数；设 <var class="var">a</var> 为次顶值，并且 <var class="var">b</var> 为顶值。将 <var class="var">a</var> 右移 <var class="var">b</var> 位，在高端插入最高位的副本，并将结果压入栈中。
+</p>
+</dd>
+<dt><code class="code">rsh_unsigned</code> (0x0b): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 右移 b 位（逻辑右移）</var></dt>
+<dd><p>从栈中弹出两个整数；设 <var class="var">a</var> 为次顶值，并且 <var class="var">b</var> 为顶值。将 <var class="var">a</var> 右移 <var class="var">b</var> 位，在高端插入零位，并将结果压入栈中。
+</p>
+</dd>
+<dt><code class="code">log_not</code> (0x0e): <var class="var">a</var> ⇒ <var class="var">非 a</var></dt>
+<dd><p>从栈中弹出一个整数；如果它为零，则压入值 1；否则，压入值 0。
+</p>
+</dd>
+<dt><code class="code">bit_and</code> (0x0f): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 按位与 b</var></dt>
+<dd><p>从栈中弹出两个整数，并压入它们的按位 <code class="code">and</code>与。
+</p>
+</dd>
+<dt><code class="code">bit_or</code> (0x10): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 按位或 b</var></dt>
+<dd><p>从栈中弹出两个整数，并压入它们的按位 <code class="code">or</code>或。
+</p>
+</dd>
+<dt><code class="code">bit_xor</code> (0x11): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 按位异或 b</var></dt>
+<dd><p>从栈中弹出两个整数，并压入它们的按位<code class="code">or</code>异或。
+</p>
+</dd>
+<dt><code class="code">bit_not</code> (0x12): <var class="var">a</var> ⇒ <var class="var">非 a（按位取反）</var></dt>
+<dd><p>从栈中弹出一个整数，并压入它的按位取反值。
+</p>
+</dd>
+<dt><code class="code">equal</code> (0x13): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 等于 b</var></dt>
+<dd><p>从栈中弹出两个整数；如果它们相等，则压入值 1；否则，压入值 0。
+</p>
+</dd>
+<dt><code class="code">less_signed</code> (0x14): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 小于 b</var></dt>
+<dd><p>从栈中弹出两个有符号整数；如果次顶值小于顶值，则压入值 1；否则，压入值 0。
+</p>
+</dd>
+<dt><code class="code">less_unsigned</code> (0x15): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">a 小于 b</var></dt>
+<dd><p>从栈中弹出两个无符号整数；如果次顶值小于顶值，则压入值 1；否则，压入值 0。
+</p>
+</dd>
+<dt><code class="code">ext</code> (0x16) <var class="var">n</var>: <var class="var">a</var> ⇒ <var class="var">a</var>, 从 <var class="var">n</var> 位进行符号扩展</dt>
+<dd><p>从栈中弹出一个无符号值；将其视为一个 <var class="var">n</var>位的二进制补码值，将其扩展到完整长度。这意味着位 <var class="var">n - 1</var> （其中最低有效位为位 0）左边的所有位都设置为位 <var class="var">n - 1</var>的值。请注意， <var class="var">n</var> 可能大于或等于字节码引擎栈元素的宽度；在这种情况下，该字节码应该没有效果。
+</p>
+<p>要保留的源位数量， <var class="var">n</var>, 被编码为紧跟在 <code class="code">ext</code> 字节码之后的一个单字节无符号整数。
+</p>
+</dd>
+<dt><code class="code">zero_ext</code> (0x2a) <var class="var">n</var>: <var class="var">a</var> ⇒ <var class="var">a</var>, 从 <var class="var">n</var> 位进行零扩展</dt>
+<dd><p>从栈中弹出一个无符号值；将除了最低 <var class="var">n</var>
+位之外的所有位清零。
+</p>
+<p>要保留的源位数量， <var class="var">n</var>, 被编码为紧跟在 <code class="code">zero_ext</code> 字节码之后的一个单字节无符号整数。
+</p>
+</dd>
+<dt><code class="code">ref8</code> (0x17): <var class="var">地址</var> ⇒ <var class="var">a</var></dt>
+<dt><code class="code">ref16</code> (0x18): <var class="var">地址</var> ⇒ <var class="var">a</var></dt>
+<dt><code class="code">ref32</code> (0x19): <var class="var">地址</var> ⇒ <var class="var">a</var></dt>
+<dt><code class="code">ref64</code> (0x1a): <var class="var">地址</var> ⇒ <var class="var">a</var></dt>
+<dd><p>从栈中弹出一个地址 <var class="var">地址</var> 。对于字节码
+<code class="code">ref</code><var class="var">n</var>, 从 <var class="var">n</var>位值从 <var class="var">地址</var>, 使用自然目标字节序。将获取的值作为无符号整数压入栈中。
+</p>
+<p>请注意， <var class="var">地址</var> 可能没有以任何特定方式对齐；
+<code class="code">ref<var class="var">n</var></code> 字节码应该对任何地址都能正确操作。
+</p>
+<p>如果尝试访问 <var class="var">地址</var> 处的内存会导致某种处理器异常，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">ref_float</code> (0x1b): <var class="var">地址</var> ⇒ <var class="var">d</var></dt>
+<dt><code class="code">ref_double</code> (0x1c): <var class="var">地址</var> ⇒ <var class="var">d</var></dt>
+<dt><code class="code">ref_long_double</code> (0x1d): <var class="var">地址</var> ⇒ <var class="var">d</var></dt>
+<dt><code class="code">l_to_d</code> (0x1e): <var class="var">a</var> ⇒ <var class="var">d</var></dt>
+<dt><code class="code">d_to_l</code> (0x1f): <var class="var">d</var> ⇒ <var class="var">a</var></dt>
+<dd><p>尚未实现。
+</p>
+</dd>
+<dt><code class="code">dup</code> (0x28): <var class="var">a</var> ⇒ <var class="var">a</var> <var class="var">a</var></dt>
+<dd><p>将栈顶元素的另一个副本压入栈中。
+</p>
+</dd>
+<dt><code class="code">swap</code> (0x2b): <var class="var">a</var> <var class="var">b</var> ⇒ <var class="var">b</var> <var class="var">a</var></dt>
+<dd><p>交换栈顶的两个元素。
+</p>
+</dd>
+<dt><code class="code">pop</code> (0x29): <var class="var">a</var> ⇒</dt>
+<dd><p>丢弃栈顶的值。
+</p>
+</dd>
+<dt><code class="code">pick</code> (0x32) <var class="var">n</var>: <var class="var">a</var> … <var class="var">b</var> ⇒ <var class="var">a</var> … <var class="var">b</var> <var class="var">a</var></dt>
+<dd><p>从栈中复制一个元素并将其压入栈顶。
+<var class="var">n</var>, 一个单字节，表示要复制的栈元素。如果 <var class="var">n</var>
+为零，这与 <code class="code">dup</code>相同；如果 <var class="var">n</var> 为 1，它复制栈顶元素下面的元素，依此类推。如果 <var class="var">n</var> 超过栈中元素的数量，则以错误终止。
+</p>
+</dd>
+<dt><code class="code">rot</code> (0x33): <var class="var">a</var> <var class="var">b</var> <var class="var">c</var> ⇒ <var class="var">c</var> <var class="var">a</var> <var class="var">b</var></dt>
+<dd><p>旋转栈顶的三个元素。栈顶元素 (c) 变为第三个元素，次顶元素 (b) 变为栈顶元素，从栈顶数第三个元素 (a) 变为次顶元素。
+</p>
+</dd>
+<dt><code class="code">if_goto</code> (0x20) <var class="var">偏移量</var>: <var class="var">a</var> ⇒</dt>
+<dd><p>从栈中弹出一个整数；如果它不为零，则跳转到字节码字符串中的给定偏移量处。否则，继续执行字节码流中的下一条指令。换句话说，如果 <var class="var">a</var> 不为零，则将 <code class="code">pc</code> 寄存器设置为 <code class="code">start</code> + <var class="var">偏移量</var>. 因此，偏移量为零表示表达式的开始。
+</p>
+<p>该 <var class="var">偏移量</var> 存储为一个 16 位无符号值，紧跟在 <code class="code">if_goto</code> 字节码之后。无论目标的正常字节序如何，它总是先存储最高有效字节。偏移量不能保证在字节码流中处于任何特定的对齐位置；因此，在从未对齐地址获取 16 位会引发异常的机器上，你应该一次获取一个字节的偏移量。
+</p>
+</dd>
+<dt><code class="code">goto</code> (0x21) <var class="var">偏移量</var>: ⇒</dt>
+<dd><p>无条件跳转到 <var class="var">偏移量</var>；换句话说，将
+<code class="code">pc</code> 寄存器设置为 <code class="code">start</code> + <var class="var">偏移量</var>.
+</p>
+<p>偏移量的存储方式与 <code class="code">if_goto</code> 字节码相同。
+</p>
+</dd>
+<dt><code class="code">const8</code> (0x22) <var class="var">n</var>: ⇒ <var class="var">n</var></dt>
+<dt><code class="code">const16</code> (0x23) <var class="var">n</var>: ⇒ <var class="var">n</var></dt>
+<dt><code class="code">const32</code> (0x24) <var class="var">n</var>: ⇒ <var class="var">n</var></dt>
+<dt><code class="code">const64</code> (0x25) <var class="var">n</var>: ⇒ <var class="var">n</var></dt>
+<dd><p>将整数常量 <var class="var">n</var> 压入栈中，不进行符号扩展。要产生一个小的负值，先压入一个小的二进制补码值，然后使用 <code class="code">ext</code> 字节码进行符号扩展。
+</p>
+<p>常量 <var class="var">n</var> 存储在紧跟在 <code class="code">const</code><var class="var">b</var> 字节码之后的适当数量的字节中。常量 <var class="var">n</var> 总是先存储最高有效字节，无论目标的正常字节序如何。常量不能保证在字节码流中处于任何特定的对齐位置；因此，在从未对齐地址获取 16 位会引发异常的机器上，你应该一次获取一个字节的 <var class="var">n</var> 。
+</p>
+</dd>
+<dt><code class="code">reg</code> (0x26) <var class="var">n</var>: ⇒ <var class="var">a</var></dt>
+<dd><p>将寄存器编号为 <var class="var">n</var>, 的值压入栈中，不进行符号扩展。寄存器编号遵循 GDB 的约定。
+</p>
+<p>寄存器编号 <var class="var">n</var> 编码为一个 16 位无符号整数，紧跟在 <code class="code">reg</code> 字节码之后。无论目标的正常字节序如何，它总是先存储最高有效字节。寄存器编号不能保证在字节码流中处于任何特定的对齐位置；因此，在从未对齐地址获取 16 位会引发异常的机器上，你应该一次获取一个字节的寄存器编号。
+</p>
+</dd>
+<dt><code class="code">getv</code> (0x2c) <var class="var">n</var>: ⇒ <var class="var">v</var></dt>
+<dd><p>将跟踪状态变量编号为 <var class="var">n</var>, 的值压入栈中，不进行符号扩展。
+</p>
+<p>变量编号 <var class="var">n</var> 编码为一个 16 位无符号整数，紧跟在 <code class="code">getv</code> 字节码之后。无论目标的正常字节序如何，它总是先存储最高有效字节。变量编号不能保证在字节码流中处于任何特定的对齐位置；因此，在从未对齐地址获取 16 位会引发异常的机器上，你应该一次获取一个字节的寄存器编号。
+</p>
+</dd>
+<dt><code class="code">setv</code> (0x2d) <var class="var">n</var>: <var class="var">v</var> ⇒ <var class="var">v</var></dt>
+<dd><p>将跟踪状态变量编号为 <var class="var">n</var> 设置为栈顶的值。栈保持不变，以便如果赋值是更大表达式的一部分，该值可以随时使用。对 <var class="var">n</var> 的处理如 <code class="code">getv</code>所述。
+</p>
+</dd>
+<dt><code class="code">trace</code> (0x0c): <var class="var">地址</var> <var class="var">大小</var> ⇒</dt>
+<dd><p>将 <var class="var">大小</var> 字节的内容记录在 <var class="var">地址</var> 处的跟踪缓冲区中，以便 GDB 稍后检索。
+</p>
+</dd>
+<dt><code class="code">trace_quick</code> (0x0d) <var class="var">大小</var>: <var class="var">地址</var> ⇒ <var class="var">地址</var></dt>
+<dd><p>将 <var class="var">大小</var> 字节的内容记录在 <var class="var">地址</var> 处的跟踪缓冲区中，以便 GDB 稍后检索。  <var class="var">大小</var> 是紧跟在 <code class="code">trace</code> 操作码之后的一个单字节无符号整数。
+</p>
+<p>这个字节码等同于序列 <code class="code">dup const8 <var class="var">size</var>
+trace</code>, 但我们还是提供它以节省字节码字符串的空间。
+</p>
+</dd>
+<dt><code class="code">trace16</code> (0x30) <var class="var">大小</var>: <var class="var">地址</var> ⇒ <var class="var">地址</var></dt>
+<dd><p>与 trace_quick 相同，除了 <var class="var">大小</var> 是一个 16 位大端无符号整数，而不是一个单字节。为了保持一致性，它可能应该被命名为 <code class="code">trace_quick16</code>.
+</p>
+</dd>
+<dt><code class="code">tracev</code> (0x2e) <var class="var">n</var>: ⇒ <var class="var">a</var></dt>
+<dd><p>将跟踪状态变量编号为 <var class="var">n</var> 的值记录在跟踪缓冲区中。对 <var class="var">n</var> 的处理如 <code class="code">getv</code>所述。
+</p>
+</dd>
+<dt><code class="code">tracenz</code> (0x2f)  <var class="var">地址</var> <var class="var">大小</var> ⇒</dt>
+<dd><p>将 <var class="var">地址</var> 处的字节记录在跟踪缓冲区中，以便 GDB 稍后检索。在遇到第一个零字节或记录了 <var class="var">大小</var> 字节时停止，以先发生的情况为准。
+</p>
+</dd>
+<dt><code class="code">printf</code> (0x34)  <var class="var">参数数量</var> <var class="var">字符串</var> ⇒</dt>
+<dd><p>进行格式化打印，风格类似于 C 函数 <code class="code">printf</code>).   <var class="var">参数数量</var> 是期望在栈上的参数数量，而 <var class="var">字符串</var> 是格式字符串，前缀为一个两字节的长度。字符串的最后一个字节必须为零，并且包含在长度中。格式字符串包含转义序列，就像它在 C 源文件中一样，例如格式字符串
+<code class="code">&#34;\t%d\n&#34;</code> 长度为六个字符，输出将由一个制表符、一个十进制数和一个换行符组成。在栈顶，在要打印的值之上，这个字节码将弹出一个“函数”和一个“通道”。如果函数不为零，那么目标可以将其视为一个函数并调用它，将通道作为第一个参数传递，就像 C 函数 <code class="code">fprintf</code>. 如果函数为零，那么目标可以简单地调用它选择的标准格式化打印函数。总之，这个字节码弹出 2 +
+<var class="var">参数数量</var> 个栈元素，并且不压入任何元素。
+</p>
+</dd>
+<dt><code class="code">end</code> (0x27): ⇒</dt>
+<dd><p>停止执行字节码；结果应该是栈顶元素。如果表达式的目的是计算一个左值或一个内存范围，那么栈的次顶元素是左值的地址，栈顶元素是左值的大小（以字节为单位）。
+</p>
+</dd>
+</dl>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Using-Agent-Expressions.html">使用代理表达式</a>, 上一项： <a href="General-Bytecode-Design.html">通用字节码设计</a>, 上一级： <a href="Agent-Expressions.html">GDB 代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+
+
+
+
+
+</body></html>

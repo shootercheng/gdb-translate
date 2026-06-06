@@ -1,0 +1,221 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>模式选项（使用GDB进行调试）</title>
+
+<meta name="description" content="Mode Options (Debugging with GDB)"/>
+<meta name="keywords" content="Mode Options (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Invoking-GDB.html" rel="up" title="Invoking GDB"/>
+<link href="Startup.html" rel="next" title="Startup"/>
+<link href="File-Options.html" rel="prev" title="File Options"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Mode-Options">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Startup.html" rel="next">启动时会做什么 <small class="sc">GDB</small> </a> <a accesskey="p" href="File-Options.html" rel="prev"></a> <a accesskey="u" href="Invoking-GDB.html" rel="up">调用 <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index"></a></p>
+</div>
+<hr/>
+<h4 class="subsection" id="Choosing-Modes"><span>2.1.2 选择模式<a class="copiable-link" href="#Choosing-Modes"> </a></span></h4>
+
+<p>你可以以各种替代模式运行 <small class="sc">GDB</small> 例如，以批处理模式或安静模式。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="g_t_002dnx"></a></dd>
+<dt><a class="index-entry-id" id="index-_002dn"></a>
+<a id="index-_002d_002dnx"></a><span><code class="code">-nx</code><a class="copiable-link" href="#index-_002d_002dnx"> ¶</a></span></dt>
+<dt><code class="code">-n</code></dt>
+<dd><p>不要执行任何初始化文件中找到的命令（请参阅 <a class="pxref" href="Initialization-Files.html">初始化文件</a>
+</p>
+<a class="anchor" id="g_t_002dnh"></a></dd>
+<dt><a id="index-_002d_002dnh"></a><span><code class="code">-nh</code><a class="copiable-link" href="#index-_002d_002dnh"> ¶</a></span></dt>
+<dd><p>不要执行任何主目录初始化文件中找到的命令（请参阅 <a class="pxref" href="Initialization-Files.html">主目录初始化文件</a>）。 系统范围和当前目录的初始化文件仍会加载。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002d_002dsilent"></a>
+<a class="index-entry-id" id="index-_002dq"></a>
+<a id="index-_002d_002dquiet"></a><span><code class="code">-quiet</code><a class="copiable-link" href="#index-_002d_002dquiet"> ¶</a></span></dt>
+<dt><code class="code">-silent</code></dt>
+<dt><code class="code">-q</code></dt>
+<dd><p>“安静”。 不打印介绍性消息和版权消息。 这些消息在批处理模式下也会被抑制。
+</p>
+<a class="index-entry-id" id="index-set-startup_002dquietly"></a>
+<a class="index-entry-id" id="index-show-startup_002dquietly"></a>
+<p>这也可以使用 <code class="code">set startup-quietly on</code>启用。 默认值是 <code class="code">off</code>。 使用 <code class="code">show startup-quietly</code> 查看当前设置。 将 <code class="code">set startup-quietly on</code> 放入你的早期初始化文件（请参阅 <a class="pxref" href="Initialization-Files.html">初始化文件</a>），以使未来的 <small class="sc">GDB</small> 会话安静启动。
+</p>
+</dd>
+<dt><a id="index-_002d_002dbatch"></a><span><code class="code">-batch</code><a class="copiable-link" href="#index-_002d_002dbatch"> ¶</a></span></dt>
+<dd><p>以批处理模式运行。 在处理完用 ‘ <code class="code">0</code> ’ 指定的所有命令文件（以及初始化文件中的所有命令，如果没有用 ‘<samp class="samp">-x</samp>’ 抑制）后，以状态<samp class="samp">-n</samp>’ 退出。 如果在执行命令文件中的 <small class="sc">GDB</small> 命令时发生错误，则以非零状态退出。 批处理模式还会禁用分页，设置无限的终端宽度和高度（请参阅 <a class="pxref" href="Screen-Size.html">屏幕大小</a>, 并且就像 <kbd class="kbd">set confirm off</kbd> 生效一样（请参阅 <a class="pxref" href="Messages_002fWarnings.html">可选警告和消息</a>）。
+</p>
+<p>批处理模式对于将 <small class="sc">GDB</small> 用作过滤器可能很有用，例如在另一台计算机上下载并运行程序；为了使这更有用，消息
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序正常退出。
+</pre></div>
+
+<p>（通常在
+<small class="sc">GDB</small> 控制下运行的程序终止时发出）在批处理模式下运行时不会发出。
+</p>
+</dd>
+<dt><a id="index-_002d_002dbatch_002dsilent"></a><span><code class="code">-batch-silent</code><a class="copiable-link" href="#index-_002d_002dbatch_002dsilent"> ¶</a></span></dt>
+<dd><p>完全像 ‘<samp class="samp">-batch</samp>’ 一样以批处理模式运行，但完全静默。 所有
+<small class="sc">GDB</small> 输出到 <code class="code">stdout</code> 的内容都被阻止（<code class="code">stderr</code> 不受影响）。 这比 ‘<samp class="samp">-silent</samp>’ 安静得多，对于交互式会话来说没有用。
+</p>
+<p>这在使用会给出 ‘<samp class="samp">加载段</samp>’ 消息的目标时特别有用。
+</p>
+<p>请注意，通过 <small class="sc">GDB</small>而不是直接写入 <code class="code">stdout</code>输出的目标也会被静音。
+</p>
+</dd>
+<dt><a id="index-_002d_002dreturn_002dchild_002dresult"></a><span><code class="code">-return-child-result</code><a class="copiable-link" href="#index-_002d_002dreturn_002dchild_002dresult"> ¶</a></span></dt>
+<dd><p>的返回码将是子进程（正在调试的进程）的返回码，但以下情况除外： <small class="sc">GDB</small> 
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small> 异常退出。 例如，由于参数不正确或内部错误。 在这种情况下，退出码与没有 ‘<samp class="samp">-return-child-result</samp>’ 时相同。
+</li><li>用户以显式值退出。 例如，‘<samp class="samp">quit 1</samp>’。
+</li><li>子进程从未运行，或不允许终止，在这种情况下，退出码将为 -1。
+</li></ul>
+
+<p>此选项与 ‘<samp class="samp">-batch</samp>’ 或 ‘<samp class="samp">-batch-silent</samp>’ 结合使用时很有用，当 <small class="sc">GDB</small> 用作远程程序加载器或模拟器接口时。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dnw"></a>
+<a id="index-_002d_002dnowindows"></a><span><code class="code">-nowindows</code><a class="copiable-link" href="#index-_002d_002dnowindows"> ¶</a></span></dt>
+<dt><code class="code">-nw</code></dt>
+<dd><p>“无窗口”。 如果 <small class="sc">GDB</small> 内置了图形用户界面（GUI），则此选项告诉 <small class="sc">GDB</small> 仅使用命令行界面。 如果没有可用的GUI，此选项无效。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dw"></a>
+<a id="index-_002d_002dwindows"></a><span><code class="code">-windows</code><a class="copiable-link" href="#index-_002d_002dwindows"> ¶</a></span></dt>
+<dt><code class="code">-w</code></dt>
+<dd><p>如果 <small class="sc">GDB</small> 包含GUI，则此选项要求尽可能使用它。
+</p>
+</dd>
+<dt><a id="index-_002d_002dcd"></a><span><code class="code">-cd <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002dcd"> ¶</a></span></dt>
+<dd><p>运行 <small class="sc">GDB</small> 使用 <var class="var">目录</var> 作为其工作目录，而不是当前目录。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dD"></a>
+<a id="index-_002d_002ddata_002ddirectory"></a><span><code class="code">-data-directory <var class="var">directory</var></code><a class="copiable-link" href="#index-_002d_002ddata_002ddirectory"> ¶</a></span></dt>
+<dt><code class="code">-D <var class="var">directory</var></code></dt>
+<dd><p>运行 <small class="sc">GDB</small> 使用 <var class="var">目录</var> 作为其数据目录。
+数据目录是
+查找其辅助文件的地方。 请参阅 <small class="sc">GDB</small>  <a class="xref" href="Data-Files.html">GDB数据文件</a>.
+</p>
+</dd>
+<dt><a id="index-_002d_002dbinary_002doutput"></a><span><code class="code">-binary-output</code><a class="copiable-link" href="#index-_002d_002dbinary_002doutput"> ¶</a></span></dt>
+<dd>
+<p>指示 <small class="sc">GDB</small> 将其
+<code class="code">stdout</code>/<code class="code">stderr</code> 的转换模式设置为二进制。 仅适用于MS-Windows。 对于运行 <small class="sc">GDB</small> 测试套件很有用。 默认情况下， <small class="sc">GDB</small> 以文本模式打开
+<code class="code">stdout</code>/<code class="code">stderr</code> ，并将 ‘<samp class="samp">\n</samp>’ （LF，单个换行符）转换为 ‘<samp class="samp">\r\n</samp>’ （CR-LF，回车换行组合）。 如果设置了此选项，则不进行转换。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002df"></a>
+<a id="index-_002d_002dfullname"></a><span><code class="code">-fullname</code><a class="copiable-link" href="#index-_002d_002dfullname"> ¶</a></span></dt>
+<dt><code class="code">-f</code></dt>
+<dd><p><small class="sc">GNU</small> Emacs在将 <small class="sc">GDB</small> 作为子进程运行时会设置此选项。 它告诉 <small class="sc">GDB</small> 每次显示堆栈帧时（包括程序每次停止时）以标准、可识别的方式输出完整的文件名和行号。 这种可识别的格式看起来像两个 ‘<samp class="samp">\032</samp>’ 字符，后面跟着用冒号分隔的文件名、行号和字符位置，以及一个换行符。 Emacs到<small class="sc">GDB</small> 的接口程序使用两个 ‘<samp class="samp">\032</samp>’ 字符作为信号来显示该帧的源代码。
+</p>
+</dd>
+<dt><a id="index-_002d_002dannotate"></a><span><code class="code">-annotate <var class="var">level</var></code><a class="copiable-link" href="#index-_002d_002dannotate"> ¶</a></span></dt>
+<dd><p>此选项设置 <em class="dfn">注释级别</em> 在 <small class="sc">GDB</small>内部。 其效果与使用 ‘<samp class="samp">set annotate <var class="var">级别</var></samp>’ 相同（请参阅 <a class="pxref" href="Annotations.html"><small class="sc">GDB</small> 注释</a>）。 注释 <var class="var">级别</var> 控制 <small class="sc">GDB</small> 在其提示符、表达式的值、源代码行和其他类型的输出中一起打印多少信息。 级别0是正常级别，级别1用于 <small class="sc">GDB</small> 作为
+<small class="sc">GNU</small> Emacs的子进程运行时，级别3是适合控制 <small class="sc">GDB</small>的程序的最大注释级别，级别2已被弃用。
+</p>
+<p>注释机制在很大程度上已被 <small class="sc">GDB/MI</small>
+取代（请参阅 <a class="pxref" href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a>）。
+</p>
+</dd>
+<dt><a id="index-_002d_002dargs"></a><span><code class="code">--args</code><a class="copiable-link" href="#index-_002d_002dargs"> ¶</a></span></dt>
+<dd><p>更改命令行的解释方式，以便可执行文件后面的参数作为命令行参数传递给被调试程序。 此选项停止选项处理。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002db"></a>
+<a id="index-_002d_002dbaud"></a><span><code class="code">-baud <var class="var">bps</var></code><a class="copiable-link" href="#index-_002d_002dbaud"> ¶</a></span></dt>
+<dt><code class="code">-b <var class="var">bps</var></code></dt>
+<dd><p>设置 <small class="sc">GDB</small> 用于远程调试的任何串行接口的线路速度（波特率或每秒位数）。
+</p>
+</dd>
+<dt><a id="index-_002dl"></a><span><code class="code">-l <var class="var">timeout</var></code><a class="copiable-link" href="#index-_002dl"> ¶</a></span></dt>
+<dd><p>设置 <small class="sc">GDB</small>
+用于远程调试的任何通信的超时时间（以秒为单位）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_002dt"></a>
+<a id="index-_002d_002dtty"></a><span><code class="code">-tty <var class="var">device</var></code><a class="copiable-link" href="#index-_002d_002dtty"> ¶</a></span></dt>
+<dt><code class="code">-t <var class="var">device</var></code></dt>
+<dd><p>使用 <var class="var">设备</var> 作为你程序的标准输入和输出运行。
+</p>
+</dd>
+<dt><a id="index-_002d_002dtui"></a><span><code class="code">-tui</code><a class="copiable-link" href="#index-_002d_002dtui"> ¶</a></span></dt>
+<dd><p>启动时激活 <em class="dfn">文本用户界面</em> 。 文本用户界面在终端上管理多个文本窗口，显示源代码、汇编代码、寄存器和 <small class="sc">GDB</small> 命令输出（请参阅 <a class="pxref" href="TUI.html"><small class="sc">GDB</small> 文本用户界面</a>）。 如果你从Emacs运行 <small class="sc">GDB</small> ，则不要使用此选项（请参阅 <a class="pxref" href="Emacs.html">在 <small class="sc">GDB</small> 下使用 <small class="sc">GNU</small> Emacs</a>）。
+</p>
+</dd>
+<dt><a id="index-_002d_002dinterpreter"></a><span><code class="code">-interpreter <var class="var">interp</var></code><a class="copiable-link" href="#index-_002d_002dinterpreter"> ¶</a></span></dt>
+<dd><p>使用解释器 <var class="var">interp</var> 与控制程序或设备进行接口。 此选项旨在由将 <small class="sc">GDB</small> 用作后端进行通信的程序设置。 请参阅 <a class="xref" href="Interpreters.html">命令解释器</a>.
+</p>
+<p>‘<samp class="samp">--interpreter=mi</samp>’ （或 ‘<samp class="samp">--interpreter=mi3</samp>’）会使
+<small class="sc">GDB</small> 使用 <em class="dfn"><small class="sc">GDB/MI</small> 接口</em> 版本3（请参阅 <a class="pxref" href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a>），该版本自 <small class="sc">GDB</small> 版本9.1起包含。  <small class="sc">GDB/MI</small>
+版本2（<code class="code">mi2</code>），包含在 <small class="sc">GDB</small> 6.0中，版本1（<code class="code">mi1</code>），包含在 <small class="sc">GDB</small> 5.3中，也可用。 早期的 <small class="sc">GDB/MI</small>
+接口不再受支持。
+</p>
+</dd>
+<dt><a id="index-_002d_002dwrite"></a><span><code class="code">-write</code><a class="copiable-link" href="#index-_002d_002dwrite"> ¶</a></span></dt>
+<dd><p>以读写模式打开可执行文件和核心文件。 这相当于 ‘<samp class="samp">set write on</samp>’ 命令在 <small class="sc">GDB</small>
+内部（请参阅 <a class="pxref" href="Patching.html">修补程序</a>）。
+</p>
+</dd>
+<dt><a id="index-_002d_002dstatistics"></a><span><code class="code">-statistics</code><a class="copiable-link" href="#index-_002d_002dstatistics"> ¶</a></span></dt>
+<dd><p>此选项使 <small class="sc">GDB</small> 在完成每个命令并返回提示符后打印有关时间和内存使用的统计信息。
+</p>
+</dd>
+<dt><a id="index-_002d_002dversion"></a><span><code class="code">-version</code><a class="copiable-link" href="#index-_002d_002dversion"> ¶</a></span></dt>
+<dd><p>此选项使 <small class="sc">GDB</small> 打印其版本号和无担保声明，然后退出。
+</p>
+</dd>
+<dt><a id="index-_002d_002dconfiguration"></a><span><code class="code">-configuration</code><a class="copiable-link" href="#index-_002d_002dconfiguration"> ¶</a></span></dt>
+<dd><p>此选项使 <small class="sc">GDB</small> 打印有关其构建时配置参数的详细信息，然后退出。 这些详细信息在报告 <small class="sc">GDB</small> 错误时可能很重要（请参阅 <a class="pxref" href="GDB-Bugs.html">报告 <small class="sc">GDB</small></a>中的错误
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Startup.html">启动时会做什么 <small class="sc">GDB</small> , 上一项：</a> <a href="File-Options.html">选择文件</a>, 上级： <a href="Invoking-GDB.html">调用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

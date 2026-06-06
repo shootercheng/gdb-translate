@@ -1,0 +1,270 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 异步记录（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Async Records (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Async Records (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Output-Records.html" rel="up" title="GDB/MI Output Records"/>
+<link href="GDB_002fMI-Breakpoint-Information.html" rel="next" title="GDB/MI Breakpoint Information"/>
+<link href="GDB_002fMI-Stream-Records.html" rel="prev" title="GDB/MI Stream Records"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Async-Records">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Breakpoint-Information.html" rel="next"><small class="sc">GDB/MI</small> </a>, 上一项： <a accesskey="p" href="GDB_002fMI-Stream-Records.html" rel="prev"><small class="sc">GDB/MI</small> 流记录</a>, 上级： <a accesskey="u" href="GDB_002fMI-Output-Records.html" rel="up"><small class="sc">GDB/MI</small> 输出记录</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="gdb_002fmi-Async-Records"><span>27.5.3 <small class="sc">GDB/MI</small> <a class="copiable-link" href="#gdb_002fmi-Async-Records"> </a></span></h4>
+
+<a class="index-entry-id" id="index-async-records-in-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-async-records"></a>
+<p><em class="dfn"></em> 记录用于通知 <small class="sc">GDB/MI</small> 客户端发生的其他更改。这些更改可能是 <small class="sc">GDB/MI</small> 命令（例如，断点已修改）的结果，或者是目标活动（例如，目标已停止）的结果。
+</p>
+<p>
+</p>
+<dl class="table">
+<dt><code class="code">*running,thread-id=&#34;<var class="var">thread</var>&#34;</code></dt>
+<dd><p> <var class="var"></var> 字段可以是当前正在运行的线程的全局线程 ID，也可以是
+‘<samp class="samp">所有</samp>’ 如果所有线程都在运行。前端应假设
+在发出此通知后，无法与正在运行的线程进行交互。前端不应假设此
+通知对于任何命令仅输出一次。  <small class="sc">GDB</small> 可能会多次发出此通知，要么是针对不同的线程，
+因为它无法同时恢复所有线程，要么甚至是针对单个线程，如果该线程必须在自由运行之前逐步执行某些代码。
+</p>
+</dd>
+<dt><code class="code">*stopped,reason=&#34;<var class="var">reason</var>&#34;,thread-id=&#34;<var class="var">id</var>&#34;,stopped-threads=&#34;<var class="var">stopped</var>&#34;,core=&#34;<var class="var">core</var>&#34;</code></dt>
+<dd><p>目标已停止。 <var class="var">原因</var> 字段可以具有以下值之一：
+</p>
+<dl class="table">
+<dt><code class="code">breakpoint-hit</code></dt>
+<dd><p>到达了一个断点。
+</p></dd>
+<dt><code class="code">watchpoint-trigger</code></dt>
+<dd><p>触发了一个观察点。
+</p></dd>
+<dt><code class="code">read-watchpoint-trigger</code></dt>
+<dd><p>触发了一个读观察点。
+</p></dd>
+<dt><code class="code">access-watchpoint-trigger</code></dt>
+<dd><p>触发了一个访问观察点。
+</p></dd>
+<dt><code class="code">function-finished</code></dt>
+<dd><p>完成了 -exec-finish 或类似的 CLI 命令。
+</p></dd>
+<dt><code class="code">location-reached</code></dt>
+<dd><p>完成了 -exec-until 或类似的 CLI 命令。
+</p></dd>
+<dt><code class="code">watchpoint-scope</code></dt>
+<dd><p>一个观察点已超出范围。
+</p></dd>
+<dt><code class="code">end-stepping-range</code></dt>
+<dd><p>完成了 -exec-next、-exec-next-instruction、-exec-step、-exec-step-instruction 或类似的 CLI 命令。
+</p></dd>
+<dt><code class="code">exited-signalled</code></dt>
+<dd><p>下级程序因信号而退出。
+</p></dd>
+<dt><code class="code">exited</code></dt>
+<dd><p>下级程序已退出。
+</p></dd>
+<dt><code class="code">exited-normally</code></dt>
+<dd><p>下级程序正常退出。
+</p></dd>
+<dt><code class="code">signal-received</code></dt>
+<dd><p>下级程序收到了一个信号。
+</p></dd>
+<dt><code class="code">solib-event</code></dt>
+<dd><p>下级程序因加载或卸载库而停止。
+当 <code class="code">stop-on-solib-events</code> （请参阅 <a class="pxref" href="Files.html">指定文件的命令</a>) 被设置或当 <code class="code">catch load</code> 或 <code class="code">catch unload</code> 捕获点正在使用时（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>)。
+</p></dd>
+<dt><code class="code">fork</code></dt>
+<dd><p>下级程序进行了分叉。当 <code class="code">catch fork</code>
+（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>) 被使用时会报告此情况。
+</p></dd>
+<dt><code class="code">vfork</code></dt>
+<dd><p>下级程序进行了 vfork。当 <code class="code">catch vfork</code>
+（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>) 被使用时会报告此情况。
+</p></dd>
+<dt><code class="code">syscall-entry</code></dt>
+<dd><p>下级程序进入了一个系统调用。当 <code class="code">catch
+syscall</code> （请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>) 被使用时会报告此情况。
+</p></dd>
+<dt><code class="code">syscall-return</code></dt>
+<dd><p>下级程序从一个系统调用返回。当
+<code class="code">catch syscall</code> （请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>) 被使用时会报告此情况。
+</p></dd>
+<dt><code class="code">exec</code></dt>
+<dd><p>下级程序调用了 <code class="code">exec</code>. 当 <code class="code">catch exec</code>
+（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>) 被使用时会报告此情况。
+</p></dd>
+<dt><code class="code">no-history</code></dt>
+<dd><p>没有足够的历史记录来继续反向执行。
+</p></dd>
+</dl>
+
+<p> <var class="var">id</var> 字段标识直接导致停止的线程的全局线程 ID — 例如通过命中一个断点。
+根据是否启用了全停止
+模式（请参阅 <a class="pxref" href="All_002dStop-Mode.html">全停止模式</a>）， <small class="sc">GDB</small> 可能会停止所有线程，或者仅停止直接触发停止的线程。
+如果所有线程都停止了， <var class="var">已停止</var> 字段的值将为 <code class="code">&#34;all&#34;</code>. 否则， <var class="var">已停止</var>
+字段的值将是一个线程标识符列表。目前，此列表将始终只包含一个线程，但前端应准备好看到列表中有多个线程。 <var class="var">核心</var> 字段报告停止事件发生的处理器核心。如果此类信息不可用，该字段可能会缺失。
+</p>
+</dd>
+<dt><code class="code">=thread-group-added,id=&#34;<var class="var">id</var>&#34;</code></dt>
+<dt><code class="code">=thread-group-removed,id=&#34;<var class="var">id</var>&#34;</code></dt>
+<dd><p>一个线程组已添加或已移除。 <var class="var">id</var> 字段
+包含线程组的 <small class="sc">GDB</small> 标识符。当添加一个线程组时，它通常可能未与正在运行的
+进程关联。当移除一个线程组时，其 id 变为无效，不能以任何方式使用。
+</p>
+</dd>
+<dt><code class="code">=thread-group-started,id=&#34;<var class="var">id</var>&#34;,pid=&#34;<var class="var">pid</var>&#34;</code></dt>
+<dd><p>一个线程组与一个正在运行的程序关联，
+要么是因为程序刚刚启动，要么是因为线程组已附加到一个程序。 <var class="var">id</var> 字段包含线程组的
+<small class="sc">GDB</small> 标识符。 <var class="var">pid</var> 字段
+包含特定于操作系统的进程标识符。
+</p>
+</dd>
+<dt><code class="code">=thread-group-exited,id=&#34;<var class="var">id</var>&#34;[,exit-code=&#34;<var class="var">code</var>&#34;]</code></dt>
+<dd><p>一个线程组不再与一个正在运行的程序关联，
+要么是因为程序已退出，要么是因为它已分离。 <var class="var">id</var> 字段包含 <small class="sc">GDB</small> 线程组的标识符。 <var class="var">代码</var> 字段是下级程序的退出代码；仅当下级程序以某个代码退出时才存在。
+</p>
+</dd>
+<dt><code class="code">=thread-created,id=&#34;<var class="var">id</var>&#34;,group-id=&#34;<var class="var">gid</var>&#34;</code></dt>
+<dt><code class="code">=thread-exited,id=&#34;<var class="var">id</var>&#34;,group-id=&#34;<var class="var">gid</var>&#34;</code></dt>
+<dd><p>一个线程已创建或已退出。 <var class="var">id</var> 字段
+包含线程的全局 <small class="sc">GDB</small> 标识符。 <var class="var">gid</var>
+字段标识该线程所属的线程组。
+</p>
+</dd>
+<dt><code class="code">=thread-selected,id=&#34;<var class="var">id</var>&#34;[,frame=&#34;<var class="var">frame</var>&#34;]</code></dt>
+<dd><p>通知所选线程或帧已更改。此通知
+不是由 <code class="code">-thread-select</code> 或
+<code class="code">-stack-select-frame</code> 命令产生的结果，而是在任何未记录为会更改所选线程和帧的 MI 命令
+实际上更改了它们时发出。特别是，直接或间接
+（通过用户定义的命令）调用 CLI <code class="code">thread</code> 或 <code class="code">frame</code> 命令，
+将生成此通知。从其他
+用户界面更改线程或帧（请参阅 <a class="ref" href="Interpreters.html">命令解释器</a>）也将生成此通知。
+</p>
+<p> <var class="var">帧</var> 字段仅在新选择的线程停止时存在。请参阅 <a class="ref" href="GDB_002fMI-Frame-Information.html"><small class="sc">GDB/MI</small> 帧信息</a> 以了解其值的格式。
+</p>
+<p>我们建议前端在收到此通知后，
+突出显示所选线程，并使后续命令应用于
+该线程。
+</p>
+</dd>
+<dt><code class="code">=library-loaded,...</code></dt>
+<dd><p>报告程序加载了一个新的库文件。此
+通知有 5 个字段 —<var class="var">id</var>, <var class="var">目标名称</var>,
+<var class="var">主机名称</var>, <var class="var">符号已加载</var> 和 <var class="var">范围</var>. <var class="var">id</var> 字段是库的不透明标识符。对于远程调试情况，
+<var class="var">目标名称</var> 和 <var class="var">主机名称</var> 字段分别给出目标和主机上的库文件名称。对于本地
+调试，这两个字段具有相同的值。
+<var class="var">符号已加载</var> 字段仅为向后兼容而发出，不应依赖它来传达任何有用信息。
+<var class="var">线程组</var> 字段（如果存在）指定加载库的线程组的 id。如果该字段
+不存在，则表示库是在所有当前线程组的上下文中加载的。 <var class="var">范围</var> 字段指定属于此库的地址范围。
+</p>
+</dd>
+<dt><code class="code">=library-unloaded,...</code></dt>
+<dd><p>报告程序卸载了一个库。此通知
+有以下字段 —<var class="var">id</var>, <var class="var">目标名称</var>,
+<var class="var">主机名称</var> 和 <var class="var">范围</var> 其含义与
+<code class="code">=library-loaded</code> 通知相同。
+</p>
+<p>一个库可能会在下级程序的库列表中多次出现，但该库仅被映射到下级程序的地址空间一次。当发生这种情况，并且一个库副本被卸载，但仍有剩余副本时，
+<var class="var">仍在使用</var> 字段将为 ‘<samp class="samp">true</samp>’。在所有其他
+情况下， <var class="var">仍在使用</var> 字段的值将为
+‘<samp class="samp">false</samp>’。
+</p>
+<p> <var class="var">线程组</var> 字段（如果存在）指定卸载库的线程组的 id。如果该字段
+不存在，则表示库是在所有当前线程组的上下文中卸载的。
+</p>
+</dd>
+<dt><code class="code">=traceframe-changed,num=<var class="var">tfnum</var>,tracepoint=<var class="var">tpnum</var></code></dt>
+<dt><code class="code">=traceframe-changed,end</code></dt>
+<dd><p>报告跟踪帧已更改，其新编号为
+<var class="var">tfnum</var>. 与此跟踪帧关联的跟踪点编号为 <var class="var">tpnum</var>.
+</p>
+</dd>
+<dt><code class="code">=tsv-created,name=<var class="var">name</var>,initial=<var class="var">initial</var></code></dt>
+<dd><p>报告新的跟踪状态变量 <var class="var">名称</var> 已创建，初始值为 <var class="var">初始值</var>.
+</p>
+</dd>
+<dt><code class="code">=tsv-deleted,name=<var class="var">name</var></code></dt>
+<dt><code class="code">=tsv-deleted</code></dt>
+<dd><p>报告跟踪状态变量 <var class="var">名称</var> 已删除或所有跟踪状态变量已删除。
+</p>
+</dd>
+<dt><code class="code">=tsv-modified,name=<var class="var">name</var>,initial=<var class="var">initial</var>[,current=<var class="var">current</var>]</code></dt>
+<dd><p>报告跟踪状态变量 <var class="var">名称</var> 已修改，初始值为 <var class="var">初始值</var>. 跟踪状态变量的当前值 <var class="var">当前值</var> 是可选的，如果跟踪状态变量的当前值已知，则会报告。
+</p>
+</dd>
+<dt><code class="code">=breakpoint-created,bkpt={...}</code></dt>
+<dt><code class="code">=breakpoint-modified,bkpt={...}</code></dt>
+<dt><code class="code">=breakpoint-deleted,id=<var class="var">number</var></code></dt>
+<dd><p>分别报告断点已创建、修改或删除。仅将用户可见的断点报告给 MI
+用户。
+</p>
+<p> <var class="var">断点</var> 参数的形式与各种断点命令返回的形式相同；请参阅 <a class="xref" href="GDB_002fMI-Breakpoint-Commands.html"><small class="sc">GDB/MI</small> 断点命令</a>.
+<var class="var">编号</var> 是断点的序号。
+</p>
+<p>请注意，如果一个断点在命令的结果记录中发出，则它不会在异步记录中再次发出。
+</p>
+</dd>
+<dt><code class="code">=record-started,thread-group=&#34;<var class="var">id</var>&#34;,method=&#34;<var class="var">method</var>&#34;[,format=&#34;<var class="var">format</var>&#34;]</code></dt>
+<dt><code class="code">=record-stopped,thread-group=&#34;<var class="var">id</var>&#34;</code></dt>
+<dd><p>下级程序的执行日志记录已启动或停止。 <var class="var">id</var> 是 <small class="sc">GDB</small> 受影响的下级程序对应的线程组的标识符。
+</p>
+<p> <var class="var">方法</var> 字段指示用于记录执行的方法。如果正在使用的方法支持多种记录格式， <var class="var">格式</var> 将存在并包含当前使用的格式。请参阅 <a class="xref" href="Process-Record-and-Replay.html">记录下级程序的执行并进行回放</a>,
+以了解现有方法和格式的值。
+</p>
+</dd>
+<dt><code class="code">=cmd-param-changed,param=<var class="var">param</var>,value=<var class="var">value</var></code></dt>
+<dd><p>报告命令的参数 <code class="code">set <var class="var">param</var></code> 已更改为 <var class="var">值</var>. 在多字 <code class="code">set</code> 命令中， <var class="var">参数</var> 是 <code class="code">set</code> 命令的整个参数列表。
+例如，在命令 <code class="code">set check type on</code>, <var class="var">参数</var>
+是 <code class="code">check type</code> 和 <var class="var">值</var> 是 <code class="code">on</code>.
+</p>
+</dd>
+<dt><code class="code">=memory-changed,thread-group=<var class="var">id</var>,addr=<var class="var">addr</var>,len=<var class="var">len</var>[,type=&#34;code&#34;]</code></dt>
+<dd><p>报告从 <var class="var">地址</var> 到 <var class="var">数据</var> + <var class="var">长度</var> 的字节已写入下级程序。 <var class="var">id</var> 是受影响的下级程序对应的线程组的标识符。可选的
+<code class="code">type=&#34;code&#34;</code> 部分在写入的内存包含可执行代码时报告。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Breakpoint-Information.html"><small class="sc">GDB/MI</small> 断点信息</a>, 上一项： <a href="GDB_002fMI-Stream-Records.html"><small class="sc">GDB/MI</small> 流记录</a>, 上级： <a href="GDB_002fMI-Output-Records.html"><small class="sc">GDB/MI</small> 输出记录</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

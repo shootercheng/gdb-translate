@@ -1,0 +1,155 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>tfind（使用GDB进行调试）</title>
+
+<meta name="description" content="tfind (Debugging with GDB)"/>
+<meta name="keywords" content="tfind (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Analyze-Collected-Data.html" rel="up" title="Analyze Collected Data"/>
+<link href="tdump.html" rel="next" title="tdump"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="tfind">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="tdump.html" rel="next"><code class="code">tdump</code></a>, Up: <a accesskey="u" href="Analyze-Collected-Data.html" rel="up">Using the Collected Data</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">Contents</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="tfind-n"><span>13.2.1 <code class="code">tfind <var class="var">n</var></code><a class="copiable-link" href="#tfind-n"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-tfind"></a>
+<a class="index-entry-id" id="index-select-trace-snapshot"></a>
+<a class="index-entry-id" id="index-find-trace-snapshot"></a>
+<p>从缓冲区中选择跟踪快照的基本命令是
+<code class="code">tfind <var class="var">n</var></code>，它查找跟踪快照编号 <var class="var">n</var>，从0开始计数。如果没有参数 <var class="var">n</var> ，则选择下一个快照。
+</p>
+<p>以下是使用该 <code class="code">tfind</code> 命令的各种形式。
+</p>
+<dl class="table">
+<dt><code class="code">tfind start</code></dt>
+<dd><p>查找缓冲区中的第一个快照。这是
+<code class="code">tfind 0</code> （因为0是第一个快照的编号）的同义词。
+</p>
+</dd>
+<dt><code class="code">tfind none</code></dt>
+<dd><p>停止调试跟踪快照，恢复 <em class="emph">实时</em> 调试。
+</p>
+</dd>
+<dt><code class="code">tfind end</code></dt>
+<dd><p>与‘<samp class="samp">tfind none</samp>’相同。
+</p>
+</dd>
+<dt><code class="code">tfind</code></dt>
+<dd><p>无参数表示查找下一个跟踪快照，如果没有选择跟踪快照，则查找第一个。
+</p>
+</dd>
+<dt><code class="code">tfind -</code></dt>
+<dd><p>查找当前快照之前的上一个跟踪快照。这允许回溯更早的步骤。
+</p>
+</dd>
+<dt><code class="code">tfind tracepoint <var class="var">num</var></code></dt>
+<dd><p>查找与跟踪点 <var class="var">编号</var>相关联的下一个快照。搜索从最后检查的跟踪快照向前进行。如果没有参数 <var class="var">编号</var> ，则表示查找与当前快照相同跟踪点收集的下一个快照。
+</p>
+</dd>
+<dt><code class="code">tfind pc <var class="var">addr</var></code></dt>
+<dd><p>查找与程序计数器的值 <var class="var">地址</var> 相关联的下一个快照。搜索从最后检查的跟踪快照向前进行。如果没有参数 <var class="var">地址</var> ，则表示查找与当前快照具有相同PC值的下一个快照。
+</p>
+</dd>
+<dt><code class="code">tfind outside <var class="var">addr1</var>, <var class="var">addr2</var></code></dt>
+<dd><p>查找其PC在给定地址范围之外（不包括）的下一个快照。
+</p>
+</dd>
+<dt><code class="code">tfind range <var class="var">addr1</var>, <var class="var">addr2</var></code></dt>
+<dd><p>查找其PC在 <var class="var">地址1</var> 和
+<var class="var">地址2</var> 之间（包括）的下一个快照。
+</p>
+</dd>
+<dt><code class="code">tfind line <span class="r">[</span><var class="var">file</var>:<span class="r">]</span><var class="var">n</var></code></dt>
+<dd><p>查找与源行 <var class="var">编号</var>相关联的下一个快照。如果给出可选参数 <var class="var">文件</var> ，则引用该源文件中的第 <var class="var">编号</var> 行。搜索从最后检查的跟踪快照向前进行。如果没有参数 <var class="var">编号</var> ，则表示查找除当前正在检查的行之外的下一行；因此，反复说
+<code class="code">tfind line</code> 可能与在 <em class="emph">实时</em> 调试会话中逐行步进具有相同的效果。
+</p></dd>
+</dl>
+
+<p>这些 <code class="code">tfind</code> 命令的默认参数经过专门设计，以便于浏览跟踪缓冲区。例如， <code class="code">tfind</code> 无参数选择下一个跟踪快照，而 <code class="code">tfind -</code> 无参数选择上一个跟踪快照。因此，通过给出一个 <code class="code">tfind</code> 命令，然后简单地按 <kbd class="key">回车</kbd> 键多次，您可以按顺序检查所有跟踪快照。或者，通过说 <code class="code">tfind -</code> 然后按
+<kbd class="key">回车</kbd> 键多次，您可以按相反顺序检查快照。 <code class="code">tfind line</code> 无参数的 <code class="code">tfind pc</code> 命令选择执行的下一个源行的快照。无参数的 <code class="code">tfind tracepoint</code> 命令选择与当前帧具有相同程序计数器（PC）的下一个快照。无参数的
+</p>
+<p>除了让您手动浏览跟踪缓冲区之外，这些命令还便于构建 <small class="sc">GDB</small> 脚本，该脚本浏览跟踪缓冲区并打印出您感兴趣的任何收集数据。因此，如果我们想检查缓冲区中每个跟踪帧的PC、FP和SP寄存器，我们可以这样说：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">tfind start</b>
+(gdb) <b class="b">while ($trace_frame != -1)</b>
+&gt; printf &#34;Frame %d, PC = %08X, SP = %08X, FP = %08X\n&#34;, \
+          $trace_frame, $pc, $sp, $fp
+&gt; tfind
+&gt; end
+
+Frame 0, PC = 0020DC64, SP = 0030BF3C, FP = 0030BF44
+Frame 1, PC = 0020DC6C, SP = 0030BF38, FP = 0030BF44
+Frame 2, PC = 0020DC70, SP = 0030BF34, FP = 0030BF44
+Frame 3, PC = 0020DC74, SP = 0030BF30, FP = 0030BF44
+Frame 4, PC = 0020DC78, SP = 0030BF2C, FP = 0030BF44
+Frame 5, PC = 0020DC7C, SP = 0030BF28, FP = 0030BF44
+Frame 6, PC = 0020DC80, SP = 0030BF24, FP = 0030BF44
+Frame 7, PC = 0020DC84, SP = 0030BF20, FP = 0030BF44
+Frame 8, PC = 0020DC88, SP = 0030BF1C, FP = 0030BF44
+Frame 9, PC = 0020DC8E, SP = 0030BF18, FP = 0030BF44
+Frame 10, PC = 00203F6C, SP = 0030BE3C, FP = 0030BF14
+</pre></div>
+
+<p>或者，如果我们想检查缓冲区中每个源行的变量 <code class="code">X</code> ：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">tfind start</b>
+(gdb) <b class="b">while ($trace_frame != -1)</b>
+&gt; printf &#34;Frame %d, X == %d\n&#34;, $trace_frame, X
+&gt; tfind line
+&gt; end
+
+Frame 0, X = 1
+Frame 7, X = 2
+Frame 13, X = 255
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="tdump.html"><code class="code">tdump</code></a>, 上一步： <a href="Analyze-Collected-Data.html">使用收集的数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">内容</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

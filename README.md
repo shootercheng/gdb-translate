@@ -46,10 +46,17 @@ example
 ```
 
 2. 运行测试
+- 所有测试
 ```bash
-$ godotenv -f .env go test ./tests/...
+$ godotenv -f .env go test -v ./tests/...
 ok  	github.com/shootercheng/gdb-translate/tests/internal/request	26.403s
 ```
+
+- 单个测试方法
+```bash
+$ godotenv -f .env go test ./tests/internal/request/ -v  -run "^TestCollectTextNodesWithBatchLLmRequest$"
+```
+
 
 3. 运行主程序
 ```bash

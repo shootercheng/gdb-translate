@@ -1,0 +1,137 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada 的扩展（使用 GDB 调试）</title>
+
+<meta name="description" content="Additions to Ada (Debugging with GDB)"/>
+<meta name="keywords" content="Additions to Ada (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Overloading-support-for-Ada.html" rel="next" title="Overloading support for Ada"/>
+<link href="Omissions-from-Ada.html" rel="prev" title="Omissions from Ada"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Additions-to-Ada">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Overloading-support-for-Ada.html" rel="next">Ada 的重载支持</a>, 上一项： <a accesskey="p" href="Omissions-from-Ada.html" rel="prev">Ada 的省略部分</a>, 上一级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Additions-to-Ada-1"><span>15.4.10.3 Ada 的扩展<a class="copiable-link" href="#Additions-to-Ada-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-deviations-from"></a>
+
+<p>与处理其他语言一样， <small class="sc">GDB</small> 对 Ada 进行了某些通用扩展（请参阅 <a class="pxref" href="Expressions.html">表达式</a>)：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果表达式 <var class="var">E</var> 是一个驻留在内存中的变量（通常是局部变量或数组元素），并且 <var class="var">N</var> 是一个正整数，那么 <code class="code"><var class="var">E</var>@<var class="var">N</var></code> 将以数组形式显示 <var class="var">E</var> 的值以及内存中紧随其后的
+<var class="var">N</var> - 1 个相邻变量的值。在 Ada 中，这个运算符通常不是必需的，因为它的主要用途是显示数组的部分内容，而在 Ada 中切片通常可以实现这一点。然而，在调试某些调试信息已被优化掉的程序时，偶尔会用到它。
+
+</li><li><code class="code"><var class="var">B</var>::<var class="var">var</var></code> 表示“名为 <var class="var">var</var> 的变量，该变量出现在函数或文件 <var class="var">B</var>中”。当 <var class="var">B</var> 是一个文件名时，通常必须用单引号将其括起来。
+
+</li><li>表达式 <code class="code">{<var class="var">type</var>} <var class="var">addr</var></code> 表示“类型为
+<var class="var">type</var> 且出现在地址 <var class="var">addr</var>的变量”。
+
+</li><li>以 ‘<samp class="samp">$</samp>’ 开头的名称是一个便利变量（请参阅 <a class="pxref" href="Convenience-Vars.html">便利变量</a>) 或一个机器寄存器（请参阅 <a class="pxref" href="Registers.html">寄存器</a>)。
+</li></ul>
+
+<p>此外， <small class="sc">GDB</small> 还提供了一些其他特定于 Ada 的快捷方式和直接扩展：
+</p>
+<ul class="itemize mark-bullet">
+<li>赋值语句允许作为表达式使用，返回其右操作数作为值。因此，您可以输入
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set x := y + 3
+(gdb) print A(tmp := y + 1)
+</pre></div>
+
+</li><li>分号允许作为一个“运算符”使用，返回其右操作数的值。这允许，例如，复杂的条件断点：
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break f
+(gdb) condition 1 (report(i); k += 1; A(k) &gt; 100)
+</pre></div>
+
+</li><li>对基于进制的字面量的扩展可用于指定浮点字面量的确切字节内容。在进制之后，您可以使用零到两个 ‘<samp class="samp">l</samp>’ 字符，后跟一个 ‘<samp class="samp">f</samp>’。‘<samp class="samp">l</samp>’ 字符的数量控制结果实常量的宽度：零表示 <code class="code">Float</code> 使用，一个表示
+<code class="code">Long_Float</code>, 两个表示 <code class="code">Long_Long_Float</code>。
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print 16f#41b80000#
+$1 = 23.0
+</pre></div>
+
+</li><li>与其使用连接和符号字符名称将特殊字符引入字符串，不如使用一种特殊的括号表示法，这种表示法也用于打印字符串。字符串或字符字面量中形式为 ‘<samp class="samp">[&#34;<var class="var">XX</var>&#34;]</samp>’ 的字符序列表示其数字编码为 <var class="var">XX</var> （十六进制）的（单个）字符。字符序列 ‘<samp class="samp">[&#34;&#34;&#34;]</samp>’ 也表示字符串中的单个引号。例如，
+<div class="example smallexample">
+<pre class="example-preformatted">   &#34;One line.[&#34;0a&#34;]Next line.[&#34;0a&#34;]&#34;
+</pre></div>
+<p>在每个句点后包含一个 ASCII 换行符（<code class="code">Ada.Characters.Latin_1.LF</code>)。
+</p>
+</li><li>用作属性前缀的子类型 <code class="t">&#39;Pos</code>, <code class="t">&#39;Min</code>, 和
+<code class="t">&#39;Max</code> 是可选的（并且无论如何都会被忽略）。例如，编写以下内容是有效的
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print &#39;max(x, y)
+</pre></div>
+
+</li><li>在打印数组时， <small class="sc">GDB</small> 当数组的下界为 1 时使用位置表示法，否则使用修改后的命名表示法。例如，一个下界为 3 的包含三个整数的一维数组可能会打印为
+
+<div class="example smallexample">
+<pre class="example-preformatted">(3 =&gt; 10, 17, 1)
+</pre></div>
+
+<p>也就是说，与有效的 Ada 不同，只有第一个组件有 <code class="code">=&gt;</code> 
+子句。
+</p>
+</li><li>您可以在表达式中使用属性名称的任何唯一多字符子序列来缩写属性（精确匹配优先）。例如，您可以使用 <code class="t">a&#39;len</code>, <code class="t">a&#39;gth</code>, 或 <code class="t">a&#39;lh</code>
+来代替  <code class="t">a&#39;length</code>。
+
+</li><li><a class="index-entry-id" id="index-quoting-Ada-internal-identifiers"></a>
+由于 Ada 不区分大小写，调试器通常会将您输入的标识符映射为小写。GNAT 编译器对其一些内部标识符使用大写字符，这些标识符通常对用户没有意义。在极少数情况下，您实际上需要查看它们时，将它们用尖括号括起来以避免小写映射。例如，
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print &lt;JMPBUF_SAVE&gt;[0]
+</pre></div>
+
+</li><li>打印类范围类型的对象或解引用指向类范围的访问值将显示对象特定类型的所有组件（由其运行时标签指示）。同样，对这样的值进行组件选择将对对象的特定类型进行操作。
+
+</li></ul>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Overloading-support-for-Ada.html">Ada 的重载支持</a>, 上一项： <a href="Omissions-from-Ada.html">Ada 的省略部分</a>, 上一级： <a href="Ada.html">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

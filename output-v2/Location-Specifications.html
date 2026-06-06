@@ -1,0 +1,112 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>位置规范（使用GDB调试）</title>
+
+<meta name="description" content="Location Specifications (Debugging with GDB)"/>
+<meta name="keywords" content="Location Specifications (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Source.html" rel="up" title="Source"/>
+<link href="Edit.html" rel="next" title="Edit"/>
+<link href="List.html" rel="prev" title="List"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Location-Specifications">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Edit.html" rel="next">编辑源文件</a>，上一项： <a accesskey="p" href="List.html" rel="prev">打印源行</a>，上一级： <a accesskey="u" href="Source.html" rel="up">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Location-Specifications-1"><span>9.2 位置规范<a class="copiable-link" href="#Location-Specifications-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-specifying-location"></a>
+<a class="index-entry-id" id="index-locspec"></a>
+<a class="index-entry-id" id="index-source-location"></a>
+<a class="index-entry-id" id="index-code-location"></a>
+
+<a class="index-entry-id" id="index-location-spec"></a>
+<p>有几个 <small class="sc">GDB</small> 命令接受用于指定程序代码位置的参数。很多时候，位置是使用源行号来指定的，但也可以通过函数名、地址、标签等来指定。GDB所识别的指定位置的不同形式 <small class="sc">GDB</small> 统称为 <em class="dfn">位置规范</em>，或
+<em class="dfn">位置规格</em>。本节记录了GDB所识别的指定位置的形式。 <small class="sc">GDB</small> 当你指定一个位置时，
+</p>
+<a class="index-entry-id" id="index-location-resolution"></a>
+<a class="index-entry-id" id="index-resolution-of-location-spec"></a>
+<p>GDB需要在你的程序中找到对应的地方，即 <small class="sc">GDB</small> 代码位置 <em class="dfn">，它对应于给定的位置规格。我们将这个寻找与位置规格对应的实际代码位置的过程称为</em>位置解析 <em class="dfn">。</em>
+</p>
+<p>程序中的一个具体代码位置可以通过一组属性唯一标识：它的源行号、源文件名、定义它的完全限定且带有原型的函数，以及一个指令地址。由于每个子进程都有自己的地址空间，子进程编号也是这些属性的必要部分。
+</p>
+<p>相比之下，你输入的位置规格很多时候会省略其中一些属性。例如，通常只指定源行号来表示当前源文件中的某一行，或者只指定文件名的基本名称，省略其目录。换句话说，位置规格通常是不完整的，就像一种蓝图， <small class="sc">GDB</small> GDB需要通过使用隐含的默认值，并考虑可用的源代码和调试信息来补全缺失的属性。这就是位置解析的意义所在。
+</p>
+<p>如果位置规格无法区分多个代码位置，那么对不完整位置规格的解析可能会产生多个代码位置。以下是一些导致位置规格匹配程序中多个代码位置的情况示例：
+</p>
+<ul class="itemize mark-bullet">
+<li>位置规格指定了一个函数名，而程序中有多个函数具有该名称。（为了区分它们，你可以指定一个完全限定且带有原型的函数名，例如 <code class="code">A::func(int)</code> 而不是仅仅
+<code class="code">func</code>。）
+
+</li><li>位置规格指定了一个源文件名，而程序中有多个源文件具有相同的名称，例如不同子目录中具有相同基本名称的多个文件。（为了区分它们，在文件名中指定足够的前导目录。）
+
+</li><li>对于一个C<code class="t">++</code> 构造函数， <small class="sc">GCC</small> 编译器会生成该函数体的多个实例，用于不同的情况，但其源级名称是相同的。
+
+</li><li>对于一个C<code class="t">++</code> 模板函数，函数中的给定行可以对应任意数量的实例化。
+
+</li><li>对于一个内联函数，给定的源行可以对应该函数内联代码中的多个实际代码位置。
+</li></ul>
+
+<p>位置规格的解析也可能无法产生完整的代码位置，甚至无法产生任何代码位置。以下是一些这样的情况示例：
+</p>
+<ul class="itemize mark-bullet">
+<li>程序的某些部分缺乏足够详细的调试信息，因此解析后的代码位置缺少一些属性，如源文件名和行号，只剩下指令地址，可能还有一个函数名。这样不完整的代码位置仅适用于处理地址和/或函数名的上下文。有些命令只能处理完整的代码位置。
+
+</li><li>位置规格指定了一个函数名，而程序中没有具有该名称的函数，或者它们只存在于尚未加载的共享库中。
+
+</li><li>位置规格指定了一个源文件名，而程序中没有具有该名称的源文件，或者它们只存在于尚未加载的共享库中。
+
+</li><li>位置规格同时指定了源文件名和源行号，即使程序中有匹配该文件名的源文件，但这些文件中没有一个具有指定的行号。
+</li></ul>
+
+<p>可以使用三种不同的格式来指定位置：行规格位置、显式位置或地址位置。以下小节描述了这些格式。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Linespec-Locations.html">行规格位置</a></li>
+<li><a accesskey="2" href="Explicit-Locations.html">显式位置</a></li>
+<li><a accesskey="3" href="Address-Locations.html">地址位置</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Edit.html">编辑源文件</a>，上一项： <a href="List.html">打印源行</a>，上一级： <a href="Source.html">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

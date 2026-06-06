@@ -1,0 +1,88 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>帧（使用GDB进行调试）</title>
+
+<meta name="description" content="Frames (Debugging with GDB)"/>
+<meta name="keywords" content="Frames (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Stack.html" rel="up" title="Stack"/>
+<link href="Backtrace.html" rel="next" title="Backtrace"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Frames">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Backtrace.html" rel="next">回溯</a>, 上一项： <a accesskey="u" href="Stack.html" rel="up">检查栈</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Stack-Frames"><span>8.1 栈帧<a class="copiable-link" href="#Stack-Frames"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-frame_002c-definition"></a>
+<a class="index-entry-id" id="index-stack-frame"></a>
+<p>调用栈被划分为连续的片段，称为 <em class="dfn">栈
+帧</em>，或 <em class="dfn">帧</em> 简称；每个帧是与一次对一个函数的调用相关联的数据。该帧包含传递给函数的参数、函数的局部变量以及函数正在执行的地址。
+</p>
+<a class="index-entry-id" id="index-initial-frame"></a>
+<a class="index-entry-id" id="index-outermost-frame"></a>
+<a class="index-entry-id" id="index-innermost-frame"></a>
+<p>当你的程序启动时，栈只有一个帧，即函数的 <code class="code">main</code>。这被称为 <em class="dfn">初始</em> 帧或
+<em class="dfn">最外层</em> 帧。每次调用一个函数时，都会创建一个新的帧。每次函数返回时，该函数调用的帧都会被消除。如果一个函数是递归的，同一个函数可能会有多个帧。实际正在执行的函数的帧称为 <em class="dfn">最内层</em> 帧。这是所有仍然存在的栈帧中最近创建的帧。
+</p>
+<a class="index-entry-id" id="index-frame-pointer"></a>
+<p>在你的程序内部，栈帧通过它们的地址来标识。一个栈帧由许多字节组成，每个字节都有自己的地址；每种计算机都有一个约定，用于选择一个字节，其地址作为帧的地址。通常，当在该帧中执行时，这个地址会保存在一个称为 <em class="dfn">帧指针寄存器</em>
+（见 <a class="pxref" href="Registers.html">$fp</a>）的寄存器中。
+</p>
+<a class="index-entry-id" id="index-frame-level"></a>
+<a class="index-entry-id" id="index-frame-number"></a>
+<p><small class="sc">GDB</small> 为每个现有的栈帧标记一个 <em class="dfn">级别</em>，这个数字对于最内层帧是零，对于调用它的帧是一，依此类推。这些级别编号为你在 <small class="sc">GDB</small> 命令中指定栈帧提供了一种方式。术语
+<em class="dfn">帧编号</em> 和 <em class="dfn">帧级别</em> 可以互换使用来描述这个数字。
+</p>
+<a class="index-entry-id" id="index-frameless-execution"></a>
+<p>一些编译器提供了一种编译函数的方法，使它们可以在没有栈帧的情况下运行。（例如， <small class="sc">GCC</small> 选项
+</p><div class="example smallexample">
+<pre class="example-preformatted">‘<samp class="samp">-fomit-frame-pointer</samp>’
+</pre></div>
+<p>生成没有帧的函数。）
+这偶尔会用于频繁使用的库函数，以节省帧设置时间。  <small class="sc">GDB</small> 处理这些函数调用的功能有限。如果最内层的函数调用没有栈帧， <small class="sc">GDB</small> 仍然将其视为有一个单独的帧，该帧通常编号为零，从而允许正确跟踪函数调用链。但是， <small class="sc">GDB</small> 对于栈中其他位置的无帧函数没有相应的处理。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Backtrace.html">回溯</a>, 上一项： <a href="Stack.html">检查栈</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

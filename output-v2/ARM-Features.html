@@ -1,0 +1,278 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>ARM 特性（使用 GDB 调试）</title>
+
+<meta name="description" content="ARM Features (Debugging with GDB)"/>
+<meta name="keywords" content="ARM Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features"/>
+<link href="i386-Features.html" rel="next" title="i386 Features"/>
+<link href="ARC-Features.html" rel="prev" title="ARC Features"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARM-Features">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="i386-Features.html" rel="next">i386 特性</a>, 上一项： <a accesskey="p" href="ARC-Features.html" rel="prev">ARC 特性</a>, 上级： <a accesskey="u" href="Standard-Target-Features.html" rel="up">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="ARM-Features-1"><span>G.5.4 ARM 特性<a class="copiable-link" href="#ARM-Features-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-ARM-features"></a>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Core-register-set-for-non_002dM_002dprofile">非 M 架构的核心寄存器集</a></li>
+<li><a accesskey="2" href="#Core-register-set-for-M_002dprofile">M 架构的核心寄存器集</a></li>
+<li><a accesskey="3" href="#FPA-registers-feature-_0028obsolete_0029">FPA 寄存器特性（已弃用）</a></li>
+<li><a accesskey="4" href="#M_002dprofile-Vector-Extension-_0028MVE_0029">M 架构向量扩展（MVE）</a></li>
+<li><a accesskey="5" href="#XScale-iwMMXt-feature">XScale iwMMXt 特性</a></li>
+<li><a accesskey="6" href="#Vector-Floating_002dPoint-_0028VFP_0029-feature">向量浮点（VFP）特性</a></li>
+<li><a accesskey="7" href="#NEON-architecture-feature">NEON 架构特性</a></li>
+<li><a accesskey="8" href="#M_002dprofile-Pointer-Authentication-and-Branch-Target-Identification-feature">M 架构指针认证和分支目标识别特性</a></li>
+<li><a accesskey="9" href="#M_002dprofile-system-registers-feature">M 架构系统寄存器特性</a></li>
+<li><a href="#M_002dprofile-Security-Extensions-feature">M 架构安全扩展特性</a></li>
+<li><a href="#TLS-registers-feature">TLS 寄存器特性</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Core-register-set-for-non_002dM_002dprofile">
+<h4 class="subsubsection"><span>G.5.4.1 非 M 架构的核心寄存器集<a class="copiable-link" href="#Core-register-set-for-non_002dM_002dprofile"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.core</samp>’ 特性是非 M 架构 ARM 目标所必需的。它必须包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">r0</samp>’ 到 ‘<samp class="samp">r12</samp>’。通用寄存器。它们的大小为 32 位，类型为 ‘<samp class="samp">uint32</samp>’。
+</li><li>‘<samp class="samp">sp</samp>’，栈指针寄存器，也称为 ‘<samp class="samp">r13</samp>’。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">lr</samp>’，链接寄存器。它的大小为 32 位。
+</li><li>‘<samp class="samp">pc</samp>’，程序计数器寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">code_ptr</samp>’。
+</li><li>‘<samp class="samp">cpsr</samp>’，当前程序状态寄存器，包含所有状态位。它的大小为 32 位。历史上，此寄存器硬连线为编号 25，但报告 XML 的调试桩不再需要使用此编号。
+</li></ul>
+
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="Core-register-set-for-M_002dprofile">
+<h4 class="subsubsection"><span>G.5.4.2 M 架构的核心寄存器集<a class="copiable-link" href="#Core-register-set-for-M_002dprofile"> ¶</a></span></h4>
+
+<p>对于 M 架构目标（例如 Cortex - M3），‘<samp class="samp">org.gnu.gdb.arm.core</samp>’ 特性被 ‘<samp class="samp">org.gnu.gdb.arm.m-profile</samp>’ 取代，并且它是必需的特性。它必须包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">r0</samp>’ 到 ‘<samp class="samp">r12</samp>’，通用寄存器。它们的大小为 32 位，类型为 ‘<samp class="samp">uint32</samp>’。
+</li><li>‘<samp class="samp">sp</samp>’，栈指针寄存器，也称为 ‘<samp class="samp">r13</samp>’。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">lr</samp>’，链接寄存器。它的大小为 32 位。
+</li><li>‘<samp class="samp">pc</samp>’，程序计数器寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">code_ptr</samp>’。
+</li><li>‘<samp class="samp">xpsr</samp>’，程序状态寄存器，包含所有状态位。它的大小为 32 位。历史上，此寄存器硬连线为编号 25，但报告 XML 的调试桩不再需要使用此编号。
+</li></ul>
+
+<p>看到此特性后， <small class="sc">GDB</small> 将确认正在处理 M 架构目标。这意味着 <small class="sc">GDB</small> 将使用对 M 架构有意义的钩子和配置。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="FPA-registers-feature-_0028obsolete_0029">
+<h4 class="subsubsection"><span>G.5.4.3 FPA 寄存器特性（已弃用）<a class="copiable-link" href="#FPA-registers-feature-_0028obsolete_0029"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.fpa</samp>’ 特性已弃用，调试桩不应再宣传它。它过去用于宣传旧 FPA 架构的寄存器，该架构在工具链中早已停用。
+</p>
+<p>它被保留是为了 <small class="sc">GDB</small> 为了向后兼容，以便不支持 XML 目标描述的旧调试桩仍能正常工作。一个这样的例子是 Linux 或 BSD 内核中的 KGDB 调试桩。
+</p>
+<p>以下描述仅用于历史目的。此特性过去包含以下寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">f0</samp>’ 到 ‘<samp class="samp">f8</samp>’。浮点寄存器。它们的大小为 96 位，类型为 ‘<samp class="samp">arm_fpa_ext</samp>’。‘<samp class="samp">f0</samp>’ 固定为寄存器编号 16。
+</li><li>‘<samp class="samp">fps</samp>’，状态寄存器。它的大小为 32 位。
+</li></ul>
+
+</div>
+<div class="subsubsection-level-extent" id="M_002dprofile-Vector-Extension-_0028MVE_0029">
+<h4 class="subsubsection"><span>G.5.4.4 M 架构向量扩展（MVE）<a class="copiable-link" href="#M_002dprofile-Vector-Extension-_0028MVE_0029"> ¶</a></span></h4>
+
+<p>M 架构向量扩展也称为 Helium，它通过可选的 ‘<samp class="samp">org.gnu.gdb.arm.m-profile-mve</samp>’ 特性进行宣传。
+</p>
+<p>它必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">vpr</samp>’，向量预测状态和控制寄存器。它的大小为 32 位，具有自定义标志类型。标志类型的布局方式使得可以从位 0 到 15 访问 ‘<samp class="samp">P0</samp>’ 字段，从位 16 到 19 访问 ‘<samp class="samp">MASK01</samp>’ 字段，从位 20 到 23 访问 ‘<samp class="samp">MASK23</samp>’ 字段。
+
+<p>位 24 到 31 保留。
+</p></li></ul>
+
+<p>当此特性可用时， <small class="sc">GDB</small> 将从 ‘<samp class="samp">p0</samp>’ 伪寄存器合成 ‘<samp class="samp">vpr</samp>’ 的内容。
+</p>
+<p>只有当目标是 M 架构时才应宣传此特性。为非 M 架构的目标宣传此特性可能会导致 <small class="sc">GDB</small> 在目标不是 M 架构时假设它是 M 架构。
+</p>
+<p>如果 ‘<samp class="samp">org.gnu.gdb.arm.vfp</samp>’ 特性与 ‘<samp class="samp">org.gnu.gdb.arm.m-profile-mve</samp>’ 特性同时可用， <small class="sc">GDB</small> 将从 ‘<samp class="samp">q</samp>’ 伪寄存器合成 ‘<samp class="samp">d</samp>’ 寄存器的内容。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="XScale-iwMMXt-feature">
+<h4 class="subsubsection"><span>G.5.4.5 XScale iwMMXt 特性<a class="copiable-link" href="#XScale-iwMMXt-feature"> ¶</a></span></h4>
+
+<p>XScale 的 ‘<samp class="samp">org.gnu.gdb.xscale.iwmmxt</samp>’ 特性是可选的。如果存在，它必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">wR0</samp>’ 到 ‘<samp class="samp">wR15</samp>’，大小为 64 位的寄存器，自定义类型为 ‘<samp class="samp">iwmmxt_vec64i</samp>’。‘<samp class="samp">iwmmxt_vec64i</samp>’ 是其他四种类型的联合：‘<samp class="samp">uint64</samp>’，一个 2 元素的 ‘<samp class="samp">uint32</samp>’ 向量，一个 4 元素的 ‘<samp class="samp">uint16</samp>’ 向量和一个 8 元素的 ‘<samp class="samp">uint8</samp>’ 向量。
+</li><li>‘<samp class="samp">wCGR0</samp>’ 到 ‘<samp class="samp">wCGR3</samp>’，大小为 32 位的寄存器，类型为 ‘<samp class="samp">int</samp>’。
+</li></ul>
+
+<p>以下寄存器是可选的：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">wCID</samp>’，大小为 32 位的寄存器，类型为 ‘<samp class="samp">int</samp>’。
+</li><li>‘<samp class="samp">wCon</samp>’，大小为 32 位的寄存器，类型为 ‘<samp class="samp">int</samp>’。
+</li><li>‘<samp class="samp">wCSSF</samp>’，大小为 32 位的寄存器，类型为 ‘<samp class="samp">int</samp>’。
+</li><li>‘<samp class="samp">wCASF</samp>’，大小为 32 位的寄存器，类型为 ‘<samp class="samp">int</samp>’。
+</li></ul>
+
+<p>只有当目标是 XScale 时才应报告此特性。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="Vector-Floating_002dPoint-_0028VFP_0029-feature">
+<h4 class="subsubsection"><span>G.5.4.6 向量浮点（VFP）特性<a class="copiable-link" href="#Vector-Floating_002dPoint-_0028VFP_0029-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.vfp</samp>’ 特性是可选的。如果存在，根据使用的是 VFP 版本 2 还是 VFP 版本 3，它应包含两组可能的值之一。
+</p>
+<p>对于 VFP v2：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">d0</samp>’ 到 ‘<samp class="samp">d15</samp>’。双精度寄存器。它们的大小为 64 位，类型为 ‘<samp class="samp">ieee_double</samp>’。
+</li><li>‘<samp class="samp">fpscr</samp>’，浮点状态和控制寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">int</samp>’。
+</li></ul>
+
+<p>对于 VFP v3：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">d0</samp>’ 到 ‘<samp class="samp">d31</samp>’。双精度寄存器。它们的大小为 64 位，类型为 ‘<samp class="samp">ieee_double</samp>’。
+</li><li>‘<samp class="samp">fpscr</samp>’，浮点状态和控制寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">int</samp>’。
+</li></ul>
+
+<p>如果此特性可用， <small class="sc">GDB</small> 将从双精度寄存器的一半合成单精度浮点寄存器作为伪寄存器。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="NEON-architecture-feature">
+<h4 class="subsubsection"><span>G.5.4.7 NEON 架构特性<a class="copiable-link" href="#NEON-architecture-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.neon</samp>’ 特性是可选的。它不需要包含寄存器；它指示 <small class="sc">GDB</small> 将 VFP 双精度寄存器显示为向量，并从双精度寄存器对合成四精度寄存器。如果此特性存在，‘<samp class="samp">org.gnu.gdb.arm.vfp</samp>’ 也必须存在并包含 32 个双精度寄存器。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="M_002dprofile-Pointer-Authentication-and-Branch-Target-Identification-feature">
+<h4 class="subsubsection"><span>G.5.4.8 M 架构指针认证和分支目标识别特性<a class="copiable-link" href="#M_002dprofile-Pointer-Authentication-and-Branch-Target-Identification-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.m-profile-pacbti</samp>’ 特性是可选的，它表示支持 ARMv8.1-m PACBTI 扩展。
+</p>
+<p>此特性不包含任何必需的寄存器，它仅作为一个提示，告知 <small class="sc">GDB</small> 调试桩支持 ARMv8.1-m PACBTI 扩展。
+</p>
+<p>当 <small class="sc">GDB</small> 看到此特性时，它将跟踪返回地址签名状态，并使用 [PAC] 标记装饰回溯信息，类似于 AArch64 的 PAC 扩展。请参阅 <a class="xref" href="AArch64.html#AArch64-PAC">AArch64 PAC</a>.
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="M_002dprofile-system-registers-feature">
+<h4 class="subsubsection"><span>G.5.4.9 M 架构系统寄存器特性<a class="copiable-link" href="#M_002dprofile-system-registers-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.m-system</samp>’ 可选特性是为了向 <small class="sc">GDB</small> 告知额外的系统寄存器而引入的。
+</p>
+<p>目前，此特性必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">msp</samp>’，主栈指针寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">psp</samp>’，进程栈指针寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li></ul>
+
+<p>只有 M 架构目标才应宣传此特性。当 <small class="sc">GDB</small>
+看到此特性时，它将尝试跨帧跟踪 ‘<samp class="samp">msp</samp>’ 和 ‘<samp class="samp">psp</samp>’ 的值。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="M_002dprofile-Security-Extensions-feature">
+<h4 class="subsubsection"><span>G.5.4.10 M 架构安全扩展特性<a class="copiable-link" href="#M_002dprofile-Security-Extensions-feature"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">org.gnu.gdb.arm.secext</samp>’ 可选特性是为了让
+<small class="sc">GDB</small> 更好地支持安全扩展中栈指针和安全状态的切换而引入的。
+</p>
+<p>目前，此特性必须包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">msp_ns</samp>’，主栈指针寄存器（非安全状态）。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">psp_ns</samp>’，进程栈指针寄存器（非安全状态）。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">msp_s</samp>’，主栈指针寄存器（安全状态）。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li><li>‘<samp class="samp">psp_s</samp>’，进程栈指针寄存器（安全状态）。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li></ul>
+
+<p>当 <small class="sc">GDB</small> 看到此特性时，它将尝试跨安全状态转换跟踪所有 4 个栈指针的值，这可能会在应用程序在安全状态之间切换时改善回溯。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+<div class="subsubsection-level-extent" id="TLS-registers-feature">
+<h4 class="subsubsection"><span>G.5.4.11 TLS 寄存器特性<a class="copiable-link" href="#TLS-registers-feature"> ¶</a></span></h4>
+
+<p>可选的 ‘<samp class="samp">org.gnu.gdb.arm.tls</samp>’ 特性包含 TLS 寄存器。
+</p>
+<p>目前它包含以下内容：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">tpidruro</samp>’，用户只读线程 ID 寄存器。它的大小为 32 位，类型为 ‘<samp class="samp">data_ptr</samp>’。
+</li></ul>
+
+<p>目前 <small class="sc">GDB</small> 会查找此特性，但除了显示它之外不会做任何其他操作。
+</p>
+<p>此特性中允许有额外的寄存器，但它们不会影响
+<small class="sc">GDB</small>.
+</p>
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="i386-Features.html">i386 特性</a>, 上一项： <a href="ARC-Features.html">ARC 特性</a>, 上级： <a href="Standard-Target-Features.html">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

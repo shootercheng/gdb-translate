@@ -1,0 +1,162 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>TUI 概述（使用 GDB 调试）</title>
+
+<meta name="description" content="TUI Overview (Debugging with GDB)"/>
+<meta name="keywords" content="TUI Overview (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="TUI.html" rel="up" title="TUI"/>
+<link href="TUI-Keys.html" rel="next" title="TUI Keys"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="TUI-Overview">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="TUI-Keys.html" rel="next">TUI 键绑定</a>，上一项： <a accesskey="u" href="TUI.html" rel="up"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="TUI-Overview-1"><span>25.1 TUI 概述<a class="copiable-link" href="#TUI-Overview-1"> ¶</a></span></h3>
+
+<p>在 TUI 模式下， <small class="sc">GDB</small> 可以显示多个文本窗口：
+</p>
+<dl class="table">
+<dt><em class="emph">命令</em></dt>
+<dd><p>此窗口是 <small class="sc">GDB</small> 带有 <small class="sc">GDB</small>
+提示符和 <small class="sc">GDB</small> 输出的命令窗口。 <small class="sc">GDB</small> 输入仍使用 readline 进行管理。
+</p>
+</dd>
+<dt><em class="emph">源代码</em></dt>
+<dd><p>源代码窗口显示程序的源文件。当前行和活动断点会在该窗口中显示。
+</p>
+</dd>
+<dt><em class="emph">汇编代码</em></dt>
+<dd><p>汇编代码窗口显示程序的反汇编输出。
+</p>
+</dd>
+<dt><em class="emph">寄存器</em></dt>
+<dd><p>此窗口显示处理器寄存器。当寄存器的值发生变化时，它们会被高亮显示。
+</p></dd>
+</dl>
+
+<p>源代码和汇编代码窗口通过高亮显示当前行并用一个 ‘<samp class="samp">&gt;</samp>’ 标记来显示当前程序位置。默认情况下，高亮显示的文本禁用了源代码和汇编代码样式，但您可以使用 <code class="code">set style
+tui-current-position on</code> 命令启用它。请参阅 <a class="xref" href="Output-Styling.html">输出样式设置</a>.
+</p>
+<p>断点用两个标记表示。第一个标记表示断点类型：
+</p>
+<dl class="table">
+<dt><code class="code">B</code></dt>
+<dd><p>至少命中过一次的断点。
+</p>
+</dd>
+<dt><code class="code">b</code></dt>
+<dd><p>从未命中过的断点。
+</p>
+</dd>
+<dt><code class="code">H</code></dt>
+<dd><p>至少命中过一次的硬件断点。
+</p>
+</dd>
+<dt><code class="code">h</code></dt>
+<dd><p>从未命中过的硬件断点。
+</p></dd>
+</dl>
+
+<p>第二个标记表示断点是否启用：
+</p>
+<dl class="table">
+<dt><code class="code">+</code></dt>
+<dd><p>断点已启用。
+</p>
+</dd>
+<dt><code class="code">-</code></dt>
+<dd><p>断点已禁用。
+</p></dd>
+</dl>
+
+<p>当当前线程改变、帧改变或程序计数器改变时，源代码、汇编代码和寄存器窗口会更新。
+</p>
+<p>这些窗口并非同时可见。命令窗口始终可见。其他窗口可以排列成几种布局：
+</p>
+<ul class="itemize mark-bullet">
+<li>仅显示源代码
+
+</li><li>仅显示汇编代码
+
+</li><li>显示源代码和汇编代码
+
+</li><li>显示源代码和寄存器
+
+</li><li>显示汇编代码和寄存器
+</li></ul>
+
+<p>这些是标准布局，但也可以定义其他布局。
+</p>
+<p>命令窗口上方的状态行显示以下信息：
+</p>
+<dl class="table">
+<dt><em class="emph">目标</em></dt>
+<dd><p>指示当前的 <small class="sc">GDB</small> 目标。（请参阅 <a class="pxref" href="Targets.html">指定调试目标</a>)
+</p>
+</dd>
+<dt><em class="emph">进程</em></dt>
+<dd><p>给出当前进程或线程编号。当没有进程正在调试时，此字段设置为 <code class="code">No process</code>.
+</p>
+</dd>
+<dt><em class="emph">焦点</em></dt>
+<dd><p>显示具有焦点的 TUI 窗口的名称。
+</p>
+</dd>
+<dt><em class="emph">函数</em></dt>
+<dd><p>给出所选帧的当前函数名称。如果开启了名称修饰还原（请参阅 <a class="pxref" href="Print-Settings.html">打印设置</a>)，则名称会被还原。当没有与当前程序计数器对应的符号时，会显示字符串 <code class="code">??</code> 。
+</p>
+</dd>
+<dt><em class="emph">行号</em></dt>
+<dd><p>指示所选帧的当前行号。当不知道当前行号时，会显示字符串 <code class="code">??</code> 。
+</p>
+</dd>
+<dt><em class="emph">程序计数器</em></dt>
+<dd><p>指示当前程序计数器地址。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="TUI-Keys.html">TUI 键绑定</a>, 上一项： <a href="TUI.html"><small class="sc">GDB</small> 文本用户界面</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

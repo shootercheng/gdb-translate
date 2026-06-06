@@ -1,0 +1,190 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>基本Guile（使用GDB进行调试）</title>
+
+<meta name="description" content="Basic Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Basic Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Guile-Configuration.html" rel="next" title="Guile Configuration"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Basic-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Guile-Configuration.html" rel="next">Guile配置</a> <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Basic-Guile-1"><span>23.4.3.1 基本Guile<a class="copiable-link" href="#Basic-Guile-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-guile-stdout"></a>
+<a class="index-entry-id" id="index-guile-pagination"></a>
+<p> <small class="sc">GDB</small> 覆盖Guile的 <code class="code">current-output-port</code> 和
+<code class="code">current-error-port</code> 以使用……进行打印。
+它还提供了一种将
+命令的参数作为表达式进行解析的方法。
+在计算数值时也很有用。
+例如，这是获取一个
+便利变量的值（见 <small class="sc">GDB</small>的输出分页流。
+一个向这些流之一输出的Guile程序可能会被用户中断其输出（见 <a class="pxref" href="Screen-Size.html">屏幕尺寸</a>）。在这种
+情况下，一个Guile <code class="code">signal</code> 异常会被抛出，值为 <code class="code">SIGINT</code>。
+</p>
+<p>Guile的历史机制使用与……相同的命名方式，
+即使用美元变量（例如，$1、$2等）。
+Guile和GDB中的评估结果是分别计数的， <small class="sc">GDB</small>
+<code class="code">$1</code> 在Guile中与 <code class="code">$1</code> 在……中不是同一个值。 <small class="sc">GDB</small>。
+</p>
+<p><small class="sc">GDB</small> 不是线程安全的。如果你的Guile程序使用多个
+线程，你必须小心只在 <small class="sc">GDB</small>特定的
+线程中调用……函数。 <small class="sc">GDB</small> 线程。
+</p>
+<p>在编写要在……中运行的Guile代码时，必须要小心。
+<small class="sc">GDB</small>。有两件事特别值得注意：
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small> 安装了……的处理程序 <code class="code">SIGCHLD</code> 和 <code class="code">SIGINT</code>。
+Guile代码不能覆盖这些处理程序，甚至不能使用……改变选项。
+如果你的程序改变了这些信号的处理方式，
+<code class="code">sigaction</code> <small class="sc">GDB</small> 很可能会停止正常工作。注意
+不幸的是，GUI工具包通常会安装一个
+<code class="code">SIGCHLD</code> 处理程序。
+
+</li><li><small class="sc">GDB</small> 会小心地将其内部文件描述符标记为在执行时关闭。然而，在所有平台上，这不能以线程安全的方式完成。你的Guile程序应该意识到这一点，并且
+应该在启动子进程之前，既创建带有执行时关闭标志的新文件描述符，又安排关闭不需要的文件描述符。
+</li></ul>
+
+<a class="index-entry-id" id="index-guile-gdb-module"></a>
+<p><small class="sc">GDB</small> 引入了一个新的Guile模块，名为 <code class="code">gdb</code>。所有
+由……添加的方法和类都放在这个模块中。 <small class="sc">GDB</small> 。
+<small class="sc">GDB</small> 不会自动 <code class="code">import</code> 该 <code class="code">gdb</code> 模块，
+脚本必须自己完成。对于如何导入模块有各种选项，所以 <small class="sc">GDB</small> 将如何导入 <code class="code">gdb</code>
+模块的选择留给用户。
+为了简化交互式使用，建议在你的~/.gdbinit中添加以下内容之一。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">guile (use-modules (gdb))
+</pre></div>
+
+<div class="example smallexample">
+<pre class="example-preformatted">guile (use-modules ((gdb) #:renamer (symbol-prefix-proc &#39;gdb:)))
+</pre></div>
+
+<p>选择哪一个取决于你的偏好。
+第二个选项会为所有模块函数
+和变量添加 <code class="code">gdb:</code> 作为前缀。
+</p>
+<p>本手册的其余部分假设 <code class="code">gdb</code> 模块已被导入
+且没有任何前缀。有关更多信息，请参阅Guile文档中的 <code class="code">use-modules</code>
+（见 <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Modules.html#Using-Guile-Modules">使用Guile模块</a> 在 <cite class="cite">GNU Guile参考手册</cite>）。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (value-type (make-value 1))
+ERROR: Unbound variable: value-type
+Error while executing Scheme code.
+(gdb) guile (use-modules (gdb))
+(gdb) guile (value-type (make-value 1))
+int
+(gdb)
+</pre></div>
+
+<p>该 <code class="code">(gdb)</code> 模块提供了这些基本的Guile函数。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-execute"><span class="category-def">Scheme过程： </span><span><strong class="def-name">执行</strong> <var class="def-var-arguments">命令 <span class="r">[</span>#:from-tty 布尔值<span class="r">]</span><!-- /@w -->     <span class="r">[</span>#:to-string 布尔值<span class="r">]</span><!-- /@w --></var><a class="copiable-link" href="#index-execute"> ¶</a></span></dt>
+<dd><p>评估 <var class="var">命令</var>, 一个字符串，作为一个 <small class="sc">GDB</small> CLI命令。
+如果在 <small class="sc">GDB</small> 命令 <var class="var">运行时发生一个</var> 异常，它将按照
+<a class="ref" href="Guile-Exception-Handling.html">Guile异常处理</a>中所述进行转换。
+</p>
+<p><var class="var">from-tty</var> 指定是否 <small class="sc">GDB</small> 应该将此命令视为用户交互式调用的。
+它必须是一个布尔值。如果省略，它默认为 <code class="code">#f</code>。
+</p>
+<p>默认情况下，由 <var class="var">命令</var> 产生的任何输出都会发送到
+<small class="sc">GDB</small>的标准输出（如果开启了日志记录，也会发送到日志输出）。如果 <var class="var">to-string</var> 参数为
+<code class="code">#t</code>, 那么输出将由 <code class="code">execute</code> 收集并作为字符串返回。默认值为 <code class="code">#f</code>, 在这种情况下，返回值未指定。如果 <var class="var">to-string</var> 为 <code class="code">#t</code>, 虚拟终端将临时设置为无限宽度
+和高度，并且其分页将被禁用；见
+<small class="sc">GDB</small>  <a class="pxref" href="Screen-Size.html">屏幕尺寸</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-history_002dref"><span class="category-def">Scheme过程： </span><span><strong class="def-name">历史引用</strong> <var class="def-var-arguments">编号</var><a class="copiable-link" href="#index-history_002dref"> ¶</a></span></dt>
+<dd><p>从……返回一个值 <small class="sc">GDB</small>的价值历史记录（见 <a class="pxref" href="Value-History.html">价值历史记录</a>）。 <var class="var">编号</var> 参数表示要返回哪个历史元素。
+如果 <var class="var">编号</var> 为负数，那么 <small class="sc">GDB</small> 将取其绝对值
+并从最后一个元素（即最近的元素）开始反向计数，以
+找到要返回的值。如果 <var class="var">编号</var> 为零，那么 <small class="sc">GDB</small> 将
+返回最近的元素。如果 <var class="var">编号</var>
+指定的元素在价值历史记录中不存在，将抛出一个 <code class="code">gdb:error</code> 异常。
+</p>
+<p>如果没有抛出异常，返回值总是一个……的实例
+<code class="code">&lt;gdb:value&gt;</code> （见 <a class="pxref" href="Values-From-Inferior-In-Guile.html">Guile中来自下级的数值</a>）。
+</p>
+<p><em class="emph">注意：</em> <small class="sc">GDB</small>的价值历史记录与Guile的是独立的。
+<code class="code">$1</code> 在 <small class="sc">GDB</small>的价值历史记录中包含从 <small class="sc">GDB</small>的命令行评估表达式的结果，而 <code class="code">$1</code> 从Guile的
+历史记录中包含从Guile的命令行评估表达式的结果。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-history_002dappend_0021"><span class="category-def">Scheme过程： </span><span><strong class="def-name">历史追加！</strong> <var class="def-var-arguments">值</var><a class="copiable-link" href="#index-history_002dappend_0021"> ¶</a></span></dt>
+<dd><p>追加 <var class="var">值</var>，一个……的实例，到 <code class="code">&lt;gdb:value&gt;</code>的
+价值历史记录。返回其在历史记录中的索引。 <small class="sc">GDB</small>
+</p>
+<p>将Guile扩展返回的值放入历史记录中，将允许
+用户通过CLI历史记录
+工具方便地访问这些值。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-parse_002dand_002deval"><span class="category-def">Scheme过程： </span><span><strong class="def-name">解析并评估</strong> <var class="def-var-arguments">表达式</var><a class="copiable-link" href="#index-parse_002dand_002deval"> ¶</a></span></dt>
+<dd><p>将 <var class="var">表达式</var> 作为当前语言中的表达式进行解析，
+对其进行评估，并将结果作为一个……返回。
+ <code class="code">&lt;gdb:value&gt;</code>该 <var class="var">表达式</var> 必须是一个字符串。
+</p>
+<p>在实现新命令时，这个函数可能会很有用
+（见 <a class="pxref" href="Commands-In-Guile.html">Guile中的命令</a> <a class="pxref" href="Convenience-Vars.html">便利变量</a>）作为一个……的唯一方法。 <code class="code">&lt;gdb:value&gt;</code>
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Guile-Configuration.html">Guile配置</a>, 上一项： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

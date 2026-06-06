@@ -1,0 +1,90 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>枚举目标类型（使用GDB进行调试）</title>
+
+<meta name="description" content="Enum Target Types (Debugging with GDB)"/>
+<meta name="keywords" content="Enum Target Types (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Target-Descriptions.html" rel="up" title="Target Descriptions"/>
+<link href="Standard-Target-Features.html" rel="next" title="Standard Target Features"/>
+<link href="Predefined-Target-Types.html" rel="prev" title="Predefined Target Types"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Enum-Target-Types">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Standard-Target-Features.html" rel="next">标准目标特性</a>, 上一步： <a accesskey="p" href="Predefined-Target-Types.html" rel="prev">预定义目标类型</a>, 向上： <a accesskey="u" href="Target-Descriptions.html" rel="up">目标描述</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Enum-Target-Types-1"><span>G.4枚举目标类型<a class="copiable-link" href="#Enum-Target-Types-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-target-descriptions_002c-enum-types"></a>
+
+<p>枚举目标类型在‘<samp class="samp">结构体</samp>’和‘<samp class="samp">标志</samp>’
+寄存器描述中很有用。另请参阅 <a class="xref" href="Target-Description-Format.html">目标描述格式</a>.
+</p>
+<p>枚举类型有一个名称、大小以及一组名称/值对。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;枚举 id=&#34;<var class="var">id</var>&#34; 大小=&#34;<var class="var">大小</var>&#34;&gt;
+  &lt;值 name=&#34;<var class="var">名称</var>&#34; 值=&#34;<var class="var">值</var>&#34;/&gt;
+  ...
+&lt;/枚举&gt;
+</pre></div>
+
+<p>枚举必须在使用前定义。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;枚举 id=&#34;levels_type&#34; 大小=&#34;4&#34;&gt;
+  &lt;值 name=&#34;low&#34; 值=&#34;0&#34;/&gt;
+  &lt;值 name=&#34;high&#34; 值=&#34;1&#34;/&gt;
+&lt;/枚举&gt;
+&lt;标志 id=&#34;flags_type&#34; 大小=&#34;4&#34;&gt;
+  &lt;字段 name=&#34;X&#34; 起始=&#34;0&#34;/&gt;
+  &lt;字段 name=&#34;LEVEL&#34; 起始=&#34;1&#34; 结束=&#34;1&#34; 类型=&#34;levels_type&#34;/&gt;
+&lt;/标志&gt;
+&lt;寄存器 name=&#34;flags&#34; 位大小=&#34;32&#34; 类型=&#34;flags_type&#34;/&gt;
+</pre></div>
+
+<p>根据该描述，‘<samp class="samp">标志</samp>’寄存器的值3将被打印为：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info register flags
+flags 0x3 [ X LEVEL=high ]
+</pre></div>
+
+</div>
+
+
+
+
+
+</body></html>

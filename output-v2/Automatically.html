@@ -1,0 +1,72 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自动（使用 GDB 调试）</title>
+
+<meta name="description" content="Automatically (Debugging with GDB)"/>
+<meta name="keywords" content="Automatically (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Setting.html" rel="up" title="Setting"/>
+<link href="Manually.html" rel="prev" title="Manually"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Automatically">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Manually.html" rel="prev">设置工作语言</a>, 上一级： <a accesskey="u" href="Setting.html" rel="up">在源语言之间切换</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Having-gdb-Infer-the-Source-Language"><span>15.1.3 具有 <small class="sc">GDB</small> 推断源语言<a class="copiable-link" href="#Having-gdb-Infer-the-Source-Language"> ¶</a></span></h4>
+
+<p>要 <small class="sc">GDB</small> 自动设置工作语言，请使用
+‘<samp class="samp">set language local</samp>’ 或 ‘<samp class="samp">set language auto</samp>’。  <small class="sc">GDB</small>
+然后推断工作语言。也就是说，当你的程序在一个帧中停止时（通常是遇到断点）， <small class="sc">GDB</small> 将工作语言设置为该帧中函数所记录的语言。如果某个帧的语言未知（即，如果与该帧对应的函数或代码块是在一个没有可识别扩展名的源文件中定义的），则当前工作语言不会改变，并且 <small class="sc">GDB</small> 会发出警告。
+</p>
+<p>对于大多数完全用一种源语言编写的程序来说，这似乎没有必要。然而，用一种源语言编写的程序模块和库可以被用不同源语言编写的主程序使用。在这种情况下，使用 ‘<samp class="samp">set language auto</samp>’ 可以让你不必手动设置工作语言。
+</p>
+<p>默认情况下会启用该警告，但可以通过设置来控制：
+</p>
+<dl class="table">
+<dt><a id="index-warn_002dlanguage_002dframe_002dmismatch"></a><span><code class="code">set warn-language-frame-mismatch [on|off]</code><a class="copiable-link" href="#index-warn_002dlanguage_002dframe_002dmismatch"> ¶</a></span></dt>
+<dd><p>启用或禁用当当前语言设置为与当前帧不匹配的值时发出的警告。
+</p>
+</dd>
+<dt><code class="code">show warn-language-frame-mismatch</code></dt>
+<dd><p>显示是否会发出帧不匹配警告。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

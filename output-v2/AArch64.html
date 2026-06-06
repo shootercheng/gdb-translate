@@ -1,0 +1,339 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>AArch64（使用GDB进行调试）</title>
+
+<meta name="description" content="AArch64 (Debugging with GDB)"/>
+<meta name="keywords" content="AArch64 (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Architectures.html" rel="up" title="Architectures"/>
+<link href="x86.html" rel="next" title="x86"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="AArch64">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="x86.html" rel="next">x86</a> <a accesskey="u" href="Architectures.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index"></a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="AArch64-1"><span>21.4.1 AArch64<a class="copiable-link" href="#AArch64-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-AArch64-support"></a>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构时，它提供以下特殊命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-debug-aarch64"></a><span><code class="code">set debug aarch64</code><a class="copiable-link" href="#index-set-debug-aarch64"> ¶</a></span></dt>
+<dd><p>此命令确定是否显示特定于AArch64架构的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug aarch64</code></dt>
+<dd><p>显示是否显示AArch64调试消息。
+</p>
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#AArch64-Scalable-Vector-Extension">AArch64可扩展向量扩展</a></li>
+<li><a accesskey="2" href="#AArch64-Scalable-Matrix-Extension">AArch64可扩展矩阵扩展</a></li>
+<li><a accesskey="3" href="#AArch64-Scalable-Matrix-Extension-2">AArch64可扩展矩阵扩展2</a></li>
+<li><a accesskey="4" href="#AArch64-Pointer-Authentication">AArch64指针认证</a></li>
+<li><a accesskey="5" href="#AArch64-Memory-Tagging-Extension">AArch64内存标记扩展</a></li>
+<li><a accesskey="6" href="#AArch64-Guarded-Control-Stack">AArch64受保护控制栈</a></li>
+</ul>
+<div class="subsubsection-level-extent" id="AArch64-Scalable-Vector-Extension">
+<h4 class="subsubsection"><span>21.4.1.1 AArch64可扩展向量扩展<a class="copiable-link" href="#AArch64-Scalable-Vector-Extension"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Scalable-Vector-Extension_002c-AArch64"></a>
+<a class="index-entry-id" id="index-SVE_002c-AArch64"></a>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构时，如果存在可扩展向量扩展（SVE），那么 <small class="sc">GDB</small> 将提供向量寄存器
+<code class="code">$z0</code> 到 <code class="code">$z31</code>, 向量谓词寄存器 <code class="code">$p0</code> 
+<code class="code">$p15</code>和 <code class="code">$ffr</code> 寄存器。此外，还将提供伪寄存器
+<code class="code">$vg</code> 这是当前线程的向量粒度，表示SVE中64位块的数量 <code class="code">z</code> 寄存器。
+</p>
+<p>如果向量长度发生变化，那么 <code class="code">$vg</code> 寄存器将被更新，但 <code class="code">z</code> 和 <code class="code">p</code>  <small class="sc">GDB</small> 并且不会影响目标进程的执行。
+</p>
+<p> <small class="sc">GDB</small>
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">vl</var>：向量长度，以字节为单位。它定义了每个 <code class="code">Z</code>
+寄存器的大小。
+<a class="anchor" id="vl"></a><a class="index-entry-id" id="index-vl"></a>
+
+</li><li><var class="var">vq</var>：vl中128位单元的数量。这主要由 <var class="var">vl</var>和Linux内核在内部使用。 <small class="sc">GDB</small> 和Linux内核。
+<a class="anchor" id="vq"></a><a class="index-entry-id" id="index-vq"></a>
+
+</li><li><var class="var">vg</var>：vl中64位单元的数量。这主要由 <var class="var">vl</var>和Linux内核在内部使用。 <small class="sc">GDB</small> 和Linux内核。
+<a class="anchor" id="vg"></a><a class="index-entry-id" id="index-vg"></a>
+
+</li></ul>
+
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Scalable-Matrix-Extension">
+<h4 class="subsubsection"><span>21.4.1.2 AArch64可扩展矩阵扩展<a class="copiable-link" href="#AArch64-Scalable-Matrix-Extension"> ¶</a></span></h4>
+<a class="anchor" id="AArch64-SME"></a><a class="index-entry-id" id="index-Scalable-Matrix-Extension_002c-AArch64"></a>
+<a class="index-entry-id" id="index-SME_002c-AArch64"></a>
+
+<p>可扩展矩阵扩展（<a class="url" href="https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/scalable-matrix-extension-armv9-a-architecture"><abbr class="acronym">SME</abbr></a>）是AArch64架构的一个扩展，它通过提供一个二维寄存器来扩展可扩展向量扩展（<a class="url" href="https://developer.arm.com/documentation/101726/4-0/Learn-about-the-Scalable-Vector-Extension--SVE-/What-is-the-Scalable-Vector-Extension-"><abbr class="acronym">SVE</abbr></a>）的概念，该寄存器是一个可变大小的方形矩阵，就像SVE提供一组可变大小的向量寄存器一样。 <code class="code">ZA</code>。
+</p>
+<p>与SVE类似，其中每个 <code class="code">Z</code> 寄存器的大小直接与向量长度（<var class="var">vl</var> 简称）相关， <abbr class="acronym">SME</abbr> <code class="code">ZA</code> 矩阵寄存器的大小直接与流向量长度（<var class="var">svl</var> 简称）相关。请参阅 <a class="xref" href="#vl">vl</a>。请参阅 <a class="xref" href="#svl">svl</a>。
+</p>
+<p>该 <code class="code">ZA</code> 寄存器状态可以是激活或未激活，如果它未被使用。
+</p>
+<p><abbr class="acronym">SME</abbr> 还引入了一种新的执行模式，称为流
+<abbr class="acronym">SVE</abbr> 模式（简称流模式）。当流模式启用时，程序支持执行 <abbr class="acronym">SVE2</abbr> 指令，并且
+<abbr class="acronym">SVE</abbr> 寄存器将具有向量长度 <var class="var">svl</var>。当流模式禁用时，SVE寄存器具有向量长度 <var class="var">vl</var>。
+</p>
+<p>有关 <abbr class="acronym">SME</abbr> 和 <abbr class="acronym">SVE</abbr>的更多信息，请参阅官方 <a class="url" href="https://developer.arm.com/documentation/ddi0487/latest">架构文档</a>。
+</p>
+<p>以下定义在 <small class="sc">GDB</small>的源代码和本文档中普遍使用：
+</p>
+<ul class="itemize mark-bullet">
+<li><var class="var">svl</var>：流向量长度，以字节为单位。它定义了二维方形每个维度的大小 <code class="code">ZA</code> 矩阵。因此，其总大小为
+<code class="code">ZA</code> 是 <var class="var">svl</var> 乘以 <var class="var">svl</var>。
+
+<p>当启用流模式时，它也定义了 <abbr class="acronym">SVE</abbr>
+寄存器的大小。
+<a class="anchor" id="svl"></a><a class="index-entry-id" id="index-svl"></a>
+</p>
+</li><li><var class="var">svq</var>：svl中128位单元的数量，也称为流向量粒度。这主要由 <var class="var">svl</var>和Linux内核在内部使用。 <small class="sc">GDB</small> 和Linux内核。
+<a class="anchor" id="svq"></a><a class="index-entry-id" id="index-svq"></a>
+
+</li><li><var class="var">svg</var>：svl中64位单元的数量。这主要由 <var class="var">svl</var>和Linux内核在内部使用。 <small class="sc">GDB</small> 和Linux内核。
+<a class="anchor" id="svg"></a><a class="index-entry-id" id="index-svg"></a>
+
+</li></ul>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构时，如果存在可扩展矩阵扩展（<abbr class="acronym">SME</abbr>），那么 <small class="sc">GDB</small> 将使 <code class="code">ZA</code>
+寄存器可用。  <small class="sc">GDB</small> 还将使 <code class="code">SVG</code> 寄存器和
+<code class="code">SVCR</code> 伪寄存器可用。
+</p>
+<p>该 <code class="code">ZA</code> 寄存器是一个二维的方形 <var class="var">svl</var> 乘以 <var class="var">svl</var>
+字节矩阵。为了简化在 <code class="code">ZA</code>
+中对该寄存器的表示和访问，它被定义为一个 <small class="sc">GDB</small>svl
+<var class="var">x</var>svl<var class="var">字节的向量。</var> 。
+</p>
+<p>如果用户想将 <code class="code">ZA</code> 寄存器作为矩阵进行索引，可以引用 <code class="code">ZA</code> 为 <code class="code">ZA[<var class="var">i</var>][<var class="var">j</var>]</code>，其中 <var class="var">i</var> 是行号， <var class="var">j</var> 是列号。
+</p>
+<p>该 <code class="code">SVG</code> 寄存器始终包含当前线程的流向量粒度（<var class="var">svg</var>）。从寄存器的值 <code class="code">SVG</code> 我们可以轻松推导出 <var class="var">svl</var> 的值。
+</p>
+<a class="anchor" id="aarch64-sme-svcr"></a><p>该 <code class="code">SVCR</code> 伪寄存器（流向量控制寄存器）是一个状态寄存器，包含两个状态位： <small class="sc">SM</small> 在第0位， <small class="sc">ZA</small> 在第1位。
+</p>
+<p>如果 <small class="sc">SM</small> 位为1，表示当前线程处于流模式，并且 <abbr class="acronym">SVE</abbr> 寄存器将使用 <var class="var">svl</var> 作为其大小。如果 <small class="sc">SM</small> 位为0，当前线程不处于流模式，并且
+<abbr class="acronym">SVE</abbr> 寄存器将使用 <var class="var">vl</var> 作为其大小。请参阅 <a class="xref" href="#vl">vl</a>。
+</p>
+<p>如果 <small class="sc">ZA</small> 位为1，表示 <code class="code">ZA</code> 寄存器正在使用且内容有意义。如果 <small class="sc">ZA</small> 位为0， <code class="code">ZA</code> 寄存器不可用且其内容未定义。
+</p>
+<p>为了方便和简单，如果 <small class="sc">ZA</small> 位为0， <code class="code">ZA</code>
+寄存器及其所有伪寄存器将读取为零。
+</p>
+<p>如果 <var class="var">svl</var> 在程序执行期间发生变化，那么 <code class="code">ZA</code>
+寄存器大小和 <code class="code">SVCR</code> 伪寄存器中的位将被更新以反映这一点。
+</p>
+<p>用户可以在程序执行期间通过修改 <var class="var">svl</var> 寄存器的值来更改 <code class="code">SVG</code> 。
+</p>
+<p>每当 <code class="code">SVG</code> 寄存器被修改为新值时，将观察到以下情况：
+</p>
+<ul class="itemize mark-bullet">
+<li>该 <small class="sc">ZA</small> 和 <small class="sc">SM</small> 位将在 <code class="code">SVCR</code>
+伪寄存器中被清除。
+
+</li><li>该 <code class="code">ZA</code> 寄存器将有一个新的大小，并且其状态将被清除，强制其内容和所有伪寄存器的内容归零。
+
+</li><li>如果 <small class="sc">SM</small> 位为1， <abbr class="acronym">SVE</abbr> 寄存器将被重置为基于 <var class="var">vl</var> 而不是 <var class="var">svl</var>的大小。如果
+<small class="sc">SM</small> 位在修改 <code class="code">SVG</code> 寄存器之前为0，对 <abbr class="acronym">SVE</abbr> 寄存器将没有可观察到的影响。
+
+</li></ul>
+
+<p>该 <code class="code">SVG</code> 寄存器的可能值为2、4、8、16、32。这些数字分别对应于流向量长度（<var class="var">svl</var>）值为16字节、32字节、64字节、128字节和256字节。
+</p>
+<p>该 <code class="code">ZA</code> 寄存器的最小大小为16 x 16（256）字节，最大大小为256 x 256（65536）字节。在流模式下，当位 <small class="sc">SM</small>
+置位时， <code class="code">ZA</code> 寄存器的大小是所有SVE <code class="code">Z</code>
+寄存器的组合大小。
+</p>
+<p>该 <code class="code">ZA</code> 寄存器也可以使用图块和图块切片进行访问。
+</p>
+<p>图块伪寄存器是 <code class="code">ZA</code> 寄存器内元素的方形二维子数组。
+</p>
+<p>图块伪寄存器具有以下命名模式：
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">qualifier</var>&gt;</code>。
+</p>
+<p>总共有31个 <code class="code">ZA</code> 图块伪寄存器。它们是
+<code class="code">ZA0B</code>, <code class="code">ZA0H</code> 到 <code class="code">ZA1H</code>, <code class="code">ZA0S</code> 到 <code class="code">ZA3S</code>,
+<code class="code">ZA0D</code> 到 <code class="code">ZA7D</code> 和 <code class="code">ZA0Q</code> 到 <code class="code">ZA15Q</code>。
+</p>
+<p>图块切片伪寄存器是 <code class="code">ZA</code> 寄存器内水平或垂直连续元素的向量。
+</p>
+<p>图块切片伪寄存器具有以下命名模式：
+<code class="code">ZA&lt;<var class="var">tile number</var>&gt;&lt;<var class="var">direction</var>&gt;&lt;<var class="var">qualifier</var>&gt;
+&lt;<var class="var">slice number</var>&gt;</code>。
+</p>
+<p>最多有16个图块（0 ~ 15），方向可以是 <code class="code">v</code>
+（垂直）或 <code class="code">h</code> （水平），限定符可以是 <code class="code">b</code> （字节）、
+<code class="code">h</code> （半字）、 <code class="code">s</code> （字）、 <code class="code">d</code> （双字）和 <code class="code">q</code>
+（四字），并且根据 <var class="var">svl</var>的值最多有256个切片（0 ~ 255）。切片的数量与 <var class="var">svl</var>的值相同。
+</p>
+<p>可用的图块切片伪寄存器数量可能很大。对于最小的 <var class="var">svl</var> 为16字节，有5（限定符数量）x 2（方向数量）x 16（<var class="var">svl</var>）个伪寄存器。对于最大的 <var class="var">svl</var> 为256字节，有5 x 2 x 256个伪寄存器。
+</p>
+<p>当列出所有可用寄存器时，用户将看到当前可用的 <code class="code">ZA</code> 伪寄存器。对于给定的 <var class="var">svl</var> 值不存在的伪寄存器将不会显示。
+</p>
+<p>有关 <abbr class="acronym">SME</abbr> 及其术语的更多信息，请参阅
+<a class="url" href="https://developer.arm.com/documentation/ddi0616/aa/">《Arm架构参考手册补充》</a>, 《可扩展矩阵扩展（<abbr class="acronym">SME</abbr>），适用于Armv9 - A》。
+</p>
+<p>一些功能仍在开发中，依赖于
+<a class="url" href="https://github.com/ARM-software/acle/releases/latest">ACLE</a> 和
+<a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst">ABI</a>
+定义，因此当前 <abbr class="acronym">SME</abbr>
+在 <small class="sc">GDB</small>中的支持存在已知限制。
+</p>
+<p>一个这样的例子是在
+<small class="sc">GDB</small>中调用正在调试的程序中的函数。这样的调用不是 <abbr class="acronym">SME</abbr>感知的，因此不考虑 <code class="code">SVCR</code> 伪寄存器位或 <code class="code">ZA</code> 寄存器内容。请参阅 <a class="xref" href="Calling.html">《调用程序函数》</a>。
+</p>
+<p>该 <a class="url" href="https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst#the-za-lazy-saving-scheme">延迟保存方案</a> 涉及 <code class="code">TPIDR2</code> 寄存器，目前 <small class="sc">GDB</small>尚不支持，尽管 <code class="code">TPIDR2</code> 寄存器是已知的并且 <small class="sc">GDB</small>支持。
+</p>
+<p>最后， <code class="command">gdbserver</code> 的一个重要限制是它无法将 <var class="var">svl</var> 的变化传达给 <small class="sc">GDB</small>。这意味着 <code class="command">gdbserver</code>, 即使它能够调整其内部缓存以反映 <var class="var">svl</var> 值在执行过程中的变化，它可能会使用与 <var class="var">svl</var> 值不同的值进行操作。这可能导致 <small class="sc">GDB</small>。这可能导致
+<small class="sc">GDB</small> 显示 <code class="code">ZA</code> 寄存器的错误值以及SVE寄存器（在流模式下）的错误值。
+</p>
+<p>这与我们对 <abbr class="acronym">SVE</abbr> 寄存器的限制相同，并且有计划在未来解决这个限制。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Scalable-Matrix-Extension-2">
+<h4 class="subsubsection"><span>21.4.1.3 AArch64可扩展矩阵扩展2<a class="copiable-link" href="#AArch64-Scalable-Matrix-Extension-2"> ¶</a></span></h4>
+<a class="anchor" id="AArch64-SME2"></a><a class="index-entry-id" id="index-Scalable-Matrix-Extension-2_002c-AArch64"></a>
+<a class="index-entry-id" id="index-SME2_002c-AArch64"></a>
+
+<p>可扩展矩阵扩展2是AArch64架构的一个扩展，它通过以下方式进一步扩展了 <abbr class="acronym">SME</abbr> 扩展：
+</p>
+<ul class="itemize mark-bullet">
+<li>能够通过一维 <code class="code">ZA</code> 数组向量组来访问 <code class="code">ZA</code> 数组，而不是二维 <code class="code">ZA</code> 图块。
+
+</li><li>对 <abbr class="acronym">SVE</abbr> <code class="code">Z</code> 寄存器组和
+<code class="code">ZA</code> 数组向量进行操作的指令。
+
+</li><li>一个新的512位 <code class="code">ZT0</code> 查找表寄存器，用于数据解压缩。
+
+</li></ul>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构时，如果存在可扩展矩阵扩展2（<abbr class="acronym">SME2</abbr>），那么 <small class="sc">GDB</small> 将使
+<code class="code">ZT0</code> 寄存器可用。
+</p>
+<p>该 <code class="code">ZT0</code> 寄存器仅在 <code class="code">ZA</code> 寄存器状态激活时才被视为激活，因此当 <small class="sc">ZA</small> 的 <code class="code">SVCR</code> 位为1时。
+</p>
+<p>当 <small class="sc">ZA</small> 的 <code class="code">SVCR</code> 位为0时，这意味着 <code class="code">ZA</code> 寄存器状态未激活，这意味着 <code class="code">ZT0</code> 寄存器状态也未激活。
+</p>
+<p>当 <code class="code">ZT0</code> 未激活时，它由零组成，就像 <code class="code">ZA</code>一样。
+</p>
+<p>与 <code class="code">ZA</code> 寄存器类似，如果 <code class="code">ZT0</code> 状态未激活，并且用户尝试修改其值，使得其任何字节非零，那么 <small class="sc">GDB</small> 将初始化 <code class="code">ZA</code> 寄存器状态，这意味着 <code class="code">SVCR</code> <small class="sc">ZA</small> 位被置为1。
+</p>
+<p>有关 <abbr class="acronym">SME2</abbr>的更多信息，请参阅官方 <a class="url" href="https://developer.arm.com/documentation/ddi0487/latest">架构文档</a>。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Pointer-Authentication">
+<h4 class="subsubsection"><span>21.4.1.4 AArch64指针认证<a class="copiable-link" href="#AArch64-Pointer-Authentication"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Pointer-Authentication_002c-AArch64"></a>
+<a class="index-entry-id" id="index-PAC_002c-AArch64"></a>
+<a class="anchor" id="AArch64-PAC"></a>
+<p>当 <small class="sc">GDB</small> 调试AArch64架构，并且程序使用v8.3 - A功能指针认证（PAC）时，每当链接寄存器 <code class="code">$lr</code> 指向一个PAC函数时，其值将被屏蔽。当GDB打印回溯信息时，任何需要解屏蔽的地址将后缀标记[PAC]。当使用MI时，这将作为 <code class="code">addr_flags</code> 字段的一部分打印。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Memory-Tagging-Extension">
+<h4 class="subsubsection"><span>21.4.1.5 AArch64内存标记扩展<a class="copiable-link" href="#AArch64-Memory-Tagging-Extension"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Memory-Tagging-Extension_002c-AArch64"></a>
+<a class="index-entry-id" id="index-MTE_002c-AArch64"></a>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构，程序使用v8.5 - A功能内存标记扩展（MTE），并且内核支持MTE时， <small class="sc">GDB</small> 将使内存标记功能可用于检查和编辑逻辑标记和分配标记。请参阅 <a class="xref" href="Memory-Tagging.html">《内存标记》</a>。
+</p>
+<p>为了辅助调试， <small class="sc">GDB</small> 在因内存标记失败而生成SIGSEGV信号时将输出额外信息。
+</p>
+<p>如果标记违规是同步的，将显示以下内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序收到信号SIGSEGV，段错误
+访问地址0x0500fffff7ff8000时发生内存标记违规
+分配标记0x1
+逻辑标记0x5。
+</pre></div>
+
+<p>如果标记违规是异步的，故障地址不可用。在这种情况下， <small class="sc">GDB</small> 将显示以下内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序收到信号SIGSEGV，段错误
+内存标记违规
+故障地址不可用。
+</pre></div>
+
+<p>一个特殊的寄存器 <code class="code">tag_ctl</code>, 通过
+<code class="code">org.gnu.gdb.aarch64.mte</code> 功能可用。该寄存器公开了一些可以在运行时控制的选项，并模拟了 <code class="code">prctl</code>
+选项 <code class="code">PR_SET_TAGGED_ADDR_CTRL</code>。有关更多信息，请参阅Linux内核文档。
+</p>
+<p><small class="sc">GDB</small> 支持通过
+<code class="command">gcore</code> 命令将内存标记数据转储到核心文件，并从由 <code class="command">gcore</code> 命令或Linux内核生成的核心文件中读取内存标记数据。
+</p>
+<p>当一个进程使用由内存标记保护的内存映射页面（例如，AArch64 MTE）时，在崩溃的情况下或如果 <small class="sc">GDB</small> 从当前进程状态生成核心文件时，此额外信息将记录在核心文件中。
+</p>
+<p>内存标记数据将用于让开发人员显示特定内存区域的内存标记（使用‘<samp class="samp">m</samp>’修饰符到
+<code class="command">x</code> 命令，使用 <code class="command">print</code> 命令或使用各种
+<code class="command">memory-tag</code> 子命令）。
+</p>
+<p>在崩溃的情况下， <small class="sc">GDB</small> 将尝试自动从核心文件中检索内存标记信息，并根据选择的是同步还是异步模式显示上述消息之一。请参阅 <a class="xref" href="Memory-Tagging.html">《内存标记》</a>。请参阅 <a class="xref" href="Memory.html">《检查内存》</a>。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="AArch64-Guarded-Control-Stack">
+<h4 class="subsubsection"><span>21.4.1.6 AArch64受保护控制栈<a class="copiable-link" href="#AArch64-Guarded-Control-Stack"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Guarded-Control-Stack_002c-AArch64"></a>
+<a class="index-entry-id" id="index-GCS_002c-AArch64"></a>
+
+<p>当 <small class="sc">GDB</small> 调试AArch64架构，程序使用受保护控制栈（GCS）功能，操作系统内核是Linux并且支持GCS时， <small class="sc">GDB</small> 将通过 <code class="code">gcs_features_enabled</code> 和 <code class="code">gcs_features_locked</code>
+提供几个特殊寄存器。这些寄存器公开了一些可以在运行时控制的选项，并模拟了 <code class="code">org.gnu.gdb.aarch64.gcs.linux</code> 功能。这些寄存器公开了一些可以在运行时控制的选项，并模拟了 <code class="code">prctl</code> 选项 <code class="code">PR_SET_SHADOW_STACK_STATUS</code>。有关更多信息，请参阅
+<a class="uref" href="https://www.kernel.org/doc/html/latest/arch/arm64/gcs.html">文档</a> 在Linux内核中。
+</p>
+<p>自然地，位于 <code class="code">EL0</code> 的受保护控制栈指针也作为 <code class="code">gcspr</code> 寄存器可用。
+</p>
+<p>为了辅助调试， <small class="sc">GDB</small> 将记录因受保护控制栈错误而生成SIGSEGV信号的情况：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">程序收到信号SIGSEGV，段错误
+受保护控制栈错误。
+</pre></div>
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="x86.html">x86</a>, 上一项： <a href="Architectures.html">架构</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

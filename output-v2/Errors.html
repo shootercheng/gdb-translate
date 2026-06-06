@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>错误（使用GDB调试）</title>
+
+<meta name="description" content="Errors (Debugging with GDB)"/>
+<meta name="keywords" content="Errors (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Annotations.html" rel="up" title="Annotations"/>
+<link href="Invalidation.html" rel="next" title="Invalidation"/>
+<link href="Prompting.html" rel="prev" title="Prompting"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Errors">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Invalidation.html" rel="next"></a>, 上一项： <a accesskey="p" href="Prompting.html" rel="prev">注释用于 <small class="sc">GDB</small> 输入</a>, 上一级： <a accesskey="u" href="Annotations.html" rel="up"><small class="sc">GDB</small> 注释</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Errors-1"><span>28.4 错误<a class="copiable-link" href="#Errors-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-annotations-for-errors_002c-warnings-and-interrupts"></a>
+
+<a class="index-entry-id" id="index-quit-annotation"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z退出
+</pre></div>
+
+<p>此注释出现在 <small class="sc">GDB</small> 响应中断之前。
+</p>
+<a class="index-entry-id" id="index-error-annotation"></a>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z错误
+</pre></div>
+
+<p>此注释出现在 <small class="sc">GDB</small> 响应错误之前。
+</p>
+<p>退出和错误注释表明，任何 <small class="sc">GDB</small> 正在进行中的注释可能会突然结束。例如，如果一个
+<code class="code">value-history-begin</code> 注释后面跟着一个 <code class="code">error</code>, 不能期望收到匹配的 <code class="code">value-history-end</code>。然而，也不能期望收不到它；错误注释并不一定意味着 <small class="sc">GDB</small> 会立即一直返回到顶层。
+</p>
+<a class="index-entry-id" id="index-error_002dbegin-annotation"></a>
+<p>退出或错误注释之前可能会有
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">^Z^Z错误开始
+</pre></div>
+
+<p>在该注释和退出或错误注释之间的任何输出都是错误消息。
+</p>
+<p>警告消息尚未加注释。
+</p>
+</div>
+
+
+
+
+
+</body></html>

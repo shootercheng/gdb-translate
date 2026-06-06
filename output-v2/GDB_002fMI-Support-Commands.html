@@ -1,0 +1,215 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI支持命令（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI Support Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Support Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Miscellaneous-Commands.html" rel="next" title="GDB/MI Miscellaneous Commands"/>
+<link href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="prev" title="GDB/MI Ada Exceptions Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Support-Commands">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="GDB_002fMI-Miscellaneous-Commands.html" rel="next">杂项 <small class="sc">GDB/MI</small> 命令</a>，上一步： <a accesskey="p" href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="prev">Ada异常 <small class="sc">GDB/MI</small> 命令</a>，向上： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Support-Commands"><span>27.23 <small class="sc">GDB/MI</small> 支持命令<a class="copiable-link" href="#gdb_002fmi-Support-Commands"> ¶</a></span></h3>
+
+<p>由于新命令和功能会定期添加到 <small class="sc">GDB/MI</small>,
+一些命令可用于帮助前端向调试器查询对这些功能的支持。同样，也可以查询 <small class="sc">GDB</small> 关于某些功能的目标支持。
+</p>
+<a class="index-entry-id" id="index-_002dinfo_002dgdb_002dmi_002dcommand"></a>
+<a class="index-entry-id" id="index-_002dinfo_002dgdb_002dmi_002dcommand-1"></a>
+<h4 class="subheading" id="The-_002dinfo_002dgdb_002dmi_002dcommand-Command"><span>该 <code class="code">-info-gdb-mi-command</code> 命令<a class="copiable-link" href="#The-_002dinfo_002dgdb_002dmi_002dcommand-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-103"><span>概要<a class="copiable-link" href="#Synopsis-103"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -info-gdb-mi-command <var class="var">命令名称</var>
+</pre></div>
+
+<p>查询对名为 <small class="sc">GDB/MI</small> 的 <var class="var">命令名称</var>的支持。
+</p>
+<p>请注意，所有<code class="code">-</code>命令开头的破折号（ <small class="sc">GDB/MI</small> ）在技术上不属于命令名称的一部分（见 <a class="pxref" href="GDB_002fMI-Input-Syntax.html"><small class="sc">GDB/MI</small> 输入语法</a>），因此在 <var class="var">命令名称</var>中应省略。然而，为了使用方便，此命令也接受带前导破折号的形式。
+</p>
+<h4 class="subsubheading" id="gdb-Command-85"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-85"> ¶</a></span></h4>
+
+<p>没有相应的 <small class="sc">GDB</small> 命令。
+</p>
+<h4 class="subsubheading" id="Result-8"><span>结果<a class="copiable-link" href="#Result-8"> ¶</a></span></h4>
+
+<p>结果是一个元组。目前只有一个字段：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">存在</samp>’</dt>
+<dd><p>如果 <code class="code">&#34;true&#34;</code> 命令存在，此字段等于 <small class="sc">GDB/MI</small> ，
+<code class="code">&#34;false&#34;</code> 否则。
+</p>
+</dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-85"><span>示例<a class="copiable-link" href="#Example-85"> ¶</a></span></h4>
+
+<p>这是一个命令不存在的示例： <small class="sc">GDB/MI</small> -info-gdb-mi-command unsupported-command
+^done,command={exists=&#34;false&#34;}
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">这是一个调试器已知该
+</pre></div>
+
+<p>命令的示例： <small class="sc">GDB/MI</small> 命令的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">-info-gdb-mi-command symbol-list-lines
+^done,command={exists=&#34;true&#34;}
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dlist_002dfeatures"></a>
+<a class="index-entry-id" id="index-supported-gdb_002fmi-features_002c-list"></a>
+<h4 class="subheading" id="The-_002dlist_002dfeatures-Command"><span>该 <code class="code">-list-features</code> 命令<a class="copiable-link" href="#The-_002dlist_002dfeatures-Command"> ¶</a></span></h4>
+
+<p>返回此版本的gdb实现的MI协议的特定功能列表。一个功能可以是一个命令，或者是某个命令输出中的一个新字段，甚至是一个重要的错误修复。虽然前端有时可以在运行时检测到功能的存在，但在调试器启动时进行检测更容易。
+</p>
+<p>该命令返回一个字符串列表，每个字符串命名一个可用功能。每个返回的字符串只是一个名称，没有任何内部结构。下面给出了可能的功能名称列表。
+</p>
+<p>示例输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) -list-features
+^done,features=[&#34;feature1&#34;,&#34;feature2&#34;]
+</pre></div>
+
+<p>当前的功能列表是：
+</p>
+<dl class="ftable">
+<dt><a id="index-frozen_002dvarobjs"></a><span>‘<samp class="samp">冻结的变量对象</samp>’<a class="copiable-link" href="#index-frozen_002dvarobjs"> ¶</a></span></dt>
+<dd><p>表示对 <code class="code">-var-set-frozen</code> 命令的支持，以及在 <code class="code">frozen</code> 输出中可能存在的 <code class="code">-varobj-create</code>字段。
+</p></dd>
+<dt><a id="index-pending_002dbreakpoints"></a><span>‘<samp class="samp">挂起的断点</samp>’<a class="copiable-link" href="#index-pending_002dbreakpoints"> ¶</a></span></dt>
+<dd><p>表示对 <samp class="option">-f</samp> 选项到 <code class="code">-break-insert</code>
+命令的支持。
+</p></dd>
+<dt><a id="index-python"></a><span>‘<samp class="samp">python</samp>’<a class="copiable-link" href="#index-python"> ¶</a></span></dt>
+<dd><p>表示Python脚本支持、基于Python的漂亮打印命令，以及在<samp class="samp">显示提示</samp>字段在 <code class="code">-var-list-children</code>
+</p></dd>
+<dt><a id="index-thread_002dinfo"></a><span>‘<samp class="samp">线程信息</samp>’<a class="copiable-link" href="#index-thread_002dinfo"> ¶</a></span></dt>
+<dd><p>输出中可能存在的表示对 <code class="code">-thread-info</code> 命令的支持。
+</p></dd>
+<dt><a id="index-data_002dread_002dmemory_002dbytes"></a><span>‘<samp class="samp">数据读取内存字节</samp>’<a class="copiable-link" href="#index-data_002dread_002dmemory_002dbytes"> ¶</a></span></dt>
+<dd><p>Indicates support for the <code class="code">-data-read-memory-bytes</code> and the
+<code class="code">-data-write-memory-bytes</code> commands.
+</p></dd>
+<dt><a id="index-breakpoint_002dnotifications"></a><span>‘<samp class="samp">breakpoint-notifications</samp>’<a class="copiable-link" href="#index-breakpoint_002dnotifications"> ¶</a></span></dt>
+<dd><p>Indicates that changes to breakpoints and breakpoints created via the
+CLI will be announced via async records.
+</p></dd>
+<dt><a id="index-ada_002dtask_002dinfo"></a><span>‘<samp class="samp">ada-task-info</samp>’<a class="copiable-link" href="#index-ada_002dtask_002dinfo"> ¶</a></span></dt>
+<dd><p>Indicates support for the <code class="code">-ada-task-info</code> command.
+</p></dd>
+<dt><a id="index-language_002doption"></a><span>‘<samp class="samp">language-option</samp>’<a class="copiable-link" href="#index-language_002doption"> ¶</a></span></dt>
+<dd><p>Indicates that all <small class="sc">GDB/MI</small> commands accept the <samp class="option">--language</samp>
+option (see <a class="pxref" href="Context-management.html">Context management</a>).
+</p></dd>
+<dt><a id="index-info_002dgdb_002dmi_002dcommand"></a><span>‘<samp class="samp">info-gdb-mi-command</samp>’<a class="copiable-link" href="#index-info_002dgdb_002dmi_002dcommand"> ¶</a></span></dt>
+<dd><p>Indicates support for the <code class="code">-info-gdb-mi-command</code> command.
+</p></dd>
+<dt><a id="index-undefined_002dcommand_002derror_002dcode"></a><span>‘<samp class="samp">undefined-command-error-code</samp>’<a class="copiable-link" href="#index-undefined_002dcommand_002derror_002dcode"> ¶</a></span></dt>
+<dd><p>Indicates support for the &#34;undefined-command&#34; error code in error result
+records, produced when trying to execute an undefined <small class="sc">GDB/MI</small> command
+(see <a class="pxref" href="GDB_002fMI-Result-Records.html"><small class="sc">GDB/MI</small> Result Records</a>).
+</p></dd>
+<dt><a id="index-exec_002drun_002dstart_002doption"></a><span>‘<samp class="samp">exec-run-start-option</samp>’<a class="copiable-link" href="#index-exec_002drun_002dstart_002doption"> ¶</a></span></dt>
+<dd><p>Indicates that the <code class="code">-exec-run</code> command supports the <samp class="option">--start</samp>
+option (see <a class="pxref" href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small> Program Execution</a>).
+</p></dd>
+<dt><a id="index-data_002ddisassemble_002da_002doption"></a><span>‘<samp class="samp">data-disassemble-a-option</samp>’<a class="copiable-link" href="#index-data_002ddisassemble_002da_002doption"> ¶</a></span></dt>
+<dd><p>Indicates that the <code class="code">-data-disassemble</code> command supports the <samp class="option">-a</samp>
+option (see <a class="pxref" href="GDB_002fMI-Data-Manipulation.html"><small class="sc">GDB/MI</small> Data Manipulation</a>).
+</p></dd>
+<dt><a id="index-simple_002dvalues_002dref_002dtypes"></a><span>‘<samp class="samp">simple-values-ref-types</samp>’<a class="copiable-link" href="#index-simple_002dvalues_002dref_002dtypes"> ¶</a></span></dt>
+<dd><p>Indicates that the <code class="code">--simple-values</code> argument to the
+<code class="code">-stack-list-arguments</code>, <code class="code">-stack-list-locals</code>,
+<code class="code">-stack-list-variables</code>, and <code class="code">-var-list-children</code> commands
+takes reference types into account: that is, a value is considered
+simple if it is neither an array, structure, or union, nor a reference
+to an array, structure, or union.
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-_002dlist_002dtarget_002dfeatures"></a>
+<h4 class="subheading" id="The-_002dlist_002dtarget_002dfeatures-Command"><span>The <code class="code">-list-target-features</code> Command<a class="copiable-link" href="#The-_002dlist_002dtarget_002dfeatures-Command"> ¶</a></span></h4>
+
+<p>Returns a list of particular features that are supported by the
+target.  Those features affect the permitted MI commands, but 
+unlike the features reported by the <code class="code">-list-features</code> command, the
+features depend on which target GDB is using at the moment.  Whenever
+a target can change, due to commands such as <code class="code">-target-select</code>,
+<code class="code">-target-attach</code> or <code class="code">-exec-run</code>, the list of target features
+may change, and the frontend should obtain it again.
+Example output:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) -list-target-features
+^done,features=[&#34;async&#34;]
+</pre></div>
+
+<p>The current list of features is:
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">async</samp>’</dt>
+<dd><p>Indicates that the target is capable of asynchronous command
+execution, which means that <small class="sc">GDB</small> will accept further commands
+while the target is running.
+</p>
+</dd>
+<dt>‘<samp class="samp">reverse</samp>’</dt>
+<dd><p>Indicates that the target is capable of reverse execution.
+See <a class="xref" href="Reverse-Execution.html">Running programs backward</a>, for more information.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+Next: <a href="GDB_002fMI-Miscellaneous-Commands.html">Miscellaneous <small class="sc">GDB/MI</small> Commands</a>, Previous: <a href="GDB_002fMI-Ada-Exceptions-Commands.html">Ada Exceptions <small class="sc">GDB/MI</small> Commands</a>, Up: <a href="GDB_002fMI.html">The <small class="sc">GDB/MI</small> Interface</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>打补丁（使用 GDB 调试）</title>
+
+<meta name="description" content="Patching (Debugging with GDB)"/>
+<meta name="keywords" content="Patching (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Compiling-and-Injecting-Code.html" rel="next" title="Compiling and Injecting Code"/>
+<link href="Calling.html" rel="prev" title="Calling"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Patching">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Compiling-and-Injecting-Code.html" rel="next">在……中编译和注入代码 <small class="sc">GDB</small></a>, 上一项： <a accesskey="p" href="Calling.html" rel="prev">调用程序函数</a>, 上级： <a accesskey="u" href="Altering.html" rel="up">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Patching-Programs"><span>17.6 对程序打补丁<a class="copiable-link" href="#Patching-Programs"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-patching-binaries"></a>
+<a class="index-entry-id" id="index-writing-into-executables"></a>
+<a class="index-entry-id" id="index-writing-into-corefiles"></a>
+
+<p>默认情况下， <small class="sc">GDB</small> 以只读方式打开包含您程序的可执行代码（或核心转储文件）的文件。这可以防止意外修改机器代码；但这也阻止了您有意对程序的二进制文件进行打补丁。
+</p>
+<p>如果您希望能够对二进制文件打补丁，可以使用 <code class="code">set write</code> 命令显式指定。例如，您可能希望启用内部调试标志，甚至进行紧急修复。
+</p>
+<dl class="table">
+<dt><a id="index-set-write"></a><span><code class="code">set write on</code><a class="copiable-link" href="#index-set-write"> ¶</a></span></dt>
+<dt><code class="code">set write off</code></dt>
+<dd><p>如果您指定 ‘<samp class="samp">set write on</samp>’， <small class="sc">GDB</small> 以读写方式打开可执行文件和核心文件；如果您指定 <kbd class="kbd">set write off</kbd> （默认设置）， <small class="sc">GDB</small> 以只读方式打开它们。
+</p>
+<p>如果您已经加载了一个文件，在更改
+<code class="code">exec-file</code> 或 <code class="code">core-file</code> 命令后，您必须再次加载它（使用 <code class="code">set
+write</code>），以使您的新设置生效。
+</p>
+</dd>
+<dt><a id="index-show-write"></a><span><code class="code">show write</code><a class="copiable-link" href="#index-show-write"> ¶</a></span></dt>
+<dd><p>显示可执行文件和核心文件是否以读写方式打开。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

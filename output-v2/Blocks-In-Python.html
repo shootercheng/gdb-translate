@@ -1,0 +1,177 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的块（使用 GDB 调试）</title>
+
+<meta name="description" content="Blocks In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Blocks In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Symbols-In-Python.html" rel="next" title="Symbols In Python"/>
+<link href="Frames-In-Python.html" rel="prev" title="Frames In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Blocks-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Symbols-In-Python.html" rel="next">符号的 Python 表示形式</a>, 上一项： <a accesskey="p" href="Frames-In-Python.html" rel="prev">从 Python 访问 inferior 栈帧</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Accessing-blocks-from-Python"><span>23.3.2.29 从 Python 访问块<a class="copiable-link" href="#Accessing-blocks-from-Python"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-blocks-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eBlock"></a>
+
+<p>在 <small class="sc">GDB</small>, 符号存储在块中。一个块大致对应于源代码中的一个作用域。块是分层组织的，在 Python 中单独表示为一个
+<code class="code">gdb.Block</code>。块依赖于可用的调试信息。
+</p>
+<p>一个帧有一个块。请参阅 <a class="ref" href="Frames-In-Python.html">从 Python 访问 inferior 栈帧</a>, 以获取关于帧的更深入讨论。
+</p>
+<p>最外层的块称为 <em class="dfn">全局块</em>。全局块通常包含公共全局变量和函数。
+</p>
+<p>嵌套在全局块内的块是 <em class="dfn">静态块</em>。静态块通常包含文件作用域的变量和函数。
+</p>
+<p><small class="sc">GDB</small> 提供了一种获取块的父块的方法，但目前没有办法检查块的子块，也无法遍历符号表中的所有块（请参阅 <a class="pxref" href="Symbol-Tables-In-Python.html">Python 中的符号表表示形式</a>）。
+</p>
+<p>以下是一个简短的示例，有助于解释块：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">/* 这在全局块中。  */
+int global;
+
+/* 这在静态块中。  */
+static int file_scope;
+
+/* &#39;function&#39; 在全局块中，&#39;argument&#39; 在 &#39;function&#39; 内部嵌套的块中。  */
+int function (int argument)
+{
+  /* &#39;local&#39; 在 &#39;function&#39; 内部的一个块中。它可能与 &#39;argument&#39; 在同一个块中，也可能不在。  */
+  int local;
+
+  {
+     /* &#39;inner&#39; 在一个块中，其父块是包含 &#39;local&#39; 的块。  */
+     int inner;
+
+     /* 如果此调用被编译器展开，您可能会在这里看到一个嵌套块，其函数为 &#39;inline_function&#39;，其父块是包含 &#39;inner&#39; 的块。  */
+     inline_function ();
+  }
+}
+</pre></div>
+
+<p>一个 <code class="code">gdb.Block</code> 是可迭代的。迭代器返回符号（请参阅 <a class="pxref" href="Symbols-In-Python.html">符号的 Python 表示形式</a>），这些符号是块的局部符号。Python 程序不应假设特定的块对象总是包含给定的符号，因为 <small class="sc">GDB</small> 功能和基础设施的变化可能会导致符号在符号表中的块之间移动。您还可以使用 Python 的 <em class="dfn">字典语法</em> 来访问此块中的变量，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">symbol = some_block[&#39;variable&#39;]  # symbol 的类型为 gdb.Symbol
+</pre></div>
+
+<p>以下与块相关的函数在 <code class="code">gdb</code>
+模块中可用：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eblock_005ffor_005fpc"><span class="category-def">函数： </span><span><strong class="def-name">gdb.block_for_pc</strong> <var class="def-var-arguments">(pc)</var><a class="copiable-link" href="#index-gdb_002eblock_005ffor_005fpc"> ¶</a></span></dt>
+<dd><p>返回包含给定 <code class="code">gdb.Block</code> 的最内层 <var class="var">pc</var>
+值。如果无法为指定的 <var class="var">pc</var> 值找到块，函数将返回 <code class="code">None</code>。这与
+<code class="code">gdb.current_progspace().block_for_pc(pc)</code> 相同，包含此函数是为了保持历史兼容性。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Block</code> 对象有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Block_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Block.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Block_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">True</code> 对象有效，则返回 <code class="code">gdb.Block</code> ，否则返回
+<code class="code">False</code> 。如果块对象所引用的块在 inferior 中不再存在，则该块对象可能会变得无效。如果在调用方法时块对象无效，所有其他
+<code class="code">gdb.Block</code> 方法都会抛出异常。在遍历块的符号时也会检查块的有效性。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Block</code> 对象有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002estart"><span class="category-def">变量： </span><span><strong class="def-name">Block.start</strong><a class="copiable-link" href="#index-Block_002estart"> ¶</a></span></dt>
+<dd><p>块的起始地址。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002eend"><span class="category-def">变量： </span><span><strong class="def-name">Block.end</strong><a class="copiable-link" href="#index-Block_002eend"> ¶</a></span></dt>
+<dd><p>块中最后一个地址之后的地址。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002efunction"><span class="category-def">变量： </span><span><strong class="def-name">Block.function</strong><a class="copiable-link" href="#index-Block_002efunction"> ¶</a></span></dt>
+<dd><p>块的名称，表示为一个 <code class="code">gdb.Symbol</code>。如果块没有名称，则此属性为 <code class="code">None</code>。此属性不可写。
+</p>
+<p>对于普通的函数块，父块是静态块。但是，您应该注意，函数块的父块有可能不是静态块，例如内联函数就是这种情况。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002esuperblock"><span class="category-def">变量： </span><span><strong class="def-name">Block.superblock</strong><a class="copiable-link" href="#index-Block_002esuperblock"> ¶</a></span></dt>
+<dd><p>包含此块的块。如果此父块不存在，此属性为 <code class="code">None</code>。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002esubblocks"><span class="category-def">变量： </span><span><strong class="def-name">Block.subblocks</strong><a class="copiable-link" href="#index-Block_002esubblocks"> ¶</a></span></dt>
+<dd><p>嵌套在此块中的块的列表。如果没有嵌套块，此属性为一个空列表。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002eglobal_005fblock"><span class="category-def">变量： </span><span><strong class="def-name">Block.global_block</strong><a class="copiable-link" href="#index-Block_002eglobal_005fblock"> ¶</a></span></dt>
+<dd><p>与此块关联的全局块。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002estatic_005fblock"><span class="category-def">变量： </span><span><strong class="def-name">Block.static_block</strong><a class="copiable-link" href="#index-Block_002estatic_005fblock"> ¶</a></span></dt>
+<dd><p>与此块关联的静态块。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002eis_005fglobal"><span class="category-def">变量： </span><span><strong class="def-name">Block.is_global</strong><a class="copiable-link" href="#index-Block_002eis_005fglobal"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果 <code class="code">gdb.Block</code> 对象是全局块，
+<code class="code">False</code> 否则。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Block_002eis_005fstatic"><span class="category-def">变量： </span><span><strong class="def-name">Block.is_static</strong><a class="copiable-link" href="#index-Block_002eis_005fstatic"> ¶</a></span></dt>
+<dd><p><code class="code">True</code> 如果 <code class="code">gdb.Block</code> 对象是静态块，
+<code class="code">False</code> 否则。此属性不可写。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Symbols-In-Python.html">符号的 Python 表示形式</a>, 上一项： <a href="Frames-In-Python.html">从 Python 访问 inferior 栈帧</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

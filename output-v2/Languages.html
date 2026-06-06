@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>语言（使用 GDB 调试）</title>
+
+<meta name="description" content="Languages (Debugging with GDB)"/>
+<meta name="keywords" content="Languages (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Symbols.html" rel="next" title="Symbols"/>
+<link href="Overlays.html" rel="prev" title="Overlays"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Languages">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Symbols.html" rel="next">检查符号表</a>, 上一项： <a accesskey="p" href="Overlays.html" rel="prev">调试使用覆盖的程序</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Using-gdb-with-Different-Languages"><span>15 使用 <small class="sc">GDB</small> 不同的语言<a class="copiable-link" href="#Using-gdb-with-Different-Languages"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-languages"></a>
+
+<p>虽然编程语言通常有一些共同的方面，但它们很少以相同的方式表达。例如，在 ANSI C 中，解引用指针 <code class="code">p</code> 是通过 <code class="code">*p</code>实现的，但在 Modula - 2 中，它是通过 <code class="code">p^</code>实现的。值也可以以不同的方式表示（和显示）。C 中的十六进制数显示为‘<samp class="samp">0x1ae</samp>’，而在 Modula - 2 中它们显示为‘<samp class="samp">1AEH</samp>’。
+</p>
+<a class="index-entry-id" id="index-working-language"></a>
+<p>特定语言的信息被内置到 <small class="sc">GDB</small> 某些语言中，允许你用程序的原生语言表达上述操作，并允许 <small class="sc">GDB</small> 以与程序原生语言语法一致的方式输出值。你用于构建表达式的语言称为 <em class="dfn">工作语言</em>。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Setting.html">在源语言之间切换</a></li>
+<li><a accesskey="2" href="Show.html">显示语言</a></li>
+<li><a accesskey="3" href="Checks.html">类型和范围检查</a></li>
+<li><a accesskey="4" href="Supported-Languages.html">支持的语言</a></li>
+<li><a accesskey="5" href="Unsupported-Languages.html">不支持的语言</a></li>
+</ul>
+</div>
+
+
+
+
+
+</body></html>

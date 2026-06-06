@@ -1,0 +1,122 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Fortran 类型（使用 GDB 调试）</title>
+
+<meta name="description" content="Fortran Types (Debugging with GDB)"/>
+<meta name="keywords" content="Fortran Types (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Fortran.html" rel="up" title="Fortran"/>
+<link href="Fortran-Operators.html" rel="next" title="Fortran Operators"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Fortran-Types">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Fortran-Operators.html" rel="next">Fortran 运算符和表达式</a>, 上一项： <a accesskey="u" href="Fortran.html" rel="up">Fortran</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Fortran-Types-1"><span>15.4.6.1 Fortran 类型<a class="copiable-link" href="#Fortran-Types-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-Fortran-Types"></a>
+
+<p>在 Fortran 中，基本数据类型有一个关联的 <code class="code">KIND</code> 类型
+参数，写为 ‘<samp class="samp"><var class="var">类型</var>*<var class="var">种类参数</var></samp>’，
+‘<samp class="samp"><var class="var">类型</var>*<var class="var">种类参数</var></samp>’，或者在
+仅使用 - 的方言中 ‘ <small class="sc">GDB</small><samp class="samp"><var class="var">类型</var>_<var class="var">种类参数</var></samp>’。一个具体的例子是
+‘<samp class="samp"><code class="code">Real*4</code></samp>’，‘<samp class="samp"><code class="code">Real(kind=4)</code></samp>’ 和 ‘<samp class="samp"><code class="code">Real_4</code></samp>’。
+可以通过使用内置函数来获取类型的种类
+<code class="code">KIND</code>, 请参阅 <a class="ref" href="Fortran-Intrinsics.html">Fortran 内置函数</a>。
+</p>
+<p>一般来说， <code class="code">KIND</code> 类型参数的实际实现
+是特定于编译器的。在
+ <small class="sc">GDB</small> 中，种类参数的实现
+与它在
+ <small class="sc">GNU</small> <code class="command">gfortran</code> 编译器中的使用方式一致。这里，给定
+ <var class="var">类型的种类参数
+指定了它在内存中的大小 —— 一个 Fortran
+</var>  <code class="code">Integer*4</code> 或 <code class="code">Integer(kind=4)</code> 将是一个占用 4 字节内存的整数类型。这条规则的一个例外是
+ <code class="code">Complex</code>
+类型，对于该类型，种类参数并不指定其整个大小，而是
+指定它所组成的两个
+ <code class="code">Real</code>’s 中每个的大小。因此，一个
+
+<code class="code">Complex*4</code> 将由两个
+ <code class="code">Real*4</code>组成，并占用 8 字节
+的内存。
+</p>
+<p>对于每种类型，也有一个与之关联的默认种类，例如，在
+ <code class="code">Integer</code>  <small class="sc">GDB</small> 内部将是一个
+ <code class="code">Integer*4</code> （请参阅下面的默认类型表）。默认类型与
+ <small class="sc">GNU</small>
+编译器中的相同，但请注意，
+ <small class="sc">GNU</small> 默认类型实际上可以通过
+编译器标志（如
+ <samp class="option">-fdefault-integer-8</samp> 和
+
+<samp class="option">-fdefault-real-8</samp>）来更改。
+</p>
+<p>并非每个种类参数对每种类型都有效，在
+ <small class="sc">GDB</small> 中，以下类型种类是可用的。
+</p>
+<dl class="table">
+<dt><code class="code">Integer</code></dt>
+<dd><p><code class="code">Integer*1</code>, <code class="code">Integer*2</code>, <code class="code">Integer*4</code>, <code class="code">Integer*8</code>, 以及
+<code class="code">Integer</code> = <code class="code">Integer*4</code>.
+</p>
+</dd>
+<dt><code class="code">Logical</code></dt>
+<dd><p><code class="code">Logical*1</code>, <code class="code">Logical*2</code>, <code class="code">Logical*4</code>, <code class="code">Logical*8</code>, 以及
+<code class="code">Logical</code> = <code class="code">Logical*4</code>.
+</p>
+</dd>
+<dt><code class="code">Real</code></dt>
+<dd><p><code class="code">Real*4</code>, <code class="code">Real*8</code>, <code class="code">Real*16</code>, 以及 <code class="code">Real</code> = <code class="code">Real*4</code>.
+</p>
+</dd>
+<dt><code class="code">Complex</code></dt>
+<dd><p><code class="code">Complex*4</code>, <code class="code">Complex*8</code>, <code class="code">Complex*16</code>, 以及 <code class="code">Complex</code> =
+<code class="code">Complex*4</code>.
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Fortran-Operators.html">Fortran 运算符和表达式</a>, 上一项： <a href="Fortran.html">Fortran</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>漂亮打印机命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Pretty-Printer Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Pretty-Printer Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Pretty-Printing.html" rel="up" title="Pretty Printing"/>
+<link href="Pretty_002dPrinter-Example.html" rel="prev" title="Pretty-Printer Example"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Pretty_002dPrinter-Commands">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Pretty_002dPrinter-Example.html" rel="prev">漂亮打印机示例</a> <a accesskey="u" href="Pretty-Printing.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Pretty_002dPrinter-Commands-1"><span>10.10.3 漂亮打印机命令<a class="copiable-link" href="#Pretty_002dPrinter-Commands-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-pretty_002dprinter-commands"></a>
+
+<dl class="table">
+<dt><a id="index-info-pretty_002dprinter"></a><span><code class="code">info pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-info-pretty_002dprinter"> ¶</a></span></dt>
+<dd><p>打印已安装的漂亮打印机列表。
+这包括已禁用的漂亮打印机，它们会被标记出来。
+</p>
+<p><var class="var">对象正则表达式</var> 是一个正则表达式，用于匹配要列出其漂亮打印机的对象。
+对象可以是 <code class="code">global</code>, 程序空间的文件
+(见 <a class="pxref" href="Progspaces-In-Python.html">Python 中的程序空间</a>),
+以及该程序空间内的目标文件 (见 <a class="pxref" href="Objfiles-In-Python.html">Python 中的目标文件</a>)。
+有关 <a class="xref" href="Selecting-Pretty_002dPrinters.html">选择漂亮打印机</a>, 关于如何 <small class="sc">GDB</small>
+从这三个对象中查找打印机的详细信息。
+</p>
+<p><var class="var">名称正则表达式</var> 是一个正则表达式，用于匹配要列出的打印机的名称。
+</p>
+</dd>
+<dt><a id="index-disable-pretty_002dprinter"></a><span><code class="code">disable pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-disable-pretty_002dprinter"> ¶</a></span></dt>
+<dd><p>禁用与 <var class="var">对象正则表达式</var> 和 <var class="var">名称正则表达式</var>匹配的漂亮打印机。
+禁用的漂亮打印机不会被遗忘，稍后可以再次启用它。
+</p>
+</dd>
+<dt><a id="index-enable-pretty_002dprinter"></a><span><code class="code">enable pretty-printer [<var class="var">object-regexp</var> [<var class="var">name-regexp</var>]]</code><a class="copiable-link" href="#index-enable-pretty_002dprinter"> ¶</a></span></dt>
+<dd><p>启用与 <var class="var">对象正则表达式</var> 和 <var class="var">名称正则表达式</var>匹配的漂亮打印机。
+</p></dd>
+</dl>
+
+<p>示例：
+</p>
+<p>假设我们安装了三个漂亮打印机：一个来自 library1.so，名为 <code class="code">foo</code> 它用于打印类型为 <code class="code">foo</code>的对象，
+另一个来自 library2.so，名为 <code class="code">bar</code> 它用于打印两种类型的对象，
+<code class="code">bar1</code> 和 <code class="code">bar2</code>。
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) info pretty - printer
+library1.so:
+  foo
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) info pretty - printer library2
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty - printer library1
+1 个打印机已禁用
+3 个打印机中的 2 个已启用
+(gdb) info pretty - printer
+library1.so:
+  foo [已禁用]
+library2.so:
+  bar
+    bar1
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty - printer library2 bar;bar1
+1 个打印机已禁用
+3 个打印机中的 1 个已启用
+(gdb) info pretty - printer library2
+library2.so:
+  bar
+    bar1 [已禁用]
+    bar2
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) disable pretty - printer library2 bar
+1 个打印机已禁用
+3 个打印机中的 0 个已启用
+(gdb) info pretty - printer
+library1.so:
+  foo [已禁用]
+library2.so:
+  bar [已禁用]
+    bar1 [已禁用]
+    bar2
+</pre></div></div>
+
+<p>请注意，对于 <code class="code">bar</code> 整个打印机可以被禁用，每个单独的子打印机也可以被禁用。
+</p>
+<p>默认情况下，使用已启用的漂亮打印机来打印值和帧参数。
+</p>
+<p>打印选项 <code class="code">-raw-values</code> 和 <small class="sc">GDB</small> 设置
+<code class="code">set print raw-values</code> (见 <a class="pxref" href="Print-Settings.html#set-print-raw_002dvalues">set print raw - values</a>) 可用于在不应用已启用的漂亮打印机的情况下打印值。
+</p>
+<p>同样，回溯选项 <code class="code">-raw-frame-arguments</code> 和
+<small class="sc">GDB</small> 设置 <code class="code">set print raw-frame-arguments</code>
+(见 <a class="pxref" href="Print-Settings.html#set-print-raw_002dframe_002darguments">set print raw - frame - arguments</a>) 可用于在打印帧参数值时忽略已启用的漂亮打印机。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Pretty_002dPrinter-Example.html">漂亮打印机示例</a>, 上一级： <a href="Pretty-Printing.html">漂亮打印</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

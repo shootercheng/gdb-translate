@@ -1,0 +1,187 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编写一个Guile漂亮打印机（使用GDB调试）</title>
+
+<meta name="description" content="Writing a Guile Pretty-Printer (Debugging with GDB)"/>
+<meta name="keywords" content="Writing a Guile Pretty-Printer (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Commands-In-Guile.html" rel="next" title="Commands In Guile"/>
+<link href="Selecting-Guile-Pretty_002dPrinters.html" rel="prev" title="Selecting Guile Pretty-Printers"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Writing-a-Guile-Pretty_002dPrinter">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Commands-In-Guile.html" rel="next">Guile中的命令</a>, 上一项： <a accesskey="p" href="Selecting-Guile-Pretty_002dPrinters.html" rel="prev">选择Guile漂亮打印机</a>, 上一级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Writing-a-Guile-Pretty_002dPrinter-1"><span>23.4.3.10 编写一个Guile漂亮打印机<a class="copiable-link" href="#Writing-a-Guile-Pretty_002dPrinter-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-writing-a-Guile-pretty_002dprinter"></a>
+
+<p>一个漂亮打印机由两个基本部分组成：一个用于确定类型是否受支持的查找函数，以及打印机本身。
+</p>
+<p>这里有一个示例展示如何编写一个 <code class="code">std::string</code> 打印机。请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile漂亮打印API</a>，了解详细信息。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (make-my-string-printer value)
+  &#34;打印一个my::string字符串&#34;
+  (make-pretty-printer-worker
+   &#34;string&#34;
+   (lambda (printer)
+     (value-field value &#34;_data&#34;))
+   #f))
+</pre></div>
+
+<p>这里有一个示例展示如何编写上述打印机示例的查找函数。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (str-lookup-function pretty-printer value)
+  (let ((tag (type-tag (value-type value))))
+    (and tag
+         (string-prefix? &#34;std::string&lt;&#34; tag)
+         (make-my-string-printer value))))
+</pre></div>
+
+<p>然后将此打印机注册到全局打印机列表中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(append-pretty-printer!
+ (make-pretty-printer &#34;my-string&#34; str-lookup-function))
+</pre></div>
+
+<p>示例查找函数提取值的类型，并尝试将其与可以漂亮打印的类型进行匹配。如果它是打印机可以漂亮打印的类型，它将返回一个 &lt;gdb:pretty-printer-worker&gt; 对象。如果不是，它将返回 <code class="code">#f</code>.
+</p>
+<p>我们建议您将核心漂亮打印机放入一个Guile包中。如果您的漂亮打印机是用于某个库的，我们进一步建议在包名中嵌入版本号。这种做法将使 <small class="sc">GDB</small> 能够同时加载您的漂亮打印机的多个版本，因为它们将具有不同的名称。
+</p>
+<p>您应该编写自动加载代码（请参阅 <a class="pxref" href="Guile-Auto_002dloading.html">Guile自动加载</a>)，使其可以多次求值而不改变其含义。一个理想的自动加载文件应仅由 <code class="code">import</code>您的打印机模块组成，然后调用一个函数将漂亮打印机注册到当前目标文件中。
+</p>
+<p>总体而言，这种方法可以很好地扩展到多个下级程序，每个程序可能使用不同的库版本。在Guile包名中嵌入版本号将确保
+<small class="sc">GDB</small> 能够同时加载两组打印机。然后，因为漂亮打印机的搜索是按目标文件进行的，并且因为您的自动加载代码小心地将您的库的打印机注册到特定的目标文件中， <small class="sc">GDB</small> 将为每个下级程序使用的特定版本的库找到正确的打印机。
+</p>
+<p>为了继续 <code class="code">my::string</code> 示例，
+此代码可能出现在 <code class="code">(my-project my-library v1)</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb))
+(define (register-printers objfile)
+  (append-objfile-pretty-printer!
+   (make-pretty-printer &#34;my-string&#34; str-lookup-function)))
+</pre></div>
+
+<p>然后自动加载文件的相应内容将是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb) (my-project my-library v1))
+(register-printers (current-objfile))
+</pre></div>
+
+<p>前面的示例展示了一个基本的漂亮打印机。
+有一些方面可以改进。
+该打印机仅处理一种类型，而一个库通常有几种类型。可以为库中每个所需的类型安装一个查找函数，但也可以让一个单一的查找函数识别几种类型。后者是处理此问题的常规方法。
+如果一个漂亮打印机可以处理多种数据类型，那么它的
+<em class="dfn">子打印机</em> 是针对各个数据类型的打印机。
+</p>
+<p>该 <code class="code">(gdb printing)</code> 模块提供了一种正式的方法来解决这个问题（请参阅 <a class="pxref" href="Guile-Printing-Module.html">Guile打印模块</a>)。
+这里有另一个处理多种类型的示例。
+</p>
+<p>这些是我们要漂亮打印的类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct foo { int a, b; };
+struct bar { struct foo x, y; };
+</pre></div>
+
+<p>这里是打印机：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define (make-foo-printer value)
+  &#34;打印一个foo对象&#34;
+  (make-pretty-printer-worker
+   &#34;foo&#34;
+   (lambda (printer)
+     (format #f &#34;a=&lt;~a&gt; b=&lt;~a&gt;&#34;
+             (value-field value &#34;a&#34;) (value-field value &#34;a&#34;)))
+   #f))
+
+(define (make-bar-printer value)
+  &#34;打印一个bar对象&#34;
+  (make-pretty-printer-worker
+   &#34;foo&#34;
+   (lambda (printer)
+     (format #f &#34;x=&lt;~a&gt; y=&lt;~a&gt;&#34;
+             (value-field value &#34;x&#34;) (value-field value &#34;y&#34;)))
+   #f))
+</pre></div>
+
+<p>这个示例不需要查找函数，这由
+<code class="code">(gdb printing)</code> 模块处理。相反，提供了一个函数来构建处理查找的对象。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb printing))
+
+(define (build-pretty-printer)
+  (let ((pp (make-pretty-printer-collection &#34;my-library&#34;)))
+    (pp-collection-add-tag-printer &#34;foo&#34; make-foo-printer)
+    (pp-collection-add-tag-printer &#34;bar&#34; make-bar-printer)
+    pp))
+</pre></div>
+
+<p>这里是自动加载支持：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(use-modules (gdb) (my-library))
+(append-objfile-pretty-printer! (current-objfile) (build-pretty-printer))
+</pre></div>
+
+<p>最后，当此打印机加载到 <small class="sc">GDB</small>, 这里是相应的 ‘<samp class="samp">info pretty-printer</samp>’ 输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info pretty-printer
+my_library.so:
+  my-library
+    foo
+    bar
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Commands-In-Guile.html">Guile中的命令</a>, 上一项： <a href="Selecting-Guile-Pretty_002dPrinters.html">选择Guile漂亮打印机</a>, 上一级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

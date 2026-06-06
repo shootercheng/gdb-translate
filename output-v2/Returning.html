@@ -1,0 +1,106 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>返回（使用GDB调试）</title>
+
+<meta name="description" content="Returning (Debugging with GDB)"/>
+<meta name="keywords" content="Returning (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Calling.html" rel="next" title="Calling"/>
+<link href="Signaling.html" rel="prev" title="Signaling"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Returning">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Calling.html" rel="next">调用程序函数</a>, 上一项： <a accesskey="p" href="Signaling.html" rel="prev">给你的程序发送信号</a>, 上一级： <a accesskey="u" href="Altering.html" rel="up">改变执行</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Returning-from-a-Function"><span>17.4 从函数返回<a class="copiable-link" href="#Returning-from-a-Function"> ¶</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-return"></a>
+<a id="index-returning-from-a-function"></a><span><code class="code">return</code><a class="copiable-link" href="#index-returning-from-a-function"> ¶</a></span></dt>
+<dt><code class="code">return <var class="var">expression</var></code></dt>
+<dd><p>你可以使用该命令取消函数调用的执行。 <code class="code">return</code>
+命令。如果你给出一个
+<var class="var">表达式</var> 参数，其值将作为函数的返回值。
+</p></dd>
+</dl>
+
+<p>当你使用 <code class="code">return</code>, <small class="sc">GDB</small> 会丢弃所选的栈帧（以及其中的所有帧）。你可以将此视为使被丢弃的帧提前返回。如果你希望指定要返回的值，请将该值作为参数传递给 <code class="code">return</code>.
+</p>
+<p>这会弹出所选的栈帧（请参阅 <a class="pxref" href="Selection.html">选择一个帧</a>），以及其中的任何其他帧，使其调用者成为最内层剩余的帧。该帧将被选中。指定的值将存储在用于返回函数值的寄存器中。
+</p>
+<p>该 <code class="code">return</code> 命令不会恢复执行；它会使程序停留在函数刚刚返回时的状态。相比之下， <code class="code">finish</code> 命令（请参阅 <a class="pxref" href="Continuing-and-Stepping.html">继续和单步执行</a>) 会继续执行，直到所选的栈帧自然返回。
+</p>
+<p><small class="sc">GDB</small> 需要知道如何为 <var class="var">表达式</var> 参数设置下级进程。具体的寄存器分配取决于操作系统的应用程序二进制接口（ABI）以及所选栈帧返回的类型。例如，操作系统的ABI通常会在浮点运算单元（FPU）寄存器中返回浮点值，而在中央处理器（CPU）寄存器中返回整数值。不过，有些ABI甚至会在CPU寄存器中返回浮点值。较大的整数宽度（例如 <code class="code">long long int</code>) 也有特定的放置规则。  <small class="sc">GDB</small> 已经从其当前目标了解了操作系统的ABI，因此它还需要找出要返回的类型，以便将值分配到正确的寄存器中。
+</p>
+<p>通常，所选的栈帧有调试信息。  <small class="sc">GDB</small> 在有调试信息可用时，总是会使用调试信息而不是 <var class="var">表达式</var> 的隐式类型。例如，如果你输入 <kbd class="kbd">return -1</kbd>, 并且当前栈帧中的函数声明返回一个 <code class="code">long long
+int</code>, <small class="sc">GDB</small> 会透明地将隐式的 <code class="code">int</code> 值 -1 转换为一个 <code class="code">long long int</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">断点 1, func () 在 gdb.base/return-nodebug.c:29
+29        return 31;
+(gdb) return -1
+现在让 func 返回吗？(y 或 n) y
+#0  0x004004f6 在 main () 中，位于 gdb.base/return-nodebug.c:43
+43        printf (&#34;result=%lld\n&#34;, func ());
+(gdb)
+</pre></div>
+
+<p>但是，如果所选的栈帧没有调试信息，例如，如果函数是在没有调试信息的情况下编译的， <small class="sc">GDB</small> 必须从用户那里了解要返回的类型。错误地指定不同的类型可能会将值设置在与调用者代码预期不同的下级进程寄存器中。例如，输入 <kbd class="kbd">return -1</kbd> 及其隐式类型 <code class="code">int</code> 只会为没有调试信息的函数设置部分 <code class="code">long long int</code> 结果（在32位架构上）。因此，用户需要通过适当的强制类型转换显式指定返回类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">断点 2, 0x0040050b 在 func () 中
+(gdb) return -1
+所选栈帧的返回值类型不可用。
+请使用显式的强制类型转换来返回值。
+(gdb) return (long long int) -1
+现在让所选栈帧返回吗？(y 或 n) y
+#0  0x00400526 在 main () 中
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Calling.html">调用程序函数</a>, 上一项： <a href="Signaling.html">给你的程序发送信号</a>, 上一级： <a href="Altering.html">改变执行</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

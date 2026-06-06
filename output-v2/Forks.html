@@ -1,0 +1,212 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>分叉（使用 GDB 调试）</title>
+
+<meta name="description" content="Forks (Debugging with GDB)"/>
+<meta name="keywords" content="Forks (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Checkpoint_002fRestart.html" rel="next" title="Checkpoint/Restart"/>
+<link href="Threads.html" rel="prev" title="Threads"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Forks">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Checkpoint_002fRestart.html" rel="next"> <em class="emph">书签</em> 以便稍后返回</a>, 上一项： <a accesskey="p" href="Threads.html" rel="prev">调试多线程程序</a> <a accesskey="u" href="Running.html" rel="up">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Debugging-Forks"><span>4.11 调试分叉<a class="copiable-link" href="#Debugging-Forks"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-fork_002c-debugging-programs-which-call"></a>
+<a class="index-entry-id" id="index-multiple-processes"></a>
+<a class="index-entry-id" id="index-processes_002c-multiple"></a>
+<p>在大多数系统上， <small class="sc">GDB</small> 对于使用 <code class="code">fork</code>
+函数创建额外进程的程序调试没有特殊支持。 当程序分叉时， <small class="sc">GDB</small> 将继续调试父进程，而子进程将不受阻碍地运行。 如果你在子进程随后执行的任何代码中设置了断点，子进程将收到一个 <code class="code">SIGTRAP</code> 信号（除非它捕获该信号）
+这将导致它终止。
+</p>
+<p>但是，如果你想调试子进程，有一个不太麻烦的解决方法。 在子进程在分叉后执行的代码中调用 <code class="code">sleep</code> 。 仅在设置了某个环境变量或存在某个文件时进行休眠可能会很有用，
+这样在你不想对该子进程运行 <small class="sc">GDB</small>
+时就不需要有延迟。 当子进程处于休眠状态时，使用 <code class="code">ps</code> 程序获取其进程 ID。 然后告诉 <small class="sc">GDB</small> （如果你也在调试父进程，则是一个新的
+<small class="sc">GDB</small> 实例）附加到子进程（请参阅 <a class="pxref" href="Attach.html">调试已经运行的进程</a>)。 从那时起，你就可以像调试任何其他附加的进程一样调试子进程。
+</p>
+<p>在某些系统上， <small class="sc">GDB</small> 为使用 <code class="code">fork</code> 或 <code class="code">vfork</code>
+函数创建额外进程的程序调试提供支持。 在 <small class="sc">GNU</small>/Linux 平台上，内核版本 2.5.46 及更高版本支持此功能。
+</p>
+<p>分叉调试命令在原生模式下以及连接到 <code class="code">gdbserver</code> 时，无论是在 <code class="code">target remote</code> 模式还是
+<code class="code">target extended-remote</code> 模式下都受支持。
+</p>
+<p>默认情况下，当程序分叉时， <small class="sc">GDB</small> 将继续调试父进程，而子进程将不受阻碍地运行。
+</p>
+<p>如果你想跟踪子进程而不是父进程，请使用命令 <code class="code">set follow-fork-mode</code><!-- /@w -->.
+</p>
+<dl class="table">
+<dt><a id="index-set-follow_002dfork_002dmode"></a><span><code class="code">set follow-fork-mode <var class="var">mode</var></code><a class="copiable-link" href="#index-set-follow_002dfork_002dmode"> ¶</a></span></dt>
+<dd><p>设置调试器对程序调用 <code class="code">fork</code> 或
+<code class="code">vfork</code>的响应。 对 <code class="code">fork</code> 或 <code class="code">vfork</code> 的调用会创建一个新进程。 <var class="var">模式</var> 参数可以是：
+</p>
+<dl class="table">
+<dt><code class="code">parent</code></dt>
+<dd><p>分叉后调试原始进程。 子进程不受阻碍地运行。 这是默认设置。
+</p>
+</dd>
+<dt><code class="code">child</code></dt>
+<dd><p>分叉后调试新进程。 父进程不受阻碍地运行。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-show-follow_002dfork_002dmode"></a><span><code class="code">show follow-fork-mode</code><a class="copiable-link" href="#index-show-follow_002dfork_002dmode"> ¶</a></span></dt>
+<dd><p>显示调试器当前对 <code class="code">fork</code> 或 <code class="code">vfork</code> 调用的响应。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-debugging-multiple-processes"></a>
+<p>在 Linux 上，如果你想同时调试父进程和子进程，请使用命令 <code class="code">set detach-on-fork</code><!-- /@w -->.
+</p>
+<dl class="table">
+<dt><a id="index-set-detach_002don_002dfork"></a><span><code class="code">set detach-on-fork <var class="var">mode</var></code><a class="copiable-link" href="#index-set-detach_002don_002dfork"> ¶</a></span></dt>
+<dd><p>告诉 gdb 在分叉后是否分离其中一个进程，或者保留对它们两者的调试器控制。
+</p>
+<dl class="table">
+<dt><code class="code">on</code></dt>
+<dd><p>子进程（或父进程，取决于
+<code class="code">follow-fork-mode</code>) 的值）将被分离并允许独立运行。 这是默认设置。
+</p>
+</dd>
+<dt><code class="code">off</code></dt>
+<dd><p>两个进程都将由 <small class="sc">GDB</small>控制。
+一个进程（子进程或父进程，取决于 
+<code class="code">follow-fork-mode</code>) 的值）将像往常一样被调试，而另一个将被暂停。  
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-show-detach_002don_002dfork"></a><span><code class="code">show detach-on-fork</code><a class="copiable-link" href="#index-show-detach_002don_002dfork"> ¶</a></span></dt>
+<dd><p>显示分叉时分离模式是开启还是关闭。
+</p></dd>
+</dl>
+
+<p>如果你选择关闭‘<samp class="samp">分叉时分离</samp>’模式，那么 <small class="sc">GDB</small>
+将保留对所有分叉进程（包括嵌套分叉）的控制。
+你可以使用 <small class="sc">GDB</small> 命令列出受 <code class="code">info inferiors</code><!-- /@w --> 控制的分叉进程，并使用 <code class="code">inferior</code> 命令从一个分叉切换到另一个分叉（请参阅 <a class="pxref" href="Inferiors-Connections-and-Programs.html">调试多个子进程连接和程序</a>)。
+</p>
+<p>要停止调试其中一个分叉进程，你可以使用 <code class="code">detach inferiors</code><!-- /@w --> 命令将其分离（允许它独立运行），或者使用 <code class="code">kill inferiors</code><!-- /@w -->
+命令将其终止。 请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试
+多个子进程连接和程序</a>.
+</p>
+<p>如果你要求调试子进程，并且一个 <code class="code">vfork</code> 之后跟着一个
+<code class="code">exec</code>, <small class="sc">GDB</small> 会执行新目标直到新目标中的第一个断点。 如果你在原始程序的
+<code class="code">main</code> 上设置了断点，该断点也将设置在子进程的 <code class="code">main</code>上。
+</p>
+<p>在某些系统上，当子进程由 <code class="code">vfork</code>产生时，在 <code class="code">exec</code> 调用完成之前，你无法调试子进程或父进程。
+</p>
+<p>如果你在 <code class="code">run</code> 发出 <small class="sc">GDB</small> 调用执行后向 <code class="code">exec</code>
+命令，新目标将重新启动。 要重启父进程，请使用 <code class="code">file</code> 命令并将父可执行文件的名称作为其参数。 默认情况下，在 <code class="code">exec</code> 调用执行后，
+<small class="sc">GDB</small> 会丢弃之前可执行映像的符号。
+你可以使用 <code class="code">set follow-exec-mode</code><!-- /@w -->
+命令更改此行为。
+</p>
+<dl class="table">
+<dt><a id="index-set-follow_002dexec_002dmode"></a><span><code class="code">set follow-exec-mode <var class="var">mode</var></code><a class="copiable-link" href="#index-set-follow_002dexec_002dmode"> ¶</a></span></dt>
+<dd>
+<p>设置调试器对程序调用的响应 <code class="code">exec</code>.  一次
+<code class="code">exec</code> 调用会替换进程的程序映像。
+</p>
+<p><code class="code">follow-exec-mode</code> 可以是：
+</p>
+<dl class="table">
+<dt><code class="code">new</code></dt>
+<dd><p><small class="sc">GDB</small> 创建一个新的子进程并将该进程重新绑定到这个
+新的子进程。  在
+<code class="code">exec</code> 调用之前进程正在运行的程序可以在之后通过重启
+原始子进程来重新启动。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info inferiors
+(gdb) info inferior
+  Id   描述   可执行文件
+* 1    &lt;空&gt;        prog1
+(gdb) run
+进程 12020 正在执行新程序：prog2
+程序正常退出。
+(gdb) info inferiors
+  Id   描述   可执行文件
+  1    &lt;空&gt;        prog1
+* 2    &lt;空&gt;        prog2
+</pre></div>
+
+</dd>
+<dt><code class="code">same</code></dt>
+<dd><p><small class="sc">GDB</small> 使进程保持绑定到同一个子进程。 新的
+可执行映像会替换子进程中之前加载的可执行文件。 在 <code class="code">exec</code> 调用之后重启子进程，例如使用 <code class="code">run</code> 命令，会重启进程在 <code class="code">exec</code> 调用之后正在运行的可执行文件。 这是默认模式。
+</p>
+<p>例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info inferiors
+  Id   描述   可执行文件
+* 1    &lt;空&gt;        prog1
+(gdb) run
+进程 12020 正在执行新程序：prog2
+程序正常退出。
+(gdb) info inferiors
+  Id   描述   可执行文件
+* 1    &lt;空&gt;        prog2
+</pre></div>
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+<p><code class="code">follow-exec-mode</code> 在原生模式和
+<code class="code">target extended-remote</code> 模式下受支持。
+</p>
+<p>你可以使用 <code class="code">catch</code> 命令来让 <small class="sc">GDB</small> 在每次进行 <code class="code">fork</code>, <code class="code">vfork</code>, 或者 <code class="code">exec</code> 调用时停止。 请参阅 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>.
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Checkpoint_002fRestart.html">设置一个 <em class="emph">书签</em> 以便稍后返回</a>, 上一项： <a href="Threads.html">调试多线程程序</a>, 上级： <a href="Running.html">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

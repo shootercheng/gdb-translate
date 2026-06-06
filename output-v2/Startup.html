@@ -1,0 +1,106 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>启动（使用 GDB 调试）</title>
+
+<meta name="description" content="Startup (Debugging with GDB)"/>
+<meta name="keywords" content="Startup (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Invoking-GDB.html" rel="up" title="Invoking GDB"/>
+<link href="Initialization-Files.html" rel="next" title="Initialization Files"/>
+<link href="Mode-Options.html" rel="prev" title="Mode Options"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Startup">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Initialization-Files.html" rel="next">初始化文件</a>, 上一步： <a accesskey="p" href="Mode-Options.html" rel="prev">选择模式</a>, 上级： <a accesskey="u" href="Invoking-GDB.html" rel="up">调用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="What-gdb-Does-During-Startup"><span>2.1.3 什么 <small class="sc">GDB</small> 在启动期间的操作<a class="copiable-link" href="#What-gdb-Does-During-Startup"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-gdb-startup"></a>
+
+<p>以下是关于在会话启动期间所执行操作的描述： <small class="sc">GDB</small> 在会话启动期间的操作如下：
+</p>
+<ol class="enumerate">
+<li> 执行初始化基本内部状态所需的最少设置。
+
+</li><li> <a class="index-entry-id" id="index-early-initialization-file"></a>
+从主目录中的早期初始化文件（如果有）读取命令。 早期初始化文件中只能放置有限的一组命令，请参阅 <a class="ref" href="Initialization-Files.html">初始化文件</a>，了解详细信息。
+
+</li><li> 按指定顺序执行由 ‘<samp class="samp">-eiex</samp>’ 和
+‘<samp class="samp">-eix</samp>’ 命令行选项指定的命令和命令文件。 只有有限的一组命令可以与 ‘<samp class="samp">-eiex</samp>’ 和
+‘<samp class="samp">eix</samp>’ 一起使用，请参阅 <a class="ref" href="Initialization-Files.html">初始化文件</a>，了解详细信息。
+
+</li><li> 按照命令行指定的方式设置命令解释器（请参阅 <a class="pxref" href="Mode-Options.html">解释器</a>）。
+
+</li><li> <a class="index-entry-id" id="index-init-file"></a>
+读取系统范围的初始化文件以及系统范围初始化目录中的文件，请参阅 <a class="pxref" href="Initialization-Files.html#System-Wide-Init-Files">系统范围初始化文件</a>。
+
+</li><li> 读取主目录中的初始化文件（如果有）并执行该文件中的所有命令，请参阅 <a class="pxref" href="Initialization-Files.html#Home-Directory-Init-File">主目录初始化文件</a>。
+
+<a class="anchor" id="Option-_002dinit_002deval_002dcommand"></a></li><li> 按指定顺序执行由 ‘<samp class="samp">-iex</samp>’ 和
+‘<samp class="samp">-ix</samp>’ 选项指定的命令和命令文件。 通常你应该使用 ‘<samp class="samp">-ex</samp>’ 和 ‘<samp class="samp">-x</samp>’ 选项，但通过这种方式，你可以在 <small class="sc">GDB</small> 初始化文件执行之前和目标程序加载之前应用设置。
+
+</li><li> 处理命令行选项和操作数。
+
+</li><li> 只要 ‘<samp class="samp">set auto-load
+local-gdbinit</samp>’ 设置为 ‘<samp class="samp">on</samp>’（请参阅 <a class="pxref" href="Init-File-in-the-Current-Directory.html">自动加载当前目录中的初始化文件</a>），就会读取并执行当前工作目录中的初始化文件（如果有）中的命令。 只有当当前目录与主目录不同时才会执行此操作。 因此，你可以有多个初始化文件，一个通用的在主目录中，另一个特定于你正在调试的程序，位于你调用的目录中
+<small class="sc">GDB</small>。 请参阅 <a class="xref" href="Initialization-Files.html#Init-File-in-the-Current-Directory-during-Startup">启动期间当前目录中的初始化文件</a>。
+
+</li><li> 如果命令行指定了要调试的程序、要附加的进程或核心文件， <small class="sc">GDB</small> 加载为该程序或其加载的共享库提供的任何自动加载脚本。 请参阅 <a class="xref" href="Auto_002dloading.html">自动加载关联文件</a>。
+
+<p>如果你希望在启动期间禁用自动加载，你必须执行类似以下的操作：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb -iex &#34;set auto-load python-scripts off&#34; myprogram
+</pre></div>
+
+<p>选项 ‘<samp class="samp">-ex</samp>’ 不起作用，因为这样自动加载关闭得太晚了。
+</p>
+</li><li> 按指定顺序执行由 ‘<samp class="samp">-ex</samp>’ 和
+‘<samp class="samp">-x</samp>’ 选项指定的命令和命令文件。 请参阅 <a class="xref" href="Command-Files.html">命令文件</a>, 了解有关 <small class="sc">GDB</small> 命令文件的更多详细信息。
+
+</li><li> 读取记录在 <em class="dfn">历史文件</em>中的命令历史记录。 请参阅 <a class="xref" href="Command-History.html">命令历史记录</a>, 了解有关命令历史记录以及记录它的文件的更多详细信息。 <small class="sc">GDB</small> 
+</li></ol>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Initialization-Files.html">初始化文件</a>, 上一步： <a href="Mode-Options.html">选择模式</a>, 上级： <a href="Invoking-GDB.html">调用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

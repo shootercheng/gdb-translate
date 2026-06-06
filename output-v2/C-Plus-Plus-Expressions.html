@@ -1,0 +1,117 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>C++ 表达式（使用 GDB 调试）</title>
+
+<meta name="description" content="C Plus Plus Expressions (Debugging with GDB)"/>
+<meta name="keywords" content="C Plus Plus Expressions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="C.html" rel="up" title="C"/>
+<link href="C-Defaults.html" rel="next" title="C Defaults"/>
+<link href="C-Constants.html" rel="prev" title="C Constants"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="C-Plus-Plus-Expressions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="C-Defaults.html" rel="next">C 和 C<code class="t">++</code> 默认设置</a>, 上一项： <a accesskey="p" href="C-Constants.html" rel="prev">C 和 C<code class="t">++</code> 常量</a>, 上一项： <a accesskey="u" href="C.html" rel="up">C 和 C<code class="t">++</code></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="C_002b_002b-Expressions"><span>15.4.1.3 C<code class="t">++</code> 表达式<a class="copiable-link" href="#C_002b_002b-Expressions"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-expressions-in-C_002b_002b"></a>
+<p><small class="sc">GDB</small> 表达式处理可以解释大多数 C<code class="t">++</code> 表达式。
+</p>
+<a class="index-entry-id" id="index-debugging-C_002b_002b-programs"></a>
+<a class="index-entry-id" id="index-C_002b_002b-compilers"></a>
+<a class="index-entry-id" id="index-debug-formats-and-C_002b_002b"></a>
+<a class="index-entry-id" id="index-gcc-and-C_002b_002b"></a>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> <small class="sc">GDB</small> 只有在使用合适的编译器和合适的调试格式时才能调试 C<code class="t">++</code> 代码。目前，
+<small class="sc">GDB</small> 在调试使用最新版本的<code class="t">++</code> 编译器编译的 C <small class="sc">GCC</small> 代码时效果最佳。首选 DWARF 调试格式； <small class="sc">GCC</small> 在大多数流行平台上默认使用此格式。使用 <small class="sc">GDB</small> 调试 C<code class="t">++</code>
+代码时，其他编译器和/或调试格式可能效果不佳或根本无法工作。请参阅 <a class="xref" href="Compilation.html">为调试而编译</a>.
+</p></blockquote>
+
+<ol class="enumerate">
+<li> <a class="index-entry-id" id="index-member-functions"></a>
+允许调用成员函数；你可以使用像
+
+<div class="example smallexample">
+<pre class="example-preformatted">count = aml-&gt;GetOriginal(x, y) 这样的表达式
+</pre></div>
+
+</li><li> <a class="index-entry-id" id="index-this_002c-inside-C_002b_002b-member-functions"></a>
+<a class="index-entry-id" id="index-namespace-in-C_002b_002b"></a>
+当一个成员函数处于活动状态（在所选的栈帧中）时，你的表达式与该成员函数具有相同的命名空间；也就是说， <small class="sc">GDB</small> 允许隐式引用类实例指针 <code class="code">this</code> 遵循与 C 相同的规则<code class="t">++</code>.  <code class="code">using</code>
+当前作用域中的声明也会被 <small class="sc">GDB</small>尊重。
+
+</li><li> <a class="index-entry-id" id="index-call-overloaded-functions"></a>
+<a class="index-entry-id" id="index-overloaded-functions_002c-calling"></a>
+<a class="index-entry-id" id="index-type-conversions-in-C_002b_002b"></a>
+你可以调用重载函数； <small class="sc">GDB</small> 会在一些限制条件下将函数调用解析为正确的定义。  <small class="sc">GDB</small> 不会执行涉及用户定义类型转换、构造函数调用或程序中不存在的模板实例化的重载解析。它也无法处理省略号参数列表或默认参数。
+
+<p>它会执行整数转换和提升、浮点提升、算术转换、指针转换、类对象到基类的转换以及诸如函数或数组到指针的标准转换；它要求函数参数数量完全匹配。
+</p>
+<p>除非你指定了
+<code class="code">set overload-resolution off</code>. 请参阅 <a class="xref" href="Debugging-C-Plus-Plus.html"><small class="sc">GDB</small> C 的特性<code class="t">++</code></a>.
+</p>
+<p>你必须指定 <code class="code">set overload-resolution off</code> 才能使用显式函数签名调用重载函数，例如
+</p><div class="example smallexample">
+<pre class="example-preformatted">p &#39;foo(char,int)&#39;(&#39;x&#39;, 13)
+</pre></div>
+
+<p> <small class="sc">GDB</small> 命令补全功能可以简化这一过程；请参阅 <a class="ref" href="Completion.html">命令补全</a>.
+</p>
+</li><li> <a class="index-entry-id" id="index-reference-declarations"></a>
+<small class="sc">GDB</small> 理解声明为 C<code class="t">++</code> 左值或右值引用的变量；你可以在表达式中像在 C<code class="t">++</code>
+源代码中一样使用它们 —— 它们会自动解引用。
+
+<p>在 <small class="sc">GDB</small> 显示帧时显示的参数列表中，引用变量的值不会显示（与其他变量不同）；这避免了混乱，因为引用通常用于大型结构。 <em class="emph">引用变量的地址总是会显示，除非你指定了 ‘</em> <samp class="samp">set print address off</samp>’。
+</p>
+</li><li> <small class="sc">GDB</small> 支持 C<code class="t">++</code> 名称解析运算符 <code class="code">::</code> —— 你的表达式可以像程序中的表达式一样使用它。由于一个作用域可能定义在另一个作用域中，如有必要，你可以多次使用 <code class="code">::</code> ，例如在像 ‘<samp class="samp"><var class="var">scope1</var>::<var class="var">scope2</var>::<var class="var">name</var></samp>’ 这样的表达式中。  <small class="sc">GDB</small> 还允许在 C 和 C<code class="t">++</code>
+调试中通过引用源文件来解析名称作用域（请参阅 <a class="pxref" href="Variables.html">程序变量</a>)。
+
+</li><li> <small class="sc">GDB</small> 会根据 C<code class="t">++</code>
+规范执行依赖于参数的查找。
+</li></ol>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="C-Defaults.html">C 和 C<code class="t">++</code> 默认设置</a>, 上一项： <a href="C-Constants.html">C 和 C<code class="t">++</code> 常量</a>, 上一项： <a href="C.html">C 和 C<code class="t">++</code></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

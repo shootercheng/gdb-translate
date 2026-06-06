@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Readline vi 模式（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Readline vi Mode (Debugging with GDB)"/>
+<meta name="keywords" content="Readline vi Mode (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Command-Line-Editing.html" rel="up" title="Command Line Editing"/>
+<link href="Bindable-Readline-Commands.html" rel="prev" title="Bindable Readline Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Readline-vi-Mode">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Bindable-Readline-Commands.html" rel="prev">可绑定的 Readline 命令</a>, 上一级： <a accesskey="u" href="Command-Line-Editing.html" rel="up">命令行编辑</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Readline-vi-Mode-1"><span>33.5 Readline vi 模式<a class="copiable-link" href="#Readline-vi-Mode-1"> ¶</a></span></h3>
+
+<p>虽然 Readline 库没有一套完整的 <code class="code">vi</code>
+编辑功能，但它包含了足够的功能来允许对行进行简单编辑。Readline <code class="code">vi</code> 模式的行为符合 <small class="sc">POSIX</small> 标准的规定。
+</p>
+<p>为了在 <code class="code">emacs</code> 和 <code class="code">vi</code>
+编辑模式之间进行交互式切换，请使用命令 <kbd class="kbd">M - C - j</kbd> （在 <code class="code">vi</code> 模式下绑定到 emacs - 编辑模式，在 <code class="code">emacs</code> 模式下绑定到 vi - 编辑模式）。
+Readline 的默认模式是 <code class="code">emacs</code> 模式。
+</p>
+<p>当你在 <code class="code">vi</code> 模式下输入一行内容时，你已经处于
+‘插入’模式，就好像你已经输入了一个‘<samp class="samp">i</samp>’。按下 <kbd class="key">ESC</kbd>
+会将你切换到‘命令’模式，在该模式下你可以使用标准的 <code class="code">vi</code> 移动键来编辑行文本，使用‘<samp class="samp">k</samp>’移动到上一条历史记录行，使用‘<samp class="samp">j</samp>’移动到下一条历史记录行，依此类推。
+</p>
+
+</div>
+
+
+
+
+
+</body></html>

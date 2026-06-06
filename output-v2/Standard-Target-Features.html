@@ -1,0 +1,94 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>标准目标特性（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Standard Target Features (Debugging with GDB)"/>
+<meta name="keywords" content="Standard Target Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Target-Descriptions.html" rel="up" title="Target Descriptions"/>
+<link href="Enum-Target-Types.html" rel="prev" title="Enum Target Types"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Standard-Target-Features">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="p" href="Enum-Target-Types.html" rel="prev">枚举目标类型</a>, 上一级： <a accesskey="u" href="Target-Descriptions.html" rel="up">目标描述</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Standard-Target-Features-1"><span>G.5 标准目标特性<a class="copiable-link" href="#Standard-Target-Features-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-target-descriptions_002c-standard-features"></a>
+
+<p>目标描述要么不包含寄存器，要么包含目标的所有寄存器。如果描述中不包含寄存器，那么
+<small class="sc">GDB</small> 将根据架构选择默认的寄存器布局。如果描述中包含任何寄存器，则不会使用默认布局；标准寄存器必须在目标描述中进行描述，以便 <small class="sc">GDB</small>
+能够识别它们。
+</p>
+<p>这可以通过为包含标准寄存器的特性元素指定特定名称来实现。  <small class="sc">GDB</small> 将查找具有这些名称的特性，并验证它们是否包含预期的寄存器；如果任何已知特性缺少所需的寄存器，或者缺少任何必需的特性， <small class="sc">GDB</small> 将拒绝该目标描述。您可以向任何标准特性添加额外的寄存器 —— <small class="sc">GDB</small> 将像对待添加到未识别特性中的寄存器一样显示它们。
+</p>
+<p>本节列出了已知的特性及其预期内容。这些特性的示例 XML 文档包含在
+<small class="sc">GDB</small> 源代码树的 <samp class="file">gdb/特性</samp>目录中。
+</p>
+<p>识别的名称 <small class="sc">GDB</small> 应包含选择该名称的公司或组织的名称，以及该特性所适用的整体架构；例如，包含 ARM 内核寄存器的特性名为 ‘<samp class="samp">org.gnu.gdb.arm.core</samp>’。
+</p>
+<p>为了识别标准特性，寄存器的名称不区分大小写，但 <small class="sc">GDB</small> 只会使用描述中使用的大小写来显示寄存器。
+</p>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="AArch64-Features.html">AArch64 特性</a></li>
+<li><a accesskey="2" href="Alpha-Features.html">Alpha 特性</a></li>
+<li><a accesskey="3" href="ARC-Features.html">ARC 特性</a></li>
+<li><a accesskey="4" href="ARM-Features.html">ARM 特性</a></li>
+<li><a accesskey="5" href="i386-Features.html">i386 特性</a></li>
+<li><a accesskey="6" href="LoongArch-Features.html">龙芯架构特性</a></li>
+<li><a accesskey="7" href="MicroBlaze-Features.html">MicroBlaze 特性</a></li>
+<li><a accesskey="8" href="MIPS-Features.html"><abbr class="acronym">MIPS</abbr> 特性</a></li>
+<li><a accesskey="9" href="M68K-Features.html">M68K 特性</a></li>
+<li><a href="NDS32-Features.html">NDS32 特性</a></li>
+<li><a href="OpenRISC-1000-Features.html">Openrisc 1000 特性</a></li>
+<li><a href="PowerPC-Features.html">PowerPC 特性</a></li>
+<li><a href="RISC_002dV-Features.html">RISC-V 特性</a></li>
+<li><a href="RX-Features.html">RX 特性</a></li>
+<li><a href="S_002f390-and-System-z-Features.html">S/390 和 System z 特性</a></li>
+<li><a href="Sparc-Features.html">Sparc 特性</a></li>
+<li><a href="TIC6x-Features.html">TMS320C6x 特性</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一页： <a href="Enum-Target-Types.html">枚举目标类型</a>, 上一级： <a href="Target-Descriptions.html">目标描述</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

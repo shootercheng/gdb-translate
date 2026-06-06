@@ -1,0 +1,251 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>便利变量（使用 GDB 调试）</title>
+
+<meta name="description" content="Convenience Vars (Debugging with GDB)"/>
+<meta name="keywords" content="Convenience Vars (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Convenience-Funs.html" rel="next" title="Convenience Funs"/>
+<link href="Value-History.html" rel="prev" title="Value History"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Convenience-Vars">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Convenience-Funs.html" rel="next">便利函数</a>, 上一项： <a accesskey="p" href="Value-History.html" rel="prev">值历史记录</a>, 上级： <a accesskey="u" href="Data.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Convenience-Variables"><span><a class="copiable-link" href="#Convenience-Variables"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-convenience-variables"></a>
+<a class="index-entry-id" id="index-user_002ddefined-variables"></a>
+<p><small class="sc">GDB</small> 提供 <em class="dfn">便利变量</em> 你可以在其中使用
+<small class="sc">GDB</small> 来保存一个值并在以后引用它。这些变量完全存在于 <small class="sc">GDB</small>；它们不是你程序的一部分，设置便利变量对程序的进一步执行没有直接影响。这就是为什么你可以自由使用它们的原因。
+</p>
+<p><samp class="samp">$</samp>’。任何以<samp class="samp">$</samp>’ 开头的名称都可以用作便利变量，除非它是预定义的特定于机器的寄存器名称之一（请参阅 <a class="pxref" href="Registers.html">寄存器</a>）。（相比之下，值历史记录引用是 <em class="emph">数字</em> ，前面带有 ‘<samp class="samp">$</samp>’。请参阅 <a class="xref" href="Value-History.html">值历史记录</a>)
+</p>
+<p>你可以使用赋值表达式将值保存到便利变量中，就像在程序中设置变量一样。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $foo = *object_ptr
+</pre></div>
+
+<p>会将 <code class="code">$foo</code> 中由
+<code class="code">object_ptr</code>指向的对象包含的值保存起来。
+</p>
+<p>首次使用便利变量时会创建它，但在你分配新值之前，它的值是 <code class="code">void</code> 。你可以随时通过另一个赋值来更改该值。
+</p>
+<p>便利变量没有固定的类型。你可以为便利变量分配任何类型的值，包括结构体和数组，即使该变量已经有不同类型的值。便利变量在用作表达式时，具有其当前值的类型。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-all-user-variables-and-functions"></a>
+<a id="index-show-convenience"></a><span><code class="code">show convenience</code><a class="copiable-link" href="#index-show-convenience"> ¶</a></span></dt>
+<dd><p>打印到目前为止使用的便利变量及其值的列表，以及便利函数的列表。缩写 <code class="code">show conv</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-convenience-variables_002c-initializing"></a>
+<a id="index-init_002dif_002dundefined"></a><span><code class="code">init-if-undefined $<var class="var">variable</var> = <var class="var">expression</var></code><a class="copiable-link" href="#index-init_002dif_002dundefined"> ¶</a></span></dt>
+<dd><p>如果便利变量尚未设置，则设置它。这对于保留某些状态的用户定义命令很有用。从概念上讲，它类似于在 C 中使用带有初始值设定项的局部静态变量（除了便利变量是全局的）。它还可以用于允许用户覆盖命令脚本中使用的默认值。
+</p>
+<p>如果变量已经定义，则不会计算表达式，因此不会发生任何副作用。
+</p></dd>
+</dl>
+
+<p>使用便利变量的一种方法是将其用作计数器进行递增，或者用作指针进行推进。例如，要打印结构体数组中连续元素的一个字段：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $i = 0
+print bar[$i++]-&gt;contents
+</pre></div>
+
+<p>通过输入 <kbd class="key">回车键</kbd>。
+</p>
+<p>一些便利变量由 <small class="sc">GDB</small> 自动创建，并赋予可能有用的值。
+</p>
+<dl class="table">
+<dt><a id="index-_0024_005f_002c-convenience-variable"></a><span><code class="code">$_</code><a class="copiable-link" href="#index-_0024_005f_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>变量 <code class="code">$_</code> 由 <code class="code">x</code> 命令自动设置为最后检查的地址（请参阅 <a class="pxref" href="Memory.html">检查内存</a>）。其他为 <code class="code">x</code> 提供默认检查地址的命令也会将 <code class="code">$_</code> 设置为该地址；这些命令包括 <code class="code">info line</code>
+和 <code class="code">info breakpoint</code>。 <code class="code">$_</code> 的类型是 <code class="code">void *</code>
+，除非由 <code class="code">x</code> 命令设置，在这种情况下，它是指向 <code class="code">$__</code>类型的指针。
+</p>
+</dd>
+<dt><a id="index-_0024_005f_005f_002c-convenience-variable"></a><span><code class="code">$__</code><a class="copiable-link" href="#index-_0024_005f_005f_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>变量 <code class="code">$__</code> 由 <code class="code">x</code> 命令自动设置为在最后检查的地址中找到的值。其类型选择为与数据打印的格式相匹配。
+</p>
+</dd>
+<dt><a id="index-_0024_005fexitcode_002c-convenience-variable"></a><span><code class="code">$_exitcode</code><a class="copiable-link" href="#index-_0024_005fexitcode_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>当被调试的程序正常终止时， <small class="sc">GDB</small>
+会自动将此变量设置为程序的退出代码，并将 <code class="code">$_exitsignal</code> 重置为 <code class="code">void</code>。
+</p>
+</dd>
+<dt><a id="index-_0024_005fexitsignal_002c-convenience-variable"></a><span><code class="code">$_exitsignal</code><a class="copiable-link" href="#index-_0024_005fexitsignal_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>当被调试的程序因未捕获的信号而终止时，
+<small class="sc">GDB</small> 会自动将此变量设置为该信号的编号，并将 <code class="code">$_exitcode</code> 重置为 <code class="code">void</code>。
+</p>
+<p>为了区分被调试的程序是退出了（即 <code class="code">$_exitcode</code> 不是 <code class="code">void</code>）还是收到了信号（即
+<code class="code">$_exitsignal</code> 不是 <code class="code">void</code>），可以使用便利函数
+<code class="code">$_isvoid</code> （请参阅 <a class="pxref" href="Convenience-Funs.html">便利函数</a>）。例如，考虑以下源代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#include &lt;signal.h&gt;
+
+int
+main (int argc, char *argv[])
+{
+  raise (SIGALRM);
+  return 0;
+}
+</pre></div>
+
+<p>判断被调试的程序是退出还是收到信号的有效方法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) define has_exited_or_signalled
+Type commands for definition of ``has_exited_or_signalled&#39;&#39;.
+End with a line saying just ``end&#39;&#39;.
+&gt;if $_isvoid ($_exitsignal)
+ &gt;echo The program has exited\n
+ &gt;else
+ &gt;echo The program has signalled\n
+ &gt;end
+&gt;end
+(gdb) run
+Starting program:
+
+Program terminated with signal SIGALRM, Alarm clock.
+The program no longer exists.
+(gdb) has_exited_or_signalled
+The program has signalled
+</pre></div>
+
+<p>可以看出， <small class="sc">GDB</small> 正确地告知被调试的程序收到了信号，因为它调用了 <code class="code">raise</code> 并引发了一个
+<code class="code">SIGALRM</code> 信号。如果被调试的程序没有调用
+<code class="code">raise</code>, 那么 <small class="sc">GDB</small> 会报告正常退出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) has_exited_or_signalled
+The program has exited
+</pre></div>
+
+</dd>
+<dt><code class="code">$_exception</code></dt>
+<dd><p>变量 <code class="code">$_exception</code> 被设置为在异常相关的捕获点抛出的异常对象。请参阅 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</dd>
+<dt><code class="code">$_ada_exception</code></dt>
+<dd><p>变量 <code class="code">$_ada_exception</code> 被设置为在 Ada 异常相关的捕获点捕获或抛出的异常的地址。请参阅 <a class="xref" href="Set-Catchpoints.html">设置捕获点</a>。
+</p>
+</dd>
+<dt><code class="code">$_probe_argc</code></dt>
+<dt><code class="code">$_probe_arg0…$_probe_arg11</code></dt>
+<dd><p>静态探针的参数。请参阅 <a class="xref" href="Static-Probe-Points.html">静态探针点</a>。
+</p>
+</dd>
+<dt><a id="index-_0024_005fsdata_002c-inspect_002c-convenience-variable"></a><span><code class="code">$_sdata</code><a class="copiable-link" href="#index-_0024_005fsdata_002c-inspect_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>变量 <code class="code">$_sdata</code> 包含额外收集的静态跟踪点数据。请参阅 <a class="xref" href="Tracepoint-Actions.html">跟踪点动作列表</a>。请注意，
+<code class="code">$_sdata</code> 如果不检查跟踪缓冲区，或者如果尚未收集额外的静态跟踪点数据，则可能为空。
+</p>
+</dd>
+<dt><a id="index-_0024_005fsiginfo_002c-convenience-variable"></a><span><code class="code">$_siginfo</code><a class="copiable-link" href="#index-_0024_005fsiginfo_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>变量 <code class="code">$_siginfo</code> 包含额外的信号信息（请参阅 <a class="pxref" href="Signals.html#extra-signal-information">额外的信号信息</a>）。请注意， <code class="code">$_siginfo</code>
+如果应用程序尚未接收到任何信号，则可能为空。例如，在执行 <code class="code">run</code> 命令之前它将为空。
+</p>
+</dd>
+<dt><a id="index-_0024_005ftlb_002c-convenience-variable"></a><span><code class="code">$_tlb</code><a class="copiable-link" href="#index-_0024_005ftlb_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>变量 <code class="code">$_tlb</code> 在以原生模式调试运行在 MS - Windows 上的应用程序时，或者连接到支持 <code class="code">qGetTIBAddr</code> 请求的 gdbserver 时会自动设置。请参阅 <a class="xref" href="General-Query-Packets.html">通用查询数据包</a>。此变量包含线程信息块的地址。
+</p>
+</dd>
+<dt><code class="code">$_inferior</code></dt>
+<dd><p>当前 inferior 的编号。请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个 inferior 连接和程序</a>。
+</p>
+</dd>
+<dt><code class="code">$_thread</code></dt>
+<dd><p>当前线程的线程编号。请参阅 <a class="xref" href="Threads.html#thread-numbers">线程编号</a>。
+</p>
+</dd>
+<dt><code class="code">$_gthread</code></dt>
+<dd><p>当前线程的全局编号。请参阅 <a class="xref" href="Threads.html#global-thread-numbers">全局线程编号</a>。
+</p>
+</dd>
+<dt><code class="code">$_inferior_thread_count</code></dt>
+<dd><p>当前 inferior 中活动线程的数量。请参阅 <a class="xref" href="Threads.html">调试多线程程序</a>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_0024_005fgdb_005fminor_002c-convenience-variable"></a>
+<a id="index-_0024_005fgdb_005fmajor_002c-convenience-variable"></a><span><code class="code">$_gdb_major</code><a class="copiable-link" href="#index-_0024_005fgdb_005fmajor_002c-convenience-variable"> ¶</a></span></dt>
+<dt><code class="code">$_gdb_minor</code></dt>
+<dd><p>正在运行的 <small class="sc">GDB</small>的主版本号和次版本号。开发快照和预测试版本的次版本号会加 1；因此， <small class="sc">GDB</small> 预测试版 9.11.90 会为 <code class="code">$_gdb_minor</code>产生值 12。这些变量允许你编写适用于不同版本的 <small class="sc">GDB</small>
+的脚本，而不会因某些版本中不可用的功能而导致错误。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-_0024_005fshell_005fexitsignal_002c-convenience-variable"></a>
+<a class="index-entry-id" id="index-shell-command_002c-exit-code"></a>
+<a class="index-entry-id" id="index-shell-command_002c-exit-signal"></a>
+<a class="index-entry-id" id="index-exit-status-of-shell-commands"></a>
+<a id="index-_0024_005fshell_005fexitcode_002c-convenience-variable"></a><span><code class="code">$_shell_exitcode</code><a class="copiable-link" href="#index-_0024_005fshell_005fexitcode_002c-convenience-variable"> ¶</a></span></dt>
+<dt><code class="code">$_shell_exitsignal</code></dt>
+<dd><p><small class="sc">GDB</small> 诸如 <code class="code">shell</code> 和 <code class="code">|</code> 之类的命令正在启动 shell 命令。当启动的命令终止时， <small class="sc">GDB</small>
+会根据最后启动的命令的退出状态自动维护变量 <code class="code">$_shell_exitcode</code>
+和 <code class="code">$_shell_exitsignal</code> 。这些变量的设置和使用方式与变量 <code class="code">$_exitcode</code> 和 <code class="code">$_exitsignal</code>类似。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-color-space"></a>
+<a id="index-_0024_005fcolorsupport_002c-convenience-variable"></a><span><code class="code">$_colorsupport</code><a class="copiable-link" href="#index-_0024_005fcolorsupport_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>终端支持的 <em class="dfn">颜色空间</em> 名称的逗号分隔列表。名称可以是 ‘<samp class="samp">单色</samp>’、‘<samp class="samp">ANSI 8 色</samp>’、‘<samp class="samp">Aixterm 16 色</samp>’、‘<samp class="samp">Xterm 256 色</samp>’、‘<samp class="samp">RGB 24 位</samp>’。例如，对于普通的 Linux 终端，该值可能是 ‘<samp class="samp">单色,ANSI 8 色</samp>’，对于支持真彩色的终端，它可能是 ‘<samp class="samp">单色,ANSI 8 色,Aixterm 16 色,Xterm 256 色,RGB 24 位</samp>’。‘<samp class="samp">RGB 24 位</samp>’的可用性由 <code class="env">COLORTERM</code> 环境变量决定，该变量可能是 ‘<samp class="samp">真彩色</samp>’ 或 ‘<samp class="samp">24 位</samp>’。其他颜色空间由 “Co” 终端能力决定，而 “Co” 又取决于 <code class="env">TERM</code>
+环境变量。
+</p>
+</dd>
+<dt><a id="index-_0024_005flinker_005fnamespace_005fcount_002c-convenience-variable"></a><span><code class="code">$_linker_namespace_count</code><a class="copiable-link" href="#index-_0024_005flinker_005fnamespace_005fcount_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>inferior 中活动链接器命名空间的数量（请参阅 <a class="pxref" href="Files.html">指定文件的命令</a>）。在不支持链接器命名空间的系统中，或者如果 inferior 尚未启动，此变量将始终设置为 ‘<samp class="samp">0</samp>’。
+</p>
+</dd>
+<dt><a id="index-_0024_005flinker_005fnamespace_002c-convenience-variable"></a><span><code class="code">$_linker_namespace</code><a class="copiable-link" href="#index-_0024_005flinker_005fnamespace_002c-convenience-variable"> ¶</a></span></dt>
+<dd><p>包含 inferior 中当前位置的命名空间。这返回
+<small class="sc">GDB</small>对该命名空间的内部编号。在不支持链接器命名空间的系统中，此变量将始终设置为 ‘<samp class="samp">0</samp>’。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Convenience-Funs.html">便利函数</a>, 上一项： <a href="Value-History.html">值历史记录</a>, 上级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

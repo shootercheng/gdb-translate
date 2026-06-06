@@ -1,0 +1,252 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>开始（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Starting (Debugging with GDB)"/>
+<meta name="keywords" content="Starting (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Arguments.html" rel="next" title="Arguments"/>
+<link href="Compilation.html" rel="prev" title="Compilation"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Starting">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Arguments.html" rel="next"></a>, 上一步： <a accesskey="p" href="Compilation.html" rel="prev">为调试而编译</a>, 上级： <a accesskey="u" href="Running.html" rel="up"> <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Starting-your-Program"><span>4.2 启动你的程序<a class="copiable-link" href="#Starting-your-Program"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-starting"></a>
+<a class="index-entry-id" id="index-running"></a>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-r-_0028run_0029"></a>
+<a id="index-run"></a><span><code class="code">run</code><a class="copiable-link" href="#index-run"> ¶</a></span></dt>
+<dt><code class="code">r</code></dt>
+<dd><p>使用 <code class="code">run</code> 命令在 <small class="sc">GDB</small>.
+你必须首先使用参数指定程序名称给
+<small class="sc">GDB</small> (见 <a class="pxref" href="Invocation.html">进入和退出
+<small class="sc">GDB</small></a> <code class="code">file</code> 或 <code class="code">exec-file</code>
+命令（见 <a class="pxref" href="Files.html">指定文件的命令</a>).
+</p>
+</dd>
+</dl>
+
+<p>如果你在支持进程的执行环境中运行程序， <code class="code">run</code> 会创建一个被调试进程，并使该进程运行你的程序。在一些不支持进程的环境中，
+<code class="code">run</code> 会跳转到你的程序的开始处。其他目标，如‘<samp class="samp">remote</samp>’，总是处于运行状态。如果你收到如下错误消息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">The &#34;remote&#34; target does not support &#34;run&#34;.
+Try &#34;help target&#34; or &#34;continue&#34;.
+</pre></div>
+
+<p>那么使用 <code class="code">continue</code> 来运行你的程序。你可能需要先 <code class="code">load</code>
+(见 <a class="pxref" href="Target-Commands.html#load">load</a>).
+</p>
+<p>程序的执行会受到它从上级接收的某些信息的影响。  <small class="sc">GDB</small> 提供了指定这些信息的方法，你必须在 <em class="emph">启动程序之前</em> 进行指定。（你可以在启动程序后更改这些信息，但这些更改只会在下一次启动程序时影响程序。）这些信息可以分为四类：
+</p>
+<dl class="table">
+<dt>程序的 <em class="emph">参数。</em></dt>
+<dd><p>将传递给程序的参数指定为
+<code class="code">run</code> 命令的参数。如果目标系统上有可用的 shell，会使用 shell 来传递参数，这样你可以使用正常的约定（如通配符展开或变量替换）来描述参数。在 Unix 系统上，你可以使用
+<code class="env">SHELL</code> 环境变量来控制使用哪个 shell。如果你未定义 <code class="env">SHELL</code>,
+<small class="sc">GDB</small> 会使用默认的 shell（<samp class="file">/bin/sh</samp>)。你可以使用 <code class="code">set startup-with-shell</code> 命令禁用使用任何 shell（详情见下文）。
+</p>
+</dd>
+<dt>程序的 <em class="emph">环境。</em></dt>
+<dd><p>你的程序通常从 <small class="sc">GDB</small>继承其环境，但你可以使用 <small class="sc">GDB</small> 命令 <code class="code">set environment</code> 和 <code class="code">unset
+environment</code> 来更改影响程序的部分环境。见 <a class="xref" href="Environment.html">你的程序的环境</a>.
+</p>
+</dd>
+<dt>程序的 <em class="emph">工作目录。</em></dt>
+<dd><p>你可以使用命令
+<kbd class="kbd">set cwd</kbd>.来设置程序的工作目录。如果你未使用此命令设置任何工作目录，你的程序将在进行原生调试时继承 <small class="sc">GDB</small>的工作目录，或者在进行远程调试时继承远程服务器的工作目录。见 <a class="xref" href="Working-Directory.html">你的程序的工作目录</a>.
+</p>
+</dd>
+<dt>程序的 <em class="emph">标准输入和输出。</em></dt>
+<dd><p>你的程序通常使用与 <small class="sc">GDB</small> 相同的设备进行标准输入和标准输出。你可以在 <code class="code">run</code> 命令行中重定向输入和输出，或者使用 <code class="code">tty</code> 命令为你的程序设置不同的设备。见 <a class="xref" href="Input_002fOutput.html">你的程序的输入和输出</a>.
+</p>
+<a class="index-entry-id" id="index-pipes"></a>
+<p><em class="emph">警告：</em> 虽然输入和输出重定向可以正常工作，但你不能使用管道将正在调试的程序的输出传递给另一个程序；如果你尝试这样做， <small class="sc">GDB</small> 很可能最终会调试错误的程序。
+</p></dd>
+</dl>
+
+<p>当你发出 <code class="code">run</code> 命令时，你的程序会立即开始执行。见 <a class="xref" href="Stopping.html">停止和继续</a>, 讨论如何安排程序停止。一旦你的程序停止，你可以使用 <code class="code">print</code>
+或 <code class="code">call</code> 命令调用程序中的函数。见 <a class="xref" href="Data.html">检查数据</a>.
+</p>
+<p>如果自上次 <small class="sc">GDB</small> 读取符号文件以来，符号文件的修改时间发生了变化， <small class="sc">GDB</small> 会丢弃其符号表并重新读取。在这样做时， <small class="sc">GDB</small> 会尝试保留你当前的断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-start"></a>
+<a id="index-run-to-main-procedure"></a><span><code class="code">start</code><a class="copiable-link" href="#index-run-to-main-procedure"> ¶</a></span></dt>
+<dd><p>主程序的名称可能因语言而异。在 C 或 C++ 中，主程序的名称总是<code class="t">++</code>, 但其他语言（如 Ada）不要求主程序有特定的名称。调试器提供了一种方便的方法来启动程序的执行，并根据使用的语言在主程序的开始处停止。 <code class="code">main</code>
+</p>
+<p>‘<samp class="samp">start</samp>’命令相当于在主程序的开始处设置一个临时断点，然后调用‘<samp class="samp">run</samp>’命令。
+</p>
+<a class="index-entry-id" id="index-elaboration-phase"></a>
+<p>有些程序包含一个 <em class="dfn">程序准备阶段</em> 在调用主程序之前执行一些启动代码的阶段。这取决于编写程序所使用的语言。例如，在 C 语言中<code class="t">++</code>，静态和全局对象的构造函数会在
+<code class="code">main</code> 被调用之前执行。因此，调试器有可能在到达主程序之前停止。然而，临时断点仍将用于暂停执行。
+</p>
+<p>将传递给程序的参数指定为‘<samp class="samp">start</samp>’命令的参数。这些参数将原封不动地传递给底层的‘<samp class="samp">run</samp>’命令。请注意，如果在后续调用‘<samp class="samp">start</samp>’或‘<samp class="samp">run</samp>’时未提供参数，将重用相同的参数。
+</p>
+<p>有时需要在程序准备阶段进行调试。在这些情况下，使用 <code class="code">start</code> 命令会使程序执行停止得太晚，因为程序可能已经完成了准备阶段。在这种情况下，可以在运行程序之前在准备代码中插入断点，或者使用 <code class="code">starti</code> 命令。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-starti"></a>
+<a id="index-run-to-first-instruction"></a><span><code class="code">starti</code><a class="copiable-link" href="#index-run-to-first-instruction"> ¶</a></span></dt>
+<dd><p>‘<samp class="samp">starti</samp>’命令相当于在程序执行的第一条指令处设置一个临时断点，然后调用‘<samp class="samp">run</samp>’命令。对于包含准备阶段的程序， <code class="code">starti</code> 命令将在准备阶段开始时停止执行。
+</p>
+<a class="anchor" id="set-exec_002dwrapper"></a></dd>
+<dt><a id="index-set-exec_002dwrapper"></a><span><code class="code">set exec-wrapper <var class="var">wrapper</var></code><a class="copiable-link" href="#index-set-exec_002dwrapper"> ¶</a></span></dt>
+<dt><code class="code">show exec-wrapper</code></dt>
+<dt><code class="code">unset exec-wrapper</code></dt>
+<dd><p>当设置了‘<samp class="samp">exec-wrapper</samp>’时，将使用指定的包装器来启动要调试的程序。  <small class="sc">GDB</small> 以如下形式的 shell 命令启动你的程序 <kbd class="kbd">exec <var class="var">wrapper</var>
+<var class="var">program</var></kbd>。会对 <var class="var">program</var> 及其参数添加引号，但不会对 <var class="var">wrapper</var>添加引号，因此如果你的 shell 需要，你应该自行添加引号。包装器会一直运行，直到执行你的程序，然后 <small class="sc">GDB</small> 接管控制权。
+</p>
+<p>你可以使用任何最终调用 <code class="code">execve</code> 及其参数的程序作为包装器。一些标准的 Unix 实用程序可以做到这一点，例如 <code class="code">env</code> 和 <code class="code">nohup</code>。任何以 <code class="code">exec &#34;$@&#34;</code> 结尾的 Unix shell 脚本也可以。
+</p>
+<p>例如，你可以使用 <code class="code">env</code> 将一个环境变量传递给被调试的程序，而无需在你的 shell 环境中设置该变量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set exec-wrapper env &#39;LD_PRELOAD=libtest.so&#39;
+(gdb) run
+</pre></div>
+
+<p>此命令在大多数目标系统（不包括
+<small class="sc">DJGPP</small>、Cygwin 和 MS Windows）上进行本地调试时可用。
+</p>
+<a class="index-entry-id" id="index-set-startup_002dwith_002dshell"></a>
+<a class="anchor" id="set-startup_002dwith_002dshell"></a></dd>
+<dt><code class="code">set startup-with-shell</code></dt>
+<dt><code class="code">set startup-with-shell on</code></dt>
+<dt><code class="code">set startup-with-shell off</code></dt>
+<dt><code class="code">show startup-with-shell</code></dt>
+<dd><p>在 Unix 系统上，默认情况下，如果目标系统上有可用的 shell，
+<small class="sc">GDB</small>) 会使用它来启动你的程序。
+<code class="code">run</code> 命令的参数会传递给 shell，shell 会进行变量替换、展开通配符并执行 I/O 重定向。在某些情况下，禁用使用 shell 可能会很有用，例如，在调试 shell 本身或诊断启动失败时，如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) run
+Starting program: ./a.out
+During startup program terminated with signal SIGSEGV, Segmentation fault.
+</pre></div>
+
+<p>这表明 shell 或使用‘<samp class="samp">exec-wrapper</samp>’指定的包装器崩溃了，而不是你的程序。大多数情况下，这是由 shell 的非交互式模式初始化文件中的异常情况引起的，例如 <samp class="file">.cshrc</samp> 对于 C-shell，$<samp class="file">.zshenv</samp> 对于 Z shell，或者 BASH 环境变量指定的文件。
+<code class="env">BASH_ENV</code> 
+</p>
+<a class="anchor" id="set-auto_002dconnect_002dnative_002dtarget"></a></dd>
+<dt><a id="index-set-auto_002dconnect_002dnative_002dtarget"></a><span><code class="code">set auto-connect-native-target</code><a class="copiable-link" href="#index-set-auto_002dconnect_002dnative_002dtarget"> ¶</a></span></dt>
+<dt><code class="code">set auto-connect-native-target on</code></dt>
+<dt><code class="code">set auto-connect-native-target off</code></dt>
+<dt><code class="code">show auto-connect-native-target</code></dt>
+<dd>
+<p>默认情况下，如果当前的被调试程序尚未连接到任何目标（例如，使用 <code class="code">target remote</code>）， <code class="code">run</code> 命令会在你的本地机器上以原生进程的方式启动你的程序。如果你确定不想在本地机器上调试程序，你可以使用 <small class="sc">GDB</small>, 在你的本地机器上。如果你确定不想在本地机器上调试程序，你可以告诉 <small class="sc">GDB</small> 不要自动连接到原生目标，使用 <code class="code">set auto-connect-native-target off</code>
+命令。
+</p>
+<p>如果 <code class="code">on</code>（默认情况），并且当前的被调试程序尚未连接到目标， <code class="code">run</code> 命令会自动连接到可用的原生目标。
+</p>
+<p>如果 <code class="code">off</code>, 并且如果当前的被调试程序尚未连接到目标， <code class="code">run</code> 命令会出错失败：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) run
+Don&#39;t know how to run.  Try &#34;help target&#34;.
+</pre></div>
+
+<p>如果当前的被调试程序已经连接到目标， <small class="sc">GDB</small>
+总是会在 <code class="code">run</code> 命令中使用该连接。
+</p>
+<p>在任何情况下，你都可以使用
+<code class="code">target native</code> 命令显式地连接到原生目标。例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set auto-connect-native-target off
+(gdb) run
+Don&#39;t know how to run.  Try &#34;help target&#34;.
+(gdb) target native
+(gdb) run
+Starting program: ./a.out
+[Inferior 1 (process 10421) exited normally]
+</pre></div>
+
+<p>如果你显式地连接到了 <code class="code">native</code> 目标，
+<small class="sc">GDB</small> 即使所有被调试程序退出，连接仍然保持，准备好进行下一次 <code class="code">run</code> 命令。使用 <code class="code">disconnect</code> 命令断开连接。
+</p>
+<p>其他同样遵循
+<code class="code">auto-connect-native-target</code> 设置的命令示例： <code class="code">attach</code>, <code class="code">info
+proc</code>, <code class="code">info os</code>.
+</p>
+</dd>
+<dt><a id="index-set-disable_002drandomization"></a><span><code class="code">set disable-randomization</code><a class="copiable-link" href="#index-set-disable_002drandomization"> ¶</a></span></dt>
+<dt><code class="code">set disable-randomization on</code></dt>
+<dd><p>此选项（在 <small class="sc">GDB</small>中默认启用）将关闭启动程序的虚拟地址空间的原生随机化。此选项对于多个调试会话很有用，可以使执行更具可重复性，并使内存地址在不同调试会话中可重用。
+</p>
+<p>此功能仅在某些目标系统上实现，包括 <small class="sc">GNU</small>/Linux。在 <small class="sc">GNU</small>/Linux 上，你可以使用
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set exec-wrapper setarch `uname -m` -R
+</pre></div>
+
+</dd>
+<dt><code class="code">set disable-randomization off</code></dt>
+<dd><p>保持启动的可执行文件的行为不变。有些 bug 只有在程序加载到特定地址时才会出现。如果你在 <small class="sc">GDB</small>下运行程序时 bug 消失了，可能是因为
+<small class="sc">GDB</small> 默认情况下在某些平台（如 <small class="sc">GNU</small>/Linux）上禁用了地址随机化，而这些平台在独立程序中会进行地址随机化。使用 <kbd class="kbd">set
+disable-randomization off</kbd> 来尝试重现这些难以捉摸的 bug。
+</p>
+<p>在支持虚拟地址空间随机化的目标系统上，它可以保护程序免受某些类型的安全攻击。在这些情况下，攻击者需要知道具体可执行代码的确切位置。随机化其位置使得利用预期地址处的代码注入跳转变得不可能。
+</p>
+<p>预链接共享库可以提供启动性能优势，但它会使特权进程通过无特权访问目标系统就能预测这些库中的地址。读取共享库二进制文件可以获得足够的信息来组装滥用它的恶意代码。不过，即使是预链接的共享库也可以在启动时加载到新的随机地址，只需在启动期间进行常规的重定位过程。未预链接的共享库总是加载到随机选择的地址。
+</p>
+<p>位置无关可执行文件（PIE）包含类似于共享库的位置无关代码，因此此类可执行文件在启动时会加载到随机选择的地址。PIE 可执行文件总是将即使已经预链接的共享库加载到随机地址。你可以使用 <code class="command">gcc -fPIE -pie</code>.
+</p>
+<p>堆（malloc 存储）、栈和自定义 mmap 区域总是随机放置（只要启用了随机化）。
+</p>
+</dd>
+<dt><code class="code">show disable-randomization</code></dt>
+<dd><p>显示启动程序的虚拟地址空间的原生随机化的显式禁用的当前设置。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Arguments.html">你的程序的参数</a>, 上一步： <a href="Compilation.html">为调试而编译</a>, 上级： <a href="Running.html">在 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

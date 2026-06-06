@@ -1,0 +1,103 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ravenscar 配置文件（使用 GDB 调试）</title>
+
+<meta name="description" content="Ravenscar Profile (Debugging with GDB)"/>
+<meta name="keywords" content="Ravenscar Profile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Ada-Source-Character-Set.html" rel="next" title="Ada Source Character Set"/>
+<link href="Ada-Tasks-and-Core-Files.html" rel="prev" title="Ada Tasks and Core Files"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ravenscar-Profile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ada-Source-Character-Set.html" rel="next">Ada 源字符集</a>, 上一项： <a accesskey="p" href="Ada-Tasks-and-Core-Files.html" rel="prev">调试核心文件时的任务支持</a>, 上级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Tasking-Support-when-using-the-Ravenscar-Profile"><span>15.4.10.9 使用 Ravenscar 配置文件时的任务支持<a class="copiable-link" href="#Tasking-Support-when-using-the-Ravenscar-Profile"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Ravenscar-Profile"></a>
+
+<p> <em class="dfn">Ravenscar 配置文件</em> 是 Ada 任务特性的一个子集，专门为有安全关键实时需求的系统设计。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-task-switching-with-program-using-Ravenscar-Profile"></a>
+<a id="index-set-ravenscar-task_002dswitching-on"></a><span><code class="code">set ravenscar task-switching on</code><a class="copiable-link" href="#index-set-ravenscar-task_002dswitching-on"> ¶</a></span></dt>
+<dd><p>在调试使用 Ravenscar 配置文件的程序时允许任务切换。这是默认设置。
+</p>
+</dd>
+<dt><a id="index-set-ravenscar-task_002dswitching-off"></a><span><code class="code">set ravenscar task-switching off</code><a class="copiable-link" href="#index-set-ravenscar-task_002dswitching-off"> ¶</a></span></dt>
+<dd><p>在调试使用 Ravenscar 配置文件的程序时关闭任务切换。这主要是为了禁用添加对 Ravenscar 配置文件支持的代码，以防任一代码中的错误 <small class="sc">GDB</small> 或 Ravenscar 运行时的错误导致 <small class="sc">GDB</small> 无法正常工作。为了生效，此命令应在程序启动前运行。
+</p>
+</dd>
+<dt><a id="index-show-ravenscar-task_002dswitching"></a><span><code class="code">show ravenscar task-switching</code><a class="copiable-link" href="#index-show-ravenscar-task_002dswitching"> ¶</a></span></dt>
+<dd><p>显示在使用 Ravenscar 配置文件的程序中是否可以在任务之间切换。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-Ravenscar-thread"></a>
+<p>当启用 Ravenscar 任务切换时，Ravenscar 任务会被 <small class="sc">GDB</small> 宣布，就好像它们是线程一样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) continue
+[新 Ravenscar 线程 0x2b8f0]
+</pre></div>
+
+<p>Ravenscar 任务和底层 CPU 线程都会显示在 <code class="code">info threads</code>的输出中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info threads
+  Id   目标 ID                  帧
+  1    线程 1 (CPU#0 [运行中]) simple () 在 simple.adb:10
+  2    线程 2 (CPU#1 [运行中]) 0x0000000000003d34 在 __gnat_initialize_cpu_devices ()
+  3    线程 3 (CPU#2 [运行中]) 0x0000000000003d28 在 __gnat_initialize_cpu_devices ()
+  4    线程 4 (CPU#3 [暂停 ]) 0x000000000000c6ec 在 system.task_primitives.operations.idle ()
+* 5    Ravenscar 线程 0x2b8f0   simple () 在 simple.adb:10
+  6    Ravenscar 线程 0x2f150   0x000000000000c6ec 在 system.task_primitives.operations.idle ()
+</pre></div>
+
+<p>在 <small class="sc">GDB</small> 中对 Ravenscar 支持的一个已知限制是，目前无法单步执行运行时初始化序列。如果需要调试此代码，应使用 <code class="code">set ravenscar task-switching off</code>.
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Ada-Source-Character-Set.html">Ada 源字符集</a>, 上一项： <a href="Ada-Tasks-and-Core-Files.html">调试核心文件时的任务支持</a>, 上级： <a href="Ada.html">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

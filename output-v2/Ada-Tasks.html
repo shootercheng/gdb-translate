@@ -1,0 +1,291 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Ada任务（使用GDB调试）</title>
+
+<meta name="description" content="Ada Tasks (Debugging with GDB)"/>
+<meta name="keywords" content="Ada Tasks (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Ada.html" rel="up" title="Ada"/>
+<link href="Ada-Tasks-and-Core-Files.html" rel="next" title="Ada Tasks and Core Files"/>
+<link href="Ada-Exceptions.html" rel="prev" title="Ada Exceptions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Ada-Tasks">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Ada-Tasks-and-Core-Files.html" rel="next">调试核心文件时的任务支持</a>, 上一项： <a accesskey="p" href="Ada-Exceptions.html" rel="prev">Ada异常</a>，上级： <a accesskey="u" href="Ada.html" rel="up">Ada</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Extensions-for-Ada-Tasks"><span>15.4.10.7 Ada任务扩展<a class="copiable-link" href="#Extensions-for-Ada-Tasks"> </a></span></h4>
+<a class="index-entry-id" id="index-Ada_002c-tasking"></a>
+
+<p> <a class="pxref" href="Threads.html">调试多线程程序</a>)
+<small class="sc">GDB</small> 提供了以下与任务相关的命令：
+</p>
+<dl class="table">
+<dt><a id="index-info-tasks"></a><span><code class="code">info tasks</code><a class="copiable-link" href="#index-info-tasks"> ¶</a></span></dt>
+<dd><p>此命令显示当前Ada任务的列表，如下例所示：
+</p>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                 Name
+   1   8088000   0   15 Child Activation Wait main_task
+   2   80a4000   1   15 Accept Statement      b
+   3   809a800   1   15 Child Activation Wait a
+*  4   80ae800   3   15 Runnable              c
+
+</pre></div>
+
+<p>在此列表中，最后一个任务前的星号表示它是当前正在检查的任务。
+</p>
+<dl class="table">
+<dt>ID</dt>
+<dd><p>表示 <small class="sc">GDB</small>的内部任务编号。
+</p>
+</dd>
+<dt>TID</dt>
+<dd><p>Ada任务ID。
+</p>
+</dd>
+<dt>P-ID</dt>
+<dd><p>父任务ID（<small class="sc">GDB</small>的内部任务编号）。
+</p>
+</dd>
+<dt>优先级</dt>
+<dd><p>任务的基本优先级。
+</p>
+</dd>
+<dt>状态</dt>
+<dd><p>任务的当前状态。
+</p>
+<dl class="table">
+<dt><code class="code">Unactivated</code></dt>
+<dd><p>任务已创建但尚未激活。它不能正在执行。
+</p>
+</dd>
+<dt><code class="code">Runnable</code></dt>
+<dd><p>任务没有因Ada已知的任何原因而阻塞。（不过，它可能正在等待互斥锁。）它在概念上以正常模式“执行”。
+</p>
+</dd>
+<dt><code class="code">Terminated</code></dt>
+<dd><p>任务已终止，符合ARM 9.3 (5)的定义。任何等待终止选择的依赖项都已被唤醒并自行终止。
+</p>
+</dd>
+<dt><code class="code">Child Activation Wait</code></dt>
+<dd><p>任务正在等待已创建的任务完成激活。
+</p>
+</dd>
+<dt><code class="code">Accept or Select Term</code></dt>
+<dd><p>任务正在等待接受或选择性等待语句。
+</p>
+</dd>
+<dt><code class="code">Waiting on entry call</code></dt>
+<dd><p>任务正在等待入口调用。
+</p>
+</dd>
+<dt><code class="code">Async Select Wait</code></dt>
+<dd><p>任务正在等待启动异步选择语句的可中止部分。
+</p>
+</dd>
+<dt><code class="code">Delay Sleep</code></dt>
+<dd><p>任务正在等待只有延迟选择项开放的选择语句。
+</p>
+</dd>
+<dt><code class="code">Child Termination Wait</code></dt>
+<dd><p>任务在完成自身内的主任务后正在休眠，并正在等待依赖于该主任务的任务终止或等待终止阶段。
+</p>
+</dd>
+<dt><code class="code">Wait Child in Term Alt</code></dt>
+<dd><p>任务正在休眠，等待终止选择上的任务完成终止。
+</p>
+</dd>
+<dt><code class="code">Asynchronous Hold</code></dt>
+<dd><p>任务已被 <code class="code">Ada.Asynchronous_Task_Control.Hold_Task</code>持有。
+</p>
+</dd>
+<dt><code class="code">Activating</code></dt>
+<dd><p>任务已创建并正在变为可运行状态。
+</p>
+</dd>
+<dt><code class="code">Selective Wait</code></dt>
+<dd><p>任务正在选择性等待语句中等待。
+</p>
+</dd>
+<dt><code class="code">Accepting RV with <var class="var">taskno</var></code></dt>
+<dd><p>任务正在与任务 <var class="var">任务编号</var>.
+</p>
+</dd>
+<dt><code class="code">Waiting on RV with <var class="var">taskno</var></code></dt>
+<dd><p>任务正在等待与任务 <var class="var">任务编号</var>进行会合。
+</p></dd>
+</dl>
+
+</dd>
+<dt>名称</dt>
+<dd><p>程序中任务的名称。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-info-task-taskno"></a><span><code class="code">info task <var class="var">taskno</var></code><a class="copiable-link" href="#index-info-task-taskno"> ¶</a></span></dt>
+<dd><p>此命令显示指定任务的详细信息，如下例所示：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                  Name
+   1   8077880    0  15 Child Activation Wait  main_task
+*  2   807c468    1  15 Runnable               task_1
+(gdb) info task 2
+Ada Task: 0x807c468
+Name: &#34;task_1&#34;
+Thread: 0
+LWP: 0x1fac
+Parent: 1 (&#34;main_task&#34;)
+Base Priority: 15
+State: Runnable
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-current-Ada-task-ID"></a>
+<a id="index-task-_0028Ada_0029"></a><span><code class="code">task</code><a class="copiable-link" href="#index-task-_0028Ada_0029"> ¶</a></span></dt>
+<dd><p>此命令打印当前任务的ID和名称。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                  Name
+   1   8077870    0  15 Child Activation Wait  main_task
+*  2   807c458    1  15 Runnable               some_task
+(gdb) task
+[Current task is 2 &#34;some_task&#34;]
+</pre></div>
+
+</dd>
+<dt><a id="index-Ada-task-switching"></a><span><code class="code">task <var class="var">taskno</var></code><a class="copiable-link" href="#index-Ada-task-switching"> ¶</a></span></dt>
+<dd><p>此命令类似于 <code class="code">thread <var class="var">thread-id</var></code>
+命令（见 <a class="pxref" href="Threads.html">调试多线程程序</a>）。它将调试上下文从当前任务切换到给定任务。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                  Name
+   1   8077870    0  15 Child Activation Wait  main_task
+*  2   807c458    1  15 Runnable               some_task
+(gdb) task 1
+[Switching to task 1 &#34;main_task&#34;]
+#0  0x8067726 in pthread_cond_wait ()
+(gdb) bt
+#0  0x8067726 in pthread_cond_wait ()
+#1  0x8056714 in system.os_interface.pthread_cond_wait ()
+#2  0x805cb63 in system.task_primitives.operations.sleep ()
+#3  0x806153e in system.tasking.stages.activate_tasks ()
+#4  0x804aacc in un () at un.adb:5
+</pre></div>
+
+</dd>
+<dt><code class="code">task apply [<var class="var">task-id-list</var> | all] [<var class="var">flag</var>]… <var class="var">command</var></code></dt>
+<dd><p> <code class="code">task apply</code> 命令是Ada任务处理中与
+<code class="code">thread apply</code> （见 <a class="pxref" href="Threads.html">调试多线程程序</a>）类似的命令。它允许你将命名的 <var class="var">命令</var> 应用于一个或多个任务。使用任务ID列表指定你希望受影响的任务，或者指定 <code class="code">all</code> 以应用于所有任务。
+</p>
+<p> <var class="var">标志</var> 参数控制在将 <var class="var">命令</var> 应用于任务时产生什么输出以及如何处理引发的错误。
+<var class="var">标志</var> 必须以 <code class="code">-</code> 开头，紧接着是 <code class="code">qcs</code>中的一个字母。如果提供了多个标志，它们必须单独给出，例如 <code class="code">-c -q</code>。
+</p>
+<p>默认情况下， <small class="sc">GDB</small> 在 <var class="var">命令</var>产生的输出之前显示一些任务信息，并且在执行 <var class="var">命令</var> 期间引发的错误将中止 <code class="code">task apply</code>。可以使用以下标志来微调此行为：
+</p>
+<dl class="table">
+<dt><code class="code">-c</code></dt>
+<dd><p>标志 <code class="code">-c</code>，代表‘<samp class="samp">继续</samp>’，会使 <var class="var">命令</var> 中的任何错误被显示，然后
+<code class="code">task apply</code> 的执行继续。
+</p></dd>
+<dt><code class="code">-s</code></dt>
+<dd><p>标志 <code class="code">-s</code>，代表‘<samp class="samp">静默</samp>’，会使任何由 <var class="var">命令</var> 产生的错误或空输出被静默忽略。也就是说，执行会继续，但任务信息和错误不会被打印。
+</p></dd>
+<dt><code class="code">-q</code></dt>
+<dd><p>标志 <code class="code">-q</code> （‘<samp class="samp">安静</samp>’）会禁用任务信息的打印。
+</p></dd>
+</dl>
+
+<p>标志 <code class="code">-c</code> 和 <code class="code">-s</code> 不能一起使用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-task-breakpoints_002c-in-Ada"></a>
+<a class="index-entry-id" id="index-break-_2026-task-taskno-_0028Ada_0029"></a>
+<a id="index-breakpoints-and-tasks_002c-in-Ada"></a><span><code class="code">break <var class="var">locspec</var> task <var class="var">taskno</var></code><a class="copiable-link" href="#index-breakpoints-and-tasks_002c-in-Ada"> ¶</a></span></dt>
+<dt><code class="code">break <var class="var">locspec</var> task <var class="var">taskno</var> if …</code></dt>
+<dd><p>这些命令类似于 <code class="code">break … thread …</code>
+命令（见 <a class="pxref" href="Thread-Stops.html">停止和启动多线程程序</a>）。见 <a class="xref" href="Location-Specifications.html">位置规范</a>，了解 <var class="var">位置规范</var>的各种形式。
+</p>
+<p>使用限定符‘<samp class="samp">任务 <var class="var">任务编号</var></samp>’与断点命令一起使用，以指定你只想 <small class="sc">GDB</small> 在特定的Ada任务到达此断点时停止程序。 <var class="var">任务编号</var> 是由 <small class="sc">GDB</small>分配的数字任务标识符之一，显示在‘<samp class="samp">info tasks</samp>’显示的第一列中。
+</p>
+<p>如果你在设置断点时不指定‘<samp class="samp">任务 <var class="var">任务编号</var></samp>’，则该断点适用于 <em class="emph">所有</em> 程序任务。
+</p>
+<p>你也可以在条件断点上使用 <code class="code">task</code> 限定符；在这种情况下，将‘<samp class="samp">任务 <var class="var">任务编号</var></samp>’放在 <code class="code">if</code>之前。
+</p>
+<p>例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info tasks
+  ID       TID P-ID Pri State                 Name
+   1 140022020   0   15 Child Activation Wait main_task
+   2 140045060   1   15 Accept/Select Wait    t2
+   3 140044840   1   15 Runnable              t1
+*  4 140056040   1   15 Runnable              t3
+(gdb) b 15 task 2
+Breakpoint 5 at 0x120044cb0: file test_task_debug.adb, line 15.
+(gdb) cont
+Continuing.
+task # 1 running
+task # 2 running
+
+Breakpoint 5, test_task_debug () at test_task_debug.adb:15
+15               flush;
+(gdb) info tasks
+  ID       TID P-ID Pri State                 Name
+   1 140022020   0   15 Child Activation Wait main_task
+*  2 140045060   1   15 Runnable              t2
+   3 140044840   1   15 Runnable              t1
+   4 140056040   1   15 Delay Sleep           t3
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Ada-Tasks-and-Core-Files.html">调试核心文件时的任务支持</a>，上一项： <a href="Ada-Exceptions.html">Ada异常</a>, 上级： <a href="Ada.html">Ada</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

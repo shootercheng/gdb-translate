@@ -1,0 +1,83 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>目标描述（使用 GDB 调试）</title>
+
+<meta name="description" content="Target Descriptions (Debugging with GDB)"/>
+<meta name="keywords" content="Target Descriptions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Operating-System-Information.html" rel="next" title="Operating System Information"/>
+<link href="Agent-Expressions.html" rel="prev" title="Agent Expressions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Target-Descriptions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Operating-System-Information.html" rel="next">操作系统信息</a>, 上一项： <a accesskey="p" href="Agent-Expressions.html" rel="prev">GDB 代理表达式机制</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="appendix" id="Target-Descriptions-1"><span>附录 G 目标描述<a class="copiable-link" href="#Target-Descriptions-1"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-target-descriptions"></a>
+
+<p>使用的挑战之一 <small class="sc">GDB</small> 来调试嵌入式系统的挑战之一是，每种正在使用的处理器架构都有许多细微的变体。供应商通常会从一个标准的处理器内核开始，比如 ARM、PowerPC 或 <abbr class="acronym">MIPS</abbr> ，然后进行修改以使其适应特定的市场细分领域。有些架构有数百种变体，来自数十家供应商。这导致了一些问题：
+</p>
+<ul class="itemize mark-bullet">
+<li>由于有这么多不同的定制处理器，对于 <small class="sc">GDB</small> 维护者来说，跟上这些变化是很困难的。
+</li><li>由于个别变体可能寿命较短或受众有限，在 <small class="sc">GDB</small> 源代码树中保留关于每个变体的信息可能不值得。
+</li><li>当 <small class="sc">GDB</small> 确实支持手头嵌入式系统的架构时，为
+<code class="command">set architecture</code> 命令找到正确的架构名称的任务可能容易出错。
+</li></ul>
+
+<p>为了解决这些问题， <small class="sc">GDB</small> 远程协议允许目标系统不仅向 <small class="sc">GDB</small>标识自身，而且实际上描述其自身的特性。这使得 <small class="sc">GDB</small> 能够支持它以前从未见过的处理器变体——只要描述准确，并且 <small class="sc">GDB</small> 能够理解它们。
+</p>
+<p><small class="sc">GDB</small> 必须与 Expat 库链接以支持 XML 目标描述。请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Retrieving-Descriptions.html">检索描述</a></li>
+<li><a accesskey="2" href="Target-Description-Format.html">目标描述格式</a></li>
+<li><a accesskey="3" href="Predefined-Target-Types.html">预定义的目标类型</a></li>
+<li><a accesskey="4" href="Enum-Target-Types.html">枚举目标类型</a></li>
+<li><a accesskey="5" href="Standard-Target-Features.html">标准目标特性</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Operating-System-Information.html">操作系统信息</a>, 上一项： <a href="Agent-Expressions.html">GDB 代理表达式机制</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

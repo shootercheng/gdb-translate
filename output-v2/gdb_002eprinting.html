@@ -1,0 +1,84 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>gdb.printing（使用GDB进行调试）</title>
+
+<meta name="description" content="gdb.printing (Debugging with GDB)"/>
+<meta name="keywords" content="gdb.printing (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-modules.html" rel="up" title="Python modules"/>
+<link href="gdb_002etypes.html" rel="next" title="gdb.types"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="gdb_002eprinting">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="gdb_002etypes.html" rel="next">gdb.types</a>，上一项： <a accesskey="u" href="Python-modules.html" rel="up">Python模块</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="gdb_002eprinting-1"><span>23.3.4.1 gdb.printing<a class="copiable-link" href="#gdb_002eprinting-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-gdb_002eprinting"></a>
+
+<p>此模块提供了一组用于处理漂亮打印机的实用工具。
+</p>
+<dl class="table">
+<dt><code class="code">PrettyPrinter (<var class="var">name</var>, <var class="var">subprinters</var>=None)</code></dt>
+<dd><p>此类指定了使 ‘<samp class="samp">info pretty - printer（查看漂亮打印机信息）</samp>’、
+‘<samp class="samp">enable pretty - printer（启用漂亮打印机）</samp>’ 和 ‘<samp class="samp">disable pretty - printer（禁用漂亮打印机）</samp>’ 起作用的API。
+漂亮打印机通常应继承此类。
+</p>
+</dd>
+<dt><code class="code">SubPrettyPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>对于处理多种类型的打印机，此类为子打印机指定了相应的API。
+</p>
+</dd>
+<dt><code class="code">RegexpCollectionPrettyPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>用于处理多个打印机的实用类，所有打印机都通过正则表达式识别。
+请参阅 <a class="xref" href="Writing-a-Pretty_002dPrinter.html">编写漂亮打印机</a> ，以获取示例。
+</p>
+</dd>
+<dt><code class="code">FlagEnumerationPrinter (<var class="var">name</var>)</code></dt>
+<dd><p>一个用于处理打印 <code class="code">enum</code> 值的漂亮打印机。 与
+<small class="sc">GDB</small>的内置 <code class="code">enum</code> 打印不同，当枚举常量之间存在一些重叠时，此打印机尝试正常工作。 参数 <var class="var">name（名称）</var> 是打印机的名称，也是要查找的 <code class="code">enum</code> 类型的名称。
+</p>
+</dd>
+<dt><code class="code">register_pretty_printer (<var class="var">obj</var>, <var class="var">printer</var>, <var class="var">replace</var>=False)</code></dt>
+<dd><p>注册 <var class="var">打印机</var> 到 <var class="var">obj（对象）</var>的漂亮打印机列表中。
+如果 <var class="var">replace（替换）</var> 为 <code class="code">True</code> 则替换任何现有的打印机副本。 否则，如果已经存在同名的打印机，则会引发 <code class="code">RuntimeError</code> 异常。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

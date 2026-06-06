@@ -1,0 +1,397 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>来自 Guile 中下级程序的值（使用 GDB 调试）</title>
+
+<meta name="description" content="Values From Inferior In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Values From Inferior In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Arithmetic-In-Guile.html" rel="next" title="Arithmetic In Guile"/>
+<link href="Guile-Exception-Handling.html" rel="prev" title="Guile Exception Handling"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Values-From-Inferior-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Arithmetic-In-Guile.html" rel="next">Guile 中的算术运算</a>, 上一项： <a accesskey="p" href="Guile-Exception-Handling.html" rel="prev">Guile 异常处理</a> <a accesskey="u" href="Guile-API.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Values-From-Inferior-In-Guile-1"><span>23.4.3.5 来自 Guile 中下级程序的值<a class="copiable-link" href="#Values-From-Inferior-In-Guile-1"> </a></span></h4>
+<a class="index-entry-id" id="index-values-from-inferior_002c-in-guile"></a>
+<a class="index-entry-id" id="index-guile_002c-working-with-values-from-inferior"></a>
+
+<a class="index-entry-id" id="index-_003cgdb_003avalue_003e"></a>
+<p><small class="sc">GDB</small> 在一个类型为 <code class="code">&lt;gdb:value&gt;</code>的对象中提供从下级程序获取的值。  <small class="sc">GDB</small> 使用这个对象
+来对下级程序的值进行内部记录，并在必要时获取值。
+</p>
+<p><small class="sc">GDB</small> 不进行记忆化 <code class="code">&lt;gdb:value&gt;</code> 对象。
+<code class="code">make-value</code> 总是返回一个新对象。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (eq? (make-value 1) (make-value 1))
+$1 = #f
+(gdb) guile (equal? (make-value 1) (make-value 1))
+$1 = #t
+</pre></div>
+
+<p>一个 <code class="code">&lt;gdb:value&gt;</code> 表示函数的对象可以通过
+下级函数调用使用 <code class="code">value-call</code>来执行。
+调用时提供的任何参数必须与函数的原型匹配，
+并且必须按照原型指定的顺序提供。
+</p>
+<p>例如， <code class="code">some-val</code> 是一个 <code class="code">&lt;gdb:value&gt;</code> 实例
+表示一个接受两个整数作为参数的函数。要
+执行这个函数，像这样调用它：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(define result (value-call some-val 10 20))
+</pre></div>
+
+<p>从函数调用返回的任何值都是 <code class="code">&lt;gdb:value&gt;</code> 对象。
+</p>
+<p>注意：与 <small class="sc">GDB</small>中的 Python 脚本不同，
+简单标量的下级值不能直接用于
+对该值的数据类型有效的 Scheme 表达式中。例如， <code class="code">(+ (parse-and-eval &#34;int_variable&#34;) 2)</code> 不起作用。并且下级值是结构体或某个类的实例时，不能
+使用任何特殊语法访问，而是 <code class="code">value-field</code> 必须使用。
+</p>
+<p>以下与值相关的过程由
+<code class="code">(gdb)</code> 模块提供。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">value?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-value_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:value&gt;</code> 对象。
+否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dvalue"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">make-value</strong> <var class="def-var-arguments">值 <span class="r">[</span>#:type type<span class="r">]</span></var><a class="copiable-link" href="#index-make_002dvalue"> ¶</a></span></dt>
+<dd><p>许多 Scheme 值可以使用这个过程直接转换为 <code class="code">&lt;gdb:value&gt;</code>
+。如果 <var class="var">类型</var> 被指定，结果是这个类型的值，并且如果 <var class="var">值</var> 不能用这个类型表示
+则会抛出异常。否则结果的类型由
+<var class="var">值</var> 确定，如下所述。
+</p>
+<p>参见 <a class="xref" href="Architectures-In-Guile.html">架构的 Guile 表示</a>，以获取架构的内置类型列表。
+</p>
+<p>以下是当 <var class="var">类型</var> 参数传递给
+<code class="code">make-value</code> 未指定时，Scheme 值的转换方式：
+</p>
+<dl class="table">
+<dt>Scheme 布尔值</dt>
+<dd><p>Scheme 布尔值被转换为当前语言的布尔类型。
+</p>
+</dd>
+<dt>Scheme 整数</dt>
+<dd><p>Scheme 整数被转换为当前架构的 C <code class="code">int</code>,
+<code class="code">unsigned int</code>, <code class="code">long</code>, <code class="code">unsigned long</code>,
+<code class="code">long long</code> 或 <code class="code">unsigned long long</code> 类型中第一个能够表示该值的类型。
+</p>
+<p>如果 Scheme 整数不能表示为目标整数
+则会抛出 <code class="code">out-of-range</code> 异常。
+</p>
+</dd>
+<dt>Scheme 实数</dt>
+<dd><p>Scheme 实数被转换为当前架构的 C <code class="code">double</code> 类型。
+</p>
+</dd>
+<dt>Scheme 字符串</dt>
+<dd><p>Scheme 字符串使用当前目标编码转换为当前目标语言的字符串。
+不能用当前目标编码表示的字符会被相应的转义序列替换。这是 Guile 的
+<code class="code">SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE</code> 转换策略
+（参见 <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Strings.html#Strings">字符串</a> 在 <cite class="cite">GNU Guile 参考手册</cite>中）。
+</p>
+<p>传递 <var class="var">类型</var> 在这种情况下不支持，如果提供了 <code class="code">wrong-type-arg</code> 则会抛出异常。
+</p>
+</dd>
+<dt><code class="code">&lt;gdb:lazy-string&gt;</code></dt>
+<dd><p>如果 <var class="var">值</var> 是一个 <code class="code">&lt;gdb:lazy-string&gt;</code> 对象（参见 <a class="pxref" href="Lazy-Strings-In-Guile.html">Guile 对惰性字符串的表示。</a>），那么 <code class="code">lazy-string-&gt;value</code> 过程被调用，并且
+其结果被使用。
+</p>
+<p>传递 <var class="var">类型</var> 在这种情况下不支持，如果提供了 <code class="code">wrong-type-arg</code> 则会抛出异常。
+</p>
+</dd>
+<dt>Scheme 字节向量</dt>
+<dd><p>如果 <var class="var">值</var> 是一个 Scheme 字节向量，并且 <var class="var">类型</var> 被提供，
+<var class="var">值</var> 在字节大小上必须与类型为 <var class="var">类型</var>的值相同，
+并且结果本质上是通过使用 <code class="code">memcpy</code>创建的。
+</p>
+<p>如果 <var class="var">值</var> 是一个 Scheme 字节向量，并且 <var class="var">类型</var> 未提供，
+结果是一个类型为 <code class="code">uint8</code> 的相同长度的数组。
+</p></dd>
+</dl>
+</dd></dl>
+
+<a class="index-entry-id" id="index-optimized-out-value-in-guile"></a>
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002doptimized_002dout_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">value-optimized-out?</strong> <var class="def-var-arguments">值</var><a class="copiable-link" href="#index-value_002doptimized_002dout_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果编译器优化掉了 <var class="var">值</var>，
+因此无法从下级程序中获取该值。否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002daddress"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">value-address</strong> <var class="def-var-arguments">值</var><a class="copiable-link" href="#index-value_002daddress"> ¶</a></span></dt>
+<dd><p>如果 <var class="var">值</var> 是可寻址的，则返回一个
+<code class="code">&lt;gdb:value&gt;</code> 表示地址的对象。否则， <code class="code">#f</code> 被返回。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dtype"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dtype"> </a></span></dt>
+<dd><p> <var class="var"></var>  <code class="code">&lt;gdb:type&gt;</code>  <a class="pxref" href="Types-In-Guile.html"></a>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002ddynamic_002dtype"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002ddynamic_002dtype"> </a></span></dt>
+<dd><p> <var class="var"></var><code class="t">++</code> <abbr class="acronym"></abbr>
+</p>
+<p><code class="t">++</code>  <abbr class="acronym"></abbr>  <kbd class="kbd"></kbd> <a class="xref" href="Symbols.html"></a>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dcast"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dcast"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>  <var class="var"></var> <code class="code">&lt;gdb:type&gt;</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002ddynamic_002dcast"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002ddynamic_002dcast"> </a></span></dt>
+<dd><p> <code class="code">value-cast</code><code class="t">++</code> <code class="code">dynamic_cast</code>
+<code class="t">++</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dreinterpret_002dcast"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dreinterpret_002dcast"> </a></span></dt>
+<dd><p> <code class="code">value-cast</code><code class="t">++</code> <code class="code">reinterpret_cast</code>
+<code class="t">++</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002ddereference"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002ddereference"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>
+<code class="code">foo</code>  <code class="code">int</code>
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">&lt;gdb:value&gt;</code> 
+<code class="code">foo</code> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">bar</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">foo</code>
+</p>
+<p> <code class="code">value-referenced-value</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">value-dereference</code>
+ <code class="code">value-referenced-value</code>  <code class="code">value-dereference</code>  <code class="code">*</code>  <code class="code">ptrref</code><code class="t">++</code> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">ptrref</code> 
+<code class="code">value-dereference</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">val</code>
+<code class="code">value-referenced-value</code> <code class="code">&lt;gdb:value&gt;</code>
+ <code class="code">ptr</code>
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">&lt;gdb:value&gt;</code>  <code class="code">scm-val</code>  <code class="code">val</code> <code class="code">scm-ptr</code>  <code class="code">ptr</code> <code class="code">value-dereference</code>  <code class="code">*</code> 
+<code class="code">value-dereference</code>  <code class="code">value-referenced-value</code> 
+<code class="code">&lt;gdb:value&gt;</code> <code class="code">&lt;gdb:value&gt;</code>
+ <code class="code">TYPE_CODE_PTR</code><code class="t">++</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dreferenced_002dvalue"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dreferenced_002dvalue"> </a></span></dt>
+<dd><p>
+<code class="code">&lt;gdb:value&gt;</code> 
+<code class="code">value-dereference</code>  <code class="code">value-referenced-value</code> 
+<code class="code">value-dereference</code>  <code class="code">int</code><code class="t">++</code> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">value-dereference</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">ref</code> 
+<code class="code">value-referenced-value</code>  <code class="code">&lt;gdb:value&gt;</code>  <code class="code">val</code>
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">&lt;gdb:value&gt;</code>  <code class="code">scm-val</code>  <code class="code">val</code>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dreference_002dvalue"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dreference_002dvalue"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002drvalue_002dreference_002dvalue"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002drvalue_002dreference_002dvalue"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dconst_002dvalue"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dconst_002dvalue"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code> <samp class="samp"></samp> <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dfield"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dfield"> </a></span></dt>
+<dd><p> <var class="var"></var>  <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dsubscript"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dsubscript"> </a></span></dt>
+<dd><p> <var class="var"></var>  <var class="var"></var> <var class="var"></var>  <code class="code">&lt;gdb:value&gt;</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dcall"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dcall"> </a></span></dt>
+<dd><p> <var class="var"></var>  <var class="var"></var> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003ebool"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002d_003ebool"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code> <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003einteger"><span class="category-def"> </span><span><strong class="def-name"></strong><a class="copiable-link" href="#index-value_002d_003einteger"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code> <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003ereal"><span class="category-def"> </span><span><strong class="def-name"></strong><a class="copiable-link" href="#index-value_002d_003ereal"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code> <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003ebytevector"><span class="category-def"> </span><span><strong class="def-name"></strong><a class="copiable-link" href="#index-value_002d_003ebytevector"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>
+<var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003estring"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments">     <span class="r"></span><span class="r"></span><!-- /@w --> <span class="r"></span><span class="r"></span><!-- /@w -->     <span class="r"></span><span class="r"></span><!-- /@w --></var><a class="copiable-link" href="#index-value_002d_003estring"> </a></span></dt>
+<dd><p> <var class="var"></var> 
+</p>
+<p>
+</p>
+<p> <code class="code">wchar_t</code> <code class="code">char16_t</code> <code class="code">char32_t</code>
+</p>
+<p> <var class="var"></var>  <code class="code">&lt;gdb:value&gt;</code>
+<code class="code">&#34;ascii&#34;</code> <code class="code">&#34;iso-8859-6&#34;</code>  <code class="code">&#34;utf-8&#34;</code>
+<code class="code">scm_from_stringn</code>  <var class="var"></var> 
+<var class="var"></var>  <code class="code">target-charset</code>
+ <a class="pxref" href="Character-Sets.html"></a>
+</p>
+<p> <var class="var"></var>  <code class="code">#f</code> <code class="code">error</code> 
+<code class="code">substitute</code>  <code class="code">error</code>  <code class="code">substitute</code>  <var class="var"></var>  <code class="code">#f</code>
+<code class="code">set-port-conversion-strategy!</code> <code class="code">&#39;error</code>  <code class="code">&#39;substitute</code>  <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Strings.html#Strings"></a>  <cite class="cite"></cite>
+</p>
+<p> <var class="var"></var>  <code class="code">&lt;gdb:value&gt;</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002d_003elazy_002dstring"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments">     <span class="r"></span><span class="r"></span><!-- /@w --> <span class="r"></span><span class="r"></span><!-- /@w --></var><a class="copiable-link" href="#index-value_002d_003elazy_002dstring"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <var class="var"></var>  <code class="code">&lt;gdb:lazy-string</code>  <a class="pxref" href="Lazy-Strings-In-Guile.html"></a>
+</p>
+<p> <var class="var"></var>  <code class="code">&lt;gdb:lazy-string</code>
+<code class="code">&#34;ascii&#34;</code> <code class="code">&#34;iso-8859-6&#34;</code>  <code class="code">&#34;utf-8&#34;</code>
+<var class="var"></var>  <small class="sc">GDB</small>  <small class="sc">GDB</small> 
+</p>
+<p> <small class="sc">GDB</small> 
+<var class="var"></var> 
+<small class="sc">GDB</small>  <small class="sc">GDB</small>
+ <a class="ref" href="Character-Sets.html"></a>
+</p>
+<p> <var class="var"></var>  <var class="var"></var>  <code class="code">&lt;gdb:value&gt;</code> 
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlazy_003f"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dlazy_003f"> </a></span></dt>
+<dd><p> <code class="code">#t</code>  <var class="var"></var>  <code class="code">#f</code>
+<small class="sc">GDB</small> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">somevar</code>  <code class="code">fetch-lazy</code>
+
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dlazy_002dvalue"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-make_002dlazy_002dvalue"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>  <code class="code">&lt;gdb:type&gt;</code>  <var class="var"></var>  <var class="var"></var>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dfetch_002dlazy_0021"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dfetch_002dlazy_0021"> </a></span></dt>
+<dd><p> <var class="var"></var> <code class="code">(value-lazy? value)</code>  <code class="code">#t</code>
+</p>
+<p> <var class="var"></var> 
+</p>
+<p>
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dprint"><span class="category-def"> </span><span><strong class="def-name"></strong> <var class="def-var-arguments"></var><a class="copiable-link" href="#index-value_002dprint"> </a></span></dt>
+<dd><p> <code class="code">&lt;gdb:value&gt;</code>
+<var class="var"></var>
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+ <a href="Arithmetic-In-Guile.html"></a> <a href="Guile-Exception-Handling.html"></a> <a href="Guile-API.html"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index"></a></p>
+</div>
+
+
+
+
+
+</body></html>

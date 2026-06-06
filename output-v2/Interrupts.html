@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>中断（使用GDB进行调试）</title>
+
+<meta name="description" content="Interrupts (Debugging with GDB)"/>
+<meta name="keywords" content="Interrupts (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Notification-Packets.html" rel="next" title="Notification Packets"/>
+<link href="Host-I_002fO-Packets.html" rel="prev" title="Host I/O Packets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Interrupts">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Notification-Packets.html" rel="next">通知包</a>, 上一项： <a accesskey="p" href="Host-I_002fO-Packets.html" rel="prev">主机I/O包</a>, 上一级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Interrupts-1"><span>E.9 中断<a class="copiable-link" href="#Interrupts-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-interrupts-_0028remote-protocol_0029"></a>
+<a class="anchor" id="interrupting-remote-targets"></a>
+<p>在全停止模式下，当远程目标上的程序正在运行时，
+<small class="sc">GDB</small> 可以尝试通过发送一个 ‘<samp class="samp">Ctrl - C</samp>’，
+<code class="code">BREAK</code> 或者一个 <code class="code">BREAK</code> 后面跟着 <code class="code">g</code>, 其控制方式通过 <small class="sc">GDB</small>的 ‘<samp class="samp">中断序列</samp>’ 指定。
+</p>
+<p>的精确含义 <code class="code">BREAK</code> 由传输机制定义，实际上可能未定义。  <small class="sc">GDB</small> 目前没有为除TCP之外的任何网络接口定义一个 <code class="code">BREAK</code> 机制，在TCP的情况下， <small class="sc">GDB</small> 发送
+<code class="code">telnet</code> BREAK序列。
+</p>
+<p>‘<samp class="samp">Ctrl - C</samp>’ 另一方面，对所有传输机制都有定义并实现。它通过发送单字节来表示
+<code class="code">0x03</code> 而不包含概述部分中描述的任何通常的数据包开销（见 <a class="pxref" href="Overview.html">概述</a>)。当一个 <code class="code">0x03</code> 字节作为数据包的一部分传输时，它被视为数据包数据，并且 <em class="emph">不</em> 代表中断。例如，一个 ‘<samp class="samp">X</samp>’ 数据包（见 <a class="pxref" href="Packets.html#X-packet">X数据包</a>），用于二进制下载，可能在其数据包中包含一个未转义的
+<code class="code">0x03</code> 。
+</p>
+<p><code class="code">BREAK</code> 后面跟着 <code class="code">g</code> 也被称为Magic SysRq g。当Linux内核从串口接收到这个序列时，它会停止执行并连接到gdb。
+</p>
+<p>在非停止模式下，因为数据包恢复是异步的（见 <a class="pxref" href="Packets.html#vCont-packet">vCont数据包</a>）， <small class="sc">GDB</small> 总是可以自由地向远程存根发送远程命令，即使目标正在运行。出于这个原因， <small class="sc">GDB</small> 而是发送一个常规数据包（见 <a class="pxref" href="Packets.html#vCtrlC-packet">vCtrlC数据包</a>)，带有通常的数据包帧，而不是单字节
+<code class="code">0x03</code>。
+</p>
+<p>存根不需要识别这些中断机制，并且接收到中断相关的精确含义由实现定义。如果目标支持对多个线程和/或进程进行调试，它应该尝试中断所有当前正在执行的线程和进程。如果存根成功中断了正在运行的程序，它应该发送一个停止回复包（见 <a class="pxref" href="Stop-Reply-Packets.html">停止回复包</a>) 给 <small class="sc">GDB</small> ，作为在全停止模式下成功停止程序的结果，并且在非停止模式下为每个停止的线程发送一个停止回复。在程序停止时接收到的中断会被排队，并且程序下次恢复时会被中断。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Notification-Packets.html">通知包</a>, 上一项： <a href="Host-I_002fO-Packets.html">主机I/O包</a>, 上一级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

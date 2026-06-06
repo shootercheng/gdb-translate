@@ -1,0 +1,84 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>使用代理表达式（使用GDB进行调试）</title>
+
+<meta name="description" content="Using Agent Expressions (Debugging with GDB)"/>
+<meta name="keywords" content="Using Agent Expressions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Agent-Expressions.html" rel="up" title="Agent Expressions"/>
+<link href="Varying-Target-Capabilities.html" rel="next" title="Varying Target Capabilities"/>
+<link href="Bytecode-Descriptions.html" rel="prev" title="Bytecode Descriptions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Using-Agent-Expressions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Varying-Target-Capabilities.html" rel="next">目标能力的差异</a>, 上一项： <a accesskey="p" href="Bytecode-Descriptions.html" rel="prev">字节码描述</a>, 上级： <a accesskey="u" href="Agent-Expressions.html" rel="up">GDB代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Using-Agent-Expressions-1"><span>F.3 使用代理表达式<a class="copiable-link" href="#Using-Agent-Expressions-1"> ¶</a></span></h3>
+
+<p>代理表达式可以通过几种不同的方式使用， <small class="sc">GDB</small>并且调试器可以根据需要生成不同的字节码序列。
+</p>
+<p>一种可能性是在目标端而不是主机端进行表达式求值，例如用于条件跟踪点的条件判断。 在这种情况下， <small class="sc">GDB</small> 将源表达式编译成一个字节码序列，该序列只是从寄存器或内存中获取值，进行算术运算，并返回结果。
+</p>
+<p>使用代理表达式的另一种方式是用于跟踪点数据收集。  <small class="sc">GDB</small> 为收集生成不同的字节码序列；除了进行计算的字节码之外，
+<small class="sc">GDB</small> 添加 <code class="code">trace</code> 用于保存所使用的内存块的字节码。
+</p>
+<ul class="itemize mark-bullet">
+<li>用户在程序代码中选择GDB应收集数据的跟踪点。
+
+</li><li>用户指定在每个跟踪点要计算的表达式。 这些表达式可能表示内存中的对象，在这种情况下，当程序运行时，这些对象的内容会被记录下来；或者表示计算值，在这种情况下，值本身会被记录下来。
+
+</li><li>GDB将跟踪点及其关联的表达式传输到运行在调试目标上的GDB代理。
+
+</li><li>代理安排在命中跟踪点时得到通知。
+
+</li><li>当目标端的执行到达一个跟踪点时，代理会计算与该跟踪点关联的表达式，并记录结果值和内存范围。
+
+</li><li>之后，当用户选择一个给定的跟踪事件并检查记录的对象和表达式值时，GDB会与代理通信，根据需要检索记录的数据以满足用户的请求。 如果用户要求查看其内容未被记录的对象，GDB会报告错误。
+
+</li></ul>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Varying-Target-Capabilities.html">目标能力的差异</a>, 上一项： <a href="Bytecode-Descriptions.html">字节码描述</a>, 上级： <a href="Agent-Expressions.html">GDB代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

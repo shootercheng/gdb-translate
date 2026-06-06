@@ -1,0 +1,231 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的被调试程序（使用 GDB 调试）</title>
+
+<meta name="description" content="Inferiors In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Inferiors In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Events-In-Python.html" rel="next" title="Events In Python"/>
+<link href="Writing-an-Xmethod.html" rel="prev" title="Writing an Xmethod"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Inferiors-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Events-In-Python.html" rel="next">Python 中的事件</a>, 上一项： <a accesskey="p" href="Writing-an-Xmethod.html" rel="prev">编写 Xmethod</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Inferiors-In-Python-1"><span>23.3.2.17 Python 中的被调试程序<a class="copiable-link" href="#Inferiors-In-Python-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-inferiors-in-Python"></a>
+
+<a class="index-entry-id" id="index-gdb_002eInferior"></a>
+<p>下运行的程序称为被调试程序
+（参见 <small class="sc">GDB</small> 在 <a class="pxref" href="Inferiors-Connections-and-Programs.html"></a>）。Python 脚本可以通过 <small class="sc">GDB</small>
+类的对象访问和操作由 <code class="code">gdb.Inferior</code> 类。
+</p>
+<p>以下与被调试程序相关的函数在 <code class="code">gdb</code>
+模块：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einferiors"><span class="category-def">函数： </span><span><strong class="def-name">gdb.inferiors</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002einferiors"> ¶</a></span></dt>
+<dd><p>返回一个包含所有被调试程序对象的元组。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005finferior"><span class="category-def">函数： </span><span><strong class="def-name">gdb.selected_inferior</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005finferior"> ¶</a></span></dt>
+<dd><p>返回一个表示当前被调试程序的对象。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Inferior</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002enum"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.num</strong><a class="copiable-link" href="#index-Inferior_002enum"> ¶</a></span></dt>
+<dd><p>被调试程序的 ID，由 <small class="sc">GDB</small>分配。例如，你可以使用此 ID 使 Python 断点特定于被调试程序（参见 <a class="pxref" href="Breakpoints-In-Python.html#python_005fbreakpoint_005finferior">Breakpoint.inferior 属性</a>）。
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005finferior_005fconnection"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002econnection"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.connection</strong><a class="copiable-link" href="#index-Inferior_002econnection"> ¶</a></span></dt>
+<dd><p>此被调试程序的 <code class="code">gdb.TargetConnection</code> （参见 <a class="pxref" href="Connections-In-Python.html">Python 中的连接</a>），或者如果此被调试程序没有连接则为 <code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002econnection_005fnum"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.connection_num</strong><a class="copiable-link" href="#index-Inferior_002econnection_005fnum"> ¶</a></span></dt>
+<dd><p>被调试程序连接的 ID，由 <small class="sc">GDB</small>分配，如果被调试程序未连接到目标则为 None。参见 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个被调试程序连接和程序</a>。在
+<code class="code">gdb.Inferior.connection.num</code> 的情况下，这等同于
+<code class="code">gdb.Inferior.connection</code> 不是 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002epid"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.pid</strong><a class="copiable-link" href="#index-Inferior_002epid"> ¶</a></span></dt>
+<dd><p>被调试程序的进程 ID，由底层操作系统分配。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002ewas_005fattached"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.was_attached</strong><a class="copiable-link" href="#index-Inferior_002ewas_005fattached"> ¶</a></span></dt>
+<dd><p>布尔值，表示被调试程序是使用 ‘attach’ 创建的，还是由 <small class="sc">GDB</small> 自身启动的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002emain_005fname"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.main_name</strong><a class="copiable-link" href="#index-Inferior_002emain_005fname"> ¶</a></span></dt>
+<dd><p>一个字符串，保存此被调试程序的 “main” 函数的名称（如果可以确定）。如果不知道 main 的名称，则为
+<code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002eprogspace"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.progspace</strong><a class="copiable-link" href="#index-Inferior_002eprogspace"> ¶</a></span></dt>
+<dd><p>被调试程序的程序空间。参见 <a class="xref" href="Progspaces-In-Python.html">Python 中的程序空间</a>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Inferior_002earguments"><span class="category-def">变量： </span><span><strong class="def-name">Inferior.arguments</strong><a class="copiable-link" href="#index-Inferior_002earguments"> ¶</a></span></dt>
+<dd><p>被调试程序的命令行参数（如果已知）。这对应于 <code class="code">set args</code> 和 <code class="code">show args</code> 命令。参见 <a class="xref" href="Arguments.html">你的程序的参数</a>。
+</p>
+<p>访问时，该值是一个包含所有参数的字符串。内容会像传递给 shell 时一样被引用。如果没有参数，该值为 <code class="code">None</code>。
+</p>
+<p>可以将字符串或字符串序列分配给此属性。当分配字符串时，假设它具有 shell 所需的任何引用；当分配序列时，引用由 <small class="sc">GDB</small>应用。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Inferior</code> 对象具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">True</code> 对象有效，则返回 <code class="code">gdb.Inferior</code> 
+<code class="code">False</code> 如果不是。一个 <code class="code">gdb.Inferior</code> 对象将变得无效
+如果被调试程序在 <small class="sc">GDB</small>内不再存在。所有其他
+<code class="code">gdb.Inferior</code> 方法在调用时如果对象无效将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ethreads"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.threads</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002ethreads"> ¶</a></span></dt>
+<dd><p>此方法返回一个元组，其中包含调用时所有有效的线程。如果没有有效线程，该方法将返回一个空元组。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002earchitecture"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.architecture</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002earchitecture"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">gdb.Architecture</code> （参见 <a class="pxref" href="Architectures-In-Python.html">架构的 Python 表示形式</a>）
+对于此被调试程序。这表示整个被调试程序的架构。某些平台在单个地址空间中可以有多种架构，因此这可能与特定帧的架构不匹配（参见 <a class="pxref" href="Frames-In-Python.html">从 Python 访问被调试程序的栈帧</a>）。
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005finferior_005fread_005fmemory"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eread_005fmemory"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.read_memory</strong> <var class="def-var-arguments">(address, length)</var><a class="copiable-link" href="#index-Inferior_002eread_005fmemory"> ¶</a></span></dt>
+<dd><p>从被调试程序中读取 <var class="var">长度</var> 个可寻址的内存单元，从 <var class="var">地址</var>开始。返回一个 <code class="code">memoryview</code> 对象，其行为类似于数组或字符串。它可以被修改并传递给
+<code class="code">Inferior.write_memory</code> 函数。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ewrite_005fmemory"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.write_memory</strong> <var class="def-var-arguments">(address, buffer <span class="r">[</span>, length<span class="r">]</span>)</var><a class="copiable-link" href="#index-Inferior_002ewrite_005fmemory"> ¶</a></span></dt>
+<dd><p>将 <var class="var">缓冲区</var> 的内容写入被调试程序，从
+<var class="var">地址</var>开始。 <var class="var">缓冲区</var> 参数必须是支持缓冲区协议的 Python 对象，即字符串、数组或从 <code class="code">Inferior.read_memory</code>返回的对象。如果给定 <var class="var">长度</var>
+，则确定要写入的 <var class="var">缓冲区</var> 中可寻址内存单元的数量。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002esearch_005fmemory"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.search_memory</strong> <var class="def-var-arguments">(address, length, pattern)</var><a class="copiable-link" href="#index-Inferior_002esearch_005fmemory"> ¶</a></span></dt>
+<dd><p>从 <var class="var">地址</var> 开始，使用 <var class="var">长度</var> 和
+<var class="var">模式</var>中提供的搜索模式搜索被调试程序的内存区域。 <var class="var">模式</var> 参数必须是支持缓冲区协议的 Python 对象，即字符串、数组或从 <code class="code">gdb.read_memory</code>返回的对象。返回一个 Python <code class="code">Long</code>
+，其中包含找到模式的地址，如果 <code class="code">None</code> 未找到模式则返回 None。
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-Inferior_002ethread_005ffrom_005fthread_005fhandle"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002ethread_005ffrom_005fhandle"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.thread_from_handle</strong> <var class="def-var-arguments">(handle)</var><a class="copiable-link" href="#index-Inferior_002ethread_005ffrom_005fhandle"> ¶</a></span></dt>
+<dd><p>返回与 <var class="var">句柄</var>对应的线程对象，句柄是特定于线程库的数据结构，例如 <code class="code">pthread_t</code> 对于 pthreads 库实现。
+</p>
+<p>该函数 <code class="code">Inferior.thread_from_thread_handle</code> 提供相同的功能，但不建议使用 <code class="code">Inferior.thread_from_thread_handle</code>
+。
+</p></dd></dl>
+
+
+<p>可以通过以下方法从 Python 更改传递给被调试程序的环境。这些方法仅在被调试程序启动时生效 - 它们不会影响已经在执行的被调试程序。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eclear_005fenv"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.clear_env</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Inferior_002eclear_005fenv"> ¶</a></span></dt>
+<dd><p>清除将传递给此被调试程序的当前环境变量。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eset_005fenv"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.set_env</strong> <var class="def-var-arguments">(name, value)</var><a class="copiable-link" href="#index-Inferior_002eset_005fenv"> ¶</a></span></dt>
+<dd><p>将环境变量 <var class="var">名称</var> 设置为指定的值。两个参数都必须是字符串。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Inferior_002eunset_005fenv"><span class="category-def">函数： </span><span><strong class="def-name">Inferior.unset_env</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-Inferior_002eunset_005fenv"> ¶</a></span></dt>
+<dd><p>取消设置环境变量 <var class="var">名称</var>。  <var class="var">名称</var> 必须是字符串。
+</p></dd></dl>
+
+<p>可以以通常的 Python 方式向 <code class="code">gdb.Inferior</code> 对象添加任意属性。例如，如果需要对与被调试程序相关的一些额外记录进行操作，这将很有用。
+</p>
+<a class="anchor" id="choosing-attribute-names"></a><p>在为新属性选择名称时，避免以小写字母开头；
+<small class="sc">GDB</small> 将来添加的属性将以小写字母开头。此外，避免以两个下划线字符开头的属性名称，因为这些可能与 Python 内置属性名称冲突。
+</p>
+<p>在这个人为的示例中，我们记录被调试程序最后一次停止的时间：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python
+import datetime
+
+def thread_stopped(event):
+    if event.inferior_thread is not None:
+        thread = event.inferior_thread
+    else:
+        thread = gdb.selected_thread()
+    inferior = thread.inferior
+    inferior._last_stop_time = datetime.datetime.today()
+
+gdb.events.stop.connect(thread_stopped)
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) file /tmp/hello
+Reading symbols from /tmp/hello...
+(gdb) start
+Temporary breakpoint 1 at 0x401198: file /tmp/hello.c, line 18.
+Starting program: /tmp/hello
+
+Temporary breakpoint 1, main () at /tmp/hello.c:18
+18	  printf (&#34;Hello World\n&#34;);
+(gdb) python print(gdb.selected_inferior()._last_stop_time)
+2024-01-04 14:48:41.347036
+</pre></div></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Events-In-Python.html">Python 中的事件</a>, 上一项： <a href="Writing-an-Xmethod.html">编写 Xmethod</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

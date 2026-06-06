@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>ARC 特性（使用 GDB 调试）</title>
+
+<meta name="description" content="ARC Features (Debugging with GDB)"/>
+<meta name="keywords" content="ARC Features (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Standard-Target-Features.html" rel="up" title="Standard Target Features"/>
+<link href="ARM-Features.html" rel="next" title="ARM Features"/>
+<link href="Alpha-Features.html" rel="prev" title="Alpha Features"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="ARC-Features">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="ARM-Features.html" rel="next">ARM 特性</a>, 上一项： <a accesskey="p" href="Alpha-Features.html" rel="prev">Alpha 特性</a>, 上级： <a accesskey="u" href="Standard-Target-Features.html" rel="up">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="ARC-Features-1"><span>G.5.3 ARC 特性<a class="copiable-link" href="#ARC-Features-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-target-descriptions_002c-ARC-Features"></a>
+
+<p>ARC 处理器的可配置性极高，甚至核心寄存器及其数量都不是完全预先确定的。此外， <em class="emph">标志位</em> 和 <em class="emph">程序计数器（PC）</em>
+寄存器，这些对 <small class="sc">GDB</small>, 很重要的寄存器，在 ARC 中并非 “核心” 寄存器。因此，有两个特性是必须存在的：‘<samp class="samp">org.gnu.gdb.arc.core</samp>’ 和 ‘<samp class="samp">org.gnu.gdb.arc.aux</samp>’。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.arc.core</samp>’ 特性对所有目标都是必需的。它必须包含寄存器：
+</p>
+<ul class="itemize mark-minus">
+<li>‘<samp class="samp">r0</samp>’ 到 ‘<samp class="samp">r25</samp>’ 用于普通寄存器文件目标。
+</li><li>‘<samp class="samp">r0</samp>’ 到 ‘<samp class="samp">r3</samp>’，以及 ‘<samp class="samp">r10</samp>’ 到 ‘<samp class="samp">r15</samp>’ 用于精简寄存器文件目标。
+</li><li>‘<samp class="samp">全局指针（gp）</samp>’，‘<samp class="samp">帧指针（fp）</samp>’，‘<samp class="samp">栈指针（sp）</samp>’，‘<samp class="samp">r30</samp>’<a class="footnote" href="#FOOT22" id="DOCF22"><sup>22</sup></a>,
+‘<samp class="samp">链接寄存器（blink）</samp>’，‘<samp class="samp">循环计数寄存器（lp_count）</samp>’，‘<samp class="samp">程序计数器低 16 位（pcl）</samp>’。
+</li></ul>
+
+<p>对于 ARCompact 目标（ARCv1 指令集架构），‘<samp class="samp">org.gnu.gdb.arc.core</samp>’ 特性可能包含寄存器 ‘<samp class="samp">ilink1</samp>’ 和 ‘<samp class="samp">ilink2</samp>’。而对于 ARC EM 和 ARC HS 目标（ARCv2 指令集架构），可能存在寄存器 ‘<samp class="samp">ilink</samp>’。ARCv1 和 ARCv2 的区别在于寄存器的命名 <em class="emph">第 29 个</em>
+和 <em class="emph">第 30 个</em>. 对于 ARCv1，它们被称为 ‘<samp class="samp">ilink1</samp>’ 和 ‘<samp class="samp">ilink2</samp>’，并且是可选的。对于 ARCv2，它们被称为 ‘<samp class="samp">ilink</samp>’ 和 ‘<samp class="samp">r30</samp>’，并且只有 ‘<samp class="samp">ilink</samp>’ 是可选的。‘<samp class="samp">ilink*</samp>’ 寄存器的可选性是因为在用户空间调试会话期间它们不可访问。
+</p>
+<p>扩展核心寄存器 ‘<samp class="samp">r32</samp>’ 到 ‘<samp class="samp">r59</samp>’ 是可选的，它们的存在取决于配置。在调试 GNU/Linux 应用程序时，即用户空间调试，这些核心寄存器不可用。
+</p>
+<p>‘<samp class="samp">org.gnu.gdb.arc.aux</samp>’ 特性对所有 ARC 目标都是必需的。以下是与此特性相关的寄存器列表：
+</p>
+<ul class="itemize mark-minus">
+<li>必需的：‘<samp class="samp">程序计数器（pc）</samp>’ 和 ‘<samp class="samp">32 位状态寄存器（status32）</samp>’。
+</li><li>可选的：‘<samp class="samp">循环起始地址（lp_start）</samp>’，‘<samp class="samp">循环结束地址（lp_end）</samp>’ 和 ‘<samp class="samp">bta</samp>’。
+</li></ul>
+
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF22" id="FOOT22">(22)</a></h5>
+<p>ARCv1 不需要。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="ARM-Features.html">ARM 特性</a>, 上一项： <a href="Alpha-Features.html">Alpha 特性</a>, 上级： <a href="Standard-Target-Features.html">标准目标特性</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

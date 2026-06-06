@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>数组（使用GDB调试）</title>
+
+<meta name="description" content="Arrays (Debugging with GDB)"/>
+<meta name="keywords" content="Arrays (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Output-Formats.html" rel="next" title="Output Formats"/>
+<link href="Variables.html" rel="prev" title="Variables"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Arrays">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Output-Formats.html" rel="next">输出格式</a>, 上一项： <a accesskey="p" href="Variables.html" rel="prev">程序变量</a>, 上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Artificial-Arrays"><span>10.4 伪数组<a class="copiable-link" href="#Artificial-Arrays"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-artificial-array"></a>
+<a class="index-entry-id" id="index-arrays"></a>
+<a class="index-entry-id" id="index-_0040_002c-referencing-memory-as-an-array"></a>
+<p>在内存中打印出几个连续的相同类型的对象通常很有用；可以是数组的一部分，或者是程序中只有一个指针指向的动态确定大小的数组。
+</p>
+<p>你可以通过将一段连续的内存区域称为
+<em class="dfn">伪数组</em>，使用二元运算符 ‘<samp class="samp">@</samp>’ 来实现。‘<samp class="samp">@</samp>’ 的左操作数应该是所需数组的第一个元素，并且是一个单独的对象。右操作数应该是数组的所需长度。结果是一个数组值，其元素的类型都与左参数的类型相同。第一个元素实际上就是左参数；第二个元素来自紧接着存储第一个元素的内存字节，依此类推。这里有一个示例。如果一个程序这样写
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int *array = (int *) malloc (len * sizeof (int));
+</pre></div>
+
+<p>你可以打印 <code class="code">array</code> 的内容，使用
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *array@len
+</pre></div>
+
+<p>‘<samp class="samp">@</samp>’ 的左操作数必须存在于内存中。用 ‘<samp class="samp">@</samp>’ 以这种方式创建的数组值在使用下标操作时的行为与其他数组一样，并且在表达式中使用时会被转换为指针。伪数组最常通过值历史记录（见 <a class="pxref" href="Value-History.html">值历史记录</a>）在打印出一个之后出现在表达式中。
+</p>
+<p>另一种创建伪数组的方法是使用强制类型转换。这会将一个值重新解释为好像它是一个数组。该值不必存在于内存中：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) p/x (short[2])0x12345678
+$1 = {0x1234, 0x5678}
+</pre></div>
+
+<p>为了方便起见，如果你省略数组长度（如在 ‘<samp class="samp">(<var class="var">类型</var>[])<var class="var">值</var></samp>’ 中） <small class="sc">GDB</small> 会计算出填充该值所需的大小（就像 ‘<samp class="samp">sizeof(<var class="var">值</var>)/sizeof(<var class="var">类型</var>)</samp>’ 那样：
+</p><div class="example smallexample">
+<pre class="example-preformatted">(gdb) p/x (short[])0x12345678
+$2 = {0x1234, 0x5678}
+</pre></div>
+
+<p>有时伪数组机制还不够；在中等复杂的数据结构中，感兴趣的元素实际上可能并不相邻 —— 例如，如果你对数组中指针的值感兴趣。在这种情况下，一个有用的解决方法是使用便利变量（见 <a class="pxref" href="Convenience-Vars.html">便利变量</a>) 作为一个表达式中的计数器，该表达式打印出第一个感兴趣的值，然后通过 <kbd class="key">回车键</kbd>重复该表达式。例如，假设你有一个 <code class="code">dtab</code> 指向结构体的指针数组，并且你对每个结构体中的一个字段 <code class="code">fv</code>
+的值感兴趣。下面是你可能会输入的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">set $i = 0
+p dtab[$i++]-&gt;fv
+<kbd class="key">回车键</kbd>
+<kbd class="key">回车键</kbd>
+...
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Output-Formats.html">输出格式</a>, 上一项： <a href="Variables.html">程序变量</a>, 上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

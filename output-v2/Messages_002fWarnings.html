@@ -1,0 +1,140 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>消息/警告（使用GDB调试）</title>
+
+<meta name="description" content="Messages/Warnings (Debugging with GDB)"/>
+<meta name="keywords" content="Messages/Warnings (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB"/>
+<link href="Debugging-Output.html" rel="next" title="Debugging Output"/>
+<link href="Auto_002dloading.html" rel="prev" title="Auto-loading"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Messages_002fWarnings">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Debugging-Output.html" rel="next">关于内部情况的可选消息</a> <a accesskey="p" href="Auto_002dloading.html" rel="prev"></a>, 上一项： <a accesskey="u" href="Controlling-GDB.html" rel="up"> <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Optional-Warnings-and-Messages"><span>22.9 可选的警告和消息<a class="copiable-link" href="#Optional-Warnings-and-Messages"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-verbose-operation"></a>
+<a class="index-entry-id" id="index-optional-warnings"></a>
+<p>默认情况下， <small class="sc">GDB</small> 对其内部工作情况保持沉默。如果你在一台运行缓慢的机器上运行，你可能想使用 <code class="code">set verbose</code>
+命令。这会使 <small class="sc">GDB</small> 在进行冗长的内部操作时告知你，这样你就不会认为它崩溃了。
+</p>
+<p>目前，由 <code class="code">set verbose</code> 控制的消息是那些宣布正在读取源文件的符号表的消息；请参阅 <code class="code">symbol-file</code> 在 <a class="ref" href="Files.html">指定文件的命令</a>.
+</p>
+<dl class="table">
+<dt><a id="index-set-verbose"></a><span><code class="code">set verbose on</code><a class="copiable-link" href="#index-set-verbose"> ¶</a></span></dt>
+<dd><p>启用 <small class="sc">GDB</small> 某些信息性消息的输出。
+</p>
+</dd>
+<dt><code class="code">set verbose off</code></dt>
+<dd><p>禁用 <small class="sc">GDB</small> 某些信息性消息的输出。
+</p>
+</dd>
+<dt><a id="index-show-verbose"></a><span><code class="code">show verbose</code><a class="copiable-link" href="#index-show-verbose"> ¶</a></span></dt>
+<dd><p>显示 <code class="code">set verbose</code> 是开启还是关闭。
+</p></dd>
+</dl>
+
+<p>默认情况下，如果 <small class="sc">GDB</small> 在目标文件的符号表中遇到错误，它会保持沉默；但如果你正在调试编译器，你可能会发现这些信息很有用（请参阅 <a class="pxref" href="Symbol-Errors.html">读取符号文件时的错误</a>).
+</p>
+<dl class="table">
+<dt><a id="index-set-complaints"></a><span><code class="code">set complaints <var class="var">limit</var></code><a class="copiable-link" href="#index-set-complaints"> ¶</a></span></dt>
+<dd><p>允许 <small class="sc">GDB</small> 输出 <var class="var">限制</var> 每种异常符号的抱怨信息，之后对该问题保持沉默。将
+<var class="var">限制</var> 设置为零以抑制所有抱怨；将其设置为一个大数字以防止抱怨被抑制。
+</p>
+</dd>
+<dt><a id="index-show-complaints"></a><span><code class="code">show complaints</code><a class="copiable-link" href="#index-show-complaints"> ¶</a></span></dt>
+<dd><p>显示 <small class="sc">GDB</small> 被允许产生多少条符号抱怨信息。
+</p>
+</dd>
+</dl>
+
+<a class="anchor" id="confirmation-requests"></a><p>默认情况下， <small class="sc">GDB</small> 很谨慎，有时会问很多看似愚蠢的问题来确认某些命令。例如，如果你试图运行一个已经在运行的程序：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) run
+正在调试的程序已经启动。
+要从头开始启动它吗？(y 或 n)
+</pre></div>
+
+<p>如果你愿意毫不退缩地面对自己命令的后果，你可以禁用这个 “功能”：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-flinching"></a>
+<a class="index-entry-id" id="index-confirmation"></a>
+<a class="index-entry-id" id="index-stupid-questions"></a>
+<a id="index-set-confirm"></a><span><code class="code">set confirm off</code><a class="copiable-link" href="#index-set-confirm"> ¶</a></span></dt>
+<dd><p>禁用确认请求。请注意，使用 <small class="sc">GDB</small> 带 <samp class="option">--batch</samp> 选项（请参阅 <a class="pxref" href="Mode-Options.html">-batch</a>) 运行时也会自动禁用确认请求。
+</p>
+</dd>
+<dt><code class="code">set confirm on</code></dt>
+<dd><p>启用确认请求（默认设置）。
+</p>
+</dd>
+<dt><a id="index-show-confirm"></a><span><code class="code">show confirm</code><a class="copiable-link" href="#index-show-confirm"> ¶</a></span></dt>
+<dd><p>显示确认请求的状态。
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-command-tracing"></a>
+<p>如果你需要调试用户定义的命令或源文件，你可能会发现启用 <em class="dfn">命令跟踪</em>. 在此模式下，每个命令在执行时都会被打印出来，前面会加上一个或多个 ‘<samp class="samp">+</samp>’ 符号，符号的数量表示每个命令的调用深度。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-command-scripts_002c-debugging"></a>
+<a id="index-set-trace_002dcommands"></a><span><code class="code">set trace-commands on</code><a class="copiable-link" href="#index-set-trace_002dcommands"> ¶</a></span></dt>
+<dd><p>启用命令跟踪。
+</p></dd>
+<dt><code class="code">set trace-commands off</code></dt>
+<dd><p>禁用命令跟踪。
+</p></dd>
+<dt><code class="code">show trace-commands</code></dt>
+<dd><p>显示命令跟踪的当前状态。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Debugging-Output.html">关于内部情况的可选消息</a>, 上一项： <a href="Auto_002dloading.html">自动加载关联文件</a>, 上一项： <a href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

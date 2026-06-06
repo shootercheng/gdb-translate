@@ -1,0 +1,229 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>配置选项（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Configure Options (Debugging with GDB)"/>
+<meta name="keywords" content="Configure Options (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Installing-GDB.html" rel="up" title="Installing GDB"/>
+<link href="System_002dwide-configuration.html" rel="next" title="System-wide configuration"/>
+<link href="Config-Names.html" rel="prev" title="Config Names"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Configure-Options">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="System_002dwide-configuration.html" rel="next"></a>, 上一步： <a accesskey="p" href="Config-Names.html" rel="prev">指定主机和目标的名称</a>, 上一级： <a accesskey="u" href="Installing-GDB.html" rel="up"> <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h3 class="section" id="configure-Options"><span> <samp class="file"></samp> <a class="copiable-link" href="#configure-Options"> ¶</a></span></h3>
+
+<p> <samp class="file">配置</samp>  <small class="sc">GDB</small>  <samp class="file"></samp>
+ <a data-manual="autoconf" href="https://www.gnu.org/software/autoconf/manual/html_node/Running-configure-Scripts.html#Running-configure-Scripts">（autoconf）运行
+配置脚本</a>, 以获取 <samp class="file">配置</samp>的完整解释。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">配置 <span class="r">[</span>--帮助<span class="r">]</span>
+          <span class="r">[</span>--前缀=<var class="var">目录</var><span class="r">]</span>
+          <span class="r">[</span>--执行前缀=<var class="var">目录</var><span class="r">]</span>
+          <span class="r">[</span>--源目录=<var class="var">目录名</var><span class="r">]</span>
+          <span class="r">[</span>--目标=<var class="var">目标</var><span class="r">]</span>
+</pre></div>
+
+<p>您可以使用单个‘<samp class="samp">-</samp>’而不是‘<samp class="samp">--</samp>’来引入选项；但如果使用‘<samp class="samp">--</samp>’，则可以缩写选项名称。
+</p>
+<dl class="table">
+<dt><code class="code">--help</code></dt>
+<dd><p>显示如何调用 <samp class="file">配置</samp>的快速摘要。
+</p>
+</dd>
+<dt><code class="code">--prefix=<var class="var">dir</var></code></dt>
+<dd><p>配置源代码，以便将程序和文件安装到目录
+<samp class="file"><var class="var">目录</var></samp>下。
+</p>
+</dd>
+<dt><code class="code">--exec-prefix=<var class="var">dir</var></code></dt>
+<dd><p>配置源代码，以便将程序安装到目录
+<samp class="file"><var class="var">目录</var></samp>下。
+</p>
+</dd>
+<dt><code class="code">--srcdir=<var class="var">dirname</var></code></dt>
+<dd><p>使用此选项可以在与源目录分开的目录中进行配置。除此之外，您可以使用此选项在不同的目录中同时构建（或维护）多个配置。
+<small class="sc">GDB</small>   <samp class="file">配置</samp> 在当前目录中写入特定于配置的文件，但安排它们使用目录 <var class="var">目录名</var>中的源文件。  <samp class="file">配置</samp> 在工作目录下创建与
+<var class="var">目录名</var>以下的源目录平行的目录。
+</p>
+</dd>
+<dt><code class="code">--target=<var class="var">target</var></code></dt>
+<dd><p>配置 <small class="sc">GDB</small> 用于对在指定的
+<var class="var">目标</var>上运行的程序进行交叉调试。如果没有此选项， <small class="sc">GDB</small> 将配置为调试在与<var class="var">主机</var>相同的机器上运行的程序，即 <small class="sc">GDB</small> 它自身所在的机器。
+</p>
+<p>没有方便的方法来生成所有可用目标的列表。另请参阅下面的 <code class="code">--enable-targets</code> 选项。
+</p></dd>
+</dl>
+
+<p>有许多特定于 <small class="sc">GDB</small>的其他选项。这里只列出了最常见的选项；还有一些非常专业的选项未在此处描述。
+</p>
+<dl class="table">
+<dt><code class="code">--enable-targets=<span class="r">[</span><var class="var">target</var><span class="r">]</span>…</code></dt>
+<dt><code class="code">--enable-targets=all</code></dt>
+<dd><p>配置 <small class="sc">GDB</small> 用于对在指定的目标列表上运行的程序进行交叉调试。特殊值‘<samp class="samp">所有</samp>’将配置
+<small class="sc">GDB</small> 以调试它支持的任何目标上运行的程序。
+</p>
+</dd>
+<dt><code class="code">--enable-binary-file-formats=<span class="r">[</span><var class="var">format</var><span class="r">]</span>…</code></dt>
+<dt><code class="code">--enable-binary-file-formats=all</code></dt>
+<dd><p>配置 <small class="sc">GDB</small> 以支持某些二进制文件格式。如果某种格式是给定目标的主要（或唯一）文件格式，配置脚本可能无论如何都会添加对它的支持，并向用户发出警告。如果未指定，将编译 <small class="sc">GDB</small> 支持的所有文件格式。
+</p>
+</dd>
+<dt><code class="code">--with-gdb-datadir=<var class="var">path</var></code></dt>
+<dd><p>设置 <small class="sc">GDB</small>特定的数据目录。  <small class="sc">GDB</small> 将在此处查找某些支持文件或脚本。这默认是
+<samp class="file">gdb</samp> 子目录，位于‘<samp class="samp">数据目录</samp>’（可以使用
+<code class="code">--datadir</code>设置）之下。
+</p>
+</dd>
+<dt><code class="code">--with-relocated-sources=<var class="var">dir</var></code></dt>
+<dd><p>设置默认的源路径替换规则，以便调试信息中记录的目录名会自动针对以下任何目录进行调整 <var class="var">目录</var>。  <var class="var">目录</var> 应该是
+<small class="sc">GDB</small>配置前缀的子目录，即
+<code class="code">--prefix</code> 或 <code class="code">--exec-prefix</code> 配置选项中提到的那个。如果 GDB 在构建后要移动到不同的位置，此选项很有用。
+</p>
+</dd>
+<dt><code class="code">--enable-64-bit-bfd</code></dt>
+<dd><p>在 32 位主机上启用 BFD 中的 64 位支持。
+</p>
+</dd>
+<dt><code class="code">--disable-gdbmi</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时不使用 GDB/MI 机器接口（请参阅 <a class="pxref" href="GDB_002fMI.html"> <small class="sc">GDB/MI</small> 接口</a>）。
+</p>
+</dd>
+<dt><code class="code">--enable-tui</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时使用文本模式全屏用户界面（TUI）。需要 curses 库（也支持 ncurses 和 cursesX）。
+</p>
+</dd>
+<dt><code class="code">--with-curses</code></dt>
+<dd><p>对于文本模式终端操作，使用 curses 库而不是 termcap 库。
+</p>
+</dd>
+<dt><code class="code">--with-debuginfod</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时使用 <samp class="file">libdebuginfod</samp>, 即 <code class="code">debuginfod</code> 客户端库。用于根据与任何缺失文件关联的构建 ID 自动从
+<code class="code">debuginfod</code> 服务器获取 ELF、DWARF 和源文件。如果在配置时安装并找到了 <samp class="file">libdebuginfod</samp> ，则默认启用此功能。有关 <code class="code">debuginfod</code> 的更多信息，请参阅
+<a class="ref" href="Debuginfod.html">使用 Debuginfod 下载调试资源</a>。
+</p>
+</dd>
+<dt><code class="code">--with-libunwind-ia64</code></dt>
+<dd><p>在 ia64 目标平台上使用 libunwind 库展开函数调用栈。请参阅 <a class="url" href="http://www.nongnu.org/libunwind/index.html">http://www.nongnu.org/libunwind/index.html</a> 了解详情。
+</p>
+</dd>
+<dt><code class="code">--with-system-readline</code></dt>
+<dd><p>使用主机上安装的 readline 库，而不是作为 <small class="sc">GDB</small>一部分提供的库。需要 Readline 7 或更高版本；构建系统会强制执行此要求。
+</p>
+</dd>
+<dt><code class="code">--with-system-zlib</code></dt>
+<dd><p>使用主机上安装的 zlib 库，而不是作为 <small class="sc">GDB</small>一部分提供的库。
+</p>
+</dd>
+<dt><code class="code">--with-expat</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时使用 Expat（一个用于 XML 解析的库）。（如果在配置时安装并找到了 libexpat，则默认会这样做。）此库用于读取随 <small class="sc">GDB</small>提供的 XML 文件。如果不可用，一些基于 XML 文件的功能，如远程协议内存映射、目标描述和共享库列表，在 <small class="sc">GDB</small>中将不可用。如果您的主机没有安装 libexpat，您可以从
+<a class="url" href="http://expat.sourceforge.net">http://expat.sourceforge.net</a>获取最新版本。
+</p>
+</dd>
+<dt><code class="code">--with-libiconv-prefix<span class="r">[</span>=<var class="var">dir</var><span class="r">]</span></code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时使用 GNU libiconv（一个字符集编码转换库）。默认情况下不会这样做，因为在 GNU 系统上， <code class="code">iconv</code> C 库中内置的功能就足够了。如果您的主机没有可用的 <code class="code">iconv</code>, 您可以从 <a class="url" href="https://www.gnu.org/software/libiconv/">https://www.gnu.org/software/libiconv/</a>获取最新版本的 GNU iconv。
+</p>
+<p><small class="sc">GDB</small>的构建系统还支持将 GNU libiconv 作为整体构建的一部分进行构建。请参阅 <a class="xref" href="Requirements.html">构建要求 <small class="sc">GDB</small></a>。
+</p>
+</dd>
+<dt><code class="code">--with-lzma</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时使用 LZMA（一个压缩库）。（如果在配置时安装并找到了 liblzma，则默认会这样做。）LZMA 用于
+<small class="sc">GDB</small>的“迷你调试信息”功能，该功能仅在使用 ELF 对象文件格式的平台上有用。如果您的主机没有安装 liblzma，您可以从
+<a class="url" href="https://tukaani.org/xz/">https://tukaani.org/xz/</a>获取最新版本。
+</p>
+</dd>
+<dt><code class="code">--with-python<span class="r">[</span>=<var class="var">python</var><span class="r">]</span></code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时支持 Python 脚本。（如果在配置时存在并找到了 libpython，则默认会这样做。）Python 使
+<small class="sc">GDB</small> 脚本编写比受限的 CLI 脚本语言强大得多。如果您的主机没有安装 Python，您可以在 <a class="url" href="http://www.python.org/download/">http://www.python.org/download/</a>找到它。GDB 支持的最旧 Python 版本是 3.4。可选参数 <var class="var">python</var>
+用于查找 Python 头文件和库。它可以是 Python 可执行文件的名称，也可以是 Python 安装目录的名称。
+</p>
+</dd>
+<dt><code class="code">--with-guile[=<var class="var">guile</var>]</code></dt>
+<dd><p>构建 <small class="sc">GDB</small> 时支持 GNU Guile 脚本。（如果在配置时存在并找到了 libguile，则默认会这样做。）如果您的主机没有安装 Guile，您可以在
+<a class="url" href="https://www.gnu.org/software/guile/">https://www.gnu.org/software/guile/</a>找到它。可选参数 <var class="var">guile</var>
+可以是一个版本号，这将使 <code class="code">configure</code> 尝试使用该版本的 Guile；也可以是一个 <code class="code">pkg-config</code>
+可执行文件的文件名，将查询该文件以获取编译和链接 Guile 所需的信息。
+</p>
+</dd>
+<dt><code class="code">--without-included-regex</code></dt>
+<dd><p>不使用随 <small class="sc">GDB</small> （作为 libiberty 库的一部分）包含的正则表达式库。在使用 GNU C 库 2 版本的主机上，这是默认设置。
+</p>
+</dd>
+<dt><code class="code">--with-sysroot=<var class="var">dir</var></code></dt>
+<dd><p>使用 <var class="var">目录</var> 作为文件名以 <samp class="file">/lib</samp>或 <samp class="file">/usr/lib&#39;</samp>开头的库的默认系统根目录。（
+<var class="var">目录</var> 的值可以在运行时使用 <code class="command">set
+sysroot</code> 命令进行修改。）如果 <var class="var">目录</var> 在 <small class="sc">GDB</small> 配置前缀（使用 <code class="code">--prefix</code> 或 <code class="code">--exec-prefix options</code>设置）之下，当
+<small class="sc">GDB</small> 移动到不同位置时，默认系统根目录将自动调整。
+</p>
+</dd>
+<dt><code class="code">--with-system-gdbinit=<var class="var">file</var></code></dt>
+<dd><p>配置 <small class="sc">GDB</small> 以自动加载系统范围的初始化文件。
+<var class="var">文件</var> 应该是一个绝对文件名。如果 <var class="var">文件</var> 位于配置前缀下的目录中，并且 <small class="sc">GDB</small> 在构建后移动到另一个位置，系统范围初始化文件的位置将相应调整。
+</p>
+</dd>
+<dt><code class="code">--with-system-gdbinit-dir=<var class="var">directory</var></code></dt>
+<dd><p>配置 <small class="sc">GDB</small> 以自动从系统范围的目录加载初始化文件。  <var class="var">目录</var> 应该是一个绝对目录名。如果 <var class="var">目录</var> 位于配置前缀下的目录中，并且 <small class="sc">GDB</small> 在构建后移动到另一个位置，系统范围初始化目录的位置将相应调整。
+</p>
+</dd>
+<dt><code class="code">--enable-build-warnings</code></dt>
+<dd><p>在构建 <small class="sc">GDB</small> 源代码时，要求编译器对任何看起来有点可疑的代码发出警告。根据您使用的编译器的确切版本，它会传递许多不同的警告标志。
+</p>
+</dd>
+<dt><code class="code">--enable-werror</code></dt>
+<dd><p>将编译器警告视为错误。它会向编译器添加 <code class="code">-Werror</code> 标志，如果编译器输出任何警告消息，编译将失败。
+</p>
+</dd>
+<dt><code class="code">--enable-ubsan</code></dt>
+<dd><p>启用 GCC 未定义行为检查器。默认情况下此功能是禁用的，但将 <code class="code">--enable-ubsan=yes</code> 或
+<code class="code">--enable-ubsan=auto</code> 传递给 <code class="code">configure</code> 将启用它。未定义行为检查器检查 C<code class="t">++</code> 未定义行为。它会有性能开销，因此如果您关注 <small class="sc">GDB</small>的性能，应该禁用它。未定义行为检查器在 GCC 4.9 中首次引入。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="System_002dwide-configuration.html">系统范围的配置和设置</a>, 上一步： <a href="Config-Names.html">指定主机和目标的名称</a>, 上一级： <a href="Installing-GDB.html">安装 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

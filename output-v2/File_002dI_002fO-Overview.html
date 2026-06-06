@@ -1,0 +1,84 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>文件输入/输出概述（使用GDB进行调试）</title>
+
+<meta name="description" content="File-I/O Overview (Debugging with GDB)"/>
+<meta name="keywords" content="File-I/O Overview (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="File-I/O Remote Protocol Extension"/>
+<link href="Protocol-Basics.html" rel="next" title="Protocol Basics"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="File_002dI_002fO-Overview">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Protocol-Basics.html" rel="next">协议基础</a>，上一项： <a accesskey="u" href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up">文件输入/输出远程协议扩展</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="File_002dI_002fO-Overview-1"><span>E.14.1 文件输入/输出概述<a class="copiable-link" href="#File_002dI_002fO-Overview-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-file_002di_002fo-overview"></a>
+
+<p> <em class="dfn">文件输入/输出远程协议扩展</em> （简称：文件输入/输出）允许目标系统使用主机的文件系统和控制台输入/输出来执行各种系统调用。目标系统上的系统调用会被转换为发送到主机系统的远程协议数据包，然后主机系统执行所需的操作并向目标系统返回响应数据包。即使在缺乏文件系统的目标系统上，这也能模拟文件系统操作。
+</p>
+<p>该协议被定义为独立于主机和目标系统。它使用自己的数据类型和值的内部表示。
+<small class="sc">GDB</small> 以及目标系统的 <small class="sc">GDB</small> 存根负责在数据传输时将与系统相关的值表示转换为内部协议表示。
+</p>
+<p>通信是同步的。只有当 
+<small class="sc">GDB</small> 正在等待来自‘<samp class="samp">C</samp>’、‘<samp class="samp">c</samp>’、‘<samp class="samp">S</samp>’ 或 ‘<samp class="samp">s</samp>’ 数据包的响应时，系统调用才是可能的。当 <small class="sc">GDB</small> 处理系统调用请求时，目标系统会停止，以允许对目标系统的内存进行确定性访问。因此，文件输入/输出不会被目标系统的信号中断。另一方面，可以通过用户中断（‘<samp class="samp">Ctrl - C</samp>’）在 <small class="sc">GDB</small>内中断文件输入/输出。
+</p>
+<p>目标系统执行主机系统调用的请求不会结束最近的‘<samp class="samp">C</samp>’、‘<samp class="samp">c</samp>’、‘<samp class="samp">S</samp>’ 或 ‘<samp class="samp">s</samp>’ 操作。这意味着，在完成系统调用后，目标系统会继续之前的活动（继续执行、单步执行）。不需要来自 <small class="sc">GDB</small> 的额外继续或单步执行请求。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) continue
+  &lt; - 目标系统请求‘系统调用X’
+  目标系统停止， <span class="sc">GDB</span> 执行系统调用
+  -&gt; <span class="sc">GDB</span> 返回结果
+  ... 目标系统继续执行， <span class="sc">GDB</span> 返回等待目标系统
+  &lt; - 目标系统命中断点并发送一个Txx数据包
+</pre></div>
+
+<p>该协议仅支持在控制台和主机文件系统上的常规文件进行输入/输出。主机系统上的字符或块特殊设备、管道、命名管道、套接字或任何其他通信方法均不被该协议支持。
+</p>
+<p>文件输入/输出在非停止模式下不受支持。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Protocol-Basics.html">协议基础</a>, 上一项： <a href="File_002dI_002fO-Remote-Protocol-Extension.html">文件输入/输出远程协议扩展</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

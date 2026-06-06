@@ -1,0 +1,441 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪点数据包（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Tracepoint Packets (Debugging with GDB)"/>
+<meta name="keywords" content="Tracepoint Packets (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Host-I_002fO-Packets.html" rel="next" title="Host I/O Packets"/>
+<link href="Architecture_002dSpecific-Protocol-Details.html" rel="prev" title="Architecture-Specific Protocol Details"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Tracepoint-Packets">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Host-I_002fO-Packets.html" rel="next">主机 I/O 数据包</a>, 上一项： <a accesskey="p" href="Architecture_002dSpecific-Protocol-Details.html" rel="prev">特定架构的协议细节</a>, 上一级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Tracepoint-Packets-1"><span>E.7 跟踪点数据包<a class="copiable-link" href="#Tracepoint-Packets-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-tracepoint-packets"></a>
+<a class="index-entry-id" id="index-packets_002c-tracepoint"></a>
+
+<p>这里我们描述用于实现跟踪点的数据包（参见 <small class="sc">GDB</small> 跟踪点 <a class="pxref" href="Tracepoints.html">跟踪点</a>)。
+</p>
+<dl class="table">
+<dt><a id="index-QTDP-packet"></a><span>‘<samp class="samp">QTDP:<var class="var">n</var>:<var class="var">地址</var>:<var class="var">ena</var>:<var class="var">单步执行</var>:<var class="var">通过</var>[:F<var class="var">帧长度</var>][:S][:X<var class="var">长度</var>,<var class="var">字节</var>]<span class="r">[</span>-<span class="r">]</span></samp>’<a class="copiable-link" href="#index-QTDP-packet"> ¶</a></span></dt>
+<dd><p>创建一个新的跟踪点，编号为 <var class="var">n</var>, 在 <var class="var">地址</var>. 如果 <var class="var">ena</var>
+是 ‘<samp class="samp">E</samp>’, 则跟踪点已启用；如果是 ‘<samp class="samp">D</samp> <var class="var">单步执行</var> 给出跟踪点的单步计数，并且 <var class="var">通过</var> 给出其通过计数。如果有 ‘<samp class="samp">F</samp>’ 存在，则跟踪点将是一个快速跟踪点，并且 <var class="var">帧长度</var> 是目标应该复制到其他地方以为跟踪点腾出空间的字节数。如果有 ‘<samp class="samp">S</samp>’ 存在，跟踪点将是一个静态跟踪点。如果有 ‘<samp class="samp">X</samp>’ 存在，它引入一个跟踪点条件，该条件由一个十六进制长度，后跟一个逗号和十六进制编码的字节组成，方式类似于下面描述的操作编码。如果末尾的 ‘<samp class="samp">-</samp>’ 存在，后续会有更多 ‘<samp class="samp">QTDP</samp>’ 数据包将跟进以指定此跟踪点的操作。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">OK</samp></dt>
+<dd><p>
+</p></dd>
+<dt>‘<samp class="samp">qRelocInsn</samp>’</dt>
+<dd><p>参见 <a class="xref" href="#Tracepoint-Packets">重定位指令回复数据包</a>.
+</p></dd>
+</dl>
+
+</dd>
+<dt>‘<samp class="samp"><var class="var">n</var>:<var class="var">地址</var>:<span class="r">[</span>S<span class="r">]</span><var class="var">操作</var>…<span class="r">[</span>-<span class="r">]</span></samp>’</dt>
+<dd><p>定义跟踪点命中时要执行的操作。 <var class="var">n</var>  和
+<var class="var">地址</var>  必须与初始的 ‘<samp class="samp">QTDP</samp>’ 数据包用于
+此跟踪点。此数据包只能在另一个以 ‘<samp class="samp">QTDP</samp>’ 结尾且末尾为 ‘<samp class="samp">-</samp>’ 的数据包之后立即发送。如果末尾的 ‘<samp class="samp">-</samp>’ 存在，则后续会有更多 ‘<samp class="samp">QTDP</samp>’ 数据包，为该跟踪点指定更多操作。
+</p>
+<p>在给定跟踪点的一系列操作数据包中，最多只能有一个数据包在其第一个<samp class="samp">S</samp>’ 之前有 ‘ <var class="var">操作</var>’。如果发送了这样的数据包，它和后续的数据包定义 “单步执行时” 的操作。任何先前的数据包定义普通操作 —— 也就是跟踪点首次命中时执行的操作。如果没有操作数据包有 ‘<samp class="samp">S</samp>’，那么系列中的所有数据包都指定普通跟踪点操作。
+</p>
+<p>数据包的 ‘<samp class="samp"><var class="var">操作</var>…</samp>’ 部分是一系列操作，无分隔符连接。每个操作有以下形式之一：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">R <var class="var">掩码</var></samp>’</dt>
+<dd><p>收集掩码中对应位被置位的寄存器， <var class="var">掩码</var>是一个十六进制数，若第 <var class="var">i</var> 位被置位，则表示寄存器编号为
+<var class="var">i</var> 的寄存器应被收集。（最低有效位编号为零）。请注意， <var class="var">掩码</var>  可以是任意位数；它可能无法放入 32 位字中。
+</p>
+</dd>
+<dt>‘<samp class="samp">M <var class="var">基寄存器</var>,<var class="var">偏移量</var>,<var class="var">长度</var></samp>’</dt>
+<dd><p>收集从寄存器编号为 <var class="var">长度</var> 的地址开始的 <var class="var">基寄存器</var> 加上 <var class="var">偏移量</var> 处的内存字节。如果 <var class="var">基寄存器</var>  是 ‘<samp class="samp">-1</samp>’，那么该范围有一个固定地址： <var class="var">偏移量</var>  是要收集的最低字节的地址。 <var class="var">基寄存器</var>,
+<var class="var">偏移量</var>, 和 <var class="var">长度</var>  参数都是无符号十六进制值（‘<samp class="samp">-1</samp>’ 对于 <var class="var">基寄存器</var>  是一个特殊情况）。
+</p>
+</dd>
+<dt>‘<samp class="samp">X <var class="var">长度</var>,<var class="var">表达式</var></samp>’</dt>
+<dd><p>计算长度为 <var class="var">表达式</var> 的 <var class="var">长度</var>，并按照其指示收集内存。代理表达式 <var class="var">表达式</var>  如
+<a class="ref" href="Agent-Expressions.html">GDB 代理表达式机制</a> 中所述。表达式的每个字节在数据包中编码为两位十六进制数； <var class="var">长度</var>  是表达式中的字节数（因此是数据包中十六进制数字的一半）。
+</p>
+</dd>
+<dt>‘<samp class="samp">L</samp>’</dt>
+<dd><p>收集静态跟踪数据。
+</p>
+</dd>
+</dl>
+
+<p>只要数据包不超过最大数据包长度（对于许多存根来说是 400 字节），任意数量的操作都可以打包在一个 ‘<samp class="samp">QTDP</samp>’ 数据包中。每个跟踪点只能有一个 ‘<samp class="samp">R</samp>’ 操作，并且它必须在任何 ‘<samp class="samp">M</samp>’ 或 ‘<samp class="samp">X</samp>’ 操作之前。‘<samp class="samp">M</samp>’ 和 ‘<samp class="samp">X</samp>’ 操作引用的任何寄存器必须由前面的 ‘<samp class="samp">R</samp>’ 操作收集。（就这些限制而言，“单步执行时” 的操作被视为附加到一个单独的跟踪点）。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">OK</samp>’</dt>
+<dd><p>数据包已被理解并执行。
+</p></dd>
+<dt>‘<samp class="samp">qRelocInsn</samp>’</dt>
+<dd><p>参见 <a class="xref" href="#Tracepoint-Packets">重定位指令回复数据包</a>.
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-QTDPsrc-packet"></a><span>‘<samp class="samp">QTDPsrc:<var class="var">n</var>:<var class="var">地址</var>:<var class="var">类型</var>:<var class="var">起始位置</var>:<var class="var">总长度</var>:<var class="var">字节</var></samp>’<a class="copiable-link" href="#index-QTDPsrc-packet"> ¶</a></span></dt>
+<dd><p>指定跟踪点 <var class="var">n</var>  在地址 <var class="var">地址</var> 处的源字符串。这对于准确重现跟踪运行开始时最初下载的跟踪点很有用。 <var class="var">类型</var>
+ 是跟踪点部分的名称，例如 ‘<samp class="samp">cond</samp>’ 表示跟踪点的条件表达式（以下列出了类型列表），而
+<var class="var">字节</var>  是十六进制编码的字符串。
+</p>
+<p><var class="var">起始位置</var>  是 <var class="var">字节</var>  在整个源字符串中的偏移量，而 <var class="var">总长度</var>  是源字符串的总长度。这用于处理比单个数据包能容纳的更长的源字符串。
+</p>
+<p>可用的字符串类型有 ‘<samp class="samp">at</samp>’ 表示位置，‘<samp class="samp">cond</samp>’ 表示条件，以及 ‘<samp class="samp">cmd</samp>’ 表示操作命令。
+<small class="sc">GDB</small> 为操作列表中的每个命令发送一个单独的数据包，顺序与命令在列表中的存储顺序相同。
+</p>
+<p>目标除了将源字符串作为对 ‘<samp class="samp">qTfP</samp>’/‘<samp class="samp">qTsP</samp>’ 查询数据包的回复的一部分报告回来之外，不需要对源字符串做任何处理。
+</p>
+<p>虽然这个数据包是可选的，并且 <small class="sc">GDB</small>  只有在目标回复 ‘<samp class="samp">TracepointSource</samp>’ 时才会发送。参见 <a class="xref" href="General-Query-Packets.html">通用查询数据包</a>, 但它使断开连接的跟踪和跟踪文件的使用变得更加容易。否则，用户必须确保在查看跟踪帧时生效的跟踪点与跟踪运行期间生效的跟踪点相同；即使是很小的差异也可能导致 ‘<samp class="samp">tdump</samp>’ 无法工作，或者找不到特定的跟踪帧。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-QTDV-packet"></a>
+<a id="index-define-trace-state-variable_002c-remote-request"></a><span>‘<samp class="samp">QTDV:<var class="var">n</var>:<var class="var">值</var>:<var class="var">内置标志</var>:<var class="var">名称</var></samp>’<a class="copiable-link" href="#index-define-trace-state-variable_002c-remote-request"> ¶</a></span></dt>
+<dd><p>创建一个新的跟踪状态变量，编号为 <var class="var">n</var>, 初始值为 <var class="var">值</var>, 这是一个 64 位有符号整数。 <var class="var">n</var>
+ 和 <var class="var">值</var>  都编码为十六进制值。 <small class="sc">GDB</small>  可以选择不为初始值为零的情况使用此数据包；目标应该在表达式中提到跟踪状态变量时直接创建它们。 <var class="var">内置标志</var>  如果跟踪状态变量是内置的，则应为 1（一），如果不是内置的，则应为 0（零）。
+<small class="sc">GDB</small>  仅在之前的 ‘ <var class="var">内置标志</var>  被设置为 1 的 ‘<samp class="samp">qTfV</samp>’ 或 ‘<samp class="samp">qTsV</samp>’ 数据包时才将其设置为 1。 <var class="var">名称</var>  的内容是跟踪状态变量的十六进制编码名称（不带前导 ‘<samp class="samp">$</samp>’）。
+</p>
+</dd>
+<dt><a id="index-QTFrame-packet"></a><span>‘<samp class="samp">QTFrame:<var class="var">n</var></samp>’<a class="copiable-link" href="#index-QTFrame-packet"> ¶</a></span></dt>
+<dd><p>从缓冲区中选择第 <var class="var">n</var> 个跟踪点帧，并使用其中记录的寄存器和内存内容来回答来自 <small class="sc">GDB</small> 的后续请求数据包。
+</p>
+<p>存根的成功回复表明存根已找到请求的帧。响应是一系列部分，无分隔符连接，描述我们选择的帧。每个部分有以下形式之一：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">F <var class="var">f</var></samp>’</dt>
+<dd><p>所选帧是跟踪帧缓冲区中的第 <var class="var">n</var>  个；
+<var class="var">f</var>  是一个十六进制数。如果 <var class="var">f</var>  是 ‘<samp class="samp">-1</samp>’，则请求数据包中没有符合条件的帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">T <var class="var">t</var></samp>’</dt>
+<dd><p>所选跟踪帧记录了跟踪点编号为 <var class="var">t</var> 的命中；
+<var class="var">t</var>  是一个十六进制数。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt>‘<samp class="samp">QTFrame:pc:<var class="var">地址</var></samp>’</dt>
+<dd><p>类似于 ‘<samp class="samp">QTFrame:<var class="var">n</var></samp>’，但选择当前所选帧之后第一个程序计数器（PC）为 <var class="var">地址</var> 的跟踪点帧；
+<var class="var">地址</var>  是一个十六进制数。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTFrame:tdp:<var class="var">t</var></samp>’</dt>
+<dd><p>类似于 ‘<samp class="samp">QTFrame:<var class="var">n</var></samp>’，但选择当前所选帧之后第一个命中跟踪点 <var class="var">t</var> 的跟踪点帧； <var class="var">t</var>
+ 是一个十六进制数。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTFrame:range:<var class="var">起始地址</var>:<var class="var">结束地址</var></samp>’</dt>
+<dd><p>类似于 ‘<samp class="samp">QTFrame:<var class="var">n</var></samp>’，但选择当前所选帧之后第一个程序计数器（PC）在 <var class="var">起始地址</var> （包含）和 <var class="var">结束地址</var> （包含）之间的跟踪点帧； <var class="var">起始地址</var>  和 <var class="var">结束地址</var>  都是十六进制数。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTFrame:outside:<var class="var">起始地址</var>:<var class="var">结束地址</var></samp>’</dt>
+<dd><p>类似于 ‘<samp class="samp">QTFrame:range:<var class="var">起始地址</var>:<var class="var">结束地址</var></samp>’，但选择第一个 <em class="emph">在给定地址范围之外（不包含）的帧。</em> 
+</p>
+</dd>
+<dt><a id="index-qTMinFTPILen-packet"></a><span>‘<samp class="samp">qTMinFTPILen</samp>’<a class="copiable-link" href="#index-qTMinFTPILen-packet"> ¶</a></span></dt>
+<dd><p>此数据包请求可以放置快速跟踪点（参见 <a class="pxref" href="Set-Tracepoints.html">设置跟踪点的命令</a>) 的最小指令长度。例如，在 32 位 x86 架构上，可以使用 4 字节跳转，但这取决于目标系统是否能够在内存的前 64K 中创建蹦床，这对于该系统来说可能行得通也可能行不通。因此，如果能够安排，此数据包的回复将是 4。
+</p>
+<p>回复：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">0</samp>’</dt>
+<dd><p>当前最小指令长度未知。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">长度</var></samp>’</dt>
+<dd><p>最小指令长度是 <var class="var">长度</var>, 其中 <var class="var">长度</var>
+ 是一个大于或等于 1 的十六进制数。回复为 1 表示可以在任何指令上放置快速跟踪点，无论其大小如何。
+</p></dd>
+<dt>‘<samp class="samp">E</samp>’</dt>
+<dd><p>发生了错误。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-QTStart-packet"></a><span>‘<samp class="samp">QTStart</samp>’<a class="copiable-link" href="#index-QTStart-packet"> ¶</a></span></dt>
+<dd><p>开始跟踪点实验。开始在跟踪帧缓冲区中收集跟踪点命中的数据。此数据包支持 ‘<samp class="samp">qRelocInsn</samp>’ 回复（参见 <a class="pxref" href="#Tracepoint-Packets">重定位指令回复数据包</a>)。
+</p>
+</dd>
+<dt><a id="index-QTStop-packet"></a><span>‘<samp class="samp">QTStop</samp>’<a class="copiable-link" href="#index-QTStop-packet"> ¶</a></span></dt>
+<dd><p>结束跟踪点实验。停止收集跟踪帧。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTEnable:<var class="var">n</var>:<var class="var">地址</var></samp>’</dt>
+<dd><a class="anchor" id="QTEnable"></a><a class="index-entry-id" id="index-QTEnable-packet"></a>
+<p>在已启动的跟踪点实验中启用跟踪点 <var class="var">n</var>  在地址 <var class="var">地址</var>  处。如果跟踪点之前已禁用，则将恢复从该跟踪点收集数据。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTDisable:<var class="var">n</var>:<var class="var">地址</var></samp>’</dt>
+<dd><a class="anchor" id="QTDisable"></a><a class="index-entry-id" id="index-QTDisable-packet"></a>
+<p>在已启动的跟踪点实验中禁用跟踪点 <var class="var">n</var>  在地址 <var class="var">地址</var>  处。除非随后发出 ‘<samp class="samp">QTEnable:<var class="var">n</var>:<var class="var">地址</var></samp>’，否则将不再从该跟踪点收集数据。
+</p>
+</dd>
+<dt><a id="index-QTinit-packet"></a><span>‘<samp class="samp">QTinit</samp>’<a class="copiable-link" href="#index-QTinit-packet"> ¶</a></span></dt>
+<dd><p>清除跟踪点表，并清空跟踪帧缓冲区。
+</p>
+</dd>
+<dt><a id="index-QTro-packet"></a><span>‘<samp class="samp">QTro:<var class="var">起始范围1</var>,<var class="var">结束范围1</var>:<var class="var">起始范围2</var>,<var class="var">结束范围2</var>:…</samp>’<a class="copiable-link" href="#index-QTro-packet"> ¶</a></span></dt>
+<dd><p>将给定的内存范围设置为 “透明”。如果这些范围在跟踪点命中时未被收集，存根将从内存的当前内容中回答对这些范围的请求。
+</p>
+<p><small class="sc">GDB</small>  使用此功能来标记内存的只读区域，例如包含程序代码的区域。由于这些区域永远不会改变，它们在跟踪点命中时的内容应该仍然相同，因此存根没有理由拒绝提供它们的内容。
+</p>
+</dd>
+<dt><a id="index-QTDisconnected-packet"></a><span>‘<samp class="samp">QTDisconnected:<var class="var">值</var></samp>’<a class="copiable-link" href="#index-QTDisconnected-packet"> ¶</a></span></dt>
+<dd><p>设置当 <small class="sc">GDB</small>
+ 与目标断开连接时对跟踪运行的处理方式。 <var class="var">值</var>  为 1 指示目标继续跟踪运行，而 0 告诉目标如果
+<small class="sc">GDB</small>  不再连接则停止跟踪。
+</p>
+</dd>
+<dt><a id="index-qTStatus-packet"></a><span>‘<samp class="samp">qTStatus</samp>’<a class="copiable-link" href="#index-qTStatus-packet"> ¶</a></span></dt>
+<dd><p>询问存根当前是否有跟踪实验正在运行。
+</p>
+<p>回复形式如下：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">T<var class="var">运行状态</var><span class="r">[</span>;<var class="var">字段</var><span class="r">]</span>…</samp>’</dt>
+<dd><p><var class="var">运行状态</var>  是一个单数字符， <code class="code">1</code>  如果跟踪当前正在运行，或 <code class="code">0</code>  如果没有运行。它后面跟着用分号分隔的可选字段，代理可以使用这些字段报告额外的状态。
+</p>
+</dd>
+</dl>
+
+<p>如果跟踪没有运行，代理可以将以下几种解释之一作为可选字段报告：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">tnotrun:0</samp>’</dt>
+<dd><p>尚未运行任何跟踪。
+</p>
+</dd>
+<dt>‘<samp class="samp">tstop[:<var class="var">文本</var>]:0</samp>’</dt>
+<dd><p>跟踪被用户发起的停止命令停止。可选的
+<var class="var">文本</var>  字段是作为停止命令一部分提供的用户字符串（例如，手动停止跟踪的原因解释）。它是十六进制编码的。
+</p>
+</dd>
+<dt>‘<samp class="samp">tfull:0</samp>’</dt>
+<dd><p>跟踪因跟踪缓冲区已满而停止。
+</p>
+</dd>
+<dt>‘<samp class="samp">tdisconnected:0</samp>’</dt>
+<dd><p>跟踪因 <small class="sc">GDB</small>  与目标断开连接而停止。
+</p>
+</dd>
+<dt>‘<samp class="samp">tpasscount:<var class="var">跟踪点编号</var></samp>’</dt>
+<dd><p>跟踪因跟踪点 <var class="var">跟踪点编号</var>  超过其通过计数而停止。
+</p>
+</dd>
+<dt>‘<samp class="samp">terror:<var class="var">文本</var>:<var class="var">跟踪点编号</var></samp>’</dt>
+<dd><p>跟踪因跟踪点 <var class="var">跟踪点编号</var>  出现错误而停止。字符串 <var class="var">文本</var>  可用于描述错误的性质（例如，条件表达式中的除零错误）；它是十六进制编码的。
+</p>
+</dd>
+<dt>‘<samp class="samp">tunknown:0</samp>’</dt>
+<dd><p>跟踪因其他原因停止。
+</p>
+</dd>
+</dl>
+
+<p>额外的可选字段提供统计和其他信息。虽然不是必需的，但它们对于监控跟踪运行进度的用户非常有用。如果跟踪已停止，并且报告了这些数字，它们必须反映刚刚停止的跟踪的状态。
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">tframes:<var class="var">n</var></samp>’</dt>
+<dd><p>缓冲区中的跟踪帧数量。
+</p>
+</dd>
+<dt>‘<samp class="samp">tcreated:<var class="var">n</var></samp>’</dt>
+<dd><p>运行期间创建的跟踪帧总数。如果缓冲区是循环的，这个数字可能大于跟踪帧计数。
+</p>
+</dd>
+<dt>‘<samp class="samp">tsize:<var class="var">n</var></samp>’</dt>
+<dd><p>跟踪缓冲区的总大小，以字节为单位。
+</p>
+</dd>
+<dt>‘<samp class="samp">tfree:<var class="var">n</var></samp>’</dt>
+<dd><p>缓冲区中仍未使用的字节数。
+</p>
+</dd>
+<dt>‘<samp class="samp">circular:<var class="var">n</var></samp>’</dt>
+<dd><p>循环跟踪缓冲区标志的值。  <code class="code">1</code>  表示跟踪缓冲区是循环的，如果需要会丢弃旧的跟踪帧以腾出空间， <code class="code">0</code>  表示跟踪缓冲区是线性的，可能会填满。
+</p>
+</dd>
+<dt>‘<samp class="samp">disconn:<var class="var">n</var></samp>’</dt>
+<dd><p>断开连接跟踪标志的值。  <code class="code">1</code>  表示 <small class="sc">GDB</small>  断开连接后跟踪将继续， <code class="code">0</code>  表示跟踪运行将停止。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-qTP-packet"></a>
+<a id="index-tracepoint-status_002c-remote-request"></a><span>‘<samp class="samp">qTP:<var class="var">跟踪点编号</var>:<var class="var">地址</var></samp>’<a class="copiable-link" href="#index-tracepoint-status_002c-remote-request"> ¶</a></span></dt>
+<dd><p>向存根询问跟踪点编号为 <var class="var">跟踪点编号</var>  在地址 <var class="var">地址</var>.
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">V<var class="var">命中次数</var>:<var class="var">使用量</var></samp>’</dt>
+<dd><p>跟踪点在跟踪运行期间到目前为止已被命中 <var class="var">命中次数</var>  次，并且在跟踪缓冲区中占用 <var class="var">使用量</var> 。请注意，单步执行不被视为单独的命中，但单步执行的空间消耗会计入使用量数字中。
+<code class="code">while-stepping</code> 
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a class="index-entry-id" id="index-qTV-packet"></a>
+<a id="index-trace-state-variable-value_002c-remote-request"></a><span>‘<samp class="samp">qTV:<var class="var">变量编号</var></samp>’<a class="copiable-link" href="#index-trace-state-variable-value_002c-remote-request"> ¶</a></span></dt>
+<dd><p>向存根询问跟踪状态变量编号为 <var class="var">变量编号</var>.
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">V<var class="var">值</var></samp>’</dt>
+<dd><p>变量的值是 <var class="var">值</var>. 如果用户正在检查正在运行的目标，这将是变量的当前值；如果变量是在用户正在查看的跟踪帧中收集的，则是保存的值。请注意，多个请求可能会导致不同的回复值，例如在程序运行时请求值时。
+</p>
+</dd>
+<dt>‘<samp class="samp">U</samp>’</dt>
+<dd><p>变量的值未知。例如，如果用户正在检查一个未收集请求变量的跟踪帧，就会出现这种情况。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-qTsP-packet"></a><span>‘<samp class="samp">qTfP</samp>’<a class="copiable-link" href="#index-qTsP-packet"> ¶</a></span></dt>
+<dd><a class="index-entry-id" id="index-qTfP-packet"></a>
+</dd>
+<dt>‘<samp class="samp">qTsP</samp>’</dt>
+<dd><p>这些数据包请求目标正在使用的跟踪点的数据。  <small class="sc">GDB</small>  发送 <code class="code">qTfP</code>  以获取第一部分数据，并多次发送 <code class="code">qTsP</code>  以获取额外的数据。对这些数据包的回复通常采用定义跟踪点的 <code class="code">QTDP</code>  数据包的形式。（待补充详细语法）
+</p>
+</dd>
+<dt><a id="index-qTsV-packet"></a><span>‘<samp class="samp">qTfV</samp>’<a class="copiable-link" href="#index-qTsV-packet"> ¶</a></span></dt>
+<dd><a class="index-entry-id" id="index-qTfV-packet"></a>
+</dd>
+<dt>‘<samp class="samp">qTsV</samp>’</dt>
+<dd><p>这些数据包请求目标上的跟踪状态变量的数据。  <small class="sc">GDB</small>  发送 <code class="code">qTfV</code>  以获取第一部分数据，并多次发送 <code class="code">qTsV</code>  以获取额外的变量。对这些数据包的回复遵循定义跟踪状态变量的 <code class="code">QTDV</code>  数据包的语法。
+</p>
+</dd>
+<dt>‘<samp class="samp">qTfSTM</samp>’</dt>
+<dt>‘<samp class="samp">qTsSTM</samp>’</dt>
+<dd><a class="anchor" id="qTfSTM"></a><a class="anchor" id="qTsSTM"></a><a class="index-entry-id" id="index-qTfSTM-packet"></a>
+<a class="index-entry-id" id="index-qTsSTM-packet"></a>
+<p>这些数据包请求目标程序中存在的静态跟踪点标记的数据。  <small class="sc">GDB</small>  发送 <code class="code">qTfSTM</code>  以获取第一部分数据，并多次发送 <code class="code">qTsSTM</code>  以获取额外的数据。对这些数据包的回复采用以下形式：
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">m <var class="var">地址</var>:<var class="var">标识符</var>:<var class="var">额外信息</var></samp>’</dt>
+<dd><p>单个标记
+</p></dd>
+<dt>‘<samp class="samp">m <var class="var">地址</var>:<var class="var">标识符</var>:<var class="var">额外信息</var>,<var class="var">地址</var>:<var class="var">标识符</var>:<var class="var">额外信息</var>…</samp>’</dt>
+<dd><p>一个用逗号分隔的标记列表
+</p></dd>
+<dt>‘<samp class="samp">l</samp>’</dt>
+<dd><p>（小写字母 ‘<samp class="samp">L</samp>’）表示列表结束。
+</p></dd>
+</dl>
+
+<p> <var class="var">地址</var>  以十六进制编码；
+<var class="var">标识符</var>  和 <var class="var">额外信息</var>  是十六进制编码的字符串。
+</p>
+<p>针对每个查询，目标将回复一个或多个标记的列表，用逗号分隔。  <small class="sc">GDB</small>  将对每个回复响应一个请求更多标记的请求（使用 ‘<samp class="samp">qs</samp>’ 形式的查询），直到目标回复 ‘<samp class="samp">l</samp>’（小写字母 l，表示
+<em class="dfn">最后一个</em>)。
+</p>
+</dd>
+<dt>‘<samp class="samp">qTSTMat:<var class="var">地址</var></samp>’</dt>
+<dd><a class="anchor" id="qTSTMat"></a><a class="index-entry-id" id="index-qTSTMat-packet"></a>
+<p>此数据包请求目标程序中在 <var class="var">地址</var> 处的静态跟踪点标记的数据。对这个数据包的回复遵循列出静态跟踪点标记的 <code class="code">qTfSTM</code>  和 <code class="code">qTsSTM</code>  数据包的语法。
+</p>
+</dd>
+<dt><a id="index-QTSave-packet"></a><span>‘<samp class="samp">QTSave:<var class="var">文件名</var></samp>’<a class="copiable-link" href="#index-QTSave-packet"> ¶</a></span></dt>
+<dd><p>此数据包指示目标将跟踪数据保存到目标文件系统中的
+<var class="var">文件名</var>  文件中。 <var class="var">文件名</var>  编码为十六进制字符串；文件名的解释（相对路径与绝对路径、通配符等）由目标决定。
+</p>
+</dd>
+<dt><a id="index-qTBuffer-packet"></a><span>‘<samp class="samp">qTBuffer:<var class="var">偏移量</var>,<var class="var">长度</var></samp>’<a class="copiable-link" href="#index-qTBuffer-packet"> ¶</a></span></dt>
+<dd><p>返回跟踪缓冲区当前内容中从 <var class="var">长度</var>  字节开始，从 <var class="var">偏移量</var> 处开始的最多 <code class="code">l</code>  的回复表示没有可用的字节。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTBuffer:circular:<var class="var">值</var></samp>’</dt>
+<dd><p>此数据包指示目标如果
+<var class="var">值</var>  为 1 则使用循环跟踪缓冲区，如果值为 0 则使用线性缓冲区。
+</p>
+</dd>
+<dt>‘<samp class="samp">QTBuffer:size:<var class="var">大小</var></samp>’</dt>
+<dd><a class="anchor" id="QTBuffer_002dsize"></a><a class="index-entry-id" id="index-QTBuffer-size-packet"></a>
+<p>此数据包指示目标使跟踪缓冲区的大小为
+<var class="var">大小</var>  如果可能的话。值为 <code class="code">-1</code>  告诉目标使用它首选的任何大小。
+</p>
+</dd>
+<dt><a id="index-QTNotes-packet"></a><span>‘<samp class="samp">QTNotes:<span class="r">[</span><var class="var">类型</var>:<var class="var">文本</var><span class="r">]</span><span class="r">[</span>;<var class="var">类型</var>:<var class="var">文本</var><span class="r">]</span>…</samp>’<a class="copiable-link" href="#index-QTNotes-packet"> ¶</a></span></dt>
+<dd><p>此数据包为跟踪运行添加可选的文本注释。允许的类型包括 <code class="code">user</code>, <code class="code">notes</code>, 和 <code class="code">tstop</code>,
+<var class="var">文本</var>  字段是任意字符串，十六进制编码。
+</p>
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Relocate-instruction-reply-packet">重定位指令回复数据包</a></li>
+</ul>
+<div class="subsection-level-extent" id="Relocate-instruction-reply-packet">
+<h4 class="subsection"><span>E.7.1 重定位指令回复数据包<a class="copiable-link" href="#Relocate-instruction-reply-packet"> ¶</a></span></h4>
+<p>在内存中安装快速跟踪点时，目标可能需要将当前位于跟踪点地址的指令重定位到内存中的不同地址。对于大多数指令，简单的复制就足够了，但例如，隐式地将返回地址压入栈的调用指令，以及相对分支或其他与程序计数器（PC）相关的指令需要进行偏移调整，以便在不同地址执行指令的效果与在原始位置执行相同。
+</p>
+<p>作为对几个跟踪点数据包的响应，目标也可能在最终结果数据包之前回复多个中间的 ‘<samp class="samp">qRelocInsn</samp>’ 请求数据包，以便 <small class="sc">GDB</small>  处理此重定位操作。如果一个数据包支持此机制，其文档将明确说明。例如，参见上面 ‘<samp class="samp">QTStart</samp>’ 和 ‘<samp class="samp">QTDP</samp>’ 数据包的描述。请求的格式如下：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">qRelocInsn:<var class="var">从地址</var>;<var class="var">到地址</var></samp>’</dt>
+<dd>
+<p>此请求 <small class="sc">GDB</small>  将地址 <var class="var">从地址</var>
+ 处的指令复制到地址 <var class="var">到地址</var>, 可能进行调整，以便在 <var class="var">到地址</var>  处执行指令的效果与在
+<var class="var">从地址</var>.  <small class="sc">GDB</small>  将调整后的指令写入目标内存，从 <var class="var">到地址</var>.
+</p></dd>
+</dl>
+
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">qRelocInsn:<var class="var">调整后大小</var></samp>’</dt>
+<dd><p>通知存根重定位已完成。 <var class="var">调整后大小</var>  是重定位后指令序列的字节长度。
+</p></dd>
+</dl>
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Host-I_002fO-Packets.html">主机 I/O 数据包</a>, 上一项： <a href="Architecture_002dSpecific-Protocol-Details.html">特定架构的协议细节</a>, 上一级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

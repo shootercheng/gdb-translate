@@ -1,0 +1,215 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>停止回复包（使用GDB调试）</title>
+
+<meta name="description" content="Stop Reply Packets (Debugging with GDB)"/>
+<meta name="keywords" content="Stop Reply Packets (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="General-Query-Packets.html" rel="next" title="General Query Packets"/>
+<link href="Packets.html" rel="prev" title="Packets"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Stop-Reply-Packets">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="General-Query-Packets.html" rel="next">通用查询包</a>, 上一项： <a accesskey="p" href="Packets.html" rel="prev">包</a>, 上级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h3 class="section" id="Stop-Reply-Packets-1"><span>E.4 停止回复包<a class="copiable-link" href="#Stop-Reply-Packets-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-stop-reply-packets"></a>
+
+<p>‘<samp class="samp">C</samp>’, ‘<samp class="samp">c</samp>’, ‘<samp class="samp">S</samp>’, ‘<samp class="samp">s</samp>’, ‘<samp class="samp">vCont</samp>’,
+‘<samp class="samp">vAttach</samp>’, ‘<samp class="samp">vRun</samp>’, ‘<samp class="samp">vStopped</samp>’, 和 ‘<samp class="samp">?</samp>’包可以接收以下任何一种作为回复。除了‘<samp class="samp">?</samp>’
+和 ‘<samp class="samp">vStopped</samp>’, 该回复仅在目标停止时返回。在下面， <em class="dfn">信号编号</em> 由头文件定义 <samp class="file">include/gdb/signals.h</samp> 在
+<small class="sc">GDB</small> 源代码。
+</p>
+<p>在非停止模式下，服务器将简单地回复‘<samp class="samp">OK</samp>’到诸如‘<samp class="samp">vCont</samp>’之类的命令；任何停止都将是未来通知的主题。请参阅 <a class="xref" href="Remote-Non_002dStop.html">非停止模式的远程协议支持</a>。
+</p>
+<p>正如在请求包的描述中一样，为了清晰起见，我们在回复模板中包含空格；这些空格不是回复包语法的一部分。没有 <small class="sc">GDB</small> 停止回复包使用空格来分隔其组件。
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">S <var class="var">AA</var></samp>’</dt>
+<dd><p>程序接收到信号编号 <var class="var">AA</var> （一个两位十六进制数）。这相当于一个没有<samp class="samp">T</samp>’响应。
+<var class="var">n</var>:<var class="var">r</var> 对。
+</p>
+</dd>
+<dt><a id="index-T-packet-reply"></a><span>‘<samp class="samp">T <var class="var">AA</var> <var class="var">n1</var>:<var class="var">r1</var>;<var class="var">n2</var>:<var class="var">r2</var>;…</samp>’<a class="copiable-link" href="#index-T-packet-reply"> ¶</a></span></dt>
+<dd><p>程序接收到信号编号 <var class="var">AA</var> （一个两位十六进制数）。这相当于一个‘<samp class="samp">S</samp>’响应，除了‘<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>’对可以直接在停止回复包中携带重要寄存器的值和其他信息，从而减少往返延迟。单步和断点陷阱以这种方式报告。每个‘<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>’对的解释如下：
+</p>
+<ul class="itemize mark-bullet">
+<li>如果 <var class="var">n</var> 是一个十六进制数，它是一个寄存器编号，并且相应的 <var class="var">r</var> 给出了该寄存器的值。数据 <var class="var">r</var> 是目标字节顺序的一系列字节，每个字节由一个两位十六进制数表示。
+
+</li><li>如果 <var class="var">n</var> 是‘<samp class="samp">线程</samp>’，那么 <var class="var">r</var> 是停止线程的线程ID，如 <a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定。
+
+</li><li>如果 <var class="var">n</var> 是‘<samp class="samp">核心</samp>’，那么 <var class="var">r</var> 是检测到停止事件的核心的十六进制编号。
+
+</li><li>如果 <var class="var">n</var> 是一个已识别的 <em class="dfn">停止原因</em>, 它描述了一个更具体的导致目标停止的事件。当前定义的停止原因如下所列。 <var class="var">aa</var> 应该是‘<samp class="samp">05</samp>’，即陷阱信号。最多只能有一个停止原因。
+
+</li><li>否则， <small class="sc">GDB</small> 应该忽略这个‘<samp class="samp"><var class="var">n</var>:<var class="var">r</var></samp>’对，然后继续处理下一个；这允许我们在未来扩展协议。
+</li></ul>
+
+<p>当前定义的停止原因如下：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">观察点</samp>’</dt>
+<dt>‘<samp class="samp">读观察点</samp>’</dt>
+<dt>‘<samp class="samp">读写观察点</samp>’</dt>
+<dd><p>该包表示观察点命中，并且 <var class="var">r</var> 是数据地址，以十六进制表示。
+</p>
+</dd>
+<dt>‘<samp class="samp">系统调用进入</samp>’</dt>
+<dt>‘<samp class="samp">系统调用返回</samp>’</dt>
+<dd><p>该包表示系统调用进入或返回，并且 <var class="var">r</var> 是系统调用编号，以十六进制表示。
+</p>
+</dd>
+<dt><a id="index-shared-library-events_002c-remote-reply"></a><span>‘<samp class="samp">库</samp>’<a class="copiable-link" href="#index-shared-library-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示已加载的库发生了变化。
+<small class="sc">GDB</small> 应该使用‘<samp class="samp">qXfer:libraries:read</samp>’来获取新的已加载库列表。 <var class="var">r</var> 部分将被忽略。
+</p>
+</dd>
+<dt><a id="index-replay-log-events_002c-remote-reply"></a><span>‘<samp class="samp">重放日志</samp>’<a class="copiable-link" href="#index-replay-log-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示目标无法继续重放记录的执行事件，因为它已到达日志的末尾（或反向执行时的开头）。 <var class="var">r</var>
+的值将是‘<samp class="samp">开始</samp>’或‘<samp class="samp">结束</samp>’。请参阅 <a class="xref" href="Reverse-Execution.html">反向运行程序</a>, 以获取更多信息。
+</p>
+</dd>
+<dt>‘<samp class="samp">软件断点</samp>’</dt>
+<dd><a class="anchor" id="swbreak-stop-reason"></a><p>该包表示执行了软件断点指令，无论是否是 <small class="sc">GDB</small> 设置的断点，还是断点在程序中硬编码。 <var class="var">r</var>
+部分必须留空。
+</p>
+<p>在某些架构（如x86）上，在架构层面，当断点指令执行时，程序计数器指向断点地址加上一个偏移量。在这样的目标上，存根负责调整程序计数器以指向断点地址。
+</p>
+<p>默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。  <small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+<p>此包对于正确的非停止模式操作是必需的。
+</p>
+</dd>
+<dt>‘<samp class="samp">硬件断点</samp>’</dt>
+<dd><p>该包表示目标因硬件断点而停止。 <var class="var">r</var> 部分必须留空。
+</p>
+<p>关于‘<samp class="samp">qSupported</samp>’和上述非停止模式的相同说明适用。
+</p>
+</dd>
+<dt><a id="index-fork-events_002c-remote-reply"></a><span>‘<samp class="samp">fork</samp>’<a class="copiable-link" href="#index-fork-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示调用了 <code class="code">fork</code> ，并且 <var class="var">r</var> 是新子进程的线程ID，如 <a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定。此包仅适用于支持fork事件的目标。
+</p>
+<p>默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。  <small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+</dd>
+<dt><a id="index-vfork-events_002c-remote-reply"></a><span>‘<samp class="samp">vfork</samp>’<a class="copiable-link" href="#index-vfork-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示调用了 <code class="code">vfork</code> ，并且 <var class="var">r</var> 是新子进程的线程ID，如 <a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定。此包仅适用于支持vfork事件的目标。
+</p>
+<p>默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。  <small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+</dd>
+<dt><a id="index-vforkdone-events_002c-remote-reply"></a><span>‘<samp class="samp">vfork完成</samp>’<a class="copiable-link" href="#index-vforkdone-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示由vfork创建的子进程要么调用了 <code class="code">exec</code> ，要么终止了，因此父进程和子进程的地址空间不再共享。 <var class="var">r</var> 部分将被忽略。此包仅适用于支持vfork完成事件的目标。
+</p>
+<p>默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。  <small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+</dd>
+<dt><a id="index-exec-events_002c-remote-reply"></a><span>‘<samp class="samp">exec</samp>’<a class="copiable-link" href="#index-exec-events_002c-remote-reply"> ¶</a></span></dt>
+<dd><p>该包表示调用了 <code class="code">execve</code> ，并且 <var class="var">r</var>
+是执行的文件的绝对路径名，以十六进制表示。此包仅适用于支持exec事件的目标。
+</p>
+<p>默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。  <small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+<a class="index-entry-id" id="index-thread-clone-events_002c-remote-reply"></a>
+<a class="anchor" id="thread-clone-event"></a></dd>
+<dt>‘<samp class="samp">clone</samp>’</dt>
+<dd><p>该包表示调用了 <code class="code">clone</code> ，并且 <var class="var">r</var> 是新子线程的线程ID，如 <a class="ref" href="Packets.html#thread_002did-syntax">线程ID语法</a>中所指定。此包仅适用于支持clone事件的目标。
+</p>
+<p>默认情况下不应发送此包； <small class="sc">GDB</small> 使用 <a class="ref" href="General-Query-Packets.html#QThreadOptions">QThreadOptions</a> 包来请求它。
+</p>
+<a class="index-entry-id" id="index-thread-create-event_002c-remote-reply"></a>
+<a class="anchor" id="thread-create-event"></a></dd>
+<dt>‘<samp class="samp">创建</samp>’</dt>
+<dd><p>该包表示线程刚刚创建。新线程将保持停止状态，直到 <small class="sc">GDB</small> 使用恢复包（请参阅 <a class="pxref" href="Packets.html#vCont-packet">vCont包</a>）使其运行。默认情况下不应发送此包；
+<small class="sc">GDB</small> 使用 <a class="ref" href="General-Query-Packets.html#QThreadEvents">QThreadEvents</a> 包来请求它。另请参阅下面的‘<samp class="samp">w</samp>’（请参阅 <a class="pxref" href="#thread-exit-event">线程退出事件</a>）远程回复。
+<var class="var">r</var> 部分将被忽略。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt>‘<samp class="samp">W <var class="var">AA</var></samp>’</dt>
+<dt>‘<samp class="samp">W <var class="var">AA</var> ; 进程:<var class="var">pid</var></samp>’</dt>
+<dd><p>进程已退出，并且 <var class="var">AA</var> 是退出状态。这仅适用于某些目标。
+</p>
+<p>响应的第二种形式，包括已退出进程的进程ID，仅在 <small class="sc">GDB</small> 报告支持多进程协议扩展时才能使用；请参阅 <a class="ref" href="General-Query-Packets.html#multiprocess-extensions">多进程扩展</a>。 <var class="var">AA</var> 和 <var class="var">pid</var> 都被格式化为大端十六进制字符串。
+</p>
+</dd>
+<dt>‘<samp class="samp">X <var class="var">AA</var></samp>’</dt>
+<dt>‘<samp class="samp">X <var class="var">AA</var> ; 进程:<var class="var">pid</var></samp>’</dt>
+<dd><p>进程因信号 <var class="var">AA</var>而终止。
+</p>
+<p>响应的第二种形式，包括已终止进程的进程ID，仅在 <small class="sc">GDB</small> 报告支持多进程协议扩展时才能使用；请参阅 <a class="ref" href="General-Query-Packets.html#multiprocess-extensions">多进程扩展</a>。 <var class="var">AA</var> 和 <var class="var">pid</var> 都被格式化为大端十六进制字符串。
+</p>
+<a class="anchor" id="thread-exit-event"></a></dd>
+<dt><a id="index-thread-exit-event_002c-remote-reply"></a><span>‘<samp class="samp">w <var class="var">AA</var> ; <var class="var">tid</var></samp>’<a class="copiable-link" href="#index-thread-exit-event_002c-remote-reply"> ¶</a></span></dt>
+<dd>
+<p>线程已退出，并且 <var class="var">AA</var> 是退出状态。默认情况下不应发送此响应； <small class="sc">GDB</small> 使用 <a class="ref" href="General-Query-Packets.html#QThreadEvents">QThreadEvents</a> 或 <a class="ref" href="General-Query-Packets.html#QThreadOptions">QThreadOptions</a> 包来请求它。另请参阅
+<a class="ref" href="#thread-create-event">线程创建事件</a> 上面。  <var class="var">AA</var> 被格式化为大端十六进制字符串。
+</p>
+</dd>
+<dt>‘<samp class="samp">N</samp>’</dt>
+<dd><p>目标中没有剩余的恢复线程。换句话说，即使进程仍然存活，但最后一个恢复的线程已经退出。例如，假设目标进程有两个线程：线程1和线程2。客户端让线程1停止，并恢复线程2，线程2随后退出。此时，即使进程仍然存活，因此没有发送‘<samp class="samp">W</samp>’停止回复，但实际上也没有线程在执行。‘<samp class="samp">N</samp>’停止回复因此通知客户端它可以停止等待停止回复。默认情况下不应发送此包；较旧的 <small class="sc">GDB</small> 版本不支持它。
+<small class="sc">GDB</small> 通过提供适当的‘<samp class="samp">qSupported</samp>’功能（请参阅 <a class="pxref" href="General-Query-Packets.html#qSupported">qSupported</a>）来请求它。远程存根也必须提供适当的‘<samp class="samp">qSupported</samp>’功能以表明支持。
+</p>
+</dd>
+<dt>‘<samp class="samp">O <var class="var">XX</var>…</samp>’</dt>
+<dd><p>‘<samp class="samp"><var class="var">XX</var>…</samp>’是 <small class="sc">ASCII</small> 数据的十六进制编码，将作为程序的控制台输出写入。这可以在程序运行时的任何时候发生，调试器应该继续等待‘<samp class="samp">W</samp>’, ‘<samp class="samp">T</samp>’等。此回复在非停止模式下不允许。
+</p>
+</dd>
+<dt>‘<samp class="samp">F <var class="var">调用ID</var>,<var class="var">参数</var>…</samp>’</dt>
+<dd><p><var class="var">调用ID</var> 是一个标识符，用于指定应该调用哪个主机系统调用。这只是函数的名称。转换为正确的系统调用仅在 <small class="sc">GDB</small>中定义时适用。请参阅 <a class="xref" href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a>, 以获取已实现的系统调用列表。
+</p>
+<p>‘<samp class="samp"><var class="var">参数</var>…</samp>’是为此系统调用定义的参数列表。
+</p>
+<p>当目标期望 <small class="sc">GDB</small> 代表目标调用主机系统调用时，它会用此包进行回复。  <small class="sc">GDB</small> 用适当的‘<samp class="samp">F</samp>’包进行回复，并继续等待目标的下一个回复包。最新的‘<samp class="samp">C</samp>’, ‘<samp class="samp">c</samp>’, ‘<samp class="samp">S</samp>’
+or ‘<samp class="samp">s</samp>’操作预计将继续。请参阅 <a class="xref" href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a>, 以获取更多详细信息。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="General-Query-Packets.html">通用查询包</a>, 上一项： <a href="Packets.html">包</a>, 上级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

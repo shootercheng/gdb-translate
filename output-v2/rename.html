@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>重命名 (使用GDB调试)</title>
+
+<meta name="description" content="rename (Debugging with GDB)"/>
+<meta name="keywords" content="rename (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="List-of-Supported-Calls.html" rel="up" title="List of Supported Calls"/>
+<link href="unlink.html" rel="next" title="unlink"/>
+<link href="lseek.html" rel="prev" title="lseek"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="rename">
+<div class="nav-panel">
+<p>
+下一项: <a accesskey="n" href="unlink.html" rel="next">删除链接</a>, 上一项: <a accesskey="p" href="lseek.html" rel="prev">定位文件读写位置</a>, 返回上一级: <a accesskey="u" href="List-of-Supported-Calls.html" rel="up">支持的调用列表</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="unnumberedsubsubsec" id="rename-1"><span>重命名<a class="copiable-link" href="#rename-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-rename_002c-file_002di_002fo-system-call"></a>
+
+<dl class="table">
+<dt>概要:</dt>
+<dd><div class="example smallexample">
+<pre class="example-preformatted">int rename(const char *oldpath, const char *newpath);
+</pre></div>
+
+</dd>
+<dt>请求:</dt>
+<dd><p>‘<samp class="samp">Frename,<var class="var">旧路径指针</var>/<var class="var">长度</var>,<var class="var">新路径指针</var>/<var class="var">长度</var></samp>’
+</p>
+</dd>
+<dt>返回值:</dt>
+<dd><p>成功时返回零。出错时返回 -1。
+</p>
+</dd>
+<dt>错误:</dt>
+<dd>
+<dl class="table">
+<dt><code class="code">EISDIR</code></dt>
+<dd><p><var class="var">新路径</var> 是一个已存在的目录，但 <var class="var">旧路径</var> 不是一个目录。
+</p>
+</dd>
+<dt><code class="code">EEXIST</code></dt>
+<dd><p><var class="var">新路径</var> 是一个非空目录。
+</p>
+</dd>
+<dt><code class="code">EBUSY</code></dt>
+<dd><p><var class="var">旧路径</var> 或 <var class="var">新路径</var> 是一个正被某个进程使用的目录。
+</p>
+</dd>
+<dt><code class="code">EINVAL</code></dt>
+<dd><p>试图将一个目录设为其自身的子目录。
+</p>
+</dd>
+<dt><code class="code">ENOTDIR</code></dt>
+<dd><p>在 <var class="var">旧路径</var> 或新路径中用作目录的某个组件不是目录。或者 <var class="var">旧路径</var> 是一个目录，并且 <var class="var">新路径</var> 存在但不是目录。
+</p>
+</dd>
+<dt><code class="code">EFAULT</code></dt>
+<dd><p><var class="var">旧路径指针</var> 或 <var class="var">新路径指针</var> 是无效的指针值。
+</p>
+</dd>
+<dt><code class="code">EACCES</code></dt>
+<dd><p>没有访问文件或文件路径的权限。
+</p>
+</dd>
+<dt><code class="code">ENAMETOOLONG</code></dt>
+<dd>
+<p><var class="var">旧路径</var> 或 <var class="var">新路径</var> 太长。
+</p>
+</dd>
+<dt><code class="code">ENOENT</code></dt>
+<dd><p>在 <var class="var">旧路径</var> 或 <var class="var">新路径中的一个目录组件不存在。</var> 
+</p>
+</dd>
+<dt><code class="code">EROFS</code></dt>
+<dd><p>文件位于只读文件系统上。
+</p>
+</dd>
+<dt><code class="code">ENOSPC</code></dt>
+<dd><p>包含该文件的设备没有空间用于新的目录项。
+</p>
+</dd>
+<dt><code class="code">EINTR</code></dt>
+<dd><p>该调用被用户中断。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 断点命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Breakpoint Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Breakpoint Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Catchpoint-Commands.html" rel="next" title="GDB/MI Catchpoint Commands"/>
+<link href="GDB_002fMI-Command-Description-Format.html" rel="prev" title="GDB/MI Command Description Format"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Breakpoint-Commands">
+<div class="nav-panel">
+<p>
+下一个： <a accesskey="n" href="GDB_002fMI-Catchpoint-Commands.html" rel="next"><small class="sc">GDB/MI</small> 捕获点命令</a>, 上一个： <a accesskey="p" href="GDB_002fMI-Command-Description-Format.html" rel="prev"><small class="sc">GDB/MI</small> 命令描述格式</a>, 上一级： <a accesskey="u" href="GDB_002fMI.html" rel="up"> <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Breakpoint-Commands"><span>27.8 <small class="sc">GDB/MI</small> <a class="copiable-link" href="#gdb_002fmi-Breakpoint-Commands"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-breakpoint-commands-for-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-breakpoint-commands"></a>
+<p>本节介绍 <small class="sc">GDB/MI</small> 用于操作断点的命令。
+</p>
+<a class="index-entry-id" id="index-_002dbreak_002dafter"></a>
+<h4 class="subheading" id="The-_002dbreak_002dafter-Command"><span> <code class="code">-break-after</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dafter-Command"> </a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-1"><span>概要<a class="copiable-link" href="#Synopsis-1"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-after <var class="var">编号</var> <var class="var">计数</var>
+</pre></div>
+
+<p>断点编号 <var class="var">编号</var> 在被命中之前不起作用 <var class="var">计数</var> <samp class="samp"></samp>’ 命令，请参阅 ‘<samp class="samp">-break-list</samp>’ 命令如下。
+</p>
+<h4 class="subsubheading" id="gdb-Command-1"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-1"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">忽略</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-1"><span>示例<a class="copiable-link" href="#Example-1"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-insert main
+^done,bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,
+enabled=&#34;y&#34;,addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,
+fullname=&#34;/home/foo/hello.c&#34;,line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;}
+(gdb)
+-break-after 1 3
+~
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;1&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,fullname=&#34;/home/foo/hello.c&#34;,
+line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;,ignore=&#34;3&#34;}]}
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dbreak_002dcommands"></a>
+<h4 class="subheading" id="The-_002dbreak_002dcommands-Command"><span> <code class="code">-break-commands</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dcommands-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-2"><span>概要<a class="copiable-link" href="#Synopsis-2"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-commands <var class="var"></var> [ <var class="var"></var>  <var class="var"></var> 
+</pre></div>
+
+<p>指定当断点
+<var class="var">编号</var> 被命中时应执行的 CLI 命令。参数 <var class="var">命令 1</var> 到 <var class="var">命令 N</var>
+是这些命令。如果未指定命令，则清除之前设置的任何命令。请参阅 <a class="xref" href="Break-Commands.html">断点命令列表</a>. 此功能的典型用途是跟踪程序，即在断点被命中时打印一些变量的值，然后继续执行。
+</p>
+<h4 class="subsubheading" id="gdb-Command-2"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-2"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">commands</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-2"><span>示例<a class="copiable-link" href="#Example-2"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-insert main
+^done,bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,
+enabled=&#34;y&#34;,addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,
+fullname=&#34;/home/foo/hello.c&#34;,line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;}
+(gdb)
+-break-commands 1 &#34;print v&#34; &#34;continue&#34;
+^done
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dcondition"></a>
+<h4 class="subheading" id="The-_002dbreak_002dcondition-Command"><span>该 <code class="code">-break-condition</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dcondition-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-3"><span>概要<a class="copiable-link" href="#Synopsis-3"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-condition [ --force ] <var class="var">编号</var> [ <var class="var">表达式</var> ]
+</pre></div>
+
+<p>断点 <var class="var">编号</var> 只有在
+<var class="var">表达式</var> 中的条件为真时才会停止程序。该条件成为 ‘<samp class="samp">-break-list</samp>’ 输出的一部分（请参阅下面 ‘<samp class="samp">-break-list</samp>’ 命令的描述）。如果传递了 ‘<samp class="samp">--force</samp>’ 标志，即使条件对于断点 <var class="var">编号</var>的所有位置都无效，也会强制定义该条件。如果省略了 <var class="var">表达式</var> 参数，断点 <var class="var">编号</var> 变为无条件的。
+</p>
+<h4 class="subsubheading" id="gdb-Command-3"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-3"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">condition</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-3"><span>示例<a class="copiable-link" href="#Example-3"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-condition 1 1
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;1&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,fullname=&#34;/home/foo/hello.c&#34;,
+line=&#34;5&#34;,cond=&#34;1&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;,ignore=&#34;3&#34;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002ddelete"></a>
+<h4 class="subheading" id="The-_002dbreak_002ddelete-Command"><span>该 <code class="code">-break-delete</code> 命令<a class="copiable-link" href="#The-_002dbreak_002ddelete-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-4"><span>概要<a class="copiable-link" href="#Synopsis-4"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-delete ( <var class="var">断点</var> )+
+</pre></div>
+
+<p>删除参数列表中指定编号的断点。这显然会反映在断点列表中。
+</p>
+<h4 class="subsubheading" id="gdb-Command-4"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-4"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">delete</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-4"><span>示例<a class="copiable-link" href="#Example-4"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-delete 1
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;0&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002ddisable"></a>
+<h4 class="subheading" id="The-_002dbreak_002ddisable-Command"><span>该 <code class="code">-break-disable</code> 命令<a class="copiable-link" href="#The-_002dbreak_002ddisable-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-5"><span>概要<a class="copiable-link" href="#Synopsis-5"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-disable ( <var class="var">断点</var> )+
+</pre></div>
+
+<p>禁用指定的 <var class="var">断点</var>(多个)。断点列表中的 ‘<samp class="samp">enabled</samp>’ 字段现在对于指定的<samp class="samp">n</samp>’ 断点 <var class="var">(多个)。</var>
+</p>
+<h4 class="subsubheading" id="gdb-Command-5"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-5"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">disable</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-5"><span>示例<a class="copiable-link" href="#Example-5"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-disable 2
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;1&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;2&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;n&#34;,
+addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,fullname=&#34;/home/foo/hello.c&#34;,
+line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002denable"></a>
+<h4 class="subheading" id="The-_002dbreak_002denable-Command"><span>该 <code class="code">-break-enable</code> 命令<a class="copiable-link" href="#The-_002dbreak_002denable-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-6"><span>概要<a class="copiable-link" href="#Synopsis-6"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-enable ( <var class="var">断点</var> )+
+</pre></div>
+
+<p>启用（之前禁用的） <var class="var">断点</var>(多个)。
+</p>
+<h4 class="subsubheading" id="gdb-Command-6"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-6"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">enable</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-6"><span>示例<a class="copiable-link" href="#Example-6"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-enable 2
+^done
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;1&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;2&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,fullname=&#34;/home/foo/hello.c&#34;,
+line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dinfo"></a>
+<h4 class="subheading" id="The-_002dbreak_002dinfo-Command"><span>该 <code class="code">-break-info</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dinfo-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-7"><span>概要<a class="copiable-link" href="#Synopsis-7"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-info <var class="var">断点</var>
+</pre></div>
+
+<p>获取单个断点的信息。
+</p>
+<p>结果是一个断点表。请参阅 <a class="xref" href="GDB_002fMI-Breakpoint-Information.html"><small class="sc">GDB/MI</small> 断点信息</a>, 了解表中每个断点的格式详细信息。
+</p>
+<h4 class="subsubheading" id="gdb-Command-7"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-7"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">info break <var class="var">断点</var></samp>’。
+</p>
+<h4 class="subsubheading" id="Example-7"><span>示例<a class="copiable-link" href="#Example-7"> ¶</a></span></h4>
+<p>暂无。
+</p>
+<a class="index-entry-id" id="index-_002dbreak_002dinsert"></a>
+<a class="anchor" id="g_t_002dbreak_002dinsert"></a><h4 class="subheading" id="The-_002dbreak_002dinsert-Command"><span>该 <code class="code">-break-insert</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dinsert-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-8"><span>概要<a class="copiable-link" href="#Synopsis-8"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-insert [ -t ] [ -h ] [ -f ] [ -d ] [ -a ] [ --qualified ]
+    [ -c <var class="var">条件</var> ] [ --force-condition ] [ -i <var class="var">忽略计数</var> ]
+    [ -p <var class="var">线程 ID</var> ] [ -g <var class="var">线程组 ID</var> ] [ <var class="var">位置规范</var> ]
+</pre></div>
+
+<p>如果指定， <var class="var">位置规范</var>, 可以是以下之一：
+</p>
+<dl class="table">
+<dt><var class="var">行规范位置</var></dt>
+<dd><p>一个行规范位置。请参阅 <a class="xref" href="Linespec-Locations.html">行规范位置</a>.
+</p>
+</dd>
+<dt><var class="var">显式位置</var></dt>
+<dd><p>一个显式位置。  <small class="sc">GDB/MI</small> 显式位置类似于 CLI 使用以下选项名称的显式位置。请参阅 <a class="xref" href="Explicit-Locations.html">显式位置</a>.
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">--source <var class="var">文件名</var></samp>’</dt>
+<dd><p>位置的源文件名。此选项需要使用 ‘<samp class="samp">--function</samp>’ 或 ‘<samp class="samp">--line</samp>’。
+</p>
+</dd>
+<dt>‘<samp class="samp">--function <var class="var">函数</var></samp>’</dt>
+<dd><p>函数或方法的名称。
+</p>
+</dd>
+<dt>‘<samp class="samp">--label <var class="var">标签</var></samp>’</dt>
+<dd><p>标签的名称。
+</p>
+</dd>
+<dt>‘<samp class="samp">--line <var class="var">行偏移量</var></samp>’</dt>
+<dd><p>从位置开始的绝对或相对行偏移量。
+</p></dd>
+</dl>
+
+</dd>
+<dt><var class="var">地址位置</var></dt>
+<dd><p>一个地址位置，*<var class="var">地址</var>. 请参阅 <a class="xref" href="Address-Locations.html">地址位置</a>.
+</p></dd>
+</dl>
+
+<p>此命令可能的可选参数是：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">-t</samp>’</dt>
+<dd><p>插入一个临时断点。
+</p></dd>
+<dt>‘<samp class="samp">-h</samp>’</dt>
+<dd><p>插入一个硬件断点。
+</p></dd>
+<dt>‘<samp class="samp">-f</samp>’</dt>
+<dd><p>如果 <var class="var">位置规范</var> 无法解析（例如，如果它引用未知文件或函数），则创建一个挂起的断点。如果没有此标志， <small class="sc">GDB</small> 如果 <var class="var">位置规范</var>
+无法解析，将报告错误，并且不会创建断点。
+</p></dd>
+<dt>‘<samp class="samp">-d</samp>’</dt>
+<dd><p>创建一个禁用的断点。
+</p></dd>
+<dt>‘<samp class="samp">-a</samp>’</dt>
+<dd><p>创建一个跟踪点。请参阅 <a class="xref" href="Tracepoints.html">跟踪点</a>. 当此参数与 ‘<samp class="samp">-h</samp>’ 一起使用时，将创建一个快速跟踪点。
+</p></dd>
+<dt>‘<samp class="samp">-c <var class="var">条件</var></samp>’</dt>
+<dd><p>使断点以 <var class="var">条件</var>. 为条件。
+</p></dd>
+<dt>‘<samp class="samp">--force-condition</samp>’</dt>
+<dd><p>即使条件在所有断点位置都无效，也强制定义断点。
+</p></dd>
+<dt>‘<samp class="samp">-i <var class="var">忽略计数</var></samp>’</dt>
+<dd><p>初始化 <var class="var">忽略计数</var>.
+</p></dd>
+<dt>‘<samp class="samp">-p <var class="var">线程 ID</var></samp>’</dt>
+<dd><p>将断点限制到具有指定全局
+<var class="var">线程 ID</var>. 的线程。  <var class="var">线程 ID</var> 必须是请求断点时的有效线程 ID。使用
+<var class="var">线程 ID</var> 创建的断点将在相应线程退出时自动删除。
+</p></dd>
+<dt>‘<samp class="samp">-g <var class="var">线程组 ID</var></samp>’</dt>
+<dd><p>将断点限制到具有指定
+<var class="var">线程组 ID</var>. 的线程组。
+</p></dd>
+<dt>‘<samp class="samp">--qualified</samp>’</dt>
+<dd><p>此选项使 <small class="sc">GDB</small> 将指定的函数名解释为完整的全限定名。
+</p></dd>
+</dl>
+
+<h4 class="subsubheading" id="Result-1"><span>结果<a class="copiable-link" href="#Result-1"> ¶</a></span></h4>
+
+<p>请参阅 <a class="xref" href="GDB_002fMI-Breakpoint-Information.html"><small class="sc">GDB/MI</small> 断点信息</a>, 了解所得断点的格式详细信息。
+</p>
+<p>注意：此格式可能会更改。
+</p>
+<h4 class="subsubheading" id="gdb-Command-8"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-8"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">break</samp>’, ‘<samp class="samp">tbreak</samp>’,
+‘<samp class="samp">hbreak</samp>’, 和 ‘<samp class="samp">thbreak</samp>’。 </p>
+<h4 class="subsubheading" id="Example-8"><span>示例<a class="copiable-link" href="#Example-8"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-insert main
+^done,bkpt={number=&#34;1&#34;,addr=&#34;0x0001072c&#34;,file=&#34;recursive2.c&#34;,
+fullname=&#34;/home/foo/recursive2.c,line=&#34;4&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;}
+(gdb)
+-break-insert -t foo
+^done,bkpt={number=&#34;2&#34;,addr=&#34;0x00010774&#34;,file=&#34;recursive2.c&#34;,
+fullname=&#34;/home/foo/recursive2.c,line=&#34;11&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;}
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;2&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x0001072c&#34;, func=&#34;main&#34;,file=&#34;recursive2.c&#34;,
+fullname=&#34;/home/foo/recursive2.c,&#34;line=&#34;4&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;},
+bkpt={number=&#34;2&#34;,type=&#34;breakpoint&#34;,disp=&#34;del&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x00010774&#34;,func=&#34;foo&#34;,file=&#34;recursive2.c&#34;,
+fullname=&#34;/home/foo/recursive2.c&#34;,line=&#34;11&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;}]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002ddprintf_002dinsert"></a>
+<h4 class="subheading" id="The-_002ddprintf_002dinsert-Command"><span>该 <code class="code">-dprintf-insert</code> 命令<a class="copiable-link" href="#The-_002ddprintf_002dinsert-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-9"><span>概要<a class="copiable-link" href="#Synopsis-9"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -dprintf-insert [ -t ] [ -f ] [ -d ] [ --qualified ]
+    [ -c <var class="var">条件</var> ] [--force-condition] [ -i <var class="var">忽略计数</var> ]
+    [ -p <var class="var">线程 ID</var> ] [ <var class="var">位置规范</var> ] <var class="var">格式</var>
+    [ <var class="var">参数</var>... ]
+</pre></div>
+
+<p>在给定位置插入一个新的动态打印断点。请参阅 <a class="xref" href="Dynamic-Printf.html">动态打印</a>.  <var class="var">格式</var> 是要使用的格式，任何剩余的参数作为要替换的表达式传递。
+</p>
+<p>如果提供， <var class="var">位置规范</var> 和 <code class="code">--qualified</code> 可以与 <code class="code">-break-insert</code> 命令相同的方式指定。请参阅 <a class="xref" href="#g_t_002dbreak_002dinsert">-break-insert</a>.
+</p>
+<p>此命令可能的可选参数是：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">-t</samp>’</dt>
+<dd><p>插入一个临时断点。
+</p></dd>
+<dt>‘<samp class="samp">-f</samp>’</dt>
+<dd><p>如果 <var class="var">位置规范</var> 无法解析（例如，如果它引用未知文件或函数），则创建一个挂起的断点。如果没有此标志， <small class="sc">GDB</small> 如果 <var class="var">位置规范</var>
+无法解析，将报告错误，并且不会创建断点。
+</p></dd>
+<dt>‘<samp class="samp">-d</samp>’</dt>
+<dd><p>创建一个禁用的断点。
+</p></dd>
+<dt>‘<samp class="samp">-c <var class="var">条件</var></samp>’</dt>
+<dd><p>使断点以 <var class="var">条件</var>. 为条件。
+</p></dd>
+<dt>‘<samp class="samp">--force-condition</samp>’</dt>
+<dd><p>即使条件在所有断点位置都无效，也强制定义断点。
+</p></dd>
+<dt>‘<samp class="samp">-i <var class="var">忽略计数</var></samp>’</dt>
+<dd><p>设置断点的忽略计数（请参阅 <a class="pxref" href="Conditions.html">忽略计数</a>)
+to <var class="var">忽略计数</var>.
+</p></dd>
+<dt>‘<samp class="samp">-p <var class="var">线程 ID</var></samp>’</dt>
+<dd><p>将断点限制到具有指定全局
+<var class="var">线程 ID</var>.
+</p></dd>
+</dl>
+
+<h4 class="subsubheading" id="Result-2"><span>结果<a class="copiable-link" href="#Result-2"> ¶</a></span></h4>
+
+<p>请参阅 <a class="xref" href="GDB_002fMI-Breakpoint-Information.html"><small class="sc">GDB/MI</small> 断点信息</a>, 了解所得断点的格式详细信息。
+</p>
+
+<h4 class="subsubheading" id="gdb-Command-9"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-9"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">dprintf</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-9"><span>示例<a class="copiable-link" href="#Example-9"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+4-dprintf-insert foo &#34;At foo entry\n&#34;
+4^done,bkpt={number=&#34;1&#34;,type=&#34;dprintf&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000000000040061b&#34;,func=&#34;foo&#34;,file=&#34;mi-dprintf.c&#34;,
+fullname=&#34;mi-dprintf.c&#34;,line=&#34;25&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;,script=[&#34;printf \&#34;At foo entry\\n\&#34;&#34;,&#34;continue&#34;],
+original-location=&#34;foo&#34;}
+(gdb)
+5-dprintf-insert 26 &#34;arg=%d, g=%d\n&#34; arg g
+5^done,bkpt={number=&#34;2&#34;,type=&#34;dprintf&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000000000040062a&#34;,func=&#34;foo&#34;,file=&#34;mi-dprintf.c&#34;,
+fullname=&#34;mi-dprintf.c&#34;,line=&#34;26&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;,script=[&#34;printf \&#34;arg=%d, g=%d\\n\&#34;, arg, g&#34;,&#34;continue&#34;],
+original-location=&#34;mi-dprintf.c:26&#34;}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dlist"></a>
+<h4 class="subheading" id="The-_002dbreak_002dlist-Command"><span>该 <code class="code">-break-list</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dlist-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-10"><span>概要<a class="copiable-link" href="#Synopsis-10"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-list
+</pre></div>
+
+<p>显示已插入的断点列表，显示以下字段：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">编号</samp>’</dt>
+<dd><p>断点的编号
+</p></dd>
+<dt>‘<samp class="samp">类型</samp>’</dt>
+<dd><p>断点的类型： ‘<samp class="samp">断点</samp>’ 或 ‘<samp class="samp">观察点</samp>’
+</p></dd>
+<dt>‘<samp class="samp">处置方式</samp>’</dt>
+<dd><p>断点被命中时应删除还是禁用： ‘<samp class="samp">保留</samp>’ 或 ‘<samp class="samp">不保留</samp>’
+</p></dd>
+<dt>‘<samp class="samp">启用状态</samp>’</dt>
+<dd><p>断点是否启用： ‘<samp class="samp">是</samp>’ 或 ‘<samp class="samp">否</samp>’
+</p></dd>
+<dt>‘<samp class="samp">地址</samp>’</dt>
+<dd><p>设置断点的内存位置
+</p></dd>
+<dt>‘<samp class="samp">位置信息</samp>’</dt>
+<dd><p>断点的逻辑位置，由函数名、文件名、行号表示
+</p></dd>
+<dt>‘<samp class="samp">线程组</samp>’</dt>
+<dd><p>此断点适用的线程组列表
+</p></dd>
+<dt>‘<samp class="samp">命中次数</samp>’</dt>
+<dd><p>断点被命中的次数
+</p></dd>
+</dl>
+
+<p>如果没有断点、观察点、跟踪点或捕获点， <code class="code">BreakpointTable</code> <code class="code">body</code> 字段为空列表。
+</p>
+<h4 class="subsubheading" id="gdb-Command-10"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-10"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">info break</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-10"><span>示例<a class="copiable-link" href="#Example-10"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;2&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x000100d0&#34;,func=&#34;main&#34;,file=&#34;hello.c&#34;,line=&#34;5&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;0&#34;},
+bkpt={number=&#34;2&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x00010114&#34;,func=&#34;foo&#34;,file=&#34;hello.c&#34;,fullname=&#34;/home/foo/hello.c&#34;,
+line=&#34;13&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;}]}
+(gdb)
+</pre></div>
+
+<p>以下是没有断点时结果的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;0&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[]}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dbreak_002dpasscount"></a>
+<h4 class="subheading" id="The-_002dbreak_002dpasscount-Command"><span>该 <code class="code">-break-passcount</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dpasscount-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-11"><span>概要<a class="copiable-link" href="#Synopsis-11"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-passcount <var class="var">跟踪点编号</var> <var class="var">通过计数</var>
+</pre></div>
+
+<p>为跟踪点 <var class="var">跟踪点编号</var> 设置通过计数为
+<var class="var">通过计数</var>. 如果 <var class="var">跟踪点编号</var>
+所引用的断点不是跟踪点，则会发出错误。这对应于 CLI 命令 ‘<samp class="samp">passcount</samp>’。
+</p>
+<a class="index-entry-id" id="index-_002dbreak_002dwatch"></a>
+<h4 class="subheading" id="The-_002dbreak_002dwatch-Command"><span>该 <code class="code">-break-watch</code> 命令<a class="copiable-link" href="#The-_002dbreak_002dwatch-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-12"><span>概要<a class="copiable-link" href="#Synopsis-12"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -break-watch [ -a | -r ]
+</pre></div>
+
+<p>创建一个观察点。使用 ‘<samp class="samp">-a</samp>’ 选项将创建一个
+<em class="dfn">访问</em> 观察点，即当对内存位置进行读或写操作时触发的观察点。使用 ‘<samp class="samp">-r</samp>’ 选项，创建的观察点是一个 <em class="dfn">读</em> 观察点，即仅当对内存位置进行读访问时触发。如果不使用任何选项，创建的观察点是一个常规观察点，即当对内存位置进行写访问时触发。请参阅 <a class="xref" href="Set-Watchpoints.html">设置观察点</a>.
+</p>
+<p>请注意， ‘<samp class="samp">-break-list</samp>’ 将报告插入的观察点和断点的单个列表。
+</p>
+<h4 class="subsubheading" id="gdb-Command-11"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-11"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">watch</samp>’, ‘<samp class="samp">awatch</samp>’, 和
+‘<samp class="samp">rwatch</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-11"><span>示例<a class="copiable-link" href="#Example-11"> ¶</a></span></h4>
+
+<p>在 <code class="code">main</code> 函数中设置一个变量的观察点：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-watch x
+^done,wpt={number=&#34;2&#34;,exp=&#34;x&#34;}
+(gdb)
+-exec-continue
+^running
+(gdb)
+*stopped,reason=&#34;watchpoint-trigger&#34;,wpt={number=&#34;2&#34;,exp=&#34;x&#34;},
+value={old=&#34;-268439212&#34;,new=&#34;55&#34;},
+frame={func=&#34;main&#34;,args=[],file=&#34;recursive2.c&#34;,
+fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;5&#34;,arch=&#34;i386:x86_64&#34;}
+(gdb)
+</pre></div>
+
+<p>在函数的局部变量上设置一个观察点。  <small class="sc">GDB</small> 将停止程序执行两次：第一次是变量值改变，第二次是观察点超出作用域。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-watch C
+^done,wpt={number=&#34;5&#34;,exp=&#34;C&#34;}
+(gdb)
+-exec-continue
+^running
+(gdb)
+*stopped,reason=&#34;watchpoint-trigger&#34;,
+wpt={number=&#34;5&#34;,exp=&#34;C&#34;},value={old=&#34;-276895068&#34;,new=&#34;3&#34;},
+frame={func=&#34;callee4&#34;,args=[],
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;13&#34;,
+arch=&#34;i386:x86_64&#34;}
+(gdb)
+-exec-continue
+^running
+(gdb)
+*stopped,reason=&#34;watchpoint-scope&#34;,wpnum=&#34;5&#34;,
+frame={func=&#34;callee3&#34;,args=[{name=&#34;strarg&#34;,
+value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;}],
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;18&#34;,
+arch=&#34;i386:x86_64&#34;}
+(gdb)
+</pre></div>
+
+<p>在程序执行的不同点列出断点和观察点。请注意，一旦观察点超出作用域，它将被删除。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-break-watch C
+^done,wpt={number=&#34;2&#34;,exp=&#34;C&#34;}
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;2&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x00010734&#34;,func=&#34;callee4&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/devo/gdb/testsuite/gdb.mi/basics.c&#34;line=&#34;8&#34;,thread-groups=[&#34;i1&#34;],
+times=&#34;1&#34;},
+bkpt={number=&#34;2&#34;,type=&#34;watchpoint&#34;,disp=&#34;keep&#34;,
+enabled=&#34;y&#34;,addr=&#34;&#34;,what=&#34;C&#34;,thread-groups=[&#34;i1&#34;],times=&#34;0&#34;}]}
+(gdb)
+-exec-continue
+^running
+(gdb)
+*stopped,reason=&#34;watchpoint-trigger&#34;,wpt={number=&#34;2&#34;,exp=&#34;C&#34;},
+value={old=&#34;-276895068&#34;,new=&#34;3&#34;},
+frame={func=&#34;callee4&#34;,args=[],
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;13&#34;,
+arch=&#34;i386:x86_64&#34;}
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;2&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x00010734&#34;,func=&#34;callee4&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;8&#34;,thread-groups=[&#34;i1&#34;],times=&#34;1&#34;},
+bkpt={number=&#34;2&#34;,type=&#34;watchpoint&#34;,disp=&#34;keep&#34;,
+enabled=&#34;y&#34;,addr=&#34;&#34;,what=&#34;C&#34;,thread-groups=[&#34;i1&#34;],times=&#34;-5&#34;}]}
+(gdb)
+-exec-continue
+^running
+^done,reason=&#34;watchpoint-scope&#34;,wpnum=&#34;2&#34;,
+frame={func=&#34;callee3&#34;,args=[{name=&#34;strarg&#34;,
+value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;}],
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;18&#34;,
+arch=&#34;i386:x86_64&#34;}
+(gdb)
+-break-list
+^done,BreakpointTable={nr_rows=&#34;1&#34;,nr_cols=&#34;6&#34;,
+hdr=[{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;number&#34;,colhdr=&#34;Num&#34;},
+{width=&#34;14&#34;,alignment=&#34;-1&#34;,col_name=&#34;type&#34;,colhdr=&#34;Type&#34;},
+{width=&#34;4&#34;,alignment=&#34;-1&#34;,col_name=&#34;disp&#34;,colhdr=&#34;Disp&#34;},
+{width=&#34;3&#34;,alignment=&#34;-1&#34;,col_name=&#34;enabled&#34;,colhdr=&#34;Enb&#34;},
+{width=&#34;10&#34;,alignment=&#34;-1&#34;,col_name=&#34;addr&#34;,colhdr=&#34;Address&#34;},
+{width=&#34;40&#34;,alignment=&#34;2&#34;,col_name=&#34;what&#34;,colhdr=&#34;What&#34;}],
+body=[bkpt={number=&#34;1&#34;,type=&#34;breakpoint&#34;,disp=&#34;keep&#34;,enabled=&#34;y&#34;,
+addr=&#34;0x00010734&#34;,func=&#34;callee4&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;8&#34;,
+thread-groups=[&#34;i1&#34;],times=&#34;1&#34;}]}
+(gdb)
+</pre></div>
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一个： <a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small> 捕获点命令</a>, 上一个： <a href="GDB_002fMI-Command-Description-Format.html"><small class="sc">GDB/MI</small> 命令描述格式</a>, 上一级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

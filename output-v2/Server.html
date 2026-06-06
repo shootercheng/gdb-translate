@@ -1,0 +1,438 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>服务器（使用GDB调试）</title>
+
+<meta name="description" content="Server (Debugging with GDB)"/>
+<meta name="keywords" content="Server (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Debugging.html" rel="up" title="Remote Debugging"/>
+<link href="Remote-Configuration.html" rel="next" title="Remote Configuration"/>
+<link href="File-Transfer.html" rel="prev" title="File Transfer"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Server">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Remote-Configuration.html" rel="next">远程配置</a>, 上一步： <a accesskey="p" href="File-Transfer.html" rel="prev">向远程系统发送文件</a>, 上级： <a accesskey="u" href="Remote-Debugging.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Using-the-gdbserver-Program"><span>20.3 使用 <code class="code">gdbserver</code> 程序<a class="copiable-link" href="#Using-the-gdbserver-Program"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-gdbserver"></a>
+<a class="index-entry-id" id="index-remote-connection-without-stubs"></a>
+<p><code class="code">gdbserver</code> 是类Unix系统的控制程序，它允许你将你的程序与远程 <small class="sc">GDB</small> 通过
+<code class="code">target remote</code> 或 <code class="code">target extended-remote</code>—但不链接通常的调试桩。
+</p>
+<p><code class="code">gdbserver</code> 不是调试桩的完全替代品，因为它本质上需要与 <small class="sc">GDB</small> 本身相同的操作系统设施。 实际上，一个能够运行
+<code class="code">gdbserver</code> 连接到远程 <small class="sc">GDB</small> 也可以运行
+<small class="sc">GDB</small> 本地！  <code class="code">gdbserver</code> 尽管如此，有时还是有用的，因为它比 <small class="sc">GDB</small> 本身小得多。 它也比 <small class="sc">GDB</small>, 所以你可以通过使用 <code class="code">gdbserver</code>.
+最后，如果你为实时系统开发代码，你可能会发现实时操作所涉及的权衡使得在另一个系统上尽可能多地进行开发工作更加方便，例如通过交叉编译。 你可以使用 <code class="code">gdbserver</code> 做出类似的调试选择。
+</p>
+<p><small class="sc">GDB</small> 和 <code class="code">gdbserver</code>  <small class="sc">GDB</small> 远程串行协议中不支持。
+</p>
+<blockquote class="quotation">
+<p><em class="emph">警告：</em> <code class="code">gdbserver</code> 没有任何内置的安全性。
+不要运行 <code class="code">gdbserver</code> 连接到任何公共网络；一个
+<small class="sc">GDB</small> 连接到 <code class="code">gdbserver</code> 提供对目标系统的访问，其权限与运行
+<code class="code">gdbserver</code>.
+</p></blockquote>
+
+<a class="anchor" id="Running-gdbserver"></a><ul class="mini-toc">
+<li><a accesskey="1" href="#Running-gdbserver-1">运行 <code class="code">gdbserver</code></a></li>
+<li><a accesskey="2" href="#Connecting-to-gdbserver">连接到 <code class="code">gdbserver</code></a></li>
+<li><a accesskey="3" href="#Monitor-Commands-for-gdbserver-1">的监控命令 <code class="code">gdbserver</code></a></li>
+<li><a accesskey="4" href="#Tracepoints-support-in-gdbserver">中的跟踪点支持 <code class="code">gdbserver</code></a></li>
+</ul>
+<div class="subsection-level-extent" id="Running-gdbserver-1">
+<h4 class="subsection"><span>20.3.1 运行 <code class="code">gdbserver</code><a class="copiable-link" href="#Running-gdbserver-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-arguments_002c-to-gdbserver"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-command_002dline-arguments"></a>
+
+<p>在目标系统上运行 <code class="code">gdbserver</code> 。 你需要一份你要调试的程序的副本，包括它所需的任何库。
+<code class="code">gdbserver</code> 不需要你的程序的符号表，所以如果需要节省空间，你可以剥离程序。  <small class="sc">GDB</small> 在主机系统上处理所有的符号处理。
+</p>
+<p>要使用服务器，你必须告诉它如何与 <small class="sc">GDB</small>通信；你的程序的名称；以及你的程序的参数。 通常的语法是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标&gt; gdbserver <var class="var">comm</var> <var class="var">程序</var> [ <var class="var">参数</var> ... ]
+</pre></div>
+
+<p><var class="var">comm</var> 可以是设备名称（使用串行线），或者是TCP主机名和端口号，或者 <code class="code">-</code> 或 <code class="code">stdio</code> 使用 <code class="code">gdbserver</code>.
+例如，要调试带有参数<samp class="samp">foo.txt</samp>的Emacs，并通过串行端口 <small class="sc">GDB</small> 与
+<samp class="file">/dev/com1</samp>通信：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标&gt; gdbserver /dev/com1 emacs foo.txt
+</pre></div>
+
+<p><code class="code">gdbserver</code> 被动等待主机 <small class="sc">GDB</small> 与它通信。
+</p>
+<p>要使用TCP连接而不是串行线：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标&gt; gdbserver host:2345 emacs foo.txt
+</pre></div>
+
+<p>与上一个例子的唯一区别是第一个参数，指定你通过 <small class="sc">GDB</small> TCP与主机通信。 ‘<samp class="samp">host:2345</samp>’参数意味着 <code class="code">gdbserver</code> 期望从机器<samp class="samp">host</samp>到本地TCP端口2345的TCP连接。
+（目前，‘<samp class="samp">host</samp>’部分被忽略。） 只要端口号不与目标系统上任何已使用的TCP端口冲突，你可以选择任何你想要的端口号（例如， <code class="code">23</code> 是为 <code class="code">telnet</code>保留的。<a class="footnote" href="#FOOT16" id="DOCF16"><sup>16</sup></a>  你必须在主机 <small class="sc">GDB</small>
+<code class="code">target remote</code> 命令中使用相同的端口号。
+</p>
+<p> <code class="code">stdio</code> 连接在使用ssh启动 <code class="code">gdbserver</code>
+时很有用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) target remote | ssh -T hostname gdbserver - hello
+</pre></div>
+
+<p>‘<samp class="samp">-T</samp>’选项提供给ssh是因为我们不需要远程pty，并且我们不希望进行转义字符处理。 当提供命令时，ssh默认会这样做，提供该标志是为了明确说明。 如果你愿意，你可以省略它。
+</p>
+<p>使用stdio连接的gdbserver启动的程序有 <samp class="file">/dev/null</samp> 用于
+<code class="code">stdin</code>, 并且 <code class="code">stdout</code>,<code class="code">stderr</code> 通过连接到gdbserver的管道发送回gdb进行显示。 <code class="code">stdout</code> 和 <code class="code">stderr</code> 使用同一个管道。
+</p>
+<a class="anchor" id="Attaching-to-a-program"></a><ul class="mini-toc">
+<li><a accesskey="1" href="#Attaching-to-a-Running-Program">附加到正在运行的程序</a></li>
+<li><a accesskey="2" href="#TCP-port-allocation-lifecycle-of-gdbserver">的TCP端口分配生命周期 <code class="code">gdbserver</code></a></li>
+<li><a accesskey="3" href="#Other-Command_002dLine-Arguments-for-gdbserver-1">的其他命令行参数 <code class="code">gdbserver</code></a></li>
+</ul>
+<div class="subsubsection-level-extent" id="Attaching-to-a-Running-Program">
+<h4 class="subsubsection"><span>20.3.1.1 附加到正在运行的程序<a class="copiable-link" href="#Attaching-to-a-Running-Program"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-attach-to-a-program_002c-gdbserver"></a>
+<a class="index-entry-id" id="index-_002d_002dattach_002c-gdbserver-option"></a>
+
+<p>在某些目标系统上， <code class="code">gdbserver</code> 也可以附加到正在运行的程序。
+这是通过 <code class="code">--attach</code> 参数实现的。 语法如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标&gt; gdbserver --attach <var class="var">comm</var> <var class="var">pid</var>
+</pre></div>
+
+<p><var class="var">pid</var> 是当前正在运行的进程的进程ID。 没有必要指定 <code class="code">gdbserver</code> 正在运行的进程的二进制文件。
+</p>
+<p>在 <code class="code">target extended-remote</code> 模式下，你也可以使用
+<small class="sc">GDB</small> attach命令
+（参见 <a class="pxref" href="Connecting.html#Attaching-in-Types-of-Remote-Connections">远程连接类型中的附加操作</a>）。
+</p>
+<a class="index-entry-id" id="index-pidof"></a>
+<p>如果你的目标系统支持，你可以按名称而不是进程ID来调试进程，使用
+<code class="code">pidof</code> 实用工具：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标&gt; gdbserver --attach <var class="var">comm</var> `pidof <var class="var">程序</var>`
+</pre></div>
+
+<p>如果有多个 <var class="var">程序</var> 正在运行，或者 <var class="var">程序</var>
+有多个线程，大多数版本的 <code class="code">pidof</code> 支持
+<code class="code">-s</code> 选项，只返回第一个进程ID。
+</p>
+</div>
+<div class="subsubsection-level-extent" id="TCP-port-allocation-lifecycle-of-gdbserver">
+<h4 class="subsubsection"><span>20.3.1.2 的TCP端口分配生命周期 <code class="code">gdbserver</code><a class="copiable-link" href="#TCP-port-allocation-lifecycle-of-gdbserver"> ¶</a></span></h4>
+
+<p>本节仅适用于 <code class="code">gdbserver</code> 在TCP端口上监听的情况。
+</p>
+<p><code class="code">gdbserver</code> 通常在所有被调试的进程在 <kbd class="kbd">target remote</kbd> 模式下终止后终止。 另一方面，对于 <kbd class="kbd">target
+extended-remote</kbd>, <code class="code">gdbserver</code> 即使没有进程剩余也会继续运行。
+<small class="sc">GDB</small> 通常在退出时终止派生的被调试进程，这通常也会终止 <code class="code">gdbserver</code> 在 <kbd class="kbd">target remote</kbd>
+模式下。 因此，当连接意外断开，并且 <small class="sc">GDB</small>
+无法要求 <code class="code">gdbserver</code> 终止其被调试的进程时， <code class="code">gdbserver</code>
+即使在 <kbd class="kbd">target remote</kbd> 模式下也会继续运行。
+</p>
+<p>当 <code class="code">gdbserver</code> 继续运行时， <small class="sc">GDB</small> 之后可以再次连接到它。
+这种重新连接对于像 <a class="ref" href="Starting-and-Stopping-Trace-Experiments.html#disconnected-tracing">断开连接跟踪</a>这样的功能很有用。 为了完整性，一次最多只能有一个 <small class="sc">GDB</small> 连接。
+</p>
+<a class="index-entry-id" id="index-_002d_002donce_002c-gdbserver-option"></a>
+<p>默认情况下， <code class="code">gdbserver</code> 保持监听的TCP端口开放，以便后续连接成为可能。 但是，如果你使用 <code class="code">gdbserver</code>
+并使用 <samp class="option">--once</samp> 选项，它将在连接到第一个 <small class="sc">GDB</small> 会话后停止监听任何进一步的连接尝试。 这意味着在第一次连接之后，将无法再连接到 <code class="code">gdbserver</code> 。 这也意味着 <code class="code">gdbserver</code> 在与远程 <small class="sc">GDB</small> 的第一次连接关闭后将终止，即使是意外关闭的连接，即使在 <kbd class="kbd">target extended-remote</kbd> 模式下也是如此。
+<samp class="option">--once</samp> 选项允许将相同的端口号用于连接同一主机上运行的多个 <code class="code">gdbserver</code> 实例，因为每个实例在第一次连接后会关闭其端口。
+</p>
+<a class="anchor" id="Other-Command_002dLine-Arguments-for-gdbserver"></a></div>
+<div class="subsubsection-level-extent" id="Other-Command_002dLine-Arguments-for-gdbserver-1">
+<h4 class="subsubsection"><span>20.3.1.3 的其他命令行参数 <code class="code">gdbserver</code><a class="copiable-link" href="#Other-Command_002dLine-Arguments-for-gdbserver-1"> ¶</a></span></h4>
+
+<p>你可以使用 <samp class="option">--multi</samp> 选项来启动 <code class="code">gdbserver</code> 而不指定要调试的程序或要附加的进程。 然后你可以在 <code class="code">target extended-remote</code> 模式下附加并运行或附加到一个程序。 更多信息，请参见 <a class="pxref" href="Connecting.html#g_t_002d_002dmulti-Option-in-Types-of-Remote-Connections">远程连接类型中的--multi选项</a>.
+</p>
+<a class="index-entry-id" id="index-_002d_002ddebug_002c-gdbserver-option"></a>
+<p> <samp class="option">--debug[=option1,option2,…]</samp> 选项告诉
+<code class="code">gdbserver</code> 显示有关调试过程的额外诊断信息。 选项（<var class="var">option1</var>, <var class="var">option2</var>, 等等）控制将显示哪些方面的额外信息，可能的值如下： <code class="code">gdbserver</code> 
+</p>
+<dl class="table">
+<dt><code class="code">all</code></dt>
+<dd><p>这将启用所有可用的诊断输出。
+</p></dd>
+<dt><code class="code">threads</code></dt>
+<dd><p>这将启用与线程处理相关的诊断输出。 目前，其他一般诊断输出也包含在这个类别中，但在未来的版本中可能会改变 <code class="code">gdbserver</code>。
+</p></dd>
+<dt><code class="code">event-loop</code></dt>
+<dd><p>这将启用与事件循环特定的诊断输出。
+</p></dd>
+<dt><code class="code">remote</code></dt>
+<dd><p>这将启用与调试器之间的远程协议数据包传输相关的诊断输出。
+</p></dd>
+</dl>
+
+<p>如果没有向 <samp class="option">--debug</samp> 传递选项，那么这将被视为等同于 <samp class="option">--debug=threads</samp>. 这在未来的版本中可能会改变 <code class="code">gdbserver</code>. 传递给 <samp class="option">--debug</samp>
+的选项从左到右处理，单个选项可以前缀 <kbd class="kbd">-</kbd> （减号）字符以禁用该方面的诊断输出，因此可以使用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  目标&gt; gdbserver --debug=all,-event-loop
+</pre></div>
+
+<p>以便启用除事件循环之外的所有诊断输出。
+</p>
+<a class="index-entry-id" id="index-_002d_002ddebug_002dfile_002c-gdbserver-option"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-send-all-debug-output-to-a-single-file"></a>
+<p> <samp class="option">--debug-file=<var class="var">文件名</var></samp> 选项告诉 <code class="code">gdbserver</code> 将任何调试输出写入给定的 <var class="var">文件名</var>. 这些选项旨在用于 <code class="code">gdbserver</code> 开发和向开发人员提交错误报告。
+</p>
+<a class="index-entry-id" id="index-_002d_002ddebug_002dformat_002c-gdbserver-option"></a>
+<p> <samp class="option">--debug-format=option1[,option2,...]</samp> 选项告诉
+<code class="code">gdbserver</code> 在每个输出中包含额外信息。可能的选项如下：
+</p>
+<dl class="table">
+<dt><code class="code">none</code></dt>
+<dd><p>关闭调试输出中的所有额外信息。
+</p></dd>
+<dt><code class="code">all</code></dt>
+<dd><p>打开调试输出中的所有额外信息。
+</p></dd>
+<dt><code class="code">timestamps</code></dt>
+<dd><p>在调试输出的每一行中包含时间戳。
+</p></dd>
+</dl>
+
+<p>选项按顺序处理。 因此，例如，如果 <samp class="option">none</samp>
+最后出现，那么调试输出中不会添加任何额外信息。
+</p>
+<a class="index-entry-id" id="index-_002d_002dwrapper_002c-gdbserver-option"></a>
+<p> <samp class="option">--wrapper</samp> 选项指定一个包装器来启动要调试的程序。 该选项后面应跟包装器的名称，然后是要传递给包装器的任何命令行参数，然后
+<kbd class="kbd">--</kbd> 表示包装器参数的结束。
+</p>
+<p><code class="code">gdbserver</code> 运行指定的包装器程序，其组合命令行包括包装器参数，然后是要调试的程序的名称，然后是程序的任何参数。 包装器运行直到它执行你的程序，然后 <small class="sc">GDB</small> 获得控制权。
+</p>
+<p>你可以使用任何最终调用 <code class="code">execve</code> 及其参数的程序作为包装器。 几个标准的Unix实用工具可以做到这一点，例如 <code class="code">env</code> 和 <code class="code">nohup</code>. 任何以 <code class="code">exec &#34;$@&#34;</code> 结尾的Unix shell脚本也可以工作。
+</p>
+<p>例如，你可以使用 <code class="code">env</code> 将环境变量传递给被调试的程序，而无需在 <code class="code">gdbserver</code>的环境中设置该变量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdbserver --wrapper env LD_PRELOAD=libtest.so -- :2222 ./testprog
+</pre></div>
+
+<a class="index-entry-id" id="index-_002d_002dselftest"></a>
+<p> <samp class="option">--selftest</samp> 选项在 <code class="code">gdbserver</code>中运行自测试：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdbserver --selftest
+运行了2个单元测试，0个失败
+</pre></div>
+
+<p>这些测试在发布版本中被禁用。
+</p></div>
+</div>
+<div class="subsection-level-extent" id="Connecting-to-gdbserver">
+<h4 class="subsection"><span>20.3.2 连接到 <code class="code">gdbserver</code><a class="copiable-link" href="#Connecting-to-gdbserver"> ¶</a></span></h4>
+
+<p>连接到远程目标的基本过程是：
+</p><ul class="itemize mark-bullet">
+<li>在主机系统上运行 <small class="sc">GDB</small> 。
+
+</li><li>确保你有必要的符号文件
+（参见 <a class="pxref" href="Connecting.html#Host-and-target-files">主机和目标文件</a>）。
+在连接之前，使用 <code class="code">file</code> 命令为你的应用程序加载符号。 使用 <code class="code">set sysroot</code> 来定位目标库（除非你的
+<small class="sc">GDB</small> 是使用正确的sysroot编译的
+<code class="code">--with-sysroot</code>）。
+
+</li><li>连接到你的目标（参见 <a class="pxref" href="Connecting.html">连接到远程目标</a>）。
+对于TCP连接，你必须在使用 <code class="code">gdbserver</code> 命令之前启动 <code class="code">target</code> 。 否则，你可能会得到一个错误，其文本取决于主机系统，但通常看起来像<samp class="samp">连接被拒绝</samp>。 当使用 <code class="code">load</code>
+命令在 <small class="sc">GDB</small> 中使用 <code class="code">target remote</code> 模式时，不要使用该命令，因为程序已经在目标系统上。
+
+</li></ul>
+
+<a class="anchor" id="Monitor-Commands-for-gdbserver"></a></div>
+<div class="subsection-level-extent" id="Monitor-Commands-for-gdbserver-1">
+<h4 class="subsection"><span>20.3.3 的监控命令 <code class="code">gdbserver</code><a class="copiable-link" href="#Monitor-Commands-for-gdbserver-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-monitor-commands_002c-for-gdbserver"></a>
+
+<p>在使用 <small class="sc">GDB</small> 会话期间，你可以使用 <code class="code">gdbserver</code>, 你可以使用
+<code class="code">monitor</code> 命令向 <code class="code">gdbserver</code>发送特殊请求。
+以下是可用的命令。
+</p>
+<dl class="table">
+<dt><code class="code">monitor help</code></dt>
+<dd><p>列出可用的监控命令。
+</p>
+</dd>
+<dt><code class="code">monitor set debug off</code></dt>
+<dd><p>禁用gdbserver的所有内部日志记录。
+</p>
+</dd>
+<dt><code class="code">monitor set debug on</code></dt>
+<dd><p>启用gdbserver内部的一些常规日志记录。 目前这等同于 <kbd class="kbd">monitor set debug threads on</kbd>, 但在gdbserver的未来版本中可能会改变。
+</p>
+</dd>
+<dt><code class="code">monitor set debug threads off</code></dt>
+<dt><code class="code">monitor set debug threads on</code></dt>
+<dd><p>禁用或启用与gdbserver中线程处理相关的特定日志消息。 目前这个类别还包括与线程处理没有特别关系的额外输出，这在gdbserver的未来版本中可能会改变。
+</p>
+</dd>
+<dt><code class="code">monitor set debug remote off</code></dt>
+<dt><code class="code">monitor set debug remote on</code></dt>
+<dd><p>禁用或启用与远程协议相关的特定日志消息（参见 <a class="pxref" href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>）。
+</p>
+</dd>
+<dt><code class="code">monitor set debug event-loop off</code></dt>
+<dt><code class="code">monitor set debug event-loop on</code></dt>
+<dd><p>禁用或启用与gdbserver的事件循环相关的特定日志消息。
+</p>
+</dd>
+<dt><code class="code">monitor set debug-file filename</code></dt>
+<dt><code class="code">monitor set debug-file</code></dt>
+<dd><p>将任何调试输出发送到给定的文件，或发送到stderr。
+</p>
+</dd>
+<dt><code class="code">monitor set debug-format option1<span class="r">[</span>,option2,...<span class="r">]</span></code></dt>
+<dd><p>指定要添加到调试消息中的额外文本。可能的选项如下：
+</p>
+<dl class="table">
+<dt><code class="code">none</code></dt>
+<dd><p>关闭调试输出中的所有额外信息。
+</p></dd>
+<dt><code class="code">all</code></dt>
+<dd><p>打开调试输出中的所有额外信息。
+</p></dd>
+<dt><code class="code">timestamps</code></dt>
+<dd><p>在调试输出的每一行中包含时间戳。
+</p></dd>
+</dl>
+
+<p>选项按顺序处理。 因此，例如，如果 <samp class="option">none</samp>
+最后出现，那么调试输出中不会添加任何额外信息。
+</p>
+</dd>
+<dt><a id="index-gdbserver_002c-search-path-for-libthread_005fdb"></a><span><code class="code">monitor set libthread-db-search-path [PATH]</code><a class="copiable-link" href="#index-gdbserver_002c-search-path-for-libthread_005fdb"> ¶</a></span></dt>
+<dd><p>当发出此命令时， <var class="var">路径</var> 是一个以冒号分隔的目录列表，用于搜索 <code class="code">libthread_db</code> （参见 <a class="pxref" href="Threads.html">set
+libthread-db-search-path</a>）。 如果你省略 <var class="var">路径</var>,
+‘<samp class="samp">libthread-db-search-path</samp>’将被重置为其默认值。
+</p>
+<p>‘<samp class="samp">$pdir</samp>’对于‘<samp class="samp">libthread-db-search-path</samp>’的特殊条目在 <code class="code">gdbserver</code>.
+</p>
+</dd>
+<dt><code class="code">monitor exit</code></dt>
+<dd><p>告诉gdbserver立即退出。 此命令后面应跟
+<code class="code">disconnect</code> 以关闭调试会话。  <code class="code">gdbserver</code> 将从任何附加的进程中分离，并杀死它创建的任何进程。 使用 <code class="code">monitor exit</code> 在多进程模式调试会话结束时终止 <code class="code">gdbserver</code> 。
+</p>
+</dd>
+</dl>
+
+</div>
+<div class="subsection-level-extent" id="Tracepoints-support-in-gdbserver">
+<h4 class="subsection"><span>20.3.4 中的跟踪点支持 <code class="code">gdbserver</code><a class="copiable-link" href="#Tracepoints-support-in-gdbserver"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-tracepoints-support-in-gdbserver"></a>
+
+<p>在某些目标系统上， <code class="code">gdbserver</code> 支持跟踪点和快速跟踪点。
+</p>
+<p>为了使快速跟踪点正常工作，必须在被调试进程中加载一个名为
+<em class="dfn">进程内代理</em> （IPA）的特殊库。
+这个库是作为
+<code class="code">gdbserver</code>的一个组成部分构建和分发的。
+</p>
+<p>有几种方法可以在你的程序中加载进程内代理：
+</p>
+<dl class="table">
+<dt><code class="code">Specifying it as dependency at link time</code></dt>
+<dd>
+<p>你可以将你的程序与进程内代理库动态链接。 在大多数系统上，这可以通过在链接命令中添加
+<code class="code">-linproctrace</code> 来实现。
+</p>
+</dd>
+<dt><code class="code">Using the system&#39;s preloading mechanisms</code></dt>
+<dd>
+<p>你可以通过使用系统对预加载共享库的支持，在启动时强制加载进程内代理。 许多Unix系统支持预加载用户定义库的概念。 在大多数情况下，你可以通过在环境中指定 <code class="code">LD_PRELOAD=libinproctrace.so</code>
+来实现。 另请参阅 <code class="code">gdbserver</code>的
+<samp class="option">--wrapper</samp> 命令行选项的描述。
+</p>
+</dd>
+<dt><code class="code">Using <small class="sc">GDB</small> to force loading the agent at run time</code></dt>
+<dd>
+<p>在某些系统上，你可以通过在被调试进程中调用一个动态加载器函数来强制被调试进程加载一个共享库，该函数负责动态查找和加载共享库。 在大多数Unix系统上，该函数是 <code class="code">dlopen</code>. 你可以使用 <code class="code">call</code>
+命令来实现。 例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) call dlopen (&#34;libinproctrace.so&#34;, ...)
+</pre></div>
+
+<p>请注意，在大多数Unix系统上，为了使 <code class="code">dlopen</code> 函数可用，程序需要与 <code class="code">-ldl</code>链接。
+</p></dd>
+</dl>
+
+<p>在具有用户空间动态加载器的系统上，如大多数Unix系统，当你连接到 <code class="code">gdbserver</code> 使用 <code class="code">target
+remote</code>, 你会发现程序在动态加载器的入口点停止，并且程序的地址空间中还没有加载任何共享库，包括进程内代理。 在这种情况下，在能够使用任何快速或静态跟踪点功能之前，你需要让加载器运行并加载共享库。 最简单的方法是将程序运行到主程序。 例如，如果调试一个C或C<code class="t">++</code> 程序，像这样启动
+<code class="code">gdbserver</code> ：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdbserver :9999 myprogram
+</pre></div>
+
+<p>启动GDB并像这样连接到 <code class="code">gdbserver</code> ，并运行到main：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ gdb myprogram
+(gdb) target remote myhost:9999
+0x00007f215893ba60 in ?? () from /lib64/ld-linux-x86-64.so.2
+(gdb) b main
+(gdb) continue
+</pre></div>
+
+<p>进程内跟踪代理库现在应该已经加载到进程中；你可以使用 <code class="code">info sharedlibrary</code>
+命令来确认，该命令将列出 <samp class="file">libinproctrace.so</samp> 已加载到进程中。 你现在可以安装快速跟踪点、列出静态跟踪点标记、探测静态跟踪点标记并开始跟踪。
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF16" id="FOOT16">(16)</a></h5>
+<p>如果你选择的端口号与其他服务冲突， <code class="code">gdbserver</code> 会打印一条错误消息并退出。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Remote-Configuration.html">远程配置</a>, 上一步： <a href="File-Transfer.html">向远程系统发送文件</a>, 上级： <a href="Remote-Debugging.html">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

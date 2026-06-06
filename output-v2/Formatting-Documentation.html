@@ -1,0 +1,122 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>格式化文档（使用 GDB 调试）</title>
+
+<meta name="description" content="Formatting Documentation (Debugging with GDB)"/>
+<meta name="keywords" content="Formatting Documentation (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Installing-GDB.html" rel="next" title="Installing GDB"/>
+<link href="In-Memoriam.html" rel="prev" title="In Memoriam"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendix-level-extent" id="Formatting-Documentation">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Installing-GDB.html" rel="next">安装 <small class="sc">GDB</small></a>, 上一项： <a accesskey="p" href="In-Memoriam.html" rel="prev">纪念</a>, 向上： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="appendix" id="Formatting-Documentation-1"><span>附录 B 格式化文档<a class="copiable-link" href="#Formatting-Documentation-1"> ¶</a></span></h2>
+
+<a class="index-entry-id" id="index-gdb-reference-card"></a>
+<a class="index-entry-id" id="index-reference-card"></a>
+<p>该 <small class="sc">GDB</small> 4 版本包含一个已格式化的参考卡，可使用 PostScript 或 Ghostscript 进行打印，位于 <samp class="file">gdb</samp>
+主源目录的子目录中<a class="footnote" href="#FOOT20" id="DOCF20"><sup>20</sup></a>. 如果你可以在打印机上使用 PostScript 或 Ghostscript，你可以立即使用 <samp class="file">refcard.ps</samp>.
+</p>
+<p>该版本还包含参考卡的源文件。你可以使用 TeX 对其进行格式化，方法是输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make refcard.dvi
+</pre></div>
+
+<p>该 <small class="sc">GDB</small> 参考卡设计为在美国“信纸”尺寸的纸张上以 <em class="dfn">横向</em>
+模式打印；也就是说，在一张宽 11 英寸、高 8.5 英寸的纸张上。你需要将这种打印形式作为选项指定给你的 <small class="sc">DVI</small> 输出程序。
+</p>
+<a class="index-entry-id" id="index-documentation"></a>
+
+<p>所有关于 <small class="sc">GDB</small> 的文档都是机器可读发行版的一部分。文档采用 Texinfo 格式编写，这是一种使用单个源文件同时生成在线信息和印刷手册的文档系统。你可以使用 Info 格式化命令之一来创建文档的在线版本，使用 TeX（或 <code class="code">texi2roff</code>) 来排版印刷版本。
+</p>
+<p><small class="sc">GDB</small> 在 <samp class="file">gdb</samp> 子目录中包含了本手册在线 Info 版本的已格式化副本。主 Info 文件是 <samp class="file">gdb-17.2/gdb/gdb.info</samp>, 它引用了同一目录中匹配‘<samp class="samp">gdb.info*</samp>’的从属文件。如有必要，你可以打印这些文件，或使用任何编辑器阅读它们；但使用 <code class="code">info</code> 子系统在 <small class="sc">GNU</small>
+Emacs 或独立的 <code class="code">info</code> 程序中阅读会更容易，该程序是
+<small class="sc">GNU</small> Texinfo 发行版的一部分。
+</p>
+<p>如果你想自己格式化这些 Info 文件，你需要一个 Info 格式化程序，例如 <code class="code">texinfo-format-buffer</code> 或
+<code class="code">makeinfo</code>.
+</p>
+<p>如果你已经 <code class="code">makeinfo</code> 安装，并且位于顶级
+<small class="sc">GDB</small> 源目录（<samp class="file">gdb-17.2</samp>, 对于 17.2 版本而言），你可以通过输入以下命令来生成 Info 文件：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">cd gdb
+make gdb.info
+</pre></div>
+
+<p>如果你想排版并打印本手册的副本，你需要 TeX、一个用于打印其 <small class="sc">DVI</small> 输出文件的程序，以及 <samp class="file">texinfo.tex</samp>, 即
+Texinfo 定义文件。
+</p>
+<p>TeX 是一个排版程序；它不直接打印文件，而是生成称为 <small class="sc">DVI</small> 文件的输出文件。要打印排版好的文档，你需要一个程序来打印 <small class="sc">DVI</small> 文件。如果你的系统安装了 TeX，很可能也安装了这样的程序。具体使用的命令取决于你的系统； <kbd class="kbd">lpr -d</kbd> 很常见；另一个（用于 PostScript 设备）是 <kbd class="kbd">dvips</kbd>. 该 <small class="sc">DVI</small> 打印命令可能需要一个不带任何扩展名或带有‘<samp class="samp">.dvi</samp>’扩展名的文件名。
+</p>
+<p>TeX 还需要一个名为
+<samp class="file">texinfo.tex</samp>. 的宏定义文件。该文件告诉 TeX 如何排版以 Texinfo 格式编写的文档。TeX 本身既不能读取也不能排版 Texinfo 文件。  <samp class="file">texinfo.tex</samp> 随 GDB 一起分发，位于 <samp class="file">gdb-<var class="var">版本号</var>/texinfo</samp>
+目录中。
+</p>
+<p>如果你安装了 TeX 和一个 <small class="sc">DVI</small> 打印机程序，你可以排版并打印本手册。首先切换到 <samp class="file">gdb</samp>
+主源目录的子目录（例如，切换到
+<samp class="file">gdb-17.2/gdb</samp>) 并输入：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">make gdb.dvi
+</pre></div>
+
+<p>然后将 <samp class="file">gdb.dvi</samp> 交给你的 <small class="sc">DVI</small> 打印程序。
+</p>
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF20" id="FOOT20">(20)</a></h5>
+<p>在
+<samp class="file">gdb-17.2/gdb/refcard.ps</samp> 17.2 版本的发行版中。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Installing-GDB.html">安装 <small class="sc">GDB</small></a>, 上一项： <a href="In-Memoriam.html">纪念</a>, 向上： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

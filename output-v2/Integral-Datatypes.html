@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>整数数据类型（使用 GDB 调试）</title>
+
+<meta name="description" content="Integral Datatypes (Debugging with GDB)"/>
+<meta name="keywords" content="Integral Datatypes (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="Protocol-specific Representation of Datatypes"/>
+<link href="Pointer-Values.html" rel="next" title="Pointer Values"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="Integral-Datatypes">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Pointer-Values.html" rel="next">指针值</a>, 上一项： <a accesskey="u" href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up">特定协议的数据类型表示</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="unnumberedsubsubsec" id="Integral-Datatypes-1"><span>整数数据类型<a class="copiable-link" href="#Integral-Datatypes-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-integral-datatypes_002c-in-file_002di_002fo-protocol"></a>
+
+<p>系统调用中使用的整数数据类型有 <code class="code">int</code>, 
+<code class="code">unsigned int</code>, <code class="code">long</code>, <code class="code">unsigned long</code>,
+<code class="code">mode_t</code>, 以及 <code class="code">time_t</code>.  
+</p>
+<p><code class="code">int</code>, <code class="code">unsigned int</code>, <code class="code">mode_t</code> 和 <code class="code">time_t</code> 在本协议中实现为 32 位值。
+</p>
+<p><code class="code">long</code> 和 <code class="code">unsigned long</code> 实现为 64 位类型。
+</p>
+<p>参见 <a class="xref" href="Limits.html">限制</a>, 以获取相应的最小值和最大值（类似于 <samp class="file">limits.h</samp>中的值），以便在主机和目标上进行范围检查。
+</p>
+<p><code class="code">time_t</code> 数据类型定义为自纪元以来的秒数。
+</p>
+<p>作为结构化数据类型（例如一个 <code class="code">struct stat</code> ）的内存读写的一部分传输的所有整数数据类型必须以大端字节序给出。
+</p>
+</div>
+
+
+
+
+
+</body></html>

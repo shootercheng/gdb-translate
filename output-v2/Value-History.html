@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>值历史记录（使用 GDB 调试）</title>
+
+<meta name="description" content="Value History (Debugging with GDB)"/>
+<meta name="keywords" content="Value History (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Convenience-Vars.html" rel="next" title="Convenience Vars"/>
+<link href="Pretty-Printing.html" rel="prev" title="Pretty Printing"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Value-History">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Convenience-Vars.html" rel="next">便利变量</a>, 上一项： <a accesskey="p" href="Pretty-Printing.html" rel="prev">漂亮打印</a>, 上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Value-History-1"><span>10.11 值历史记录<a class="copiable-link" href="#Value-History-1"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-value-history"></a>
+<a class="index-entry-id" id="index-history-of-values-printed-by-gdb"></a>
+<p>由该 <code class="code">print</code> 命令打印的值会保存在 <small class="sc">GDB</small>
+<em class="dfn">值历史记录</em>中。这允许你在其他表达式中引用它们。
+值会一直保留，直到重新读取或丢弃符号表
+（例如使用 <code class="code">file</code> 或 <code class="code">symbol-file</code> 命令）。
+当符号表发生变化时，值历史记录会被丢弃，
+因为这些值可能包含指向符号表中定义类型的指针。
+</p>
+<a class="index-entry-id" id="index-_0024"></a>
+<a class="index-entry-id" id="index-_0024_0024"></a>
+<a class="index-entry-id" id="index-history-number"></a>
+<p>打印出的值会被赋予 <em class="dfn">历史编号</em> ，你可以通过这些编号引用它们。这些编号是从 1 开始的连续整数。
+<code class="code">print</code> 通过在值前面打印 ‘<samp class="samp">$<var class="var">编号</var> = </samp>’ 来显示分配给该值的历史编号；这里 <var class="var">编号</var> 就是历史编号。
+</p>
+<p>要引用任何之前的值，使用 ‘<samp class="samp">$</samp>’ 后跟该值的
+历史编号。这种 <code class="code">print</code> 标记其输出的方式是为了
+提醒你这一点。仅仅 <code class="code">$</code> 引用历史记录中最近的值，并且 <code class="code">$$</code> 引用该值之前的值。
+<code class="code">$$<var class="var">n</var></code> 引用从末尾开始的第 <var class="var">n</var>个值； <code class="code">$$2</code>
+是紧接在 <code class="code">$$</code>, <code class="code">$$1</code> 等同于
+<code class="code">$$</code>, 并且 <code class="code">$$0</code> 等同于 <code class="code">$</code>。
+</p>
+<p>例如，假设你刚刚打印了一个指向结构体的指针，并且
+想查看该结构体的内容。只需输入
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *$
+</pre></div>
+
+<p>如果你有一个结构体链，其中成员 <code class="code">next</code> 指向下一个结构体，你可以使用以下命令打印下一个结构体的内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">p *$.next
+</pre></div>
+
+<p>你可以通过重复此命令来打印链中的连续链接 —— 你只需输入 <kbd class="key">回车键</kbd>即可。
+</p>
+<p>请注意，历史记录记录的是值，而不是表达式。如果
+<code class="code">x</code> 的值为 4，并且你输入以下命令：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">print x
+set x=5
+</pre></div>
+
+<p>那么由 <code class="code">print</code> 命令记录在值历史记录中的值仍然是 4，即使 <code class="code">x</code> 的值已经改变。
+</p>
+<dl class="table">
+<dt><a id="index-show-values"></a><span><code class="code">show values</code><a class="copiable-link" href="#index-show-values"> ¶</a></span></dt>
+<dd><p>打印值历史记录中的最后十个值及其项编号。
+这类似于重复执行十次 ‘<samp class="samp">p $$9</samp>’，除了 <code class="code">show
+values</code> 不会改变历史记录。
+</p>
+</dd>
+<dt><code class="code">show values <var class="var">n</var></code></dt>
+<dd><p>打印以历史项编号 <var class="var">n</var>为中心的十个历史值。
+</p>
+</dd>
+<dt><code class="code">show values +</code></dt>
+<dd><p>打印刚刚打印的值之后的十个历史值。如果没有更多
+可用的值， <code class="code">show values +</code> 将不显示任何内容。
+</p></dd>
+</dl>
+
+<p>按下 <kbd class="key">回车键</kbd> 重复 <code class="code">show values <var class="var">n</var></code> 与 ‘<samp class="samp">show values +</samp>’ 具有完全相同的效果。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Convenience-Vars.html">便利变量</a>, 上一项： <a href="Pretty-Printing.html">漂亮打印</a>, 上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

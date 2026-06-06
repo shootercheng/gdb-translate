@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>偏差（使用GDB调试）</title>
+
+<meta name="description" content="Deviations (Debugging with GDB)"/>
+<meta name="keywords" content="Deviations (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Modula_002d2.html" rel="up" title="Modula-2"/>
+<link href="M2-Checks.html" rel="next" title="M2 Checks"/>
+<link href="M2-Defaults.html" rel="prev" title="M2 Defaults"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Deviations">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="M2-Checks.html" rel="next">Modula - 2类型和范围检查</a>, 上一项： <a accesskey="p" href="M2-Defaults.html" rel="prev">Modula - 2默认设置</a>, 上级： <a accesskey="u" href="Modula_002d2.html" rel="up">Modula - 2</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Deviations-from-Standard-Modula_002d2"><span>15.4.9.6 与标准Modula - 2的偏差<a class="copiable-link" href="#Deviations-from-Standard-Modula_002d2"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Modula_002d2_002c-deviations-from"></a>
+
+<p>为了使Modula - 2程序更易于调试，做了一些更改。
+这主要是通过放宽其类型严格性来实现的：
+</p>
+<ul class="itemize mark-bullet">
+<li>与标准Modula - 2不同，指针常量可以由整数形成。 这允许你在调试期间修改指针变量。 （在标准Modula - 2中，指针变量中包含的实际地址对你是隐藏的；它只能通过直接赋值给另一个指针变量或返回指针的表达式来修改。）
+
+</li><li>字符串和字符中可以使用C转义序列来表示不可打印字符。  <small class="sc">GDB</small> 打印嵌入了这些转义序列的字符串。 单个不可打印字符使用‘<samp class="samp">CHR(<var class="var">nnn</var>)</samp>’格式打印。
+
+</li><li>赋值运算符（<code class="code">:=</code>) 返回其右操作数的值。
+
+</li><li>所有内置过程既会修改 <em class="emph">又会</em> 返回其参数。
+</li></ul>
+
+</div>
+
+
+
+
+
+</body></html>

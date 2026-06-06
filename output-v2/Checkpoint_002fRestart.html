@@ -1,0 +1,142 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>检查点/重启（使用GDB调试）</title>
+
+<meta name="description" content="Checkpoint/Restart (Debugging with GDB)"/>
+<meta name="keywords" content="Checkpoint/Restart (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Forks.html" rel="prev" title="Forks"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Checkpoint_002fRestart">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="Forks.html" rel="prev">调试分叉</a>, 上一级： <a accesskey="u" href="Running.html" rel="up">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Setting-a-Bookmark-to-Return-to-Later"><span>4.12 设置一个 <em class="emph">书签</em> 以便稍后返回<a class="copiable-link" href="#Setting-a-Bookmark-to-Return-to-Later"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-checkpoint"></a>
+<a class="index-entry-id" id="index-restart"></a>
+<a class="index-entry-id" id="index-bookmark"></a>
+<a class="index-entry-id" id="index-snapshot-of-a-process"></a>
+<a class="index-entry-id" id="index-rewind-program-state"></a>
+
+<p>在某些操作系统上<a class="footnote" href="#FOOT4" id="DOCF4"><sup>4</sup></a>, <small class="sc">GDB</small> 能够保存一个 <em class="dfn">快照</em> 程序状态的，称为一个 <em class="dfn">检查点</em>, 并在稍后返回该状态。
+</p>
+<p>返回检查点实际上会撤销自 <code class="code">checkpoint</code> 保存以来程序中发生的所有事情。这包括内存、寄存器的变化，甚至（在一定范围内）系统状态的变化。实际上，这就像回到保存检查点的那一刻。
+</p>
+<p>因此，如果你正在逐步调试一个程序，并且你认为自己接近出现问题的点，你可以保存一个检查点。然后，如果你不小心走过头了，错过了关键语句，你不必从程序的开头重新启动，只需返回检查点并从那里重新开始。
+</p>
+<p>如果到达你认为出现错误的点需要花费大量时间或步骤，这尤其有用。  
+</p>
+<p>要使用 <code class="code">checkpoint</code>/<code class="code">restart</code> 调试方法：
+</p>
+<dl class="table">
+<dt><a id="index-checkpoint-1"></a><span><code class="code">checkpoint</code><a class="copiable-link" href="#index-checkpoint-1"> ¶</a></span></dt>
+<dd><p>保存被调试程序当前执行状态的快照。 <code class="code">checkpoint</code> 该命令不带参数，但每个检查点都会被分配一个小整数ID，类似于断点ID。
+</p>
+</dd>
+<dt><a id="index-info-checkpoints"></a><span><code class="code">info checkpoints</code><a class="copiable-link" href="#index-info-checkpoints"> ¶</a></span></dt>
+<dd><p>列出当前调试会话中已保存的检查点。对于每个检查点，将列出以下信息：
+</p>
+<dl class="table">
+<dt><code class="code">Checkpoint ID</code></dt>
+<dt><code class="code">Active state indicator</code></dt>
+<dt><code class="code">Process ID</code></dt>
+<dt><code class="code">Code Address</code></dt>
+<dt><code class="code">Source line, or label</code></dt>
+</dl>
+
+<p>检查点ID将显示为非负整数或形式 <var class="var">i</var>.<var class="var">n</var>, 其中 <var class="var">i</var> 是子进程编号，一个正整数，如命令 <code class="code">info inferiors</code>所示，并且
+<var class="var">n</var>, 一个非负整数，是该子进程的检查点编号。当只有一个子进程时，使用单个非负整数形式。 <var class="var">i</var>.<var class="var">n</var> 形式用于有多个子进程的情况。
+</p>
+<p>活动状态指示符是一个单字母，要么是 ‘<samp class="samp">y</samp>’ 要么是
+‘<samp class="samp">n</samp>’，表示是或否。每个子进程一次只能有一个检查点处于活动状态。当前子进程中的活动检查点在该行开头也会显示一个 ‘<samp class="samp">*</samp>’。活动状态为 ‘<samp class="samp">n</samp>’ 的检查点可以使用 <code class="code">restart</code>
+命令切换为活动状态，或使用 <code class="code">delete checkpoint</code> 命令删除。
+</p>
+</dd>
+<dt><a id="index-restart-checkpoint_002did"></a><span><code class="code">restart <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-restart-checkpoint_002did"> ¶</a></span></dt>
+<dd><p>恢复保存为检查点编号
+<var class="var">检查点ID</var>. 的程序状态。所有程序变量、寄存器、栈帧等将恢复到保存检查点时的值。本质上，GDB将 “倒回时间” 到保存检查点的时刻。检查点编号
+<var class="var">检查点ID</var> 的指定形式与
+<code class="code">info checkpoints</code> 命令的输出形式相同。
+</p>
+<p>请注意，断点、 <small class="sc">GDB</small> 变量、命令历史记录等不受恢复检查点的影响。一般来说，检查点只恢复被调试程序中的内容，而不是调试器中的内容。
+</p>
+</dd>
+<dt><a id="index-delete-checkpoint-checkpoint_002did"></a><span><code class="code">delete checkpoint <var class="var">checkpoint-id</var></code><a class="copiable-link" href="#index-delete-checkpoint-checkpoint_002did"> ¶</a></span></dt>
+<dd><p>删除由 <var class="var">检查点ID</var>. 标识的先前保存的检查点。
+</p>
+</dd>
+</dl>
+
+<p>返回先前保存的检查点将恢复被调试程序的用户状态，以及系统（操作系统）状态的一个重要子集，包括文件指针。它不会 “撤销” 文件中的数据写入，但会将文件指针倒回到先前的位置，以便可以覆盖先前写入的数据。对于以只读模式打开的文件，指针也会被恢复，以便可以再次读取先前读取的数据。
+</p>
+<p>当然，已经发送到打印机（或其他外部设备）的字符无法 “取回”，从例如串行设备接收的字符可以从程序内部缓冲区中移除，但无法 “推回” 到串行管道中以便再次接收。同样，已更改文件的实际内容（目前）无法恢复。
+</p>
+<p>然而，在这些限制范围内，你实际上可以将程序 “倒回” 到先前保存的时间点，并重新开始调试 —— 并且你可以改变事件的进程，以便这次调试不同的执行路径。
+</p>
+<a class="index-entry-id" id="index-checkpoints-and-process-id"></a>
+<p>最后，当你返回检查点时，程序的一个内部状态会有所不同 —— 程序的进程ID。每个检查点都将有一个唯一的进程ID（或 <var class="var">pid</var>），并且每个都将与程序的原始 <var class="var">pid</var>. 不同。如果你程序保存了其进程ID的本地副本，这可能会潜在地带来问题。
+</p>
+<ul class="mini-toc">
+<li><a accesskey="1" href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints">使用检查点的一个非显而易见的好处</a></li>
+</ul>
+<div class="subsection-level-extent" id="A-Non_002dobvious-Benefit-of-Using-Checkpoints">
+<h4 class="subsection"><span>4.12.1 使用检查点的一个非显而易见的好处<a class="copiable-link" href="#A-Non_002dobvious-Benefit-of-Using-Checkpoints"> ¶</a></span></h4>
+
+<p>在某些系统上，如 <small class="sc">GNU</small>/Linux，出于安全原因，会对新进程进行地址空间随机化。如果你必须重新启动程序，这会使在绝对地址上设置断点或观察点变得困难或不可能，因为符号的绝对位置在每次执行时都会改变。
+</p>
+<p>然而，检查点是进程的一个 <em class="emph">相同</em> 副本。因此，如果你在（例如）main函数开始时创建一个检查点，并且只是返回该检查点而不是重新启动进程，你可以避免地址空间随机化的影响，并且你的符号都将保持在相同的位置。
+</p>
+</div>
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF4" id="FOOT4">(4)</a></h5>
+<p>目前，仅支持
+<small class="sc">GNU</small>/Linux。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一章： <a href="Forks.html">调试分叉</a>, 上一级： <a href="Running.html">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

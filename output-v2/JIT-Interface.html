@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>即时编译（JIT）接口（使用GDB进行调试）</title>
+
+<meta name="description" content="JIT Interface (Debugging with GDB)"/>
+<meta name="keywords" content="JIT Interface (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="In_002dProcess-Agent.html" rel="next" title="In-Process Agent"/>
+<link href="Debugger-Adapter-Protocol.html" rel="prev" title="Debugger Adapter Protocol"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="JIT-Interface">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="In_002dProcess-Agent.html" rel="next">进程内代理</a>, 上一项： <a accesskey="p" href="Debugger-Adapter-Protocol.html" rel="prev">调试器适配器协议</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="JIT-Compilation-Interface"><span>30 即时编译（JIT）接口<a class="copiable-link" href="#JIT-Compilation-Interface"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-just_002din_002dtime-compilation"></a>
+<a class="index-entry-id" id="index-JIT-compilation-interface"></a>
+
+<p>本章记录了 <small class="sc">GDB</small>的 <em class="dfn">即时</em> （JIT）编译接口。JIT编译器是一种程序或库，它在运行时生成原生可执行代码并执行，通常是为了在保持平台独立性的同时实现良好的性能。 
+</p>
+<p>使用JIT编译的程序通常难以调试，因为它们的部分代码是在运行时生成的，而不是从目标文件中加载的，而 <small class="sc">GDB</small> 通常是从目标文件中查找程序的符号和调试信息的。为了调试使用JIT编译的程序，
+<small class="sc">GDB</small> 有一个接口，允许程序在运行时向 <small class="sc">GDB</small> 注册内存中的符号文件。
+</p>
+<p>如果您使用 <small class="sc">GDB</small> 来调试使用此接口的程序，那么只要您没有剥离二进制文件，它应该可以透明地工作。如果您正在开发JIT编译器，那么本章的其余部分将记录该接口。目前，此接口唯一已知的客户端是LLVM JIT。
+</p>
+<p>从广义上讲，JIT接口与动态加载器接口类似。JIT编译器通过将数据写入全局变量并调用一个具有已知符号的函数来与 <small class="sc">GDB</small> 进行通信。当 <small class="sc">GDB</small>
+附加时，它从全局变量中读取符号文件的链表以查找现有代码，并在该函数中设置断点，以便它可以了解其他代码。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Declarations.html">JIT声明</a></li>
+<li><a accesskey="2" href="Registering-Code.html">注册代码</a></li>
+<li><a accesskey="3" href="Unregistering-Code.html">注销代码</a></li>
+<li><a accesskey="4" href="Custom-Debug-Info.html">自定义调试信息</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="In_002dProcess-Agent.html">进程内代理</a>, 上一项： <a href="Debugger-Adapter-Protocol.html">调试器适配器协议</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

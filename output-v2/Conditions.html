@@ -1,0 +1,133 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>条件（使用 GDB 调试）</title>
+
+<meta name="description" content="Conditions (Debugging with GDB)"/>
+<meta name="keywords" content="Conditions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Break-Commands.html" rel="next" title="Break Commands"/>
+<link href="Disabling.html" rel="prev" title="Disabling"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Conditions">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Break-Commands.html" rel="next">断点命令列表</a>, 上一项： <a accesskey="p" href="Disabling.html" rel="prev">禁用断点</a> <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Break-Conditions"><span>5.1.6 断点条件<a class="copiable-link" href="#Break-Conditions"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-conditional-breakpoints"></a>
+<a class="index-entry-id" id="index-breakpoint-conditions"></a>
+
+<p>最简单的断点类型是每次程序到达指定位置时都会中断。 您还可以为断点指定一个 <em class="dfn">条件</em> 。 条件只是您编程语言中的一个布尔表达式（请参阅 <a class="pxref" href="Expressions.html">表达式</a>）。 带有条件的断点每次程序到达该断点时都会计算该表达式，并且只有当条件为 <em class="emph">真</em>.
+</p>
+<p>这与使用断言进行程序验证相反；在那种情况下，您希望在断言被违反时停止——即当条件为假时。 在 C 语言中，如果您想测试由条件 <var class="var">断言</var>表示的断言，您应该在适当的断点上设置条件‘<samp class="samp">! <var class="var">断言</var></samp>’。
+</p>
+<p>观察点也接受条件；您可能不需要它们，因为观察点无论如何都会检查表达式的值——但例如，可能更简单的做法是只对变量名设置观察点，并指定一个条件来测试新值是否是一个有趣的值。
+</p>
+<p>断点条件可能会有副作用，甚至可能调用您程序中的函数。 例如，这可能很有用，可以激活记录程序进度的函数，或者使用您自己的打印函数来格式化特殊的数据结构。 除非在同一地址还有另一个启用的断点，否则这些效果是完全可预测的。 （在那种情况下， <small class="sc">GDB</small> 可能会先看到另一个断点并停止您的程序，而不检查这个断点的条件。） 请注意，当断点被命中时，断点命令通常比分断点条件更方便、更灵活，用于执行副作用（请参阅 <a class="pxref" href="Break-Commands.html">断点命令列表</a>).
+</p>
+<p>如果目标支持，断点条件也可以在目标端进行计算。 不是在本地计算条件，
+<small class="sc">GDB</small> 将表达式编码为适合在目标上执行的代理表达式（请参阅 <a class="pxref" href="Agent-Expressions.html">GDB 代理表达式机制</a>），独立于 <small class="sc">GDB</small>. 全局变量变成原始内存位置，局部变量变成栈访问，等等。
+</p>
+<p>在这种情况下， <small class="sc">GDB</small> 只有当断点条件计算结果为真时才会收到断点触发的通知。 这种机制可能会根据目标的性能特征提供更快的响应时间，因为它不需要让 <small class="sc">GDB</small> 了解每个断点触发情况，即使是条件为假的情况。
+</p>
+<p>断点条件可以在设置断点时通过在<samp class="samp">if</samp>’来指定。 请参阅 <code class="code">break</code> 命令的参数中使用‘ <a class="xref" href="Set-Breaks.html">设置断点</a>. 它们也可以在任何时候使用 <code class="code">condition</code> 命令进行更改。
+</p>
+<p>您还可以在 <code class="code">if</code> 命令中使用 <code class="code">watch</code> 关键字。
+ <code class="code">catch</code> 命令不识别 <code class="code">if</code> 关键字；
+<code class="code">condition</code> 是对捕获点施加进一步条件的唯一方法。
+</p>
+<dl class="table">
+<dt><a id="index-condition"></a><span><code class="code">condition <var class="var">bnum</var> <var class="var">expression</var></code><a class="copiable-link" href="#index-condition"> ¶</a></span></dt>
+<dd><p>指定 <var class="var">表达式</var> 作为断点、观察点或捕获点编号为 <var class="var">bnum</var>的断点条件。 设置条件后，断点 <var class="var">bnum</var> 只有当
+<var class="var">表达式</var> 的值为真（在 C 语言中为非零）时才会停止您的程序。 当您使用
+<code class="code">condition</code>, <small class="sc">GDB</small> 会立即检查 <var class="var">表达式</var> 的语法正确性，并确定其中的符号在断点上下文中是否有引用。 如果 <var class="var">表达式</var> 使用了断点上下文中未引用的符号， <small class="sc">GDB</small>
+会打印一条错误消息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">当前上下文中没有符号 &#34;foo&#34;。
+</pre></div>
+
+<p><small class="sc">GDB</small> 实际上不会在给出 <var class="var">表达式。 请参阅</var> 命令（或像 <code class="code">condition</code>
+
+<code class="code">break if …</code>这样设置带有条件的断点的命令）时计算 <a class="xref" href="Expressions.html">表达式</a>.
+</p>
+</dd>
+<dt><code class="code">condition -force <var class="var">bnum</var> <var class="var">expression</var></code></dt>
+<dd><p>当使用 <code class="code">-force</code> 标志时，即使
+<var class="var">表达式</var> 在断点
+<var class="var">bnum</var>的所有当前位置都无效，也会定义该条件。 这类似于 <code class="code">-force-condition</code> 命令的 <code class="code">break</code> 选项。
+</p>
+</dd>
+<dt><code class="code">condition <var class="var">bnum</var></code></dt>
+<dd><p>移除断点编号为 <var class="var">bnum</var>的条件。 它将变成一个普通的无条件断点。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-ignore-count-_0028of-breakpoint_0029"></a>
+<p>断点条件的一种特殊情况是仅在断点被命中一定次数时才停止。 这非常有用，因此有一种特殊的方法来实现它，即使用断点的 <em class="dfn">忽略次数</em> 。 每个断点都有一个忽略次数，它是一个整数。 大多数情况下，忽略次数为零，因此没有效果。 但是，如果您的程序到达一个忽略次数为正的断点，那么它不会停止，而是将忽略次数减一并继续执行。 结果，如果忽略次数的值为 <var class="var">n</var>, 则断点在您的程序接下来 <var class="var">n</var> 次到达该断点时不会停止。
+</p>
+<dl class="table">
+<dt><a id="index-ignore"></a><span><code class="code">ignore <var class="var">bnum</var> <var class="var">count</var></code><a class="copiable-link" href="#index-ignore"> ¶</a></span></dt>
+<dd><p>将断点编号为 <var class="var">bnum</var> 的忽略次数设置为 <var class="var">次数</var>.
+接下来，当断点被命中 <var class="var">次数</var> 次时，您的程序执行不会停止；除了减少忽略次数外， <small class="sc">GDB</small>
+不采取任何行动。
+</p>
+<p>要使断点在下次被命中时停止，请指定忽略次数为零。
+</p>
+<p>当您使用 <code class="code">continue</code> 从断点恢复程序执行时，您可以直接将忽略次数作为参数指定给
+<code class="code">continue</code>，而不是使用 <code class="code">ignore</code>。 请参阅 <a class="xref" href="Continuing-and-Stepping.html">继续和单步执行</a>.
+</p>
+<p>如果断点有一个正的忽略次数和一个条件，则不检查该条件。 一旦忽略次数达到零，
+<small class="sc">GDB</small> 将恢复检查该条件。
+</p>
+<p>您可以使用一个条件来实现忽略次数的效果，例如‘<samp class="samp">$foo-- &lt;= 0</samp>’<!-- /@w --> 使用一个每次都会递减的调试器便利变量。 请参阅 <a class="xref" href="Convenience-Vars.html">便利变量</a>.
+</p></dd>
+</dl>
+
+<p>忽略次数适用于断点、观察点、跟踪点和捕获点。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Break-Commands.html">断点命令列表</a>, 上一项： <a href="Disabling.html">禁用断点</a>, 上级： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

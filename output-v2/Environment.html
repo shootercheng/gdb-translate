@@ -1,0 +1,132 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>环境（使用GDB调试）</title>
+
+<meta name="description" content="Environment (Debugging with GDB)"/>
+<meta name="keywords" content="Environment (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Working-Directory.html" rel="next" title="Working Directory"/>
+<link href="Arguments.html" rel="prev" title="Arguments"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Environment">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Working-Directory.html" rel="next"></a> <a accesskey="p" href="Arguments.html" rel="prev"></a> <a accesskey="u" href="Running.html" rel="up"> <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h3 class="section" id="Your-Program_0027s-Environment"><span>4.4 您的程序的环境<a class="copiable-link" href="#Your-Program_0027s-Environment"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-environment-_0028of-your-program_0029"></a>
+<p>环境 <em class="dfn">由一组环境变量及其值组成。环境变量通常用于记录诸如您的用户名、主目录、终端类型以及程序运行的搜索路径等信息。通常，您使用 shell 设置环境变量，并且所有其他您运行的程序都会继承这些变量。在调试时，尝试使用修改后的环境运行您的程序而无需重新启动可能会很有用。</em> ¶ <small class="sc">GDB</small> 添加
+</p>
+<dl class="table">
+<dt><a id="index-path"></a><span><code class="code">path <var class="var">directory</var></code><a class="copiable-link" href="#index-path"> 目录</a></span></dt>
+<dd><p>到 <var class="var">环境变量
+（可执行文件的搜索路径）的前面，该变量将传递给您的程序。
+使用的</var> 的值不会改变。
+您可以指定多个目录名，用空格或系统相关的分隔符字符分隔（‘ <code class="env">PATH</code> : <code class="env">PATH</code> ’ 在 Unix 上，‘ <small class="sc">GDB</small> ;<samp class="samp">’ 在
+MS - DOS 和 MS - Windows 上）。如果</samp>目录<samp class="samp">已经在路径中，它将被移到前面，以便更快地搜索。</samp>您可以使用字符串 ‘ <var class="var">$cwd</var> ’ 来引用
+</p>
+<p>搜索路径时的当前工作目录。如果您使用 ‘<samp class="samp">.</samp>’ 代替，它指的是您执行 <small class="sc">GDB</small> 命令的目录。<samp class="samp">在将</samp>目录
+<code class="code">path</code> 添加到搜索路径之前，会将 ‘  <small class="sc">GDB</small> .<samp class="samp">’ 在</samp>目录
+<var class="var">参数中（用当前路径）替换掉。</var> ¶
+<var class="var">显示可执行文件的搜索路径列表（</var> 环境变量）。
+</p>
+</dd>
+<dt><a id="index-show-paths"></a><span><code class="code">show paths</code><a class="copiable-link" href="#index-show-paths"> ¶</a></span></dt>
+<dd><p>打印环境变量 <code class="env">PATH</code>
+varname
+</p>
+</dd>
+<dt><a id="index-show-environment"></a><span><code class="code">show environment <span class="r">[</span><var class="var">varname</var><span class="r">]</span></code><a class="copiable-link" href="#index-show-environment"> 的值，该值将在您的程序启动时传递给它。如果您不提供</a></span></dt>
+<dd><p>varname <var class="var">,
+则打印将传递给您的程序的所有环境变量的名称和值。您可以将</var> 缩写为 <var class="var">.</var>设置环境变量 <code class="code">environment</code> varname <code class="code">env</code>为
+</p>
+<a class="index-entry-id" id="index-set-environment"></a>
+<a class="anchor" id="set-environment"></a></dd>
+<dt><code class="code">set environment <var class="var">varname</var> <span class="r">[</span>=<var class="var">value</var><span class="r">]</span></code></dt>
+<dd><p>值 <var class="var">. 该值的更改仅针对您的程序（以及</var> 用于启动它的 shell），而不是针对 <var class="var">本身。
+该</var>值 <small class="sc">GDB</small> 可以是任何字符串；环境变量的值只是字符串，任何解释都由您的程序本身提供。
+该 <small class="sc">GDB</small> 值 <var class="var">参数是可选的；如果省略该参数，变量将被设置为空值。</var> 例如，这个命令： <var class="var">set env USER = foo</var>
+告诉被调试的程序，在后续运行时，其用户名为 ‘
+</p>
+<p>foo
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">’。（‘
+</pre></div>
+
+<p>=<samp class="samp">’ 周围的空格仅为清晰起见；实际上并不需要。）</samp>请注意，在 Unix 系统上，<samp class="samp">通过一个 shell 运行您的程序，该 shell 也会继承使用</samp>设置的环境。
+如有必要，您可以通过使用 ‘
+</p>
+<p>env <small class="sc">GDB</small> ’ 程序作为包装器而不是使用 <code class="code">set environment</code>. 请参阅<samp class="samp">set exec - wrapper</samp>, 以获取一个这样做的示例。 <code class="code">set environment</code>用户设置的环境变量也会传递给 <a class="xref" href="Starting.html#set-exec_002dwrapper">，以便在启动远程子进程时使用。
+请参阅</a>QEnvironmentHexEncoded
+</p>
+<p>.
+<code class="command">gdbserver</code> 从要传递给您的程序的环境中移除变量 <a class="pxref" href="General-Query-Packets.html#QEnvironmentHexEncoded">varname</a>. 这与 ‘
+</p>
+<a class="index-entry-id" id="index-unset-environment"></a>
+<a class="anchor" id="unset-environment"></a></dd>
+<dt><code class="code">unset environment <var class="var">varname</var></code></dt>
+<dd><p>set env <var class="var">varname</var> =<samp class="samp">’ 不同； <var class="var">从环境中移除变量，而不是给它赋值为空。</var> 用户取消设置的环境变量在启动远程子进程时也会在</samp>上取消设置。
+请参阅
+<code class="code">unset environment</code> QEnvironmentUnset
+</p>
+<p>.
+<code class="command">gdbserver</code> 警告： <a class="pxref" href="General-Query-Packets.html#QEnvironmentUnset">在 Unix 系统上</a>
+</p></dd>
+</dl>
+
+<p><em class="emph"></em>  <small class="sc">GDB</small> 使用由您的
+环境变量指定的 shell 来运行您的程序，如果该变量存在（或者 <code class="env">SHELL</code> 如果不存在）。如果您的
+ <code class="code">/bin/sh</code> 变量
+指定了一个在非交互模式启动时会运行初始化文件的 shell —— 例如 <code class="env">SHELL</code> .cshrc <samp class="file">对于 C shell，$</samp> .zshenv<samp class="file">对于 Z shell，或者 BASH 中由
+环境变量指定的文件 —— 您在该文件中设置的任何变量都会影响您的程序。您可能希望将环境变量的设置移到仅在您登录时运行的文件中，例如</samp>
+.login <code class="env">BASH_ENV</code>
+或
+<samp class="file">.profile</samp> . <samp class="file">下一项：</samp>您的程序的工作目录
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+, 上一项： <a href="Working-Directory.html">您的程序的参数</a>, 上级： <a href="Arguments.html">在……下运行程序</a>[ <a href="Running.html">目录 <small class="sc">GDB</small></a>   ]<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

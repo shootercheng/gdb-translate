@@ -1,0 +1,99 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编辑（使用 GDB 调试）</title>
+
+<meta name="description" content="Editing (Debugging with GDB)"/>
+<meta name="keywords" content="Editing (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB"/>
+<link href="Command-History.html" rel="next" title="Command History"/>
+<link href="Prompt.html" rel="prev" title="Prompt"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Editing">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Command-History.html" rel="next">命令历史记录</a>, 上一项： <a accesskey="p" href="Prompt.html" rel="prev">提示符</a>, 上一级： <a accesskey="u" href="Controlling-GDB.html" rel="up">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Command-Editing"><span>22.2 命令编辑<a class="copiable-link" href="#Command-Editing"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-readline"></a>
+<a class="index-entry-id" id="index-command-line-editing"></a>
+
+<p><small class="sc">GDB</small> 通过 <em class="dfn">Readline</em> 接口读取其输入命令。这个
+<small class="sc">GNU</small> 库为向用户提供命令行界面的程序提供一致的行为。优点包括 <small class="sc">GNU</small> Emacs 风格的
+或 <em class="dfn">vi</em>风格的命令内联编辑， <code class="code">csh</code>类似的历史记录替换，以及跨调试会话存储和调用命令历史记录。
+</p>
+<p>您可以在 <small class="sc">GDB</small> 中使用命令 <code class="code">set</code>.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-editing"></a>
+<a id="index-set-editing"></a><span><code class="code">set editing</code><a class="copiable-link" href="#index-set-editing"> ¶</a></span></dt>
+<dt><code class="code">set editing on</code></dt>
+<dd><p>启用命令行编辑（默认启用）。
+</p>
+</dd>
+<dt><code class="code">set editing off</code></dt>
+<dd><p>禁用命令行编辑。
+</p>
+</dd>
+<dt><a id="index-show-editing"></a><span><code class="code">show editing</code><a class="copiable-link" href="#index-show-editing"> ¶</a></span></dt>
+<dd><p>显示命令行编辑是否已启用。
+</p></dd>
+</dl>
+
+<p>参见 <a class="xref" href="Command-Line-Editing.html">命令行编辑</a>,
+有关 Readline
+接口的更多详细信息。不熟悉 <small class="sc">GNU</small> Emacs 或 <code class="code">vi</code> 的用户
+建议阅读该章节。
+</p>
+<a class="index-entry-id" id="index-Readline-application-name"></a>
+<p><small class="sc">GDB</small> 将 Readline 应用程序名称设置为 ‘<samp class="samp">gdb</samp>’。这在 <samp class="file">.inputrc</samp>.
+</p>
+<a class="index-entry-id" id="index-operate_002dand_002dget_002dnext"></a>
+<p><small class="sc">GDB</small> 定义一个可绑定的 Readline 命令，
+<code class="code">operate-and-get-next</code>. 此命令默认绑定到 <kbd class="kbd">Ctrl - O</kbd> 。此命令接受当前行以执行，并从历史记录中获取相对于当前行的下一行进行编辑。任何参数都会被忽略。
+</p>
+<p>可以使用 <small class="sc">GDB</small> 来发现 <kbd class="kbd">显示配置</kbd> 命令（参见 <a class="pxref" href="Help.html#show-configuration">显示配置</a>) 来了解使用的 Readline 版本。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Command-History.html">命令历史记录</a>, 上一项： <a href="Prompt.html">提示符</a>, 上一级： <a href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

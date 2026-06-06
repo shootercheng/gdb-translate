@@ -1,0 +1,202 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Hurd原生（使用GDB调试）</title>
+
+<meta name="description" content="Hurd Native (Debugging with GDB)"/>
+<meta name="keywords" content="Hurd Native (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Native.html" rel="up" title="Native"/>
+<link href="Darwin.html" rel="next" title="Darwin"/>
+<link href="Cygwin-Native.html" rel="prev" title="Cygwin Native"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Hurd-Native">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Darwin.html" rel="next">达尔文系统</a> <a accesskey="p" href="Cygwin-Native.html" rel="prev">调试微软Windows PE可执行文件的功能</a>, 上级： <a accesskey="u" href="Native.html" rel="up">原生</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Commands-Specific-to-gnu-Hurd-Systems"><span>21.1.5 特定于 <small class="sc">GNU</small> Hurd系统<a class="copiable-link" href="#Commands-Specific-to-gnu-Hurd-Systems"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-gnu-Hurd-debugging"></a>
+
+<p>本小节描述 <small class="sc">GDB</small> 特定于
+<small class="sc">GNU</small> Hurd原生调试的命令。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-sigs_002c-Hurd-command"></a>
+<a id="index-set-signals_002c-Hurd-command"></a><span><code class="code">set signals</code><a class="copiable-link" href="#index-set-signals_002c-Hurd-command"> ¶</a></span></dt>
+<dt><code class="code">set sigs</code></dt>
+<dd><p>此命令切换对被调试程序信号拦截的状态，通过
+<small class="sc">GDB</small>。诸如断点陷阱之类的Mach异常不受此命令影响。  <code class="code">sigs</code> 是
+<code class="code">signals</code>的简写别名。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-sigs_002c-Hurd-command"></a>
+<a id="index-show-signals_002c-Hurd-command"></a><span><code class="code">show signals</code><a class="copiable-link" href="#index-show-signals_002c-Hurd-command"> ¶</a></span></dt>
+<dt><code class="code">show sigs</code></dt>
+<dd><p>显示当前拦截被调试程序信号的状态。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-set-sigthread"></a>
+<a id="index-set-signal_002dthread"></a><span><code class="code">set signal-thread</code><a class="copiable-link" href="#index-set-signal_002dthread"> ¶</a></span></dt>
+<dt><code class="code">set sigthread</code></dt>
+<dd><p>此命令告知 <small class="sc">GDB</small> 哪个线程是 <code class="code">libc</code> 信号线程。当信号传递给正在运行的进程时，该线程会运行。  <code class="code">set sigthread</code> 是 <code class="code">set
+signal-thread</code>的简写别名。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-sigthread"></a>
+<a id="index-show-signal_002dthread"></a><span><code class="code">show signal-thread</code><a class="copiable-link" href="#index-show-signal_002dthread"> ¶</a></span></dt>
+<dt><code class="code">show sigthread</code></dt>
+<dd><p>这两个命令显示当被调试程序接收到信号时哪个线程将运行。
+</p>
+</dd>
+<dt><a id="index-set-stopped_002c-Hurd-command"></a><span><code class="code">set stopped</code><a class="copiable-link" href="#index-set-stopped_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>此命令告知 <small class="sc">GDB</small> 被调试进程已停止，就像使用 <code class="code">SIGSTOP</code> 信号一样。可以通过向其发送信号来继续已停止的进程。
+</p>
+</dd>
+<dt><a id="index-show-stopped_002c-Hurd-command"></a><span><code class="code">show stopped</code><a class="copiable-link" href="#index-show-stopped_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>此命令显示 <small class="sc">GDB</small> 是否认为被调试程序已停止。
+</p>
+</dd>
+<dt><a id="index-set-exceptions_002c-Hurd-command"></a><span><code class="code">set exceptions</code><a class="copiable-link" href="#index-set-exceptions_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>使用此命令关闭对被调试程序中异常的捕获。当异常捕获关闭时，断点和单步执行都将不起作用。要恢复默认设置，请打开异常捕获。
+</p>
+</dd>
+<dt><a id="index-show-exceptions_002c-Hurd-command"></a><span><code class="code">show exceptions</code><a class="copiable-link" href="#index-show-exceptions_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>显示当前对被调试程序中异常捕获的状态。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-task-attributes-_0028gnu-Hurd_0029"></a>
+<a class="index-entry-id" id="index-pause-current-task-_0028gnu-Hurd_0029"></a>
+<a id="index-set-task_002c-Hurd-commands"></a><span><code class="code">set task pause</code><a class="copiable-link" href="#index-set-task_002c-Hurd-commands"> ¶</a></span></dt>
+<dd><p>此命令在 <small class="sc">GDB</small> 获得控制权时切换任务挂起状态。将其设置为开启会立即生效，并且每当 <small class="sc">GDB</small> 获得控制权时任务就会挂起。将其设置为关闭将在下次继续执行被调试程序时生效。如果此选项设置为关闭，您可以使用 <code class="code">set thread default pause on</code> 或 <code class="code">set
+thread pause on</code> （见下文）来暂停单个线程。
+</p>
+</dd>
+<dt><a id="index-show-task_002c-Hurd-commands"></a><span><code class="code">show task pause</code><a class="copiable-link" href="#index-show-task_002c-Hurd-commands"> ¶</a></span></dt>
+<dd><p>显示当前任务挂起的状态。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-detach-from-task_002c-gnu-Hurd"></a>
+<a id="index-task-suspend-count"></a><span><code class="code">set task detach-suspend-count</code><a class="copiable-link" href="#index-task-suspend-count"> ¶</a></span></dt>
+<dd><p>此命令设置当
+<small class="sc">GDB</small> 从任务分离时任务将保留的挂起计数。
+</p>
+</dd>
+<dt><code class="code">show task detach-suspend-count</code></dt>
+<dd><p>显示分离时任务将保留的挂起计数。
+</p>
+</dd>
+<dt><a id="index-task-exception-port_002c-gnu-Hurd"></a><span><code class="code">set task exception-port</code><a class="copiable-link" href="#index-task-exception-port_002c-gnu-Hurd"> ¶</a></span></dt>
+<dt><code class="code">set task excp</code></dt>
+<dd><p>此命令设置 <small class="sc">GDB</small> 将异常转发到的任务异常端口。参数应该是 <em class="dfn">发送权限</em> 的任务值。  <code class="code">set task excp</code> 是简写别名。
+</p>
+</dd>
+<dt><a id="index-noninvasive-task-options"></a><span><code class="code">set noninvasive</code><a class="copiable-link" href="#index-noninvasive-task-options"> ¶</a></span></dt>
+<dd><p>此命令将 <small class="sc">GDB</small> 切换到一种对被调试程序干扰最小的模式。这与使用 <code class="code">set task pause</code>, <code class="code">set exceptions</code>, 和
+<code class="code">set signals</code> 将值设置为与默认值相反的情况相同。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-receive-rights_002c-gnu-Hurd"></a>
+<a class="index-entry-id" id="index-port-rights_002c-gnu-Hurd"></a>
+<a class="index-entry-id" id="index-port-sets_002c-gnu-Hurd"></a>
+<a class="index-entry-id" id="index-dead-names_002c-gnu-Hurd"></a>
+<a id="index-send-rights_002c-gnu-Hurd"></a><span><code class="code">info send-rights</code><a class="copiable-link" href="#index-send-rights_002c-gnu-Hurd"> ¶</a></span></dt>
+<dt><code class="code">info receive-rights</code></dt>
+<dt><code class="code">info port-rights</code></dt>
+<dt><code class="code">info port-sets</code></dt>
+<dt><code class="code">info dead-names</code></dt>
+<dt><code class="code">info ports</code></dt>
+<dt><code class="code">info psets</code></dt>
+<dd><p>这些命令分别显示有关任务的发送权限、接收权限、端口权限、端口集和无效名称的信息。也有简写别名： <code class="code">info ports</code> 对应于 <code class="code">info
+port-rights</code> 和 <code class="code">info psets</code> 对应于 <code class="code">info port-sets</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-thread-properties_002c-gnu-Hurd"></a>
+<a class="index-entry-id" id="index-pause-current-thread-_0028gnu-Hurd_0029"></a>
+<a id="index-set-thread_002c-Hurd-command"></a><span><code class="code">set thread pause</code><a class="copiable-link" href="#index-set-thread_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>此命令在 <small class="sc">GDB</small> 获得控制权时切换当前线程的挂起状态。将其设置为开启会立即生效，并且每当 <small class="sc">GDB</small> 获得控制权时当前线程就会挂起。将其设置为关闭将在下次继续执行被调试程序时生效。通常，此命令没有效果，因为当 <small class="sc">GDB</small> 获得控制权时，整个任务都会挂起。但是，如果您使用了 <code class="code">set
+task pause off</code> （见上文），此命令可用于仅挂起当前线程。
+</p>
+</dd>
+<dt><a id="index-show-thread_002c-Hurd-command"></a><span><code class="code">show thread pause</code><a class="copiable-link" href="#index-show-thread_002c-Hurd-command"> ¶</a></span></dt>
+<dd><p>此命令显示当前线程挂起的状态。
+</p>
+</dd>
+<dt><code class="code">set thread run</code></dt>
+<dd><p>此命令设置当前线程是否允许运行。
+</p>
+</dd>
+<dt><code class="code">show thread run</code></dt>
+<dd><p>显示当前线程是否允许运行。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-detach-from-thread_002c-gnu-Hurd"></a>
+<a id="index-thread-suspend-count_002c-gnu-Hurd"></a><span><code class="code">set thread detach-suspend-count</code><a class="copiable-link" href="#index-thread-suspend-count_002c-gnu-Hurd"> ¶</a></span></dt>
+<dd><p>此命令设置 <small class="sc">GDB</small> 分离线程时将在该线程上留下的挂起计数。此数字相对于 <small class="sc">GDB</small> 注意到该线程时找到的挂起计数；使用 <code class="code">set thread
+takeover-suspend-count</code> 将其强制设置为绝对值。
+</p>
+</dd>
+<dt><code class="code">show thread detach-suspend-count</code></dt>
+<dd><p>显示 <small class="sc">GDB</small> 分离线程时将在该线程上留下的挂起计数。
+</p>
+</dd>
+<dt><code class="code">set thread exception-port</code></dt>
+<dt><code class="code">set thread excp</code></dt>
+<dd><p>设置将异常转发到的线程异常端口。这将覆盖由 <code class="code">set task exception-port</code> （见上文）设置的端口。
+<code class="code">set thread excp</code> 是简写别名。
+</p>
+</dd>
+<dt><code class="code">set thread takeover-suspend-count</code></dt>
+<dd><p>通常， <small class="sc">GDB</small>的线程挂起计数是相对于 <small class="sc">GDB</small> 注意到每个线程时找到的值。此命令将挂起计数改为绝对值。
+</p>
+</dd>
+<dt><a id="index-thread-default-settings_002c-gnu-Hurd"></a><span><code class="code">set thread default</code><a class="copiable-link" href="#index-thread-default-settings_002c-gnu-Hurd"> ¶</a></span></dt>
+<dt><code class="code">show thread default</code></dt>
+<dd><p>上述每个 <code class="code">set thread</code> 命令都有一个 <code class="code">set thread
+default</code> 对应项（例如， <code class="code">set thread default pause</code>, <code class="code">set
+thread default exception-port</code>, 等等）。该 <code class="code">thread default</code>
+各种命令为所有线程设置默认线程属性；然后您可以使用非默认命令更改单个线程的属性。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Darwin.html">达尔文系统</a>, 上一项： <a href="Cygwin-Native.html">调试微软Windows PE可执行文件的功能</a>, 上级： <a href="Native.html">原生</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>调用（使用GDB进行调试）</title>
+
+<meta name="description" content="Calling (Debugging with GDB)"/>
+<meta name="keywords" content="Calling (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Patching.html" rel="next" title="Patching"/>
+<link href="Returning.html" rel="prev" title="Returning"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Calling">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Patching.html" rel="next">修补程序</a> <a accesskey="p" href="Returning.html" rel="prev"></a> <a accesskey="u" href="Altering.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Calling-Program-Functions"><span>17.5 调用程序函数<a class="copiable-link" href="#Calling-Program-Functions"> ¶</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-inferior-functions_002c-calling"></a>
+<a id="index-calling-functions"></a><span><code class="code">print <var class="var">expr</var></code><a class="copiable-link" href="#index-calling-functions"> ¶</a></span></dt>
+<dd><p>计算表达式 <var class="var">expr</var> 并显示结果值。
+该表达式可能包括对正在调试的程序中的函数的调用。
+</p>
+</dd>
+<dt><a id="index-call"></a><span><code class="code">call <var class="var">expr</var></code><a class="copiable-link" href="#index-call"> ¶</a></span></dt>
+<dd><p>计算表达式 <var class="var">expr</var> 不显示 <code class="code">void</code>
+返回值。
+</p>
+<p>如果你想执行程序中不返回任何值的函数（也就是 <code class="code">print</code> 命令的这个变体。 <em class="dfn">一个无返回值函数</em>），但又不想让 <code class="code">void</code> 返回值 <small class="sc">GDB</small> 打印出来而使输出混乱。如果结果不是无返回值，它将被打印并保存在值历史记录中。
+</p></dd>
+</dl>
+
+<p>通过 <code class="code">print</code> 或
+<code class="code">call</code> 命令调用的函数可能会产生信号（例如，如果函数中有错误，或者你传递了不正确的参数）。在这种情况下会发生什么由 <code class="code">set unwind-on-signal</code> 命令控制。
+</p>
+<p>同样，对于C<code class="t">++</code> 程序，通过 <code class="code">print</code> 或 <code class="code">call</code> 命令调用的函数可能会产生一个由于虚拟帧的限制而未被处理的异常。在这种情况下，在帧中抛出但有帧外异常处理程序的任何异常都将无法被找到。GDB为被调试函数调用构建一个虚拟帧，并且展开器无法在这个虚拟帧之外寻找异常处理程序。在这种情况下会发生什么由
+<code class="code">set unwind-on-terminating-exception</code> 命令控制。
+</p>
+<a class="anchor" id="stack-unwind-settings"></a><dl class="table">
+<dt><a class="index-entry-id" id="index-set-unwindonsignal"></a>
+<a class="index-entry-id" id="index-unwind-stack-in-called-functions"></a>
+<a class="index-entry-id" id="index-call-dummy-stack-unwinding"></a>
+<a id="index-set-unwind_002don_002dsignal"></a><span><code class="code">set unwind-on-signal</code><a class="copiable-link" href="#index-set-unwind_002don_002dsignal"> ¶</a></span></dt>
+<dd><p>设置在被调试程序中调用的函数接收到信号时是否展开栈帧。如果设置为开启， <small class="sc">GDB</small> 将展开为调用创建的栈帧，并将上下文恢复到调用之前的状态。如果设置为关闭（默认），
+<small class="sc">GDB</small> 将停留在接收到信号的帧中。 <small class="sc">GDB</small> 命令
+</p>
+<p>是此命令的别名，为了向后兼容而保留。 <code class="code">set unwindonsignal</code> ¶
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-unwindonsignal"></a>
+<a id="index-show-unwind_002don_002dsignal"></a><span><code class="code">show unwind-on-signal</code><a class="copiable-link" href="#index-show-unwind_002don_002dsignal"> 显示由</a></span></dt>
+<dd><p>调用的函数中栈展开的当前设置。
+<small class="sc">GDB</small>命令
+</p>
+<p>是此命令的别名，为了向后兼容而保留。 <code class="code">show unwindonsignal</code> ¶
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-unwind-stack-in-called-functions-with-unhandled-exceptions"></a>
+<a class="index-entry-id" id="index-call-dummy-stack-unwinding-on-unhandled-exception_002e"></a>
+<a id="index-set-unwind_002don_002dterminating_002dexception"></a><span><code class="code">set unwind-on-terminating-exception</code><a class="copiable-link" href="#index-set-unwind_002don_002dterminating_002dexception"> 设置在被调试程序中调用的函数中抛出但未处理C</a></span></dt>
+<dd><p>异常时是否展开栈帧。如果设置为开启（默认），<code class="t">++</code> 将展开为调用创建的栈帧，并将上下文恢复到调用之前的状态。如果设置为关闭， <small class="sc">GDB</small> 异常将被传递给默认的C <small class="sc">GDB</small> 异常处理程序，并且被调试程序将终止。 <small class="sc">GDB</small> ¶<code class="t">++</code> 显示由
+</p>
+</dd>
+<dt><a id="index-show-unwind_002don_002dterminating_002dexception"></a><span><code class="code">show unwind-on-terminating-exception</code><a class="copiable-link" href="#index-show-unwind_002don_002dterminating_002dexception"> 调用的函数中栈展开的当前设置。</a></span></dt>
+<dd><p>¶
+<small class="sc">GDB</small>设置从
+</p>
+<a class="anchor" id="set-unwind_002don_002dtimeout"></a></dd>
+<dt><a class="index-entry-id" id="index-unwind-stack-in-called-functions-when-timing-out"></a>
+<a class="index-entry-id" id="index-call-dummy-stack-unwinding-on-timeout_002e"></a>
+<a id="index-set-unwind_002don_002dtimeout"></a><span><code class="code">set unwind-on-timeout</code><a class="copiable-link" href="#index-set-unwind_002don_002dtimeout"> 调用的函数超时时是否展开栈帧。如果设置为</a></span></dt>
+<dd><p>（默认）， <small class="sc">GDB</small>
+将停留在超时发生的帧中。如果设置为 <code class="code">off</code> , <small class="sc">GDB</small> 将展开为调用创建的栈帧，并将上下文恢复到调用之前的状态。 <code class="code">on</code>¶
+<small class="sc">GDB</small> 显示如果从
+</p>
+</dd>
+<dt><a id="index-show-unwind_002don_002dtimeout"></a><span><code class="code">show unwind-on-timeout</code><a class="copiable-link" href="#index-show-unwind_002don_002dtimeout"> 调用的函数超时时，</a></span></dt>
+<dd><p>是否会展开栈帧。 <small class="sc">GDB</small> ¶ <small class="sc">GDB</small> 设置调用程序中函数的权限。
+这控制着
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-disabling-calling-functions-in-the-program"></a>
+<a class="index-entry-id" id="index-calling-functions-in-the-program_002c-disabling"></a>
+<a id="index-set-may_002dcall_002dfunctions"></a><span><code class="code">set may-call-functions</code><a class="copiable-link" href="#index-set-may_002dcall_002dfunctions"> 是否会尝试调用程序中的函数，例如使用</a></span></dt>
+<dd><p>命令中的表达式。它的默认值是 <small class="sc">GDB</small> . <code class="code">print</code> 要调用程序中的函数， <code class="code">on</code>必须临时修改被调试程序的状态。这可能会产生不希望的副作用。此外，让
+</p>
+<p>调用嵌套函数可能会出错，甚至可能导致被调试程序崩溃。你可以通过禁止 <small class="sc">GDB</small> 调用被调试程序中的函数来避免此类危险。如果禁止调用程序中的函数，当命令（如打印表达式）启动程序中的函数调用时，GDB将抛出错误。 <small class="sc">GDB</small> ¶ <small class="sc">GDB</small> 显示调用程序中函数的权限。
+</p>
+</dd>
+<dt><a id="index-show-may_002dcall_002dfunctions"></a><span><code class="code">show may-call-functions</code><a class="copiable-link" href="#index-show-may_002dcall_002dfunctions"> 当调用程序内的函数时，程序可能会进入一种被调用函数可能永远不会返回的状态。如果发生这种情况，可以通过输入中断字符（通常是</a></span></dt>
+<dd><p>Ctrl - c
+</p>
+</dd>
+</dl>
+
+<p>)来中断函数调用。 <kbd class="kbd">如果被调用的函数由于任何原因被中断，包括命中断点或触发观察点，并且由于</kbd>,
+</p>
+<p>, 或 <code class="code">set unwind-on-terminating-exception on</code>（见 <code class="code">set
+unwind-on-timeout on</code>栈展开设置 <code class="code">set unwind-on-signal on</code> )而未展开栈帧，那么由 <a class="pxref" href="#stack-unwind-settings">为方便调用程序函数而创建的虚拟帧将在回溯中可见，例如以下回溯中的帧</a>： <small class="sc">GDB</small> (gdb) backtrace
+#0  0x00007ffff7b3d1e7 in nanosleep () from /lib64/libc.so.6
+#1  0x00007ffff7b3d11e in sleep () from /lib64/libc.so.6
+#2  0x000000000040113f in deadlock () at test.cc:13
+#3  &lt;function called from gdb&gt;
+#4  breakpt () at test.cc:20
+#5  0x0000000000401151 in main () at test.cc:25 <code class="code">#3</code> 此时，可以像检查任何其他停止点一样检查被调试程序的状态。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">根据函数被中断的原因，可能可以恢复被调试程序（使用像
+</pre></div>
+
+<p>,
+</p>
+<p>, 等命令）。在这种情况下，当被调试程序最终返回到虚拟帧时， <code class="code">continue</code>将再次暂停被调试程序。
+<code class="code">step</code>在支持异步执行的目标上（见 <small class="sc">GDB</small> 
+</p>
+<p> <a class="pxref" href="Background-Execution.html">后台执行</a>) <small class="sc">GDB</small> 可以为从其调用的任何函数设置超时。 <small class="sc">GDB</small>如果超时时间到了，而函数调用仍在进行中，那么 <small class="sc">GDB</small> 将中断程序。
+</p>
+<p>如果从 <small class="sc">GDB</small> 调用的函数因超时而中断，那么默认情况下，被调试程序会停留在超时发生的帧中，这种行为可以通过‘<samp class="samp">设置超时自动回退栈帧</samp>’来调整（见 <a class="pxref" href="#set-unwind_002don_002dtimeout">设置超时自动回退栈帧</a>)。
+</p>
+<p>对于不支持异步执行的目标（见 <a class="pxref" href="Background-Execution.html">后台执行</a>)，那么从
+<small class="sc">GDB</small> 调用的函数不支持超时设置，下面描述的超时设置将被视为 <code class="code">unlimited</code>，意味着 <small class="sc">GDB</small> 将无限期等待函数调用完成，除非用户使用 <kbd class="kbd">Ctrl - C</kbd>中断。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-timeout-for-called-functions"></a>
+<a id="index-set-direct_002dcall_002dtimeout"></a><span><code class="code">set direct-call-timeout <var class="var">seconds</var></code><a class="copiable-link" href="#index-set-direct_002dcall_002dtimeout"> ¶</a></span></dt>
+<dd><p>将调用程序中的函数时使用的超时时间设置为
+<var class="var">秒</var>，该值应该是一个大于零的整数，或者是特殊值 <code class="code">unlimited</code>，表示不使用超时。此设置的默认值是 <code class="code">unlimited</code>。
+</p>
+<p>当用户直接从命令提示符调用函数时会使用此设置，例如使用 <code class="code">call</code> 或 <code class="code">print</code>
+命令。
+</p>
+<p>此设置仅适用于支持异步执行的目标（见 <a class="pxref" href="Background-Execution.html">后台执行</a>），对于其他目标，此设置将被视为 <code class="code">unlimited</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-timeout-for-called-functions-1"></a>
+<a id="index-show-direct_002dcall_002dtimeout"></a><span><code class="code">show direct-call-timeout</code><a class="copiable-link" href="#index-show-direct_002dcall_002dtimeout"> ¶</a></span></dt>
+<dd><p>显示使用
+<code class="code">call</code> 或 <code class="code">print</code> 命令调用程序中的函数时使用的超时时间。
+</p></dd>
+</dl>
+
+<p>也可以从条件断点的条件中调用程序内的函数（见 <a class="pxref" href="Conditions.html">断点条件</a>）。有一个不同的设置控制从断点条件中进行函数调用时使用的超时时间。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-timeout-for-called-functions-2"></a>
+<a id="index-set-indirect_002dcall_002dtimeout"></a><span><code class="code">set indirect-call-timeout <var class="var">seconds</var></code><a class="copiable-link" href="#index-set-indirect_002dcall_002dtimeout"> ¶</a></span></dt>
+<dd><p>将从断点或观察点条件中调用程序中的函数时使用的超时时间设置为 <var class="var">秒</var>，该值应该是一个大于零的整数，或者是特殊值 <code class="code">unlimited</code>，表示不使用超时。此设置的默认值是 <code class="code">30</code> 秒。
+</p>
+<p>此设置仅适用于支持异步执行的目标（见 <a class="pxref" href="Background-Execution.html">后台执行</a>），对于其他目标，此设置将被视为 <code class="code">unlimited</code>。
+</p>
+<p>如果从断点或观察点条件中调用的函数超时，那么 <small class="sc">GDB</small> 将在超时发生的点停止。断点条件的计算将被放弃。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-timeout-for-called-functions-3"></a>
+<a id="index-show-indirect_002dcall_002dtimeout"></a><span><code class="code">show indirect-call-timeout</code><a class="copiable-link" href="#index-show-indirect_002dcall_002dtimeout"> ¶</a></span></dt>
+<dd><p>显示从断点或观察点条件中调用程序中的函数时使用的超时时间。
+</p></dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Calling-functions-with-no-debug-info">调用无调试信息的函数</a></li>
+</ul>
+<div class="subsection-level-extent" id="Calling-functions-with-no-debug-info">
+<h4 class="subsection"><span>17.5.1 调用无调试信息的函数<a class="copiable-link" href="#Calling-functions-with-no-debug-info"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-no-debug-info-functions"></a>
+<p>有时，你想调用的函数缺少调试信息。在这种情况下， <small class="sc">GDB</small> 不知道该函数的类型，包括函数参数的类型。为了避免错误地调用被调试函数，这可能导致被调用函数功能异常甚至崩溃， <small class="sc">GDB</small> 拒绝调用该函数，除非你告诉它函数的类型。
+</p>
+<p>对于有原型声明的（即ANSI/ISO风格）函数，有两种方法可以做到这一点。最简单的方法是将函数调用强制转换为其声明的返回类型。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p getenv (&#34;PATH&#34;)
+&#39;getenv&#39; 具有未知的返回类型；将调用强制转换为其声明的返回类型
+(gdb) p (char *) getenv (&#34;PATH&#34;)
+$1 = 0x7fffffffe7ba &#34;/usr/local/bin:/&#34;...
+</pre></div>
+
+<p>对无调试信息的函数的返回类型进行强制类型转换，等同于将该函数强制转换为一个指向具有与传入参数类型匹配的原型的函数指针，并调用该指针。即，上面的调用等同于：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p ((char * (*) (const char *)) getenv) (&#34;PATH&#34;)
+</pre></div>
+
+<p>假设有一个带有浮点参数的有原型声明的C或C++函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">float multiply (float v1, float v2) { return v1 * v2; }
+</pre></div>
+
+<p>以下调用是等效的：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) p (float) multiply (2.0f, 3.0f)
+(gdb) p ((float (*) (float, float)) multiply) (2.0f, 3.0f)
+</pre></div>
+
+<p>如果你想调用的函数被声明为无原型（即旧的K&amp;R风格），你必须使用强制转换为函数指针的语法，这样 <small class="sc">GDB</small> 就知道需要应用默认的参数提升（将浮点参数提升为双精度）。见 <a class="xref" href="ABI.html">浮点提升</a>。例如，给定这个带有浮点参数且无调试信息的无原型C函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">float
+multiply_noproto (v1, v2)
+  float v1, v2;
+{
+  return v1 * v2;
+}
+</pre></div>
+
+<p>你可以这样调用它：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  (gdb) p ((float (*) ()) multiply_noproto) (2.0f, 3.0f)
+</pre></div>
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Patching.html">修补程序</a>, 上一项： <a href="Returning.html">从函数返回</a>, 上级： <a href="Altering.html">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

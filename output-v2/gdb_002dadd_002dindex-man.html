@@ -1,0 +1,114 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>gdb-add-index 手册（使用 GDB 进行调试）</title>
+
+<meta name="description" content="gdb-add-index man (Debugging with GDB)"/>
+<meta name="keywords" content="gdb-add-index man (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<a class="node" id="gdb_002dadd_002dindex-man"></a><div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="heading" id="gdb_002dadd_002dindex-1"><span>gdb-add-index<a class="copiable-link" href="#gdb_002dadd_002dindex-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-gdb_002dadd_002dindex"></a>
+<a class="anchor" id="gdb_002dadd_002dindex"></a>
+
+<p>gdb-add-index [-h | –帮助] [-v | –版本] [–dwarf-5] <var class="var">文件名</var>
+</p>
+<p>当找到一个符号文件时，它会按顺序扫描文件中的符号，以构建一个内部符号表。这使得大多数 <small class="sc">GDB</small> 操作能够快速进行——代价是在一开始会有延迟。对于大型程序，这种延迟可能会相当长，因此
+<small class="sc">GDB</small> 提供了一种构建索引的方法，这可以加快启动速度。 <small class="sc">GDB</small>
+要确定一个文件是否包含这样的索引，请使用命令
+</p>
+<p>readelf -S 文件名
+<kbd class="kbd">: 索引存储在一个名为</kbd>（DWARF 5 之前）或
+<code class="code">.gdb_index</code> 以及 <code class="code">.debug_names</code> （DWARF 5）的节中。索引只能在使用 ELF 二进制文件和 DWARF 调试信息（即名为
+<code class="code">.debug_str</code> 的节）的系统上生成。 <code class="code">.debug_*</code>)。
+</p>
+<p>默认情况下 <code class="command">gdb-add-index</code> 会向
+<code class="code">.gdb_index</code> 文件名 <var class="var">添加一个 DWARF 5 之前的</var>节。使用 <samp class="option">--dwarf-5</samp>
+则会添加 DWARF 5 节 <code class="code">.debug_names</code> 。
+</p>
+<p><var class="var">文件名</var> 必须是可写的。
+</p>
+<p><code class="command">gdb-add-index</code> 使用 <small class="sc">GDB</small>, <code class="command">objcopy</code>, 以及
+<code class="command">readelf</code> 在 <code class="env">PATH</code> 环境变量中找到的程序。如果您想使用这些程序的不同版本，可以通过相应的环境变量来指定（见下文）。
+</p>
+<p><code class="command">gdb-add-index</code> 如果成功为 <var class="var">文件名</var> 创建索引，则以状态 0 退出；如果发生错误，则以大于 0 的状态退出。
+</p>
+<p>更多信息请参阅
+<a class="ref" href="Index-Files.html">索引文件可加快速度 <small class="sc">GDB</small></a>.
+</p>
+<dl class="table">
+<dt><code class="env">--dwarf-5</code></dt>
+<dd><p>添加 DWARF 5 节而不是之前的 <code class="code">.gdb_index</code> 节。
+</p>
+</dd>
+<dt><code class="env">--help</code></dt>
+<dt><code class="env">-h</code></dt>
+<dd><p>列出所有选项并简要说明。
+</p>
+</dd>
+<dt><code class="env">--version</code></dt>
+<dt><code class="env">-v</code></dt>
+<dd><p>打印版本信息然后退出。
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><code class="env">GDB</code></dt>
+<dd><p>用于生成索引的 <code class="code">gdb</code> 程序的完整文件名。如果未设置，则会在 <code class="env">PATH</code> 中搜索一个 <code class="code">gdb</code> 程序。
+</p>
+</dd>
+<dt><code class="env">OBJCOPY</code></dt>
+<dd><p>用于将节信息复制到给定文件的 <code class="code">objcopy</code> 程序的完整文件名。如果未设置，则会在 <code class="env">PATH</code> 中搜索一个 <code class="code">objcopy</code> 程序。
+</p>
+</dd>
+<dt><code class="env">READELF</code></dt>
+<dd><p>用于检查给定文件属性的 <code class="code">readelf</code> 程序的完整文件名。如果未设置，则会在 <code class="env">PATH</code> 中搜索一个 <code class="code">readelf</code> 程序。
+</p></dd>
+</dl>
+
+
+<hr/>
+<div class="nav-panel">
+<p>
+[<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

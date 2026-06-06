@@ -1,0 +1,322 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编译并注入代码（使用GDB调试）</title>
+
+<meta name="description" content="Compiling and Injecting Code (Debugging with GDB)"/>
+<meta name="keywords" content="Compiling and Injecting Code (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Patching.html" rel="prev" title="Patching"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Compiling-and-Injecting-Code">
+<div class="nav-panel">
+<p>
+上一个： <a accesskey="p" href="Patching.html" rel="prev"></a> <a accesskey="u" href="Altering.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a><a href="Concept-Index.html" rel="index" title="Index"></a></p>
+</div>
+<hr/>
+<h3 class="section" id="Compiling-and-injecting-code-in-gdb"><span>17.7 在……中编译并注入代码 <small class="sc">GDB</small><a class="copiable-link" href="#Compiling-and-injecting-code-in-gdb"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-injecting-code"></a>
+<a class="index-entry-id" id="index-writing-into-executables-1"></a>
+<a class="index-entry-id" id="index-compiling-code"></a>
+
+<p><small class="sc">GDB</small> 支持按需编译并将代码注入到在……下运行的程序中。 <small class="sc">GDB</small>.  使用……构建的GCC 5.0或更高版本
+<samp class="file">libcc1.so</samp> 必须安装才能启用此功能。  此功能通过以下命令实现。
+</p>
+<dl class="table">
+<dt><a id="index-compile-code"></a><span><code class="code">compile code <var class="var">source-code</var></code><a class="copiable-link" href="#index-compile-code"> </a></span></dt>
+<dt><code class="code">compile code -raw <var class="var">--</var> <var class="var">source-code</var></code></dt>
+<dd><p> <var class="var"></var> 使用编译器语言，该语言是……中的当前语言 <small class="sc">GDB</small>  <a class="pxref" href="Languages.html"> <small class="sc">GDB</small> </a>
+<small class="sc">GDB</small> <var class="var"></var>  <small class="sc">GDB</small> 将加载生成的目标代码，并在当前选定的被调试程序的上下文中执行它。  重要的是要注意，编译后的代码会立即执行。  执行后，编译后的代码会从……中移除，并且你定义的任何新类型或变量都会被删除。 <small class="sc">GDB</small> 并且你定义的任何新类型或变量都会被删除。
+</p>
+<p>该命令允许你以两种方式指定……。  最简单的方法是向命令提供一行代码。  例如： <var class="var">源代码</var> 在两种方式中指定。  最简单的方法是向命令提供一行代码。  例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 printf (&#34;hello world\n&#34;);
+</pre></div>
+
+<p>如果你在命令行上同时指定选项和源代码，它们可能会冲突。  可以使用‘<samp class="samp">--</samp>’分隔符将选项与实际源代码分开。  例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 -r -- printf (&#34;hello world\n&#34;);
+</pre></div>
+
+<p>或者，你可以将源代码作为多行文本输入。  要进入此模式，调用‘<samp class="samp">编译代码</samp>’命令，命令后面不跟任何文本。  这将启动多行编辑器，并允许你输入所需数量的源代码行。  当你完成输入后，在单独的一行上输入‘<samp class="samp">结束</samp>’以退出编辑器。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码
+&gt;printf (&#34;hello\n&#34;);
+&gt;printf (&#34;world\n&#34;);
+&gt;结束
+</pre></div>
+
+<p>指定‘<samp class="samp">-raw</samp>’禁止……将提供的……包装在可调用的作用域中。  在这种情况下，你必须通过定义一个名为……的函数来指定代码的入口点。  ‘ <small class="sc">GDB</small> ……将提供的……包装在可调用的作用域中 <var class="var">源代码</var> 在可调用的作用域中。  在这种情况下，你必须通过定义一个名为……的函数来指定代码的入口点。  ‘
+<code class="code">_gdb_expr_</code>.  ‘<samp class="samp">-raw</samp>’代码无法访问被调试程序的变量。  例如，当……源代码需要‘<samp class="samp">-raw</samp>’选项可能是需要的，例如当……源代码需要‘
+<var class="var">源代码</var> 需要‘<samp class="samp">#include</samp>’行，否则可能会与被调试程序的符号冲突。
+</p>
+</dd>
+<dt><a id="index-compile-file"></a><span><code class="code">compile file <var class="var">filename</var></code><a class="copiable-link" href="#index-compile-file"> ¶</a></span></dt>
+<dt><code class="code">compile file -raw <var class="var">filename</var></code></dt>
+<dd><p>类似于……，但从……文件名中获取源代码。  例如： <code class="code">compile code</code>,  但从 <var class="var">文件名</var>.
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译文件 /home/user/example.c
+</pre></div>
+
+<p>……文件名参数支持转义和引号，参见……文件名作为命令参数。 <var class="var">文件名</var> 参数支持转义和引号，参见……文件名作为命令参数。
+<a class="ref" href="Filename-Arguments.html">文件名作为命令参数</a>.
+</p></dd>
+</dl>
+
+<dl class="table">
+<dt><code class="code">compile print [[<var class="var">options</var>] --] <var class="var">expr</var></code></dt>
+<dt><code class="code">compile print [[<var class="var">options</var>] --] /<var class="var">f</var> <var class="var">expr</var></code></dt>
+<dd><p>编译并执行……，使用编译器语言，该语言是……中的当前语言（参见……使用不同语言）。  默认情况下，……的值以适合其数据类型的格式打印；你可以通过指定‘ <var class="var">表达式</var> 使用编译器语言，该语言是……中的当前语言 <small class="sc">GDB</small> (参见 <a class="pxref" href="Languages.html">使用 <small class="sc">GDB</small> 不同语言</a>)  默认情况下，……的值以适合其数据类型的格式打印；你可以通过指定‘ <var class="var">表达式</var> 的值以适合其数据类型的格式打印；你可以通过指定‘<samp class="samp">/<var class="var">f</var></samp>’，其中
+<var class="var">f</var> 是一个指定格式的字母；参见……输出格式。  ……命令接受与……命令相同的选项；参见……打印选项。 <a class="ref" href="Output-Formats.html">输出格式</a>. <code class="code">compile print</code> 命令 <code class="code">print</code> 命令 <a class="ref" href="Data.html#print-options">打印选项</a>.
+</p>
+</dd>
+<dt><a id="index-reprint-the-last-value-1"></a><span><code class="code">compile print [[<var class="var">options</var>] --]</code><a class="copiable-link" href="#index-reprint-the-last-value-1"> ¶</a></span></dt>
+<dt><code class="code">compile print [[<var class="var">options</var>] --] /<var class="var">f</var></code></dt>
+<dd><p>或者，你可以将表达式（生成它的源代码）作为多行文本输入。  要进入此模式，调用‘<samp class="samp">编译打印</samp>’命令，命令后面不跟任何文本。  这将启动多行编辑器。
+</p></dd>
+</dl>
+
+<p>可以使用以下命令检查编译和注入代码的过程：
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-debug-compile"></a></dd>
+<dt><a id="index-compile-command-debugging-info"></a><span><code class="code">set debug compile</code><a class="copiable-link" href="#index-compile-command-debugging-info"> ¶</a></span></dt>
+<dd><p>开启或关闭编译和注入代码过程的显示。  默认是关闭的。 <small class="sc">GDB</small> 编译和注入代码的过程
+</p>
+</dd>
+<dt><code class="code">show debug compile</code></dt>
+<dd><p>显示编译和注入代码过程显示的当前状态。 <small class="sc">GDB</small> 编译和注入代码的过程
+</p>
+<a class="anchor" id="set-debug-compile_002dcplus_002dtypes"></a></dd>
+<dt><a id="index-compile-C_002b_002b-type-conversion"></a><span><code class="code">set debug compile-cplus-types</code><a class="copiable-link" href="#index-compile-C_002b_002b-type-conversion"> ¶</a></span></dt>
+<dd><p>开启或关闭C类型转换调试信息的显示。<code class="t">++</code> 默认是关闭的。
+</p>
+</dd>
+<dt><code class="code">show debug compile-cplus-types</code></dt>
+<dd><p>显示C类型转换调试信息显示的当前状态。<code class="t">++</code> 
+</p></dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Compilation-options-for-the-compile-command">……的编译选项 <code class="code">compile</code> 命令</a></li>
+<li><a accesskey="2" href="#Caveats-when-using-the-compile-command">使用……命令时的注意事项 <code class="code">compile</code> 命令</a></li>
+<li><a accesskey="3" href="#Compiler-search-for-the-compile-command">……命令的编译器搜索 <code class="code">compile</code> 命令</a></li>
+</ul>
+<div class="subsection-level-extent" id="Compilation-options-for-the-compile-command">
+<h4 class="subsection"><span>17.7.1 ……命令的编译选项 <code class="code">compile</code> 命令<a class="copiable-link" href="#Compilation-options-for-the-compile-command"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 需要为要注入的代码指定正确的编译选项，部分是为了使其ABI与被调试程序兼容，部分是为了使注入的代码与……的注入过程兼容。 <small class="sc">GDB</small>……的注入过程。
+</p>
+<p>使用的选项，优先级递增：
+</p>
+<dl class="table">
+<dt>目标架构和操作系统选项（<code class="code">gdbarch</code>)</dt>
+<dd><p>这些选项取决于目标处理器类型和目标操作系统，通常它们至少指定32位（<code class="code">-m32</code>)或64位（<code class="code">-m64</code>)编译选项。
+</p>
+</dd>
+<dt>目标中记录的编译选项</dt>
+<dd><p><small class="sc">GCC</small> （从4.7版本开始）根据……选项将编译使用的选项存储到DWARF调试信息的……部分。 <code class="code">DW_AT_producer</code> ……部分的DWARF调试信息。 <small class="sc">GCC</small> 选项 <code class="code">-grecord-gcc-switches</code>.  必须在被调试程序编译时明确指定……，否则……不会生成DWARF。  此功能仅适用于默认情况下……会生成DWARF的平台，否则可以尝试使用……来强制生成DWARF。 <code class="code">-g</code> 在被调试程序编译期间
+<small class="sc">GCC</small> ……不生成DWARF <code class="code">-g</code> ……默认生成DWARF <code class="code">-gdwarf-4</code>
+</p>
+</dd>
+<dt>……设置的编译选项 <code class="code">set compile-args</code></dt>
+</dl>
+
+<p>你可以使用以下命令覆盖编译选项：
+</p>
+<dl class="table">
+<dt><a id="index-compile-command-options-override"></a><span><code class="code">set compile-args</code><a class="copiable-link" href="#index-compile-command-options-override"> ¶</a></span></dt>
+<dd><p>设置用于使用……命令编译和注入代码的编译选项。  这些选项会覆盖目标架构和/或被调试程序编译期间存储的任何冲突选项。
+<code class="code">compile</code> 命令。  这些选项会覆盖目标架构和/或被调试程序编译期间存储的任何冲突选项。
+</p>
+</dd>
+<dt><code class="code">show compile-args</code></dt>
+<dd><p>显示编译选项覆盖的当前状态。  这不会显示编译期间实际使用的所有选项，使用……来查看。 <a class="ref" href="#set-debug-compile">设置调试编译</a> 为此目的
+</p></dd>
+</dl>
+
+</div>
+<div class="subsection-level-extent" id="Caveats-when-using-the-compile-command">
+<h4 class="subsection"><span>17.7.2 使用……命令时的注意事项 <code class="code">compile</code> 命令<a class="copiable-link" href="#Caveats-when-using-the-compile-command"> ¶</a></span></h4>
+
+<p>使用……命令时需要牢记一些注意事项。  由于不同语言的注意事项不同，下面的表格按语言突出显示了特定问题。 <code class="code">compile</code>
+命令。  由于不同语言的注意事项不同，下面的表格按语言突出显示了特定问题。
+</p>
+<dl class="table">
+<dt>C代码示例和注意事项</dt>
+<dd><p>当……中的语言设置为‘ <small class="sc">GDB</small> <samp class="samp">C</samp>’时，编译器将尝试使用‘<samp class="samp">C</samp>’编译器编译源代码。  提供给……的源代码 <code class="code">compile</code> 命令将与在……中当前正在调试的程序的正常部分一样，能够访问变量和类型。 <small class="sc">GDB</small>.
+</p>
+<p>以下是一个示例程序，它是后续示例的基础。  这个程序已经被编译并加载到……中，就像任何其他正常的调试会话一样。 <small class="sc">GDB</small>,  就像任何其他正常的调试会话一样。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void function1 (void)
+{
+   int i = 42;
+   printf (&#34;function 1\n&#34;);
+}
+
+void function2 (void)
+{
+   int j = 12;
+   function1 ();
+}
+
+int main(void)
+{
+   int k = 6;
+   int *p;
+   function2 ();
+   return 0;
+}
+</pre></div>
+
+<p>出于本节示例的目的，上面的程序已经被编译、加载到……中，在……函数处停止，并且 <small class="sc">GDB</small>,  在……函数处停止，并且
+<code class="code">main</code>,  并且 <small class="sc">GDB</small> 正在等待用户输入。
+</p>
+<p>要访问……中任何程序的变量和类型，程序必须使用调试信息进行编译和打包。  ……命令也不例外。  如果没有调试信息，你仍然可以使用……命令，但你在访问变量和类型方面会受到很大限制。 <small class="sc">GDB</small>,  程序必须使用调试信息进行编译和打包。  ……命令也不例外。  如果没有调试信息，你仍然可以使用……命令，但你在访问变量和类型方面会受到很大限制。
+<code class="code">compile</code> 命令 <code class="code">compile</code> 命令
+</p>
+<p>所以考虑到这一点，上面的示例已经启用了调试信息进行编译。  ……命令将能够访问所有变量和类型（除了那些可能已经被优化掉的）。  目前，由于……在……函数中停止了程序，……命令将能够访问变量……。  你可以调用……命令并输入一些源代码来设置……的值。  你也可以读取它，或者对该变量进行你通常在……中会做的任何操作。  请注意，……命令中对被调试程序变量的更改是持久的。  在以下示例中： <code class="code">compile</code> 命令 <small class="sc">GDB</small> ……在……函数中停止了程序
+<code class="code">main</code> 函数 <code class="code">compile</code> 命令 <code class="code">k</code>.  你可以调用……命令并输入一些源代码来设置……的值。  你也可以读取它，或者对该变量进行你通常在……中会做的任何操作。  请注意，……命令中对被调试程序变量的更改是持久的。  在以下示例中： <code class="code">compile</code> 命令 <code class="code">k</code>.  你也可以读取它，或者对该变量进行你通常在……中会做的任何操作。  请注意，……命令中对被调试程序变量的更改是持久的。  在以下示例中：
+<code class="code">C</code>命令
+<code class="code">compile</code> 命令
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 k = 3;
+</pre></div>
+
+<p>变量 <code class="code">k</code> 现在是3。  它将保持该值，直到示例程序中的其他内容更改它，或者另一个……命令更改它。
+<code class="code">compile</code> 命令
+</p>
+<p>……命令编译和注入的源代码适用正常的作用域和访问规则。  在示例中，变量……和……还无法访问，因为程序当前在……函数中停止，这些变量不在作用域内。  因此，以下命令……将导致编译错误消息。  一旦程序继续执行，执行将使这些变量进入作用域，它们将变得可访问；然后你通过……命令指定的代码将能够访问它们。 <code class="code">compile</code> 和
+<code class="code">j</code> 和 <code class="code">k</code> 还无法访问，因为程序当前在……函数中停止，这些变量不在作用域内。  因此，以下命令……将导致编译错误消息。  一旦程序继续执行，执行将使这些变量进入作用域，它们将变得可访问；然后你通过……命令指定的代码将能够访问它们。 <code class="code">main</code> 函数
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 j = 3;
+</pre></div>
+
+<p>将导致编译错误消息。
+</p>
+<p>一旦程序继续执行，执行将使这些变量进入作用域，它们将变得可访问；然后你通过……命令指定的代码将能够访问它们。 <code class="code">compile</code> 命令
+</p>
+<p>你可以使用……命令在源代码中创建变量和类型。  作为……命令一部分创建的变量和类型在程序运行期间对程序的其余部分不可见。  这个示例是有效的： <code class="code">compile</code> 命令 <code class="code">compile</code> 命令
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 int ff = 5; printf (&#34;ff is %d\n&#34;, ff);
+</pre></div>
+
+<p>但是，如果你在该命令完成后在……中输入以下内容： <small class="sc">GDB</small> 在该命令完成后在……中输入以下内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 printf (&#34;ff is %d\n&#39;&#39;, ff);
+</pre></div>
+
+<p>将引发编译器错误，因为变量……不再存在。  ……命令生成并注入的目标代码在执行结束时被移除。  在将提交给……命令的代码创建的变量的值赋给程序变量时，建议谨慎操作。  这个示例是有效的： <code class="code">ff</code> 不再存在。  ……命令生成并注入的目标代码在执行结束时被移除。  在将提交给……命令的代码创建的变量的值赋给程序变量时，建议谨慎操作。  这个示例是有效的： <code class="code">compile</code>
+命令 <code class="code">compile</code> 这个示例是有效的：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 int ff = 5; k = ff;
+</pre></div>
+
+<p>变量……的值被赋给……。  变量……不需要……的存在来维持其被赋予的值。  然而，在赋值指针时需要特别小心。  如果使用……命令编译的源代码更改了示例程序中指针的地址，可能是指向……命令中创建的变量，那么当命令退出时，该指针将指向一个无效位置。  以下示例可能会导致你正在调试的程序出现问题： <code class="code">ff</code> 的值被赋给 <code class="code">k</code>.  变量……不需要……的存在来维持其被赋予的值。  然而，在赋值指针时需要特别小心。  如果使用……命令编译的源代码更改了示例程序中指针的地址，可能是指向……命令中创建的变量，那么当命令退出时，该指针将指向一个无效位置。  以下示例可能会导致你正在调试的程序出现问题：
+<code class="code">k</code> 不需要……的存在来维持其被赋予的值 <code class="code">ff</code> ……的存在 <code class="code">compile</code> 命令 <code class="code">compile</code> 命令
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">编译代码 int ff = 5; p = &amp;ff;
+</pre></div>
+
+<p>在这个示例中， <code class="code">p</code> 将指向 <code class="code">ff</code> 当……命令执行提供给它的源代码时。  然而，由于（示例）程序中的变量会保留其赋值，当命令退出时，变量……将指向一个无效位置。  应该遵循一个一般规则，即你应该要么将……赋给任何赋值的指针，要么在命令退出之前将指针恢复到一个有效位置。
+<code class="code">compile</code> 命令 <code class="code">p</code> 将指向一个无效位置。  应该遵循一个一般规则，即你应该要么将……赋给任何赋值的指针，要么在命令退出之前将指针恢复到一个有效位置。 <code class="code">NULL</code> 赋给任何赋值的指针
+</p>
+<p>对于在……命令中定义的任何结构体、联合体和类型定义，也必须采取类似的谨慎措施。  ……命令中定义的类型在下一个……命令中将不再可用。  因此，如果你将一个变量转换为……命令中定义的类型，必须小心确保将来任何解析该类型的需求都能得到满足。 <code class="code">compile</code> 命令 <code class="code">compile</code>
+命令 <code class="code">compile</code> 命令
+<code class="code">compile</code> 命令，必须小心确保将来任何解析该类型的需求都能得到满足。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) 编译代码 static struct a { int a; } v = { 42 }; argv = &amp;v;
+(gdb) 编译代码 printf (&#34;%d\n&#34;, ((struct a *) argv)-&gt;a);
+gdb命令行:1:36: 错误: 解引用指向不完整类型 ‘struct a’ 的指针
+编译失败。
+(gdb) 编译代码 struct a { int a; }; printf (&#34;%d\n&#34;, ((struct a *) argv)-&gt;a);
+42
+</pre></div>
+
+<p>编译器优化掉的变量无法被提交给……命令的代码访问。  访问这些变量将生成一个编译器错误，该错误将打印到控制台。 <code class="code">compile</code> 命令 <small class="sc">GDB</small>
+将打印到控制台。
+</p></dd>
+</dl>
+
+</div>
+<div class="subsection-level-extent" id="Compiler-search-for-the-compile-command">
+<h4 class="subsection"><span>17.7.3 ……命令的编译器搜索 <code class="code">compile</code> 命令<a class="copiable-link" href="#Compiler-search-for-the-compile-command"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 需要为正在调试的被调试程序找到……，对于与……运行的架构不同的远程目标，这可能并不明显。  主机上的环境变量……会被搜索，以查找与目标架构和操作系统匹配的二进制文件。  可以通过以下命令覆盖此搜索。 <small class="sc">GCC</small> 对于正在调试的被调试程序 <small class="sc">GDB</small> 环境变量 <code class="env">PATH</code> 在
+<small class="sc">GDB</small> 主机 <small class="sc">GCC</small> 与目标架构和操作系统匹配的二进制文件 <code class="code">set compile-gcc</code> <small class="sc">GDB</small> 命令  <code class="env">PATH</code> 取自执行……的shell，而不是……命令设置的值。  请参阅……你的程序的环境。  具体来说，……会根据正在调试的被调试程序搜索与正则表达式匹配的二进制文件。  ……是处理器名称 —— 支持多架构，因此例如……和……目标会查找模式……，……和……目标会查找模式……。  ……目前仅支持模式……。  在Posix主机上，编译器驱动程序……还需要从编译器中找到共享库……。  它在默认的共享库搜索路径中搜索（可以使用通常的环境变量覆盖），与……或……设置无关。  与此相反，……是根据找到的编译器的安装情况找到的 —— 可能由……命令指定。 <small class="sc">GDB</small>取自执行……的shell
+<small class="sc">GDB</small> 命令 <code class="code">set environment</code>)  请参阅 <a class="xref" href="Environment.html">你的程序的环境</a>.
+</p>
+
+<p>具体来说 <code class="env">PATH</code> 会根据正在调试的被调试程序搜索与正则表达式匹配的二进制文件。
+<code class="code"><var class="var">arch</var>(-[^-]*)?-<var class="var">os</var>-gcc</code> 根据正在调试的被调试程序  <var class="var">arch</var> 是处理器名称 —— 支持多架构，因此例如……和……目标会查找模式……，……和……目标会查找模式……。  ……目前仅支持模式……。  在Posix主机上，编译器驱动程序……还需要从编译器中找到共享库……。  它在默认的共享库搜索路径中搜索（可以使用通常的环境变量覆盖），与……或……设置无关。  与此相反，……是根据找到的编译器的安装情况找到的 —— 可能由……命令指定。 <code class="code">i386</code> 和 <code class="code">x86_64</code> 目标会查找模式
+<code class="code">(x86_64|i.86)</code> 和 <code class="code">s390</code> 和 <code class="code">s390x</code> 目标会查找 <code class="code">s390x?</code>.  <var class="var">os</var> 目前仅支持模式 <code class="code">linux(-gnu)?</code>.
+</p>
+<p>在Posix主机上，编译器驱动程序……还需要从编译器中找到共享库……。  它在默认的共享库搜索路径中搜索（可以使用通常的环境变量覆盖），与……或……设置无关。  与此相反，……是根据找到的编译器的安装情况找到的 —— 可能由……命令指定。 <small class="sc">GDB</small> 需要找到 <samp class="file">libcc1.so</samp> 在默认的共享库搜索路径中搜索（可以使用通常的环境变量覆盖） <code class="env">LD_LIBRARY_PATH</code>） <code class="env">PATH</code> 或 <code class="code">set
+compile-gcc</code> 设置 <samp class="file">libcc1plugin.so</samp> 是根据找到的编译器的安装情况找到的 —— 可能由……命令指定。 <code class="code">set compile-gcc</code> 命令
+</p>
+<dl class="table">
+<dt><a id="index-compile-command-driver-filename-override"></a><span><code class="code">set compile-gcc</code><a class="copiable-link" href="#index-compile-command-driver-filename-override"> ¶</a></span></dt>
+<dd><p>设置用于使用……命令编译和注入代码的编译命令。  如果此选项未设置（设置为空字符串），将进行上述搜索 —— 这是默认情况。
+<code class="code">compile</code> 命令。  如果此选项未设置（设置为空字符串），将进行上述搜索 —— 这是默认情况。
+</p>
+</dd>
+<dt><code class="code">show compile-gcc</code></dt>
+<dd><p>显示当前的编译命令驱动程序文件名。  如果设置了，它是主要命令，通常例如在名称……下找到。 <small class="sc">GCC</small> 驱动程序文件名。  如果设置了，它是主要命令，通常例如在名称……下找到。 <code class="command">gcc</code>,  通常例如在名称 <samp class="file">x86_64-linux-gnu-gcc</samp>.
+</p></dd>
+</dl>
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一个： <a href="Patching.html">修补程序</a>,  上一级： <a href="Altering.html">改变执行</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

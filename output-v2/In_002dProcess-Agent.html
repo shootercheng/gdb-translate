@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>进程内代理（使用 GDB 调试）</title>
+
+<meta name="description" content="In-Process Agent (Debugging with GDB)"/>
+<meta name="keywords" content="In-Process Agent (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="GDB-Bugs.html" rel="next" title="GDB Bugs"/>
+<link href="JIT-Interface.html" rel="prev" title="JIT Interface"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="In_002dProcess-Agent">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB-Bugs.html" rel="next">报告 <small class="sc">GDB</small></a>, 上一项： <a accesskey="p" href="JIT-Interface.html" rel="prev">JIT 编译接口</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="In_002dProcess-Agent-1"><span>31 进程内代理<a class="copiable-link" href="#In_002dProcess-Agent-1"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-debugging-agent"></a>
+<p>传统的调试模型在概念上速度较慢，但工作正常，因为大多数错误可以在调试模式执行中重现。然而，随着多核或众核处理器成为主流，多线程程序越来越受欢迎，应该会有越来越多的错误只在正常模式执行时才会显现出来，例如线程竞争，因为调试器对程序计时的干扰可能会掩盖这些错误。另一方面，在某些应用程序中，调试器长时间中断程序执行以使开发人员了解其行为的有用信息是不可行的。如果程序的正确性取决于其实时行为，调试器引入的延迟可能会导致程序失败，即使代码本身是正确的。能够在不中断程序的情况下观察其行为是很有用的。
+</p>
+<p>因此，传统的调试模型过于侵入性，无法重现一些错误。为了减少对程序的干扰，我们可以减少调试器执行的操作数量。
+<em class="dfn">进程内代理</em>，一个共享库，与被调试进程在同一进程中运行，并且能够自行执行一些调试操作。因此，调试器仅在必要时介入，相应地可以提高调试性能。请注意，对程序的干扰可以减少但不能完全消除，因为进程内代理仍会停止或减慢程序的运行。
+</p>
+<p>进程内代理可以在执行调试操作期间解释和执行代理表达式（见 <a class="pxref" href="Agent-Expressions.html">GDB 代理表达式机制</a>)。代理表达式可用于不同的目的，例如在跟踪点收集数据，以及在断点进行条件评估。
+</p>
+<a class="anchor" id="Control-Agent"></a><p>您可以使用以下命令控制是否使用进程内代理作为调试辅助工具：
+</p>
+<dl class="table">
+<dt><a id="index-set-agent-on"></a><span><code class="code">set agent on</code><a class="copiable-link" href="#index-set-agent-on"> ¶</a></span></dt>
+<dd><p>使进程内代理代表调试器执行一些操作。用户请求的哪些操作将由进程内代理执行取决于其能力。例如，如果您请求在进程内代理中评估断点条件，并且进程内代理也具备此能力，那么断点条件将在进程内代理中进行评估。
+</p>
+</dd>
+<dt><a id="index-set-agent-off"></a><span><code class="code">set agent off</code><a class="copiable-link" href="#index-set-agent-off"> ¶</a></span></dt>
+<dd><p>禁用进程内代理执行调试操作。所有操作将由 <small class="sc">GDB</small>执行。
+</p>
+</dd>
+<dt><a id="index-show-agent"></a><span><code class="code">show agent</code><a class="copiable-link" href="#index-show-agent"> ¶</a></span></dt>
+<dd><p>显示进程内代理执行调试操作的当前设置。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="In_002dProcess-Agent-Protocol.html">进程内代理协议</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB-Bugs.html">报告 <small class="sc">GDB</small></a>, 上一项： <a href="JIT-Interface.html">JIT 编译接口</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的帧（使用 GDB 调试）</title>
+
+<meta name="description" content="Frames In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Frames In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Blocks-In-Python.html" rel="next" title="Blocks In Python"/>
+<link href="Objfiles-In-Python.html" rel="prev" title="Objfiles In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Frames-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Blocks-In-Python.html" rel="next">从 Python 访问块</a>上一项： <a accesskey="p" href="Objfiles-In-Python.html" rel="prev">Python 中的目标文件</a>上级： <a accesskey="u" href="Python-API.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Accessing-inferior-stack-frames-from-Python"><span>23.3.2.28 从 Python 访问 inferior 栈帧<a class="copiable-link" href="#Accessing-inferior-stack-frames-from-Python"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-frames-in-python"></a>
+<p>当被调试的程序停止时， <small class="sc">GDB</small> 能够分析其调用栈（请参阅 <a class="pxref" href="Frames.html">栈帧</a>)。 <code class="code">gdb.Frame</code> 类表示栈中的一个帧。一个 <code class="code">gdb.Frame</code> 对象仅在其对应的帧存在于 inferior 的栈中时才有效。如果你尝试使用无效的帧对象， <small class="sc">GDB</small> 将抛出一个 <code class="code">gdb.error</code>
+异常（请参阅 <a class="pxref" href="Exception-Handling.html">异常处理</a>)。
+</p>
+<p>两个 <code class="code">gdb.Frame</code> 对象可以使用 <code class="code">==</code>
+运算符进行相等性比较，例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python print gdb.newest_frame() == gdb.selected_frame ()
+True
+</pre></div>
+
+<p>以下与帧相关的函数在 <code class="code">gdb</code> 模块中可用：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eselected_005fframe"><span class="category-def">函数： </span><span><strong class="def-name">gdb.selected_frame</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eselected_005fframe"> ¶</a></span></dt>
+<dd><p>返回选定的帧对象。（请参阅 <a class="pxref" href="Selection.html">选择一个帧</a>）。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002enewest_005fframe"><span class="category-def">函数： </span><span><strong class="def-name">gdb.newest_frame</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002enewest_005fframe"> ¶</a></span></dt>
+<dd><p>返回选定线程的最新帧对象。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eframe_005fstop_005freason_005fstring"><span class="category-def">函数： </span><span><strong class="def-name">gdb.frame_stop_reason_string</strong> <var class="def-var-arguments">(reason)</var><a class="copiable-link" href="#index-gdb_002eframe_005fstop_005freason_005fstring"> ¶</a></span></dt>
+<dd><p>返回一个字符串，解释 <small class="sc">GDB</small> 停止展开帧的原因，由给定的 <var class="var">原因</var> 代码（一个整数，请参阅本节后面的方法）表示。
+<code class="code">unwind_stop_reason</code> 方法。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002einvalidate_005fcached_005fframes"><span class="category-def">函数： </span><span><strong class="def-name">gdb.invalidate_cached_frames</strong><a class="copiable-link" href="#index-gdb_002einvalidate_005fcached_005fframes"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 内部会缓存已展开的帧。此函数使该缓存无效。
+</p>
+<p>普通 Python 代码通常不应调用此函数。为了完整性而记录此函数。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Frame</code> 对象具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Frame.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">gdb.Frame</code> 对象有效，则返回 true；否则返回 false。如果帧对象所引用的帧在 inferior 中不再存在，则该对象可能会变得无效。如果在调用方法时对象无效，所有 <code class="code">gdb.Frame</code> 方法都会抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002ename"><span class="category-def">函数： </span><span><strong class="def-name">Frame.name</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002ename"> ¶</a></span></dt>
+<dd><p>返回帧的函数名，如果无法获取则返回 <code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002earchitecture"><span class="category-def">函数： </span><span><strong class="def-name">Frame.architecture</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002earchitecture"> ¶</a></span></dt>
+<dd><p>返回与帧的架构对应的 <code class="code">gdb.Architecture</code> 对象。请参阅 <a class="xref" href="Architectures-In-Python.html">架构的 Python 表示形式</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002etype"><span class="category-def">函数： </span><span><strong class="def-name">Frame.type</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002etype"> ¶</a></span></dt>
+<dd><p>返回帧的类型。该值可以是以下之一：
+</p><dl class="table">
+<dt><code class="code">gdb.NORMAL_FRAME</code></dt>
+<dd><p>普通栈帧。
+</p>
+</dd>
+<dt><code class="code">gdb.DUMMY_FRAME</code></dt>
+<dd><p>在执行 inferior 函数调用时由 <small class="sc">GDB</small> 创建的伪栈帧。
+</p>
+</dd>
+<dt><code class="code">gdb.INLINE_FRAME</code></dt>
+<dd><p>表示内联函数的帧。该函数被内联到一个 <code class="code">gdb.NORMAL_FRAME</code> 比此帧更旧的帧中。
+</p>
+</dd>
+<dt><code class="code">gdb.TAILCALL_FRAME</code></dt>
+<dd><p>表示尾调用的帧。请参阅 <a class="xref" href="Tail-Call-Frames.html">尾调用帧</a>。
+</p>
+</dd>
+<dt><code class="code">gdb.SIGTRAMP_FRAME</code></dt>
+<dd><p>信号跳板帧。这是操作系统调用信号处理程序时创建的帧。
+</p>
+</dd>
+<dt><code class="code">gdb.ARCH_FRAME</code></dt>
+<dd><p>表示跨架构调用的伪栈帧。
+</p>
+</dd>
+<dt><code class="code">gdb.SENTINEL_FRAME</code></dt>
+<dd><p>这类似于 <code class="code">gdb.NORMAL_FRAME</code>, 但仅用于最新的帧。
+</p></dd>
+</dl>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eunwind_005fstop_005freason"><span class="category-def">函数： </span><span><strong class="def-name">Frame.unwind_stop_reason</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eunwind_005fstop_005freason"> ¶</a></span></dt>
+<dd><p>返回一个整数，表示无法向最外层帧查找更多帧的原因。使用
+<code class="code">gdb.frame_stop_reason_string</code> 将此函数返回的值转换为字符串。该值可以是以下之一：
+</p>
+<dl class="table">
+<dt><code class="code">gdb.FRAME_UNWIND_NO_REASON</code></dt>
+<dd><p>没有特定原因（应该可以获取更旧的帧）。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_NULL_ID</code></dt>
+<dd><p>前一帧的分析器返回无效结果。此情况不再被 <small class="sc">GDB</small>使用，仅为向后兼容而保留。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_OUTERMOST</code></dt>
+<dd><p>此帧是最外层帧。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_UNAVAILABLE</code></dt>
+<dd><p>无法进一步展开，因为这需要知道尚未收集的寄存器或内存的值。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_INNER_ID</code></dt>
+<dd><p>此帧 ID 看起来应该属于 NEXT 帧，但我们是为 PREV 帧获取到的。通常，这是展开器失败的标志。也可能表示栈损坏。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_SAME_ID</code></dt>
+<dd><p>此帧的 ID 与前一帧相同。这意味着进一步展开几乎肯定会得到另一个 ID 完全相同的帧，因此断开链。通常，这是展开器失败的标志。也可能表示栈损坏。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_NO_SAVED_PC</code></dt>
+<dd><p>帧展开器未找到任何保存的程序计数器（PC），但我们需要它才能进一步展开。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_MEMORY_ERROR</code></dt>
+<dd><p>帧展开器在尝试访问内存时引发了错误。
+</p>
+</dd>
+<dt><code class="code">gdb.FRAME_UNWIND_FIRST_ERROR</code></dt>
+<dd><p>任何大于或等于此值的停止原因都表示某种错误。这个特殊值便于编写测试展开错误的代码，即使其他值的列表在未来版本中被修改，该代码也能正常工作。 <small class="sc">GDB</small>
+使用它，你可以编写：
+</p><div class="example smallexample">
+<pre class="example-preformatted">reason = gdb.selected_frame().unwind_stop_reason ()
+reason_str =  gdb.frame_stop_reason_string (reason)
+if reason &gt;=  gdb.FRAME_UNWIND_FIRST_ERROR:
+    print (&#34;An error occurred: %s&#34; % reason_str)
+</pre></div>
+</dd>
+</dl>
+
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002epc"><span class="category-def">函数： </span><span><strong class="def-name">Frame.pc</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002epc"> ¶</a></span></dt>
+<dd><p>返回帧的恢复地址。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eblock"><span class="category-def">函数： </span><span><strong class="def-name">Frame.block</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eblock"> ¶</a></span></dt>
+<dd><p>返回帧的代码块。请参阅 <a class="xref" href="Blocks-In-Python.html">从 Python 访问块</a>。如果帧没有块（例如，如果相关代码没有调试信息），则会抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002efunction"><span class="category-def">函数： </span><span><strong class="def-name">Frame.function</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002efunction"> ¶</a></span></dt>
+<dd><p>返回与此帧对应的函数的符号。请参阅 <a class="xref" href="Symbols-In-Python.html">符号的 Python 表示形式</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eolder"><span class="category-def">函数： </span><span><strong class="def-name">Frame.older</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eolder"> ¶</a></span></dt>
+<dd><p>返回调用此帧的帧。如果这是最旧的帧，则返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002enewer"><span class="category-def">函数： </span><span><strong class="def-name">Frame.newer</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002enewer"> ¶</a></span></dt>
+<dd><p>返回此帧调用的帧。如果这是最新的帧，则返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002efind_005fsal"><span class="category-def">函数： </span><span><strong class="def-name">Frame.find_sal</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002efind_005fsal"> ¶</a></span></dt>
+<dd><p>返回帧的符号表和行对象。请参阅 <a class="xref" href="Symbol-Tables-In-Python.html">Python 中的符号表表示形式</a>。
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005fframe_005fread_005fregister"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eread_005fregister"><span class="category-def">函数： </span><span><strong class="def-name">Frame.read_register</strong> <var class="def-var-arguments">(register)</var><a class="copiable-link" href="#index-Frame_002eread_005fregister"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">寄存器</var> 在此帧中的值。返回一个
+<code class="code">Gdb.Value</code> 对象。如果 <var class="var">寄存器</var> 不存在，则抛出异常。 <var class="var">寄存器</var> 参数必须是以下之一：
+</p><ol class="enumerate">
+<li> 一个表示有效寄存器名称的字符串（例如， <code class="code">&#39;sp&#39;</code> 或
+<code class="code">&#39;rax&#39;</code>）。
+</li><li> 一个 <code class="code">gdb.RegisterDescriptor</code> 对象（请参阅 <a class="pxref" href="Registers-In-Python.html">Python 中的寄存器</a>)。
+</li><li> 一个 <small class="sc">GDB</small> 内部的、特定于平台的数字。出于历史原因支持使用这些数字，但不建议这样做，因为未来对 <small class="sc">GDB</small> 的更改可能会改变数字与它们所代表的寄存器之间的映射，从而破坏任何使用特定于平台数字的 Python 代码。这些数字通常可以在相应的 <samp class="file"><var class="var">平台</var>-tdep.h</samp> 文件中找到，该文件位于
+<small class="sc">GDB</small> 源代码树中。
+</li></ol>
+<p>使用字符串访问寄存器比其他两种方法稍慢，因为 <small class="sc">GDB</small> 必须查找名称与内部寄存器编号之间的映射。如果性能至关重要，可以考虑查找并缓存一个 <code class="code">gdb.RegisterDescriptor</code>
+对象。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eread_005fvar"><span class="category-def">函数： </span><span><strong class="def-name">Frame.read_var</strong> <var class="def-var-arguments">(variable <span class="r">[</span>, block<span class="r">]</span>)</var><a class="copiable-link" href="#index-Frame_002eread_005fvar"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">变量</var> 在此帧中的值。如果提供了可选参数 <var class="var">块</var> ，则从该块中搜索变量；否则从帧的当前块开始搜索（该块由帧的当前程序计数器确定）。 <var class="var">变量</var>
+参数必须是字符串或 <code class="code">gdb.Symbol</code> 对象； <var class="var">块</var> 必须是
+<code class="code">gdb.Block</code> 对象。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002eselect"><span class="category-def">函数： </span><span><strong class="def-name">Frame.select</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002eselect"> ¶</a></span></dt>
+<dd><p>将此帧设置为选定的帧。请参阅 <a class="xref" href="Stack.html">检查栈</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002estatic_005flink"><span class="category-def">函数： </span><span><strong class="def-name">Frame.static_link</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002estatic_005flink"> ¶</a></span></dt>
+<dd><p>在某些语言（例如 Ada，还有 GNU C 扩展）中，嵌套函数可以访问外部作用域中的变量。这是通过“静态链接”实现的，它是从嵌套帧到适当外部帧的引用。
+</p>
+<p>此方法返回此帧的静态链接帧（如果存在）。如果没有静态链接，此方法返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002elevel"><span class="category-def">函数： </span><span><strong class="def-name">Frame.level</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002elevel"> ¶</a></span></dt>
+<dd><p>返回一个整数，即此帧的栈帧级别。请参阅 <a class="xref" href="Frames.html">栈帧</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Frame_002elanguage"><span class="category-def">函数： </span><span><strong class="def-name">Frame.language</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Frame_002elanguage"> ¶</a></span></dt>
+<dd><p>返回一个字符串，即此帧的源语言。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Blocks-In-Python.html">从 Python 访问块</a>, 上一项： <a href="Objfiles-In-Python.html">Python 中的目标文件</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

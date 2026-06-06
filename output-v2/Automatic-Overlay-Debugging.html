@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自动覆盖调试（使用GDB调试）</title>
+
+<meta name="description" content="Automatic Overlay Debugging (Debugging with GDB)"/>
+<meta name="keywords" content="Automatic Overlay Debugging (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Overlays.html" rel="up" title="Overlays"/>
+<link href="Overlay-Sample-Program.html" rel="next" title="Overlay Sample Program"/>
+<link href="Overlay-Commands.html" rel="prev" title="Overlay Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Automatic-Overlay-Debugging">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Overlay-Sample-Program.html" rel="next">覆盖示例程序</a>，上一步： <a accesskey="p" href="Overlay-Commands.html" rel="prev">覆盖命令</a>，向上： <a accesskey="u" href="Overlays.html" rel="up">调试使用覆盖的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Automatic-Overlay-Debugging-1"><span>14.3自动覆盖调试<a class="copiable-link" href="#Automatic-Overlay-Debugging-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-automatic-overlay-debugging"></a>
+
+<p><small class="sc">GDB</small> 在被调试程序中的覆盖管理器进行一些简单协作的情况下，它可以自动跟踪哪些覆盖被映射以及哪些没有被映射。如果使用该命令启用自动覆盖调试（请参阅“覆盖命令”），它会在被调试程序的内存中查找某些描述覆盖当前状态的变量。
+<code class="code">overlay auto</code> 命令（请参阅 <a class="pxref" href="Overlay-Commands.html">覆盖命令</a>） <small class="sc">GDB</small>
+在被调试程序的内存中查找某些描述覆盖当前状态的变量。
+</p>
+<p>以下是你的覆盖管理器必须定义以支持
+<small class="sc">GDB</small>的自动覆盖调试的变量：
+</p>
+<dl class="table">
+<dt><code class="code">_ovly_table</code>:</dt>
+<dd><p>此变量必须是以下结构的数组：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">结构体
+{
+  /* 覆盖的映射地址。  */
+  unsigned long vma;
+
+  /* 覆盖的大小，以字节为单位。  */
+  unsigned long size;
+
+  /* 覆盖的加载地址。  */
+  unsigned long lma;
+
+  /* 如果覆盖当前已映射，则为非零；否则为零。  */
+  unsigned long mapped;
+}
+</pre></div>
+
+</dd>
+<dt><code class="code">_novlys</code>:</dt>
+<dd><p>此变量必须是一个四字节有符号整数，保存 <code class="code">_ovly_table</code>中的元素总数。
+</p>
+</dd>
+</dl>
+
+<p>为了确定某个特定覆盖是否已映射， <small class="sc">GDB</small>
+在 <code class="code">_ovly_table</code><!-- /@w --> 中查找一个条目的 <code class="code">vma</code> 并且
+<code class="code">lma</code> 成员等于可执行文件中覆盖段的VMA和LMA。当 <small class="sc">GDB</small> 找到匹配的条目时，它会查看该条目的 <code class="code">mapped</code> 成员以确定覆盖当前是否已映射。
+</p>
+<p>此外，你的覆盖管理器可以定义一个名为
+<code class="code">_ovly_debug_event</code>的函数。如果定义了此函数， <small class="sc">GDB</small>
+将在那里悄悄设置一个断点。如果覆盖管理器在每次更改覆盖表时都调用此函数，这将使 <small class="sc">GDB</small> 能够准确跟踪哪些覆盖在程序内存中，并更新可能在覆盖中设置的任何断点。这将允许断点即使在覆盖未执行时保存在ROM或其他不可写内存中也能正常工作。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Overlay-Sample-Program.html">覆盖示例程序</a>，上一步： <a href="Overlay-Commands.html">覆盖命令</a>，向上： <a href="Overlays.html">调试使用覆盖的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

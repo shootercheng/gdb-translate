@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>模糊表达式 (使用 GDB 调试)</title>
+
+<meta name="description" content="Ambiguous Expressions (Debugging with GDB)"/>
+<meta name="keywords" content="Ambiguous Expressions (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Variables.html" rel="next" title="Variables"/>
+<link href="Expressions.html" rel="prev" title="Expressions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Ambiguous-Expressions">
+<div class="nav-panel">
+<p>
+下一项: <a accesskey="n" href="Variables.html" rel="next">程序变量</a>, 上一项: <a accesskey="p" href="Expressions.html" rel="prev">表达式</a>, 上一级: <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Ambiguous-Expressions-1"><span>10.2 模糊表达式<a class="copiable-link" href="#Ambiguous-Expressions-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-ambiguous-expressions"></a>
+
+<p>表达式有时可能包含一些模糊元素。例如，
+一些编程语言（特别是 Ada、C<code class="t">++</code> 和 Objective - C）允许
+为不同的应用场景多次定义同一个函数名。这被称为 <em class="dfn">重载</em>。另一个涉及 Ada 的例子是泛型。一个 <em class="dfn">泛型包</em> 类似于 C<code class="t">++</code>
+模板，通常会多次实例化，导致同一个函数名在不同上下文中被定义。
+</p>
+<p>在某些情况下，根据编程语言的不同，可以调整表达式以消除模糊性。例如在 C 语言中<code class="t">++</code>, 你
+可以指定想要设置断点的函数的签名，就像在
+<kbd class="kbd">断点 <var class="var">函数</var>(<var class="var">类型</var>)</kbd>中那样。在 Ada 中，使用函数的完全限定名通常也能使表达式明确。
+</p>
+<p>当检测到需要解决的模糊性时，调试器能够为每种可能性显示一个编号选项菜单，然后等待用户在提示符 ‘<samp class="samp">&gt;</samp>’ 下进行选择。
+第一个选项总是 ‘<samp class="samp">[0] 取消</samp>’，输入 <kbd class="kbd">0 <kbd class="key">回车</kbd></kbd>
+将中止当前命令。如果使用该表达式的命令允许选择多个选项，菜单中的下一个选项是 ‘<samp class="samp">[1] 全部</samp>’，输入 <kbd class="kbd">1 <kbd class="key">回车</kbd></kbd> 将选择所有可能的选项。
+</p>
+<p>例如，下面的会话摘录展示了尝试在重载符号处设置断点的情况 <code class="code">String::after</code>.
+我们选择该函数名的三个特定定义：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) b String::after
+[0] 取消
+[1] 全部
+[2] 文件:String.cc; 行号:867
+[3] 文件:String.cc; 行号:860
+[4] 文件:String.cc; 行号:875
+[5] 文件:String.cc; 行号:853
+[6] 文件:String.cc; 行号:846
+[7] 文件:String.cc; 行号:735
+&gt; 2 4 6
+断点 1 在 0xb26c: 文件 String.cc, 行号 867.
+断点 2 在 0xb344: 文件 String.cc, 行号 875.
+断点 3 在 0xafcc: 文件 String.cc, 行号 846.
+设置了多个断点。
+使用 &#34;delete&#34; 命令删除不需要的
+ 断点。
+(gdb)
+</pre></div></div>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-multiple_002dsymbols"></a>
+<a id="index-multiple_002dsymbols-menu"></a><span><code class="code">set multiple-symbols <var class="var">mode</var></code><a class="copiable-link" href="#index-multiple_002dsymbols-menu"> ¶</a></span></dt>
+<dd>
+<p>此选项允许你在表达式模糊时调整调试器的行为。
+</p>
+<p>默认情况下， <var class="var">模式</var> 设置为 <code class="code">all</code>. 如果使用该表达式的命令允许选择多个选项，那么 <small class="sc">GDB</small>
+会自动选择所有可能的选项。例如，在使用模糊名称的函数上插入断点会导致在每个可能匹配的位置都插入一个断点。但是，如果必须做出唯一选择，那么 <small class="sc">GDB</small> 会使用菜单帮助你消除表达式的模糊性。
+例如，打印重载函数的地址将导致使用菜单。
+</p>
+<p>当 <var class="var">模式</var> 设置为 <code class="code">ask</code>, 当检测到模糊性时，调试器总是使用菜单。
+</p>
+<p>最后，当 <var class="var">模式</var> 设置为 <code class="code">cancel</code>, 调试器会因模糊性报告错误并中止命令。
+</p>
+</dd>
+<dt><a id="index-show-multiple_002dsymbols"></a><span><code class="code">show multiple-symbols</code><a class="copiable-link" href="#index-show-multiple_002dsymbols"> ¶</a></span></dt>
+<dd><p>显示当前的 <code class="code">multiple-symbols</code> 设置值。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项: <a href="Variables.html">程序变量</a>, 上一项: <a href="Expressions.html">表达式</a>, 上一级: <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

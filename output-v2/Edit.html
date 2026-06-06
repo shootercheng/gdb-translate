@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编辑（使用GDB调试）</title>
+
+<meta name="description" content="Edit (Debugging with GDB)"/>
+<meta name="keywords" content="Edit (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Source.html" rel="up" title="Source"/>
+<link href="Search.html" rel="next" title="Search"/>
+<link href="Location-Specifications.html" rel="prev" title="Location Specifications"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Edit">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Search.html" rel="next">搜索源文件</a>，上一步： <a accesskey="p" href="Location-Specifications.html" rel="prev">位置规范</a>, Up: <a accesskey="u" href="Source.html" rel="up">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Editing-Source-Files"><span>9.3编辑源文件<a class="copiable-link" href="#Editing-Source-Files"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-editing-source-files"></a>
+
+<a class="index-entry-id" id="index-edit"></a>
+<a class="index-entry-id" id="index-e-_0028edit_0029"></a>
+<p>要编辑源文件中的行，请使用 <code class="code">edit</code> 命令。
+将调用您选择的编辑程序，当前行设置为
+程序中的活动行。
+或者，如果您想查看程序的其他部分，有几种方法可以指定要打印文件的哪一部分：
+</p>
+<dl class="table">
+<dt><code class="code">edit <var class="var">locspec</var></code></dt>
+<dd><p>编辑通过解析得到的代码位置的源文件
+<code class="code">locspec</code>。编辑从源文件和源行开始
+<code class="code">locspec</code> 解析到的位置。
+请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>，了解
+<var class="var">locspec</var> 参数的所有可能形式。
+</p>
+<p>如果 <code class="code">locspec</code> 在您的程序中解析为多个源行，那么该命令将打印解析后的源行列表，并且
+不会继续进行编辑。
+</p>
+<p>以下是最常用的 <code class="code">edit</code> 命令形式：
+</p>
+<dl class="table">
+<dt><code class="code">edit <var class="var">number</var></code></dt>
+<dd><p>使用 <var class="var">编号</var> 作为活动行号编辑当前源文件。
+</p>
+</dd>
+<dt><code class="code">edit <var class="var">function</var></code></dt>
+<dd><p>编辑包含 <var class="var">函数</var> 定义开头的文件。
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Choosing-your-Editor">选择您的编辑器</a></li>
+</ul>
+<div class="subsection-level-extent" id="Choosing-your-Editor">
+<h4 class="subsection"><span>9.3.1选择您的编辑器<a class="copiable-link" href="#Choosing-your-Editor"> ¶</a></span></h4>
+<p>您可以自定义 <small class="sc">GDB</small> 以使用您想要的任何编辑器
+<a class="footnote" href="#FOOT10" id="DOCF10"><sup>10</sup></a>。
+默认情况下，它是 <samp class="file">/bin/ex</samp>，但您可以通过设置环境变量 <code class="env">EDITOR</code> 在使用
+<small class="sc">GDB</small>之前进行更改。例如，要配置 <small class="sc">GDB</small> 以使用
+<code class="code">vi</code> 编辑器，您可以在 <code class="code">sh</code>  shell中使用这些命令：
+</p><div class="example smallexample">
+<pre class="example-preformatted">EDITOR=/usr/bin/vi
+ export EDITOR
+gdb...
+</pre></div>
+<p>或者在 <code class="code">csh</code>  shell中
+</p><div class="example smallexample">
+<pre class="example-preformatted">setenv EDITOR /usr/bin/vi
+gdb...
+</pre></div>
+
+</div>
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF10" id="FOOT10">(10)</a></h5>
+<p>唯一的限制是您的编辑器（例如 <code class="code">ex</code>）识别以下命令行语法：
+</p><div class="example smallexample">
+<pre class="example-preformatted">ex +<var class="var">编号</var> 文件
+</pre></div>
+<p>可选的数值 +<var class="var">编号</var> 指定在文件中开始编辑的行号。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Search.html">搜索源文件</a>，上一步： <a href="Location-Specifications.html">位置规范</a>，向上： <a href="Source.html">检查源文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

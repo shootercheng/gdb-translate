@@ -1,0 +1,243 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>帧装饰器 API（使用 GDB 调试）</title>
+
+<meta name="description" content="Frame Decorator API (Debugging with GDB)"/>
+<meta name="keywords" content="Frame Decorator API (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Writing-a-Frame-Filter.html" rel="next" title="Writing a Frame Filter"/>
+<link href="Frame-Filter-API.html" rel="prev" title="Frame Filter API"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Frame-Decorator-API">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Writing-a-Frame-Filter.html" rel="next"></a>, 上一项： <a accesskey="p" href="Frame-Filter-API.html" rel="prev"></a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Decorating-Frames"><span>23.3.2.11 装饰帧<a class="copiable-link" href="#Decorating-Frames"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-frame-decorator-api"></a>
+
+<p>帧装饰器是帧过滤器的姊妹对象（参见 <a class="pxref" href="Frame-Filter-API.html">过滤帧</a>）。帧装饰器由帧过滤器应用，并且只能与帧过滤器结合使用。
+</p>
+<p>帧装饰器的目的是自定义每个 <code class="code">gdb.Frame</code> 在执行帧过滤器的命令中的打印内容。
+这个概念称为装饰帧。帧装饰器使用每个 API 调用中包含的 Python 代码来装饰一个 <code class="code">gdb.Frame</code> 。
+这将实际包含在一个 <code class="code">gdb.Frame</code> 中的数据与帧装饰器产生的装饰后的数据分开。这种抽象对于维护每个
+<code class="code">gdb.Frame</code>中包含的数据的完整性是必要的。
+</p>
+<p>帧装饰器有一个强制接口，定义如下。
+</p>
+<p><small class="sc">GDB</small> 已经包含一个名为
+<code class="code">FrameDecorator</code>的帧装饰器。这包含大量的
+样板代码来装饰一个 <code class="code">gdb.Frame</code>的内容。建议其他帧装饰器继承并扩展这个
+对象，并且只覆盖所需的方法。
+</p>
+<a class="index-entry-id" id="index-gdb_002eFrameDecorator"></a>
+<p><code class="code">FrameDecorator</code> 在 Python 模块
+<code class="code">gdb.FrameDecorator</code>中定义，因此您的代码可以像这样导入它：
+</p><div class="example smallexample">
+<pre class="example-preformatted">from gdb.FrameDecorator import FrameDecorator
+</pre></div>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002eelided"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.elided</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002eelided"> ¶</a></span></dt>
+<dd>
+<p>该 <code class="code">elided</code> 方法在分层系统中将帧分组。例如，在解释器中，多个低级
+帧组成解释语言中的单个调用。在这个
+示例中，帧过滤器将省略低级帧，并向用户呈现一个代表解释语言中调用的单个高级帧。
+</p>
+<p>该 <code class="code">elided</code> 函数必须返回一个可迭代对象，并且这个可迭代对象
+必须包含被省略的帧，这些帧被包装在一个合适的
+帧装饰器中。如果没有帧被省略，这个函数可以
+返回一个空的可迭代对象，或 <code class="code">None</code>. 被省略的帧在 <code class="code">CLI</code> 回溯中相对于正常帧缩进，或者在
+<small class="sc">GDB/MI</small>的情况下，被放置在省略帧的 <code class="code">children</code> 字段中。
+</p>
+<p>帧过滤器的任务还包括从源迭代器中过滤掉被省略的帧。这将避免重复打印帧。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002efunction"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.function</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002efunction"> ¶</a></span></dt>
+<dd>
+<p>此方法返回要打印的帧中的函数名称。
+</p>
+<p>此方法必须返回一个描述函数的 Python 字符串，或
+<code class="code">None</code>.
+</p>
+<p>如果此函数返回 <code class="code">None</code>, <small class="sc">GDB</small> 将不会为此字段打印任何
+数据。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002eaddress"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.address</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002eaddress"> ¶</a></span></dt>
+<dd>
+<p>此方法返回要打印的帧的地址。
+</p>
+<p>此方法必须返回一个足够大的 Python 数值整数类型来描述帧的地址，或 <code class="code">None</code>.
+</p>
+<p>如果此函数返回一个 <code class="code">None</code>, <small class="sc">GDB</small> 将不会为此字段打印任何
+数据。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002efilename"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.filename</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002efilename"> ¶</a></span></dt>
+<dd>
+<p>此方法返回与此帧关联的文件名和路径。
+</p>
+<p>此方法必须返回一个包含文件名和
+帧所依赖的目标文件路径的 Python 字符串，或 <code class="code">None</code>.
+</p>
+<p>如果此函数返回一个 <code class="code">None</code>, <small class="sc">GDB</small> 将不会为此字段打印任何
+数据。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002eline"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.line</strong> <var class="def-var-arguments">(self):</var><a class="copiable-link" href="#index-FrameDecorator_002eline"> ¶</a></span></dt>
+<dd>
+<p>此方法返回与此帧所指向的函数内当前位置关联的行号。
+</p>
+<p>此方法必须返回一个 Python 整数类型，或 <code class="code">None</code>.
+</p>
+<p>如果此函数返回一个 <code class="code">None</code>, <small class="sc">GDB</small> 将不会为此字段打印任何
+数据。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002eframe_005fargs"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.frame_args</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002eframe_005fargs"> ¶</a></span></dt>
+<dd><a class="anchor" id="frame_005fargs"></a>
+<p>此方法必须返回一个可迭代对象，或 <code class="code">None</code>. 返回一个
+空的可迭代对象，或 <code class="code">None</code> 意味着不会为该帧打印帧参数。这个可迭代对象必须包含实现这里描述的两个方法的对象。
+</p>
+<p>这个对象必须实现一个 <code class="code">symbol</code> 方法，该方法接受一个
+单一的 <code class="code">self</code> 参数，并且必须返回一个 <code class="code">gdb.Symbol</code>
+（参见 <a class="pxref" href="Symbols-In-Python.html">符号的 Python 表示</a>），或一个 Python 字符串。该对象还必须
+实现一个 <code class="code">value</code> 方法，该方法接受一个单一的 <code class="code">self</code>
+参数，并且必须返回一个 <code class="code">gdb.Value</code> （参见 <a class="pxref" href="Values-From-Inferior.html">来自被调试程序的值</a>）、一个 Python 值，或 <code class="code">None</code>. 如果 <code class="code">value</code>
+方法返回 <code class="code">None</code>, 并且 <code class="code">argument</code> 方法返回一个
+<code class="code">gdb.Symbol</code>, <small class="sc">GDB</small> 将查找并打印
+该 <code class="code">gdb.Symbol</code> 的值。
+</p>
+<p>一个简短的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class SymValueWrapper():
+
+    def __init__(self, symbol, value):
+        self.sym = symbol
+        self.val = value
+
+    def value(self):
+        return self.val
+
+    def symbol(self):
+        return self.sym
+
+class SomeFrameDecorator()
+...
+...
+    def frame_args(self):
+        args = []
+        try:
+            block = self.inferior_frame.block()
+        except:
+            return None
+
+        # 遍历块中的所有符号。仅添加
+        # 作为参数的符号。
+        for sym in block:
+            if not sym.is_argument:
+                continue
+            args.append(SymValueWrapper(sym,None))
+
+        # 添加示例合成参数。
+        args.append(SymValueWrapper(``foo&#39;&#39;, 42))
+
+        return args
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002eframe_005flocals"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.frame_locals</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-FrameDecorator_002eframe_005flocals"> ¶</a></span></dt>
+<dd>
+<p>此方法必须返回一个可迭代对象或 <code class="code">None</code>. 返回一个
+空的可迭代对象，或 <code class="code">None</code> 意味着不会为该帧打印帧局部参数。
+</p>
+<p>对象接口、读取帧局部变量的各种策略的描述以及示例与
+在 <code class="code">frame_args</code> 函数中描述的内容基本相似（参见 <a class="pxref" href="#frame_005fargs">帧过滤器的 frame_args 函数</a>）。以下是一个修改后的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class SomeFrameDecorator()
+...
+...
+    def frame_locals(self):
+        vars = []
+        try:
+            block = self.inferior_frame.block()
+        except:
+            return None
+
+        # 遍历块中的所有符号。添加所有
+        # 符号，但参数除外。
+        for sym in block:
+            if sym.is_argument:
+                continue
+            vars.append(SymValueWrapper(sym,None))
+
+        # 添加一个合成局部变量的示例。
+        vars.append(SymValueWrapper(``bar&#39;&#39;, 99))
+
+        return vars
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameDecorator_002einferior_005fframe"><span class="category-def">函数： </span><span><strong class="def-name">FrameDecorator.inferior_frame</strong> <var class="def-var-arguments">(self):</var><a class="copiable-link" href="#index-FrameDecorator_002einferior_005fframe"> ¶</a></span></dt>
+<dd>
+<p>此方法必须返回底层 <code class="code">gdb.Frame</code> ，此
+帧装饰器正在装饰该底层帧。  <small class="sc">GDB</small> 在打印帧时，需要底层
+帧的内部帧信息来确定如何打印某些
+值。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Writing-a-Frame-Filter.html">编写帧过滤器</a>, 上一项： <a href="Frame-Filter-API.html">过滤帧</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

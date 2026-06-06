@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Readline基础要点（使用GDB调试）</title>
+
+<meta name="description" content="Readline Bare Essentials (Debugging with GDB)"/>
+<meta name="keywords" content="Readline Bare Essentials (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Readline-Interaction.html" rel="up" title="Readline Interaction"/>
+<link href="Readline-Movement-Commands.html" rel="next" title="Readline Movement Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Readline-Bare-Essentials">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Readline-Movement-Commands.html" rel="next">Readline移动命令</a>, 上一项： <a accesskey="u" href="Readline-Interaction.html" rel="up">Readline交互</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Readline-Bare-Essentials-1"><span>33.2.1 Readline基础要点<a class="copiable-link" href="#Readline-Bare-Essentials-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-notation_002c-readline"></a>
+<a class="index-entry-id" id="index-command-editing"></a>
+<a class="index-entry-id" id="index-editing-command-lines"></a>
+
+<p>要在一行中输入字符，只需直接输入即可。输入的字符会出现在光标所在位置，然后光标向右移动一格。如果输入错误，可以使用退格字符来回退并删除输错的字符。
+</p>
+<p>有时你可能输错了一个字符，直到输入了其他几个字符后才发现错误。在这种情况下，你可以输入 <kbd class="kbd">Ctrl + b</kbd> 将光标向左移动，然后纠正错误。之后，你可以使用 <kbd class="kbd">Ctrl + f</kbd>将光标向右移动。
+</p>
+<p>当你在一行中间添加文本时，你会注意到光标右侧的字符会“被挤开”，为你插入的文本腾出空间。同样，当你删除光标后面的文本时，光标右侧的字符会“拉回”以填补因删除文本而产生的空白。以下是编辑输入行文本的基础要点列表。
+</p>
+<dl class="table">
+<dt><kbd class="kbd">Ctrl + b</kbd></dt>
+<dd><p>向左移动一个字符。
+</p></dd>
+<dt><kbd class="kbd">Ctrl + f</kbd></dt>
+<dd><p>向右移动一个字符。
+</p></dd>
+<dt><kbd class="key">删除键</kbd> 或 <kbd class="key">退格键</kbd></dt>
+<dd><p>删除光标左侧的字符。
+</p></dd>
+<dt><kbd class="kbd">Ctrl + d</kbd></dt>
+<dd><p>删除光标所在位置的字符。
+</p></dd>
+<dt>打印字符<!-- /@w --></dt>
+<dd><p>在光标处将字符插入到行中。
+</p></dd>
+<dt><kbd class="kbd">Ctrl + _</kbd> 或 <kbd class="kbd">Ctrl + x Ctrl + u</kbd></dt>
+<dd><p>撤销上一个编辑命令。你可以一直撤销到空行。
+</p></dd>
+</dl>
+
+<p>（根据你的配置， <kbd class="key">退格键</kbd> 可能被设置为删除光标左侧的字符，而 <kbd class="key">删除键</kbd> 被设置为删除光标所在位置的字符，就像 <kbd class="kbd">Ctrl + d</kbd>一样，而不是删除光标左侧的字符。）
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Readline-Movement-Commands.html">Readline移动命令</a>, 上一项： <a href="Readline-Interaction.html">Readline交互</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>帧过滤器 API（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Frame Filter API (Debugging with GDB)"/>
+<meta name="keywords" content="Frame Filter API (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Frame-Decorator-API.html" rel="next" title="Frame Decorator API"/>
+<link href="Type-Printing-API.html" rel="prev" title="Type Printing API"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Frame-Filter-API">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Frame-Decorator-API.html" rel="next">装饰帧</a>，上一项： <a accesskey="p" href="Type-Printing-API.html" rel="prev">类型打印 API</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Filtering-Frames"><span>23.3.2.10 过滤帧<a class="copiable-link" href="#Filtering-Frames"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-frame-filters-api"></a>
+
+<p>帧过滤器是 Python 对象，当打印回溯（参见 <a class="pxref" href="Backtrace.html">回溯</a>）时，它们可以操纵一个或多个帧的可见性，由
+<small class="sc">GDB</small>执行。
+</p>
+<p>只有打印回溯的命令，或者在 <small class="sc">GDB/MI</small>
+命令（参见 <a class="pxref" href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>）的情况下，那些返回帧集合的命令才会受到影响。与帧过滤器一起使用的命令有：
+</p>
+<p><code class="code">backtrace</code> （参见 <a class="pxref" href="Backtrace.html#backtrace_002dcommand">回溯命令</a>），
+<code class="code">-stack-list-frames</code>
+（参见 <a class="pxref" href="GDB_002fMI-Stack-Manipulation.html#g_t_002dstack_002dlist_002dframes">-stack-list-frames 命令</a>），
+<code class="code">-stack-list-variables</code> （参见 <a class="pxref" href="GDB_002fMI-Stack-Manipulation.html#g_t_002dstack_002dlist_002dvariables">-stack-list-variables 命令</a>）， <code class="code">-stack-list-arguments</code>
+参见 <a class="pxref" href="GDB_002fMI-Stack-Manipulation.html#g_t_002dstack_002dlist_002darguments">-stack-list-arguments 命令</a>）和
+<code class="code">-stack-list-locals</code> （参见 <a class="pxref" href="GDB_002fMI-Stack-Manipulation.html#g_t_002dstack_002dlist_002dlocals">-stack-list-locals 命令</a>）。
+</p>
+<p>帧过滤器的工作方式是将迭代器作为参数，对该迭代器的内容应用操作，然后返回另一个迭代器（或者，在过滤器不执行任何操作的情况下，可能返回提供的同一个迭代器）。通常，帧过滤器利用诸如 Python 的 <code class="code">itertools</code> 模块之类的工具来处理源迭代器并从中创建新的迭代器。无论过滤器选择如何应用操作，它都不得更改底层 <small class="sc">GDB</small> 帧或多个帧，也不得尝试在 <small class="sc">GDB</small>内更改调用栈。这可以保持
+<small class="sc">GDB</small>内的数据完整性。帧过滤器按优先级执行，应注意有些帧过滤器可能已经在之前执行过，而有些帧过滤器将在之后执行。
+</p>
+<p>设计帧过滤器时一个重要的考虑因素，并且非常值得思考的是，帧过滤器应尽可能避免展开调用栈。有些栈可能非常深，在某些情况下可达数万层。在帧过滤器执行时搜索每个帧在该步骤可能代价过高。帧过滤器无法知道它必须迭代多少个帧，并且可能必须遍历所有帧。这最终会重复工作，因为
+<small class="sc">GDB</small> 在打印帧时会执行此迭代。如果过滤器可以将展开帧的操作推迟到帧装饰器执行时，即在最后一个过滤器执行之后，那么它应该这样做。有关装饰器的更多信息，请参见 <a class="xref" href="Frame-Decorator-API.html">装饰帧</a>。此外，后续章节中有帧装饰器和过滤器的示例。有关更多信息，请参见 <a class="xref" href="Writing-a-Frame-Filter.html">编写帧过滤器</a>。
+</p>
+<p>Python 字典 <code class="code">gdb.frame_filters</code> 包含构成帧过滤器的键/对象对。此字典中的帧过滤器称为 <code class="code">global</code> 帧过滤器，并且在调试所有下级程序时都可用。这些帧过滤器必须直接在字典中注册。除了
+<code class="code">global</code> 字典之外，还有其他字典通过自动加载（参见 <a class="pxref" href="Python-Auto_002dloading.html">Python 自动加载</a>）与不同的下级程序一起加载。可以找到帧过滤器字典的另外两个位置是： <code class="code">gdb.Progspace</code> 它包含一个
+<code class="code">frame_filters</code> 字典属性，以及每个 <code class="code">gdb.Objfile</code>
+对象，它也包含一个 <code class="code">frame_filters</code> 字典属性。
+</p>
+<p>当从 <small class="sc">GDB</small> 执行与帧过滤器兼容的命令时， <small class="sc">GDB</small> 会合并 <code class="code">global</code>,
+<code class="code">gdb.Progspace</code> 和所有当前加载的 <code class="code">gdb.Objfile</code> 字典。所有的 <code class="code">gdb.Objfile</code> 字典都会合并，因为可能会使用多个帧，因此可能会使用多个目标文件。
+<small class="sc">GDB</small> 然后会删除其 <code class="code">enabled</code>
+属性为 <code class="code">False</code>的任何帧过滤器。然后根据每个过滤器中的 <code class="code">priority</code> 属性对这个经过筛选的列表进行排序。
+</p>
+<p>一旦字典合并、筛选和排序完成， <small class="sc">GDB</small>
+会创建一个迭代器，该迭代器将调用栈中的每个帧包装在一个
+<code class="code">FrameDecorator</code> 对象中，并按顺序调用每个过滤器。前一个过滤器的输出将始终作为下一个过滤器的输入，依此类推。
+</p>
+<p>帧过滤器有一个必需的接口，每个帧过滤器都必须实现该接口，定义如下：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-FrameFilter_002efilter"><span class="category-def">函数： </span><span><strong class="def-name">FrameFilter.filter</strong> <var class="def-var-arguments">(迭代器)</var><a class="copiable-link" href="#index-FrameFilter_002efilter"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 当达到该过滤器在优先级列表中的顺序时，将在帧过滤器上调用此方法。
+</p>
+<p>例如，如果有四个帧过滤器：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">名称         优先级
+
+Filter1      5
+Filter2      10
+Filter3      100
+Filter4      1
+</pre></div>
+
+<p>帧过滤器的调用顺序是：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">Filter3 -&gt; Filter2 -&gt; Filter1 -&gt; Filter4
+</pre></div>
+
+<p>请注意， <code class="code">Filter3</code> 的输出会传递给
+<code class="code">Filter2</code>的输入，依此类推。
+</p>
+<p>此 <code class="code">filter</code> 方法会传递一个 Python 迭代器。此迭代器包含一系列帧装饰器，这些装饰器包装每个
+<code class="code">gdb.Frame</code>, 或者一个帧装饰器包装另一个帧装饰器。在帧过滤器序列中执行的第一个过滤器将接收一个完全由默认
+<code class="code">FrameDecorator</code> 对象组成的迭代器。但是，在每个帧过滤器执行之后，前一个帧过滤器可能已经用自己的帧装饰器包装了部分或全部帧装饰器。由于帧装饰器也必须符合必需的接口，因此可以假定这些装饰器以统一的方式工作（参见 <a class="pxref" href="Frame-Decorator-API.html">装饰帧</a>）。
+</p>
+<p>此方法必须返回一个符合 Python 迭代器协议的对象。迭代器中的每个项必须是一个符合帧装饰器接口的对象。如果帧过滤器不想对这个迭代器执行任何操作，它应该原封不动地返回该迭代器。
+</p>
+<p>此方法不是可选的。如果它不存在， <small class="sc">GDB</small> 将引发并打印错误。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-FrameFilter_002ename"><span class="category-def">变量： </span><span><strong class="def-name">FrameFilter.name</strong><a class="copiable-link" href="#index-FrameFilter_002ename"> ¶</a></span></dt>
+<dd><p>该 <code class="code">name</code> 属性必须是 Python 字符串，其中包含显示的过滤器名称 <small class="sc">GDB</small> （参见 <a class="pxref" href="Frame-Filter-Management.html">帧过滤器的管理。</a>）。此属性可以包含字母或数字的任意组合。应注意确保其唯一性。此属性是必需的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-FrameFilter_002eenabled"><span class="category-def">变量： </span><span><strong class="def-name">FrameFilter.enabled</strong><a class="copiable-link" href="#index-FrameFilter_002eenabled"> ¶</a></span></dt>
+<dd><p>该 <code class="code">enabled</code> 属性必须是 Python 布尔值。此属性向 <small class="sc">GDB</small> 指示帧过滤器是否启用，并且在执行帧过滤器时应予以考虑。如果
+<code class="code">enabled</code> 为 <code class="code">True</code>，则在执行本章前面详细介绍的任何回溯命令时，将执行帧过滤器。如果 <code class="code">enabled</code> 为 <code class="code">False</code>，则不会执行帧过滤器。此属性是必需的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-FrameFilter_002epriority"><span class="category-def">变量： </span><span><strong class="def-name">FrameFilter.priority</strong><a class="copiable-link" href="#index-FrameFilter_002epriority"> ¶</a></span></dt>
+<dd><p>该 <code class="code">priority</code> 属性必须是 Python 整数。此属性控制与其他帧过滤器相关的执行顺序。对 <code class="code">priority</code> 的范围没有强制限制，除了它必须是有效的整数。 <code class="code">priority</code> 属性的值越高，与其他帧过滤器相比，该帧过滤器将越早执行。尽管 <code class="code">priority</code> 可以为负数，但建议假定零是帧过滤器可以分配的最低优先级。具有相同优先级的帧过滤器在该优先级槽中以未排序的顺序执行。此属性是必需的。100 是一个不错的默认优先级。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Frame-Decorator-API.html">装饰帧</a>，上一项： <a href="Type-Printing-API.html">类型打印 API</a>，上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

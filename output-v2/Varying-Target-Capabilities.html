@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>不同目标能力（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Varying Target Capabilities (Debugging with GDB)"/>
+<meta name="keywords" content="Varying Target Capabilities (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Agent-Expressions.html" rel="up" title="Agent Expressions"/>
+<link href="Rationale.html" rel="next" title="Rationale"/>
+<link href="Using-Agent-Expressions.html" rel="prev" title="Using Agent Expressions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Varying-Target-Capabilities">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Rationale.html" rel="next">基本原理</a>, 上一项： <a accesskey="p" href="Using-Agent-Expressions.html" rel="prev">使用代理表达式</a>, 上级： <a accesskey="u" href="Agent-Expressions.html" rel="up">GDB 代理表达式机制</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Varying-Target-Capabilities-1"><span>F.4 不同目标能力<a class="copiable-link" href="#Varying-Target-Capabilities-1"> ¶</a></span></h3>
+
+<p>有些目标不支持浮点运算，有些则宁愿不处理 <code class="code">long long</code> 操作。此外，不同的目标会有不同的栈大小和不同的字节码缓冲区长度。
+</p>
+<p>因此，GDB 需要一种方法来询问目标自身的信息。我们尚未确定具体细节，但一般来说，GDB 应该能够向目标发送一个数据包，要求它描述自身信息。回复应该是一个长度明确的数据包，这样我们就可以在代理的未来版本中向数据包添加新信息，而不会让旧版本的 GDB 产生混淆，并且它应该包含一个版本号。它至少应该包含以下信息：
+</p>
+<ul class="itemize mark-bullet">
+<li>是否支持浮点运算
+
+</li><li>是否 <code class="code">long long</code> 被支持
+
+</li><li>字节码栈的最大可接受大小
+
+</li><li>字节码表达式的最大可接受长度
+
+</li><li>哪些寄存器实际上可用于收集
+
+</li><li>目标是否支持禁用的跟踪点
+
+</li></ul>
+
+</div>
+
+
+
+
+
+</body></html>

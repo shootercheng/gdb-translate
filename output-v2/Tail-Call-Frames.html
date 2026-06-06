@@ -1,0 +1,173 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>尾调用帧（使用GDB进行调试）</title>
+
+<meta name="description" content="Tail Call Frames (Debugging with GDB)"/>
+<meta name="keywords" content="Tail Call Frames (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Optimized-Code.html" rel="up" title="Optimized Code"/>
+<link href="Inline-Functions.html" rel="prev" title="Inline Functions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Tail-Call-Frames">
+<div class="nav-panel">
+<p>
+上一节： <a accesskey="p" href="Inline-Functions.html" rel="prev">内联函数</a> <a accesskey="u" href="Optimized-Code.html" rel="up">调试优化代码</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Tail-Call-Frames-1"><span>11.2 尾调用帧<a class="copiable-link" href="#Tail-Call-Frames-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-tail-call-frames_002c-debugging"></a>
+
+<p>函数 <code class="code">B</code> 可以在其最后一条语句中调用函数 <code class="code">C</code> 。在未优化的编译中， <code class="code">C</code> 的调用之后紧接着是 <code class="code">B</code> 代码末尾的返回指令。优化编译器可以将函数 <code class="code">B</code> 中的调用和返回替换为跳转到函数 <code class="code">C</code>
+的一条指令。这种使用跳转指令的方式称为 <em class="dfn">尾调用</em>.
+</p>
+<p>在函数执行期间 <code class="code">C</code>，函数调用栈帧中不会有它是从 <code class="code">B</code>尾调用而来的迹象。如果函数
+<code class="code">A</code> 通常调用函数 <code class="code">B</code> 又尾调用函数 <code class="code">C</code>，那么 <small class="sc">GDB</small> 会将 <code class="code">A</code> 视为 <code class="code">C</code>的调用者。然而，在某些情况下 <small class="sc">GDB</small> 可以确定 <code class="code">C</code> 是从
+<code class="code">B</code>尾调用而来的，然后它会为其创建一个虚拟的调用帧，返回地址的设置就好像 <code class="code">B</code> 正常调用 <code class="code">C</code> 一样。
+</p>
+<p>目前，此功能仅由DWARF 2调试格式支持，并且编译器必须生成‘<samp class="samp">DW_TAG_call_site</samp>’标签。使用
+<small class="sc">GCC</small>时，你需要在编译期间指定 <samp class="option">-O -g</samp> 以获取此信息。
+</p>
+<p><kbd class="kbd">info frame</kbd> 命令（请参阅 <a class="pxref" href="Frame-Info.html">关于帧的信息</a>)将通过文本指示尾调用帧的类型，例如在这个示例 <code class="code">tail call frame</code> 输出中： <small class="sc">GDB</small> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) x/i $pc - 2
+   0x40066b &lt;b(int, double)+11&gt;: jmp 0x400640 &lt;c(int, double)&gt;
+(gdb) info frame
+Stack level 1, frame at 0x7fffffffda30:
+ rip = 0x40066d in b (amd64-entry-value.cc:59); saved rip 0x4004c5
+ tail call frame, caller of frame at 0x7fffffffda30
+ source language c++.
+ Arglist at unknown address.
+ Locals at unknown address, Previous frame&#39;s sp is 0x7fffffffda30
+</pre></div>
+
+<p>对所有可能的代码路径执行的检测可能会发现它们存在歧义。没有存储执行历史记录（可能 <a class="ref" href="Reverse-Execution.html">逆向运行程序</a> 永远不会用于此目的），并且最后已知的调用者可能通过多种不同的跳转序列到达了已知的被调用者。在这种情况下 <small class="sc">GDB</small> 仍然会尝试显示至少所有明确的顶部尾调用者和所有明确的底部尾被调用者（如果有的话）。
+</p>
+<dl class="table">
+<dd><a class="anchor" id="set-debug-entry_002dvalues"></a></dd>
+<dt><a id="index-set-debug-entry_002dvalues"></a><span><code class="code">set debug entry-values</code><a class="copiable-link" href="#index-set-debug-entry_002dvalues"> ¶</a></span></dt>
+<dd><p>当设置为开启时，启用对函数入口处的帧参数值和尾调用的分析消息的打印。它将显示它所考虑的所有可能的有效尾调用代码路径。它还将打印这些路径与最终明确的（可能是部分的甚至是空的）代码路径结果的交集。
+</p>
+</dd>
+<dt><a id="index-show-debug-entry_002dvalues"></a><span><code class="code">show debug entry-values</code><a class="copiable-link" href="#index-show-debug-entry_002dvalues"> ¶</a></span></dt>
+<dd><p>显示函数入口处的帧参数值和尾调用的分析消息打印的当前状态。
+</p></dd>
+</dl>
+
+<p>尾调用的分析消息例如可以显示为什么函数 <code class="code">c</code> 的虚拟尾调用帧未被识别（由于变量的间接引用 <code class="code">x</code>）：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">static void __attribute__((noinline, noclone)) c (void);
+void (*x) (void) = c;
+static void __attribute__((noinline, noclone)) a (void) { x++; }
+static void __attribute__((noinline, noclone)) c (void) { a (); }
+int main (void) { x (); return 0; }
+
+Breakpoint 1, DW_OP_entry_value resolving cannot find
+DW_TAG_call_site 0x40039a in main
+a () at t.c:3
+3	static void __attribute__((noinline, noclone)) a (void) { x++; }
+(gdb) bt
+#0  a () at t.c:3
+#1  0x000000000040039a in main () at t.c:5
+</pre></div>
+
+<p>另一种可能性是模糊的虚拟尾调用帧解析：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int i;
+static void __attribute__((noinline, noclone)) f (void) { i++; }
+static void __attribute__((noinline, noclone)) e (void) { f (); }
+static void __attribute__((noinline, noclone)) d (void) { f (); }
+static void __attribute__((noinline, noclone)) c (void) { d (); }
+static void __attribute__((noinline, noclone)) b (void)
+{ if (i) c (); else e (); }
+static void __attribute__((noinline, noclone)) a (void) { b (); }
+int main (void) { a (); return 0; }
+
+tailcall: initial: 0x4004d2(a) 0x4004ce(b) 0x4004b2(c) 0x4004a2(d)
+tailcall: compare: 0x4004d2(a) 0x4004cc(b) 0x400492(e)
+tailcall: reduced: 0x4004d2(a) |
+(gdb) bt
+#0  f () at t.c:2
+#1  0x00000000004004d2 in a () at t.c:8
+#2  0x0000000000400395 in main () at t.c:9
+</pre></div>
+
+
+
+<p>帧 #0 和 #2 是真实的，#1 是虚拟尾调用帧。代码可能有执行路径 <code class="code">main→a→b→c→d→f</code> 或
+<code class="code">main→a→b→e→f</code>, <small class="sc">GDB</small> 无法从程序状态中确定是哪一个。
+</p>
+<p><code class="code">initial:</code> 状态显示了一些随机的可能调用序列 <small class="sc">GDB</small>
+已经找到。然后它又找到了另一个可能的调用序列 - 那个序列以 <code class="code">compare:</code>为前缀。这两个序列的明确交集被打印为 <code class="code">reduced:</code> 调用序列。只要还有任何明确的序列项，这个序列可能还有很多 <code class="code">compare:</code> 和 <code class="code">reduced:</code> 语句。
+</p>
+<p>对于函数 <code class="code">b</code> 的帧，在两种情况下都有不同的可能
+<code class="code">$pc</code> 值（<code class="code">0x4004cc</code> 或 <code class="code">0x4004ce</code>），因此这个帧也是模糊的。唯一明确的帧是函数 <code class="code">a</code>的帧，因此会将这个帧显示给用户，而模糊的帧则会被省略。
+</p>
+<p>函数入口处的帧参数值打印可能失败的原因也可能有：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">int v;
+static void __attribute__((noinline, noclone)) c (int i) { v++; }
+static void __attribute__((noinline, noclone)) a (int i);
+static void __attribute__((noinline, noclone)) b (int i) { a (i); }
+static void __attribute__((noinline, noclone)) a (int i)
+{ if (i) b (i - 1); else c (0); }
+int main (void) { a (5); return 0; }
+
+(gdb) bt
+#0  c (i=i@entry=0) at t.c:2
+#1  0x0000000000400428 in a (DW_OP_entry_value resolving has found
+function &#34;a&#34; at 0x400420 can call itself via tail calls
+i=&lt;optimized out&gt;) at t.c:6
+#2  0x000000000040036e in main () at t.c:7
+</pre></div>
+
+<p><small class="sc">GDB</small> 无法从程序状态中确定函数 <code class="code">a</code> 是否以及多少次通过函数 <code class="code">b</code>进行了自调用，因为这些调用将是尾调用。这样的尾调用会修改 <code class="code">i</code> 变量，因此
+<small class="sc">GDB</small> 不能确定它所知道的值是否正确 - <small class="sc">GDB</small>
+会打印 <code class="code">&lt;optimized out&gt;</code> 代替。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一节： <a href="Inline-Functions.html">内联函数</a>, 上一级： <a href="Optimized-Code.html">调试优化代码</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

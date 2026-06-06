@@ -1,0 +1,111 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>显式位置（使用 GDB 调试）</title>
+
+<meta name="description" content="Explicit Locations (Debugging with GDB)"/>
+<meta name="keywords" content="Explicit Locations (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Location-Specifications.html" rel="up" title="Location Specifications"/>
+<link href="Address-Locations.html" rel="next" title="Address Locations"/>
+<link href="Linespec-Locations.html" rel="prev" title="Linespec Locations"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Explicit-Locations">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Address-Locations.html" rel="next">地址位置</a>, 上一项： <a accesskey="p" href="Linespec-Locations.html" rel="prev">行规范位置</a>, 上一级： <a accesskey="u" href="Location-Specifications.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Explicit-Locations-1"><span>9.2.2 显式位置<a class="copiable-link" href="#Explicit-Locations-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-explicit-locations"></a>
+
+<p><em class="dfn">显式位置</em> 允许用户使用选项 - 值对直接指定源位置的参数。
+</p>
+<p>当程序源中有多个函数、标签或文件名（文件的基名）相同时，显式位置很有用。在这些情况下，显式位置能更准确、明确地指向你所指的源行。此外，在大型程序中使用显式位置可能会更快。
+</p>
+<p>例如，行规范 ‘<samp class="samp">foo:bar</samp>’ 可能指的是一个函数 <code class="code">bar</code>
+在名为 <samp class="file">foo</samp> 的文件中定义的，或者是一个标签 <code class="code">bar</code> 在名为 <code class="code">foo</code>.  <small class="sc">GDB</small> 的函数中。必须搜索文件系统或符号表才能确定。
+</p>
+<p>有效的显式位置选项列表总结如下表：
+</p>
+<dl class="table">
+<dt><code class="code">-source <var class="var">filename</var></code></dt>
+<dd><p>该值指定源文件名。为了区分具有相同基名的文件，需要在前面添加足够多的目录，以唯一标识所需的文件，例如 <samp class="file">foo/bar/baz.c</samp>. 否则
+<small class="sc">GDB</small> 将使用它找到的第一个具有给定基名的文件。此选项需要使用 <code class="code">-function</code> 或 <code class="code">-line</code>.
+</p>
+</dd>
+<dt><code class="code">-function <var class="var">function</var></code></dt>
+<dd><p>该值指定函数的名称。对未被其他选项（如 <code class="code">-label</code>
+或 <code class="code">-line</code>) 修改的函数位置进行的操作，指的是函数体开始的行。例如，在 C 语言中，这是带有左花括号的行。
+</p>
+<p>默认情况下，在 C 语言中<code class="t">++</code> 和 Ada 语言中 <var class="var">函数</var> 被解释为指定所有作用域中名为 <var class="var">函数</var> 的所有函数。对于 C 语言<code class="t">++</code>, 这意味着在所有命名空间和类中。对于 Ada 语言，这意味着在所有包中。
+</p>
+<p>例如，假设一个 C 语言程序中有符号<code class="t">++</code> 和
+<code class="code">A::B::func</code> , 两个命令 <code class="code">B::func</code> <kbd class="kbd">break -function func</kbd><!-- /@w --> 和 <kbd class="kbd">break -function B::func</kbd><!-- /@w --> 都会在这两个符号上设置断点。
+</p>
+<p>你可以使用 <kbd class="kbd">-qualified</kbd> 标志来覆盖此行为（见下文）。
+</p>
+</dd>
+<dt><code class="code">-qualified</code></dt>
+<dd>
+<p>此标志使 <small class="sc">GDB</small> 将使用
+<kbd class="kbd">-function</kbd> 指定的函数名解释为完整的完全限定名。
+</p>
+<p>例如，假设一个 C 语言程序中有符号<code class="t">++</code> 和
+<code class="code">A::B::func</code> , <code class="code">B::func</code> <kbd class="kbd">break -qualified -function B::func</kbd><!-- /@w --> 命令仅在 <code class="code">B::func</code>, 上设置断点。
+</p>
+<p>（注意： <kbd class="kbd">-qualified</kbd> 选项也可以放在行规范之前（见 <a class="pxref" href="Linespec-Locations.html">行规范位置</a>），因此上面的特定示例可以简化为 <kbd class="kbd">break -qualified B::func</kbd><!-- /@w -->.)
+</p>
+</dd>
+<dt><code class="code">-label <var class="var">label</var></code></dt>
+<dd><p>该值指定标签的名称。当未指定函数名时，会在当前选定栈帧的函数中搜索该标签。
+</p>
+</dd>
+<dt><code class="code">-line <var class="var">number</var></code></dt>
+<dd><p>该值指定位置的行偏移量。偏移量可以是绝对的（<code class="code">-line 3</code>) 或相对的（<code class="code">-line +3</code>)，具体取决于命令。当不指定任何其他选项时，行偏移量相对于当前行。
+</p></dd>
+</dl>
+
+<p>显式位置选项可以通过省略选项名中任何非唯一的尾部字符来缩写，例如 <kbd class="kbd">break -s main.c -li 3</kbd><!-- /@w -->.
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Address-Locations.html">地址位置</a>, 上一项： <a href="Linespec-Locations.html">行规范位置</a>, 上一级： <a href="Location-Specifications.html">位置规范</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

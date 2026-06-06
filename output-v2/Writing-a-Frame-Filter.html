@@ -1,0 +1,247 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>编写帧过滤器（使用GDB进行调试）</title>
+
+<meta name="description" content="Writing a Frame Filter (Debugging with GDB)"/>
+<meta name="keywords" content="Writing a Frame Filter (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Unwinding-Frames-in-Python.html" rel="next" title="Unwinding Frames in Python"/>
+<link href="Frame-Decorator-API.html" rel="prev" title="Frame Decorator API"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Writing-a-Frame-Filter">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Unwinding-Frames-in-Python.html" rel="next">Python中的帧展开</a> <a accesskey="p" href="Frame-Decorator-API.html" rel="prev">装饰帧</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Writing-a-Frame-Filter-1"><span>23.3.2.12 编写帧过滤器<a class="copiable-link" href="#Writing-a-Frame-Filter-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-writing-a-frame-filter"></a>
+
+<p>帧过滤器必须实现三个基本元素：它必须正确实现文档化的接口（参见 <a class="pxref" href="Frame-Filter-API.html">过滤帧</a>），必须向 <small class="sc">GDB</small>注册自身，最后，必须决定是否对 <small class="sc">GDB</small>提供的数据进行处理。在所有情况下，无论是否对迭代器进行处理，每个帧过滤器都必须返回一个迭代器。一个基本的帧过滤器遵循以下示例中的模式。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">import gdb
+
+class FrameFilter():
+
+    def __init__(self):
+        # 帧过滤器属性创建。
+        #
+        # &#39;name&#39; 是GDB将显示的过滤器名称。
+        #
+        # &#39;priority&#39; 是该过滤器相对于其他过滤器的优先级。
+        #
+        # &#39;enabled&#39; 是一个布尔值，指示此过滤器是否启用并应执行。
+
+        self.name = &#34;Foo&#34;
+        self.priority = 100
+        self.enabled = True
+
+        # 将此帧过滤器注册到全局 frame_filters 字典中。
+        gdb.frame_filters[self.name] = self
+
+    def filter(self, frame_iter):
+        # 直接返回迭代器。
+        return frame_iter
+</pre></div>
+
+<p>上面示例中的帧过滤器实现了所有帧过滤器的三个要求。它实现了API，自行注册，并对迭代器做出决策（在这种情况下，它只是原封不动地返回迭代器）。
+</p>
+<p>第一步是属性创建和赋值，如注释所示，过滤器分配以下属性：  <code class="code">name</code>,
+<code class="code">priority</code> 以及过滤器是否应通过
+<code class="code">enabled</code> 属性启用。
+</p>
+<p>第二步是将帧过滤器注册到帧过滤器感兴趣的字典中。如注释所示，此过滤器只是将自身注册到全局字典
+<code class="code">gdb.frame_filters</code>中。如前所述， <code class="code">gdb.frame_filters</code>
+是在 <code class="code">gdb</code> 模块中初始化的字典，当
+<small class="sc">GDB</small> 启动时。过滤器注册到哪个字典是一个重要的考虑因素。一般来说，如果一个过滤器特定于一组代码，它应该注册到 <code class="code">objfile</code> 或
+<code class="code">progspace</code> 字典中，因为它们特定于当前加载到 <small class="sc">GDB</small>中的程序。全局字典始终存在于 <small class="sc">GDB</small> 中，并且永远不会卸载。任何注册到全局字典的过滤器将一直存在，直到 <small class="sc">GDB</small> 退出。为了避免可能冲突的过滤器，通常最好将帧过滤器注册到与当前过滤器使用更紧密相关的字典中。请参阅 <a class="xref" href="Python-Auto_002dloading.html">Python自动加载</a>，以获取有关自动加载Python脚本的更多信息。
+</p>
+<p><small class="sc">GDB</small> 对帧过滤器注册采取不干预的方法，因此帧过滤器有责任确保注册已发生，并适当处理任何异常。特别是，您可能希望处理与Python字典键唯一性相关的异常。字典键必须与帧过滤器的 <code class="code">name</code>
+属性相同。当用户管理帧过滤器时（参见 <a class="pxref" href="Frame-Filter-Management.html">帧过滤器的管理。</a>），将显示的名称是包含在 <small class="sc">GDB</small> 属性中的名称。 <code class="code">name</code> 属性。
+</p>
+<p>此示例的最后一步是实现
+<code class="code">filter</code> 方法。如示例注释所示，我们定义了
+<code class="code">filter</code> 方法，并注意到该方法必须接受一个迭代器，并且还必须返回一个迭代器。在这个基本示例中，帧过滤器不是很有用，因为它只是原封不动地返回迭代器。然而，对于设置了 <code class="code">enabled</code> 属性但决定不对任何帧进行操作的帧过滤器来说，这是一个有效的操作。
+</p>
+<p>在下一个示例中，帧过滤器对所有帧进行操作，并使用帧装饰器对帧执行一些工作。请参阅 <a class="xref" href="Frame-Decorator-API.html">装饰帧</a>，以获取有关帧装饰器接口的更多信息。
+</p>
+<p>此示例处理内联帧。它通过用 “[inlined]” 标签标记内联帧来突出显示它们。通过使用Python的 <code class="code">itertools imap</code>
+方法将帧装饰器应用于所有帧，该示例将操作推迟到帧装饰器。帧装饰器仅在 <small class="sc">GDB</small> 打印回溯时处理。
+</p>
+<p>这引入了一个新的决策主题：是在过滤步骤还是在打印步骤执行决策操作。在此示例的方法中，它在过滤步骤除了将帧装饰器映射到每个帧之外，不执行任何过滤决策。这允许在打印每个帧时执行实际的决策。这是一个重要的考虑因素，在设计帧过滤器时非常值得思考。帧过滤器应避免的一个问题是尽可能避免展开栈。有些栈可能非常深，在某些情况下可达数万层。提前搜索每个帧以确定它是否内联在过滤步骤可能代价太高。帧过滤器无法知道它必须迭代多少帧，并且必须遍历所有帧。这最终会重复工作，因为
+<small class="sc">GDB</small> 在打印帧时会进行此迭代。
+</p>
+<p>在此示例中，决策可以推迟到打印步骤。当 <small class="sc">GDB</small> 迭代时，帧装饰器可以依次检查每个帧。从性能角度来看，这是最合适的决策，因为它避免了重复打印步骤无论如何都会进行的工作。此外，如果有许多帧过滤器在过滤期间展开栈，可能会显著延迟回溯的打印，这将导致大量内存使用和糟糕的用户体验。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class InlineFilter():
+
+    def __init__(self):
+        self.name = &#34;InlinedFrameFilter&#34;
+        self.priority = 100
+        self.enabled = True
+        gdb.frame_filters[self.name] = self
+
+    def filter(self, frame_iter):
+        frame_iter = itertools.imap(InlinedFrameDecorator,
+                                    frame_iter)
+        return frame_iter
+</pre></div>
+
+<p>此帧过滤器与前面的示例有些相似，除了 <code class="code">filter</code> 方法将一个名为
+<code class="code">InlinedFrameDecorator</code> 的帧装饰器对象应用于迭代器中的每个元素。
+<code class="code">imap</code> Python方法是轻量级的。它不会主动遍历迭代器，而是创建一个新的迭代器来包装现有的迭代器。
+</p>
+<p>以下是此示例的帧装饰器。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class InlinedFrameDecorator(FrameDecorator):
+
+    def __init__(self, fobj):
+        super(InlinedFrameDecorator, self).__init__(fobj)
+
+    def function(self):
+        frame = self.inferior_frame()
+        name = str(frame.name())
+
+        if frame.type() == gdb.INLINE_FRAME:
+            name = name + &#34; [inlined]&#34;
+
+        return name
+</pre></div>
+
+<p>此帧装饰器仅定义并覆盖了 <code class="code">function</code>
+方法。它让提供的 <code class="code">FrameDecorator</code>, 它随 <small class="sc">GDB</small>一起提供，执行与打印此帧相关的其他工作。
+</p>
+<p>这两个对象的组合从回溯中产生以下输出：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#0  0x004004e0 in bar () at inline.c:11
+#1  0x00400566 in max [inlined] (b=6, a=12) at inline.c:21
+#2  0x00400566 in main () at inline.c:31
+</pre></div>
+
+<p>因此，在这个示例中，无论帧是否内联，帧装饰器都应用于所有帧。当
+<small class="sc">GDB</small> 遍历帧过滤器产生的迭代器时，
+<small class="sc">GDB</small> 执行每个帧装饰器，然后在 <code class="code">function</code> 回调中决定打印什么。使用这样的策略是一种将帧内容的决策推迟到打印时间的方法。
+</p>
+<h4 class="subheading" id="Eliding-Frames"><span>省略帧<a class="copiable-link" href="#Eliding-Frames"> ¶</a></span></h4>
+
+<p>可能上述示例不适合表示内联帧，而分层方法可能更受欢迎。如果我们想以分层方式表示帧， <code class="code">elided</code> 帧装饰器接口可能更合适。
+</p>
+<p>此示例使用 <code class="code">elided</code> 方法处理这个问题。这个示例相当长，但非常简单。在本节中编写一个全面涵盖查找和打印内联帧所有方法的完整示例超出了范围。然而，这个示例说明了作者可能使用的方法。
+</p>
+<p>此示例由三个部分组成。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class InlineFrameFilter():
+
+    def __init__(self):
+        self.name = &#34;InlinedFrameFilter&#34;
+        self.priority = 100
+        self.enabled = True
+        gdb.frame_filters[self.name] = self
+
+    def filter(self, frame_iter):
+        return ElidingInlineIterator(frame_iter)
+</pre></div>
+
+<p>此帧过滤器与其他示例非常相似。唯一的区别是此帧过滤器用一个名为<code class="code">frame_iter</code>的自定义迭代器包装提供给它的迭代器（
+<code class="code">ElidingInlineIterator</code>）。这再次将操作推迟到
+<small class="sc">GDB</small> 打印回溯时，因为迭代器直到打印时才会被遍历。
+</p>
+<p>此示例的迭代器如下。在示例的这一部分中，对回溯的内容做出决策。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ElidingInlineIterator:
+    def __init__(self, ii):
+        self.input_iterator = ii
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        frame = next(self.input_iterator)
+
+        if frame.inferior_frame().type() != gdb.INLINE_FRAME:
+            return frame
+
+        try:
+            eliding_frame = next(self.input_iterator)
+        except StopIteration:
+            return frame
+        return ElidingFrameDecorator(eliding_frame, [frame])
+</pre></div>
+
+<p>此迭代器实现了Python迭代器协议。当
+<code class="code">next</code> 函数被调用时（当 <small class="sc">GDB</small> 打印每个帧时），迭代器检查这个帧装饰器 <code class="code">frame</code>, 是否包装了一个内联帧。如果不是，它原封不动地返回现有的帧装饰器。如果它包装了一个内联帧，它假设内联帧包含在接下来最旧的帧
+<code class="code">eliding_frame</code>, 中，它会获取该帧。然后它创建并返回一个帧装饰器 <code class="code">ElidingFrameDecorator</code>, 它包含省略的帧和省略它的帧。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ElidingInlineDecorator(FrameDecorator):
+
+    def __init__(self, frame, elided_frames):
+        super(ElidingInlineDecorator, self).__init__(frame)
+        self.frame = frame
+        self.elided_frames = elided_frames
+
+    def elided(self):
+        return iter(self.elided_frames)
+</pre></div>
+
+<p>此帧装饰器覆盖了一个函数，并在 <code class="code">elided</code> 方法中返回内联帧。和之前一样，它让
+<code class="code">FrameDecorator</code> 完成打印此帧涉及的其余工作。这产生了以下输出。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">#0  0x004004e0 in bar () at inline.c:11
+#2  0x00400529 in main () at inline.c:25
+    #1  0x00400529 in max (b=6, a=12) at inline.c:15
+</pre></div>
+
+<p>在那个输出中 <code class="code">max</code> 已内联到 <code class="code">main</code> 以分层方式打印。另一种方法是将
+<code class="code">function</code> 方法，以及 <code class="code">elided</code> 方法结合起来，既在内联帧中打印一个标记，又显示分层关系。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Unwinding-Frames-in-Python.html">Python中的帧展开</a>，上一项： <a href="Frame-Decorator-API.html">装饰帧</a>，上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

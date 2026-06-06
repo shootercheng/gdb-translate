@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>覆盖示例程序（使用GDB调试）</title>
+
+<meta name="description" content="Overlay Sample Program (Debugging with GDB)"/>
+<meta name="keywords" content="Overlay Sample Program (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Overlays.html" rel="up" title="Overlays"/>
+<link href="Automatic-Overlay-Debugging.html" rel="prev" title="Automatic Overlay Debugging"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Overlay-Sample-Program">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Automatic-Overlay-Debugging.html" rel="prev">自动覆盖调试</a>, 上级： <a accesskey="u" href="Overlays.html" rel="up">调试使用覆盖的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Overlay-Sample-Program-1"><span>14.4 覆盖示例程序<a class="copiable-link" href="#Overlay-Sample-Program-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-overlay-example-program"></a>
+
+<p>在链接使用覆盖的程序时，必须将覆盖部分放置在其加载地址，同时将它们重定位到其映射地址运行。要做到这一点，必须编写一个链接器脚本（请参阅 <a data-manual="ld.info" href="https://sourceware.org/binutils/docs/ld/Overlay-Description.html#Overlay-Description">覆盖描述</a> 在 <cite class="cite">《使用ld：GNU链接器》</cite>）。不幸的是，由于链接器脚本特定于特定的主机系统、目标架构和目标内存布局，本手册无法提供可移植的示例代码来演示 <small class="sc">GDB</small>的覆盖支持。
+</p>
+<p>然而， <small class="sc">GDB</small> 源代码发行版确实包含一个覆盖程序，作为其测试套件的一部分，其中包含几个系统的链接器脚本。该程序由以下来自
+<samp class="file">gdb/testsuite/gdb.base</samp>的文件组成：
+</p>
+<dl class="table">
+<dt><samp class="file">overlays.c</samp></dt>
+<dd><p>主程序文件。
+</p></dd>
+<dt><samp class="file">ovlymgr.c</samp></dt>
+<dd><p>一个简单的覆盖管理器，供 <samp class="file">overlays.c</samp>使用。
+</p></dd>
+<dt><samp class="file">foo.c</samp></dt>
+<dt><samp class="file">bar.c</samp></dt>
+<dt><samp class="file">baz.c</samp></dt>
+<dt><samp class="file">grbx.c</samp></dt>
+<dd><p>覆盖模块，由 <samp class="file">overlays.c</samp>加载和使用。
+</p></dd>
+<dt><samp class="file">d10v.ld</samp></dt>
+<dt><samp class="file">m32r.ld</samp></dt>
+<dd><p>用于在 <code class="code">d10v-elf</code>
+和 <code class="code">m32r-elf</code> 目标上链接测试程序的链接器脚本。
+</p></dd>
+</dl>
+
+<p>可以使用 <code class="code">d10v-elf</code> GCC交叉编译器像这样构建测试程序：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">$ d10v-elf-gcc -g -c overlays.c
+$ d10v-elf-gcc -g -c ovlymgr.c
+$ d10v-elf-gcc -g -c foo.c
+$ d10v-elf-gcc -g -c bar.c
+$ d10v-elf-gcc -g -c baz.c
+$ d10v-elf-gcc -g -c grbx.c
+$ d10v-elf-gcc -g overlays.o ovlymgr.o foo.o bar.o \
+                  baz.o grbx.o -Wl,-Td10v.ld -o overlays
+</pre></div>
+
+<p>对于任何其他架构，构建过程是相同的，除了必须为目标系统替换适当的编译器和链接器脚本以替代 <code class="code">d10v-elf-gcc</code> 和 <code class="code">d10v.ld</code>。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Automatic-Overlay-Debugging.html">自动覆盖调试</a>, 上级： <a href="Overlays.html">调试使用覆盖的程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

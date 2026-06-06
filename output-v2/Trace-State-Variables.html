@@ -1,0 +1,88 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪状态变量（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Trace State Variables (Debugging with GDB)"/>
+<meta name="keywords" content="Trace State Variables (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Tracepoint-Actions.html" rel="next" title="Tracepoint Actions"/>
+<link href="Tracepoint-Conditions.html" rel="prev" title="Tracepoint Conditions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Trace-State-Variables">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Tracepoint-Actions.html" rel="next">跟踪点动作列表</a> <a accesskey="p" href="Tracepoint-Conditions.html" rel="prev">跟踪点条件</a>, 上级： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Trace-State-Variables-1"><span>13.1.5 跟踪状态变量<a class="copiable-link" href="#Trace-State-Variables-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-trace-state-variables"></a>
+
+<p>A <em class="dfn">跟踪状态变量</em> 是一种特殊类型的变量，由目标端代码创建和管理。其语法与 GDB 的便利变量（以“$”为前缀的字符串）相同，但它们存储在目标端。必须使用 <code class="code">tvariable</code> 命令显式创建它们。它们始终是 64 位有符号整数。
+</p>
+<p>跟踪状态变量由 <small class="sc">GDB</small>记住，并在跟踪实验开始时与跟踪点信息一起下载到目标端。除了目标端的内存限制外，跟踪状态变量的数量没有内在限制。
+</p>
+<a class="index-entry-id" id="index-convenience-variables_002c-and-trace-state-variables"></a>
+<p>尽管跟踪状态变量由目标端管理，但你可以在打印命令和表达式中像使用便利变量一样使用它们； <small class="sc">GDB</small> 在跟踪实验运行时会从目标端获取当前值。跟踪状态变量与其他“$”变量共享相同的命名空间，这意味着你不能有像 <code class="code">$23</code> 或
+<code class="code">$pc</code>这样名称的跟踪状态变量，也不能有名称相同的跟踪状态变量和便利变量。
+</p>
+<dl class="table">
+<dt><a id="index-tvariable"></a><span><code class="code">tvariable $<var class="var">name</var> [ = <var class="var">expression</var> ]</code><a class="copiable-link" href="#index-tvariable"> ¶</a></span></dt>
+<dd><p>The <code class="code">tvariable</code> 命令创建一个名为
+<code class="code">$<var class="var">name</var></code>的新跟踪状态变量，并可选地为其赋予初始值
+<var class="var">表达式</var>. 当输入此命令时，会计算 <var class="var">表达式</var> ；如果可能，结果将转换为整数，否则 <small class="sc">GDB</small> 将报告错误。后续指定相同名称的
+<code class="code">tvariable</code> 命令不会创建变量，而是将提供的初始值赋给该名称的现有变量，覆盖任何先前的初始值。默认初始值为 0。
+</p>
+</dd>
+<dt><a id="index-info-tvariables"></a><span><code class="code">info tvariables</code><a class="copiable-link" href="#index-info-tvariables"> ¶</a></span></dt>
+<dd><p>列出所有跟踪状态变量及其初始值。如果跟踪实验当前正在运行，也可能显示它们的当前值。
+</p>
+</dd>
+<dt><a id="index-delete-tvariable"></a><span><code class="code">delete tvariable <span class="r">[</span> $<var class="var">name</var> … <span class="r">]</span></code><a class="copiable-link" href="#index-delete-tvariable"> ¶</a></span></dt>
+<dd><p>删除给定的跟踪状态变量，如果未指定参数，则删除所有跟踪状态变量。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Tracepoint-Actions.html">跟踪点动作列表</a>, 上一项： <a href="Tracepoint-Conditions.html">跟踪点条件</a>, 上级： <a href="Set-Tracepoints.html">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

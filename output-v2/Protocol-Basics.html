@@ -1,0 +1,106 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>协议基础（使用 GDB 调试）</title>
+
+<meta name="description" content="Protocol Basics (Debugging with GDB)"/>
+<meta name="keywords" content="Protocol Basics (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up" title="File-I/O Remote Protocol Extension"/>
+<link href="The-F-Request-Packet.html" rel="next" title="The F Request Packet"/>
+<link href="File_002dI_002fO-Overview.html" rel="prev" title="File-I/O Overview"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Protocol-Basics">
+<div class="nav-panel">
+<p>
+下一章： <a accesskey="n" href="The-F-Request-Packet.html" rel="next">该 <code class="code">F</code> 请求数据包</a>, 上一章： <a accesskey="p" href="File_002dI_002fO-Overview.html" rel="prev">文件 I/O 概述</a>, 上级： <a accesskey="u" href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="up">文件 I/O 远程协议扩展</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Protocol-Basics-1"><span>E.14.2 协议基础<a class="copiable-link" href="#Protocol-Basics-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-protocol-basics_002c-file_002di_002fo"></a>
+
+<p>文件 I/O 协议使用 <code class="code">F</code> 数据包作为请求以及响应数据包。由于文件 I/O 系统调用只能在
+<small class="sc">GDB</small> 等待继续或单步执行的目标的响应时发生，
+文件 I/O 请求是一个响应，该响应是 <small class="sc">GDB</small> 作为之前的 ‘<samp class="samp">C</samp>’、‘<samp class="samp">c</samp>’、‘<samp class="samp">S</samp>’ 或 ‘<samp class="samp">s</samp>’ 数据包的结果而必须预期的。
+此 <code class="code">F</code> 数据包包含允许 <small class="sc">GDB</small>
+调用适当的主机系统调用所需的所有信息：
+</p>
+<ul class="itemize mark-bullet">
+<li>所请求系统调用的唯一标识符。
+
+</li><li>系统调用的所有参数。指针以目标内存地址空间中的地址形式给出。字符串指针以指针/长度对的形式给出。数值按原样给出。
+数值控制标志以特定于协议的表示形式给出。
+
+</li></ul>
+
+<p>此时， <small class="sc">GDB</small> 必须执行以下操作。
+</p>
+<ul class="itemize mark-bullet">
+<li>如果参数包含作为系统调用输入所需数据的指针值， <small class="sc">GDB</small> 使用标准 <code class="code">m</code> 数据包请求从目标获取此数据。目标实现必须预期这种额外的通信，并将其作为任何其他 <code class="code">m</code>
+数据包进行处理。
+
+</li><li><small class="sc">GDB</small> 根据需要将所有值从协议表示形式转换为主机表示形式。数据类型被强制转换为主机类型。
+
+</li><li><small class="sc">GDB</small> 调用系统调用。
+
+</li><li>然后它将数据类型转换回协议表示形式。
+
+</li><li>如果系统调用预期在调用的指针参数指定的缓冲区空间中返回数据，则使用 <code class="code">M</code> 或 <code class="code">X</code> 数据包将数据传输到目标。目标实现必须预期此数据包，并将其作为任何其他 <code class="code">M</code> 或 <code class="code">X</code>
+数据包进行处理。
+
+</li></ul>
+
+<p>最终 <small class="sc">GDB</small> 用另一个 <code class="code">F</code> 数据包进行响应，该数据包包含目标继续所需的所有必要信息。这至少包含
+</p>
+<ul class="itemize mark-bullet">
+<li>返回值。
+
+</li><li><code class="code">errno</code>, 如果它已被系统调用更改。
+
+</li><li>“Ctrl - C” 标志。
+
+</li></ul>
+
+<p>在完成所需的类型和值转换后，目标继续最新的继续或单步操作。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一章： <a href="The-F-Request-Packet.html">该 <code class="code">F</code> 请求数据包</a>, 上一章： <a href="File_002dI_002fO-Overview.html">文件 I/O 概述</a>, 上级： <a href="File_002dI_002fO-Remote-Protocol-Extension.html">文件 I/O 远程协议扩展</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

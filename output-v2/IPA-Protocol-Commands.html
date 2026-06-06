@@ -1,0 +1,95 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>IPA协议命令（使用GDB进行调试）</title>
+
+<meta name="description" content="IPA Protocol Commands (Debugging with GDB)"/>
+<meta name="keywords" content="IPA Protocol Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="In_002dProcess-Agent-Protocol.html" rel="up" title="In-Process Agent Protocol"/>
+<link href="IPA-Protocol-Objects.html" rel="prev" title="IPA Protocol Objects"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="IPA-Protocol-Commands">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="IPA-Protocol-Objects.html" rel="prev">IPA协议对象</a>, 上一级： <a accesskey="u" href="In_002dProcess-Agent-Protocol.html" rel="up">进程内代理协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="IPA-Protocol-Commands-1"><span>31.1.2 IPA协议命令<a class="copiable-link" href="#IPA-Protocol-Commands-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-ipa-protocol-commands"></a>
+
+<p>每个命令中的空格是分隔符，以便于阅读此命令规范。它们在实际命令中并不存在。
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">快速跟踪：<var class="var">跟踪点对象</var> <var class="var">gdb跳转垫头部</var></samp>’</dt>
+<dd><p>安装一个由以下内容描述的新快速跟踪点 <var class="var">跟踪点对象</var>
+（见 <a class="pxref" href="IPA-Protocol-Objects.html#tracepoint-object">跟踪点对象</a>）。 <var class="var">gdb跳转垫头部</var>，长度为8字节，是 <em class="dfn">跳转垫</em>的头部，最终用于在IPA中跳转到数据收集例程。
+</p>
+<p>回复：
+</p><dl class="table">
+<dt>‘<samp class="samp">确定 <var class="var">目标地址</var> <var class="var">gdb跳转垫头部</var> <var class="var">快速跳转大小</var> <var class="var">快速跳转</var></samp>’</dt>
+<dd><p><var class="var">目标地址</var> 是被调试程序中跟踪点的地址。 <var class="var">gdb跳转垫头部</var> 是更新后的跳转垫头部。
+<var class="var">目标地址</var> 和 <var class="var">gdb跳转垫头部</var> 均为8字节长。 <var class="var">快速跳转</var> 包含一系列跳转到跳转垫入口的指令。 <var class="var">快速跳转大小</var>，长度为4字节，是 <var class="var">快速跳转</var>的大小。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt>‘<samp class="samp">关闭</samp>’</dt>
+<dd><p>关闭进程内代理。当 <small class="sc">GDB</small> 或GDB服务器即将终止被调试程序时，会发送此命令。
+</p>
+</dd>
+<dt>‘<samp class="samp">qTfSTM</samp>’</dt>
+<dd><p>见 <a class="xref" href="Tracepoint-Packets.html#qTfSTM">qTfSTM</a>。
+</p></dd>
+<dt>‘<samp class="samp">qTsSTM</samp>’</dt>
+<dd><p>见 <a class="xref" href="Tracepoint-Packets.html#qTsSTM">qTsSTM</a>。
+</p></dd>
+<dt>‘<samp class="samp">qTSTMat</samp>’</dt>
+<dd><p>见 <a class="xref" href="Tracepoint-Packets.html#qTSTMat">qTSTMat</a>。
+</p></dd>
+<dt>‘<samp class="samp">在指定地址探测标记：<var class="var">地址</var></samp>’</dt>
+<dd><p>要求进程内代理在 <var class="var">地址</var>处探测标记。
+</p>
+<p>回复：
+</p></dd>
+<dt>‘<samp class="samp">取消在指定地址探测标记：<var class="var">地址</var></samp>’</dt>
+<dd><p>要求进程内代理取消在 <var class="var">地址</var>处探测标记。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

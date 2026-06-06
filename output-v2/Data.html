@@ -1,0 +1,326 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>数据（使用GDB调试）</title>
+
+<meta name="description" content="Data (Debugging with GDB)"/>
+<meta name="keywords" content="Data (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Optimized-Code.html" rel="next" title="Optimized Code"/>
+<link href="Source.html" rel="prev" title="Source"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Data">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Optimized-Code.html" rel="next">调试优化代码</a>, 上一项： <a accesskey="p" href="Source.html" rel="prev">检查源文件</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Examining-Data"><span>10 检查数据<a class="copiable-link" href="#Examining-Data"> ¶</a></span></h2>
+
+<a class="index-entry-id" id="index-printing-data"></a>
+<a class="index-entry-id" id="index-examining-data"></a>
+<a class="index-entry-id" id="index-print"></a>
+<a class="index-entry-id" id="index-inspect"></a>
+<p>在你的程序中检查数据的常用方法是使用 <code class="code">print</code>
+命令（缩写为 <code class="code">p</code>），或者它的同义词 <code class="code">inspect</code>。它计算并打印程序所使用语言的表达式的值（请参阅 <a class="pxref" href="Languages.html">使用 <small class="sc">GDB</small> 与不同语言一起使用</a>）。它还可能使用基于Python的漂亮打印机来打印表达式（请参阅 <a class="pxref" href="Pretty-Printing.html">漂亮打印</a>).
+</p>
+<dl class="table">
+<dt><code class="code">print [[<var class="var">options</var>] --] <var class="var">expr</var></code></dt>
+<dt><code class="code">print [[<var class="var">options</var>] --] /<var class="var">f</var> <var class="var">expr</var></code></dt>
+<dd><p><var class="var">expr</var> 是一个表达式（用源语言表示）。默认情况下， <var class="var">expr</var> 的值将以适合其数据类型的格式打印；你可以通过指定 ‘<samp class="samp">/<var class="var">f</var></samp>’ 来选择不同的格式，其中
+<var class="var">f</var> 是一个指定格式的字母；请参阅 <a class="ref" href="Output-Formats.html">输出格式</a>.
+</p>
+<a class="anchor" id="print-options"></a><p>该 <code class="code">print</code> 命令支持许多选项，这些选项允许覆盖由 <code class="code">set print</code>
+子命令设置的相关全局打印设置：
+</p>
+<dl class="table">
+<dt><code class="code">-address [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置地址的打印。相关设置： <a class="ref" href="Print-Settings.html#set-print-address">set print address</a>.
+</p>
+</dd>
+<dt><code class="code">-array [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>数组的漂亮格式。相关设置： <a class="ref" href="Print-Settings.html#set-print-array">set print array</a>.
+</p>
+</dd>
+<dt><code class="code">-array-indexes [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置数组索引的打印。相关设置： <a class="ref" href="Print-Settings.html#set-print-array_002dindexes">set print array-indexes</a>.
+</p>
+</dd>
+<dt><code class="code">-characters <var class="var">number-of-characters</var>|<code class="code">elements</code>|<code class="code">unlimited</code></code></dt>
+<dd><p>设置要打印的字符串字符的限制。该值 <code class="code">elements</code>
+会导致使用要打印的数组元素的限制。该值
+<code class="code">unlimited</code> 表示没有限制。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-characters">set print characters</a>.
+</p>
+</dd>
+<dt><code class="code">-elements <var class="var">number-of-elements</var>|<code class="code">unlimited</code></code></dt>
+<dd><p>设置要打印的数组元素和可选的字符串字符的限制。请参阅 <a class="ref" href="Print-Settings.html#set-print-characters">set print characters</a>, 以及上面的 <code class="code">-characters</code> 选项，了解此选项何时适用于字符串。该值 <code class="code">unlimited</code>
+表示没有限制。请参阅 <a class="xref" href="Print-Settings.html#set-print-elements">set print elements</a>, 了解相关的CLI命令。
+</p>
+</dd>
+<dt><code class="code">-max-depth <var class="var">depth</var>|<code class="code">unlimited</code></code></dt>
+<dd><p>设置嵌套结构被省略号替换的阈值。相关设置： <a class="ref" href="Print-Settings.html#set-print-max_002ddepth">set print max-depth</a>.
+</p>
+</dd>
+<dt><code class="code">-nibbles [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否以四位一组（即“半字节”）的形式打印二进制值。请参阅 <a class="xref" href="Print-Settings.html#set-print-nibbles">set print nibbles</a>.
+</p>
+</dd>
+<dt><code class="code">-memory-tag-violations [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否打印有关内存标记违规的额外信息。请参阅 <a class="xref" href="Print-Settings.html#set-print-memory_002dtag_002dviolations">set print memory-tag-violations</a>.
+</p>
+</dd>
+<dt><code class="code">-null-stop [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置字符数组的打印在遇到第一个空字符时停止。相关设置： <a class="ref" href="Print-Settings.html#set-print-null_002dstop">set print null-stop</a>.
+</p>
+</dd>
+<dt><code class="code">-object [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否打印C<code class="t">++</code> 虚函数表。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-object">set print object</a>.
+</p>
+</dd>
+<dt><code class="code">-pretty [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置结构体的漂亮格式。相关设置： <a class="ref" href="Print-Settings.html#set-print-pretty">set print pretty</a>.
+</p>
+</dd>
+<dt><code class="code">-raw-values [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否以原始形式打印值，绕过该值的任何漂亮打印机。相关设置： <a class="ref" href="Print-Settings.html#set-print-raw_002dvalues">set print raw-values</a>.
+</p>
+</dd>
+<dt><code class="code">-repeats <var class="var">number-of-repeats</var>|<code class="code">unlimited</code></code></dt>
+<dd><p>设置重复打印元素的阈值。  <code class="code">unlimited</code> 会导致所有元素都单独打印。相关设置： <a class="ref" href="Print-Settings.html#set-print-repeats">set print repeats</a>.
+</p>
+</dd>
+<dt><code class="code">-static-members [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否打印C<code class="t">++</code> 静态成员。相关设置： <a class="ref" href="Print-Settings.html#set-print-static_002dmembers">set print static-members</a>.
+</p>
+</dd>
+<dt><code class="code">-symbol [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置打印指针时是否打印符号名。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-symbol">set print symbol</a>.
+</p>
+</dd>
+<dt><code class="code">-union [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否打印结构内部的联合体。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-union">set print union</a>.
+</p>
+</dd>
+<dt><code class="code">-vtbl [<code class="code">on</code>|<code class="code">off</code>]</code></dt>
+<dd><p>设置是否打印C++虚函数表。相关设置：
+<a class="ref" href="Print-Settings.html#set-print-vtbl">set print vtbl</a>.
+</p></dd>
+</dl>
+
+<p>由于 <code class="code">print</code> 命令接受可能看起来像选项（包括缩写）的任意表达式，如果你指定任何命令选项，则必须使用双破折号（<code class="code">--</code>）来标记选项处理的结束。
+</p>
+<p>例如，这会打印 <code class="code">-p</code> 表达式的值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -p
+</pre></div>
+
+<p>而这会重复值历史记录中的最后一个值（见下文），同时使用 <code class="code">-pretty</code> 生效的选项：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print -p --
+</pre></div>
+
+<p>这里有一个同时包含选项和表达式的示例：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) print -pretty -- *myptr
+$1 = {
+  next = 0x0,
+  flags = {
+    sweet = 1,
+    sour = 1
+  },
+  meat = 0x54 &#34;猪肉&#34;
+}
+</pre></div></div>
+
+</dd>
+<dt><a id="index-reprint-the-last-value"></a><span><code class="code">print [<var class="var">options</var>]</code><a class="copiable-link" href="#index-reprint-the-last-value"> ¶</a></span></dt>
+<dt><code class="code">print [<var class="var">options</var>] /<var class="var">f</var></code></dt>
+<dd><p>如果省略 <var class="var">表达式</var>, <small class="sc">GDB</small> 会再次显示最后一个值（来自
+<em class="dfn">值历史记录</em>；请参阅 <a class="pxref" href="Value-History.html">值历史记录</a>）。这允许你方便地以另一种格式检查相同的值。
+</p></dd>
+</dl>
+
+<p>如果架构支持内存标记， <code class="code">print</code> 命令将显示指针/内存标记不匹配的情况，如果正在打印的是指针或引用类型。请参阅 <a class="xref" href="Memory-Tagging.html">内存标记</a>.
+</p>
+<p>一种更底层的检查数据的方法是使用 <code class="code">x</code> 命令。它检查指定地址处的内存数据，并以指定的格式打印。请参阅 <a class="xref" href="Memory.html">检查内存</a>.
+</p>
+<p>如果你对类型信息或结构体或类的字段声明方式感兴趣，请使用 <code class="code">ptype <var class="var">expr</var></code>
+命令而不是 <code class="code">print</code>. 请参阅 <a class="xref" href="Symbols.html">检查符号表</a>.
+</p>
+<a class="index-entry-id" id="index-exploring-hierarchical-data-structures"></a>
+<a class="index-entry-id" id="index-explore"></a>
+<p>另一种检查表达式值和类型信息的方法是通过Python扩展命令 <code class="code">explore</code> （仅在 <small class="sc">GDB</small> 构建配置为 <code class="code">--with-python</code>时可用）。它提供了一种交互式方式，从表达式的数据类型的最高级别（或最抽象级别）开始，一直探索到嵌入在更高级别数据类型中的叶标量值/字段。
+</p>
+<dl class="table">
+<dt><code class="code">explore <var class="var">arg</var></code></dt>
+<dd><p><var class="var">参数</var> 可以是一个表达式（用源语言表示），也可以是正在调试的程序当前上下文中可见的类型。
+</p></dd>
+</dl>
+
+<p>该 <code class="code">explore</code> 命令的工作方式可以通过一个示例来说明。如果在你的C程序中定义了一个数据类型 <code class="code">struct ComplexStruct</code> 如下
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct SimpleStruct
+{
+  int i;
+  double d;
+};
+
+struct ComplexStruct
+{
+  struct SimpleStruct *ss_p;
+  int arr[10];
+};
+</pre></div>
+
+<p>接着进行变量声明，如下
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct SimpleStruct ss = { 10, 1.11 };
+struct ComplexStruct cs = { &amp;ss, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+</pre></div>
+
+<p>那么，可以使用 <code class="code">cs</code> 命令来探索变量
+<code class="code">explore</code> 的值，如下所示。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) explore cs
+`cs&#39; 的值是一个 `struct ComplexStruct&#39; 类型的结构体/类，具有以下字段：
+
+  ss_p = &lt;输入 0 以探索 `struct SimpleStruct *&#39; 类型的这个字段&gt;
+   arr = &lt;输入 1 以探索 `int [10]&#39; 类型的这个字段&gt;
+
+请输入要探索的字段编号：
+</pre></div>
+
+<p>由于 <code class="code">cs</code> 的字段不是标量值，系统会提示你选择要探索的字段。假设你选择了字段 <code class="code">ss_p</code> ，通过输入 <code class="code">0</code>。然后，由于这个字段是一个指针，系统会询问它是否指向单个值。从上面 <code class="code">cs</code> 的声明来看，它确实指向单个值，因此你输入 <code class="code">y</code>。如果你输入 <code class="code">n</code>, 系统会询问它是否指向一个值数组，在这种情况下，这个字段将被当作数组进行探索。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">`cs.ss_p&#39; 是一个指向 `struct SimpleStruct&#39; 类型值的指针
+是否继续将其作为指向单个值的指针进行探索 [y/n]：y
+`*(cs.ss_p)&#39; 的值是一个 `struct SimpleStruct&#39; 类型的结构体/类，具有以下字段：
+
+  i = 10 .. （`int&#39; 类型的值）
+  d = 1.1100000000000001 .. （`double&#39; 类型的值）
+
+按回车键返回父值：
+</pre></div>
+
+<p>如果之前通过输入 <code class="code">arr</code> 选择了 <code class="code">cs</code> 的字段进行探索，那么由于它是一个数组，系统会提示你输入要探索的数组元素的索引。 <code class="code">1</code> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">`cs.arr&#39; 是一个 `int&#39; 类型的数组。
+请输入要在 `cs.arr&#39; 中探索的元素的索引：5
+
+`(cs.arr)[5]&#39; 是一个 `int&#39; 类型的标量值。
+
+(cs.arr)[5] = 4
+
+按回车键返回父值： 
+</pre></div>
+
+<p>一般来说，在探索的任何阶段，你可以通过适当地响应提示来深入探索叶值，或者按回车键返回包含该数据的结构（即 <i class="i">更高级别的数据结构）。</i>
+
+</p>
+<p>与探索值类似，你可以使用 <code class="code">explore</code> 命令来探索类型。你不是指定一个值（通常是变量名或在正在调试的程序当前上下文中有效的表达式），而是指定一个类型名。如果你考虑上面的同一个示例，你可以通过将参数
+<code class="code">struct ComplexStruct</code> 传递给
+<code class="code">struct ComplexStruct</code> 命令来探索类型 <code class="code">explore</code> 。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) explore struct ComplexStruct
+</pre></div>
+
+<p>通过在后续的交互式会话中适当地响应提示，你可以以类似于上面示例中探索值 <code class="code">struct ComplexStruct</code> 的方式探索类型 <code class="code">cs</code> 的方式。
+</p>
+<p>该 <code class="code">explore</code> 命令还有两个子命令，
+<code class="code">explore value</code> 和 <code class="code">explore type</code>。前者子命令是一种明确指定要对参数进行值探索的方式，而后者是一种明确指定要对参数进行类型探索的方式。
+</p>
+<dl class="table">
+<dt><a id="index-explore-value"></a><span><code class="code">explore value <var class="var">expr</var></code><a class="copiable-link" href="#index-explore-value"> ¶</a></span></dt>
+<dd><p>该 <code class="code">explore</code> 的这个子命令用于探索表达式 <var class="var">expr</var> （如果 <var class="var">expr</var> 是在正在调试的程序当前上下文中有效的表达式）。此命令的行为与将参数 <code class="code">explore</code>
+传递给 <var class="var">expr</var>命令的行为相同。
+</p>
+</dd>
+<dt><a id="index-explore-type"></a><span><code class="code">explore type <var class="var">arg</var></code><a class="copiable-link" href="#index-explore-type"> ¶</a></span></dt>
+<dd><p>该 <code class="code">explore</code> 的这个子命令用于探索 <var class="var">arg</var> 的类型（如果
+<var class="var">arg</var> 是在正在调试的程序当前上下文中可见的类型），或者探索值/表达式 <var class="var">arg</var> 的类型（如果 <var class="var">arg</var>
+是在正在调试的程序当前上下文中有效的表达式）。如果 <var class="var">arg</var> 是一个类型，那么此命令的行为与将参数 <code class="code">explore</code> 传递给 <var class="var">arg</var>. 如果 <var class="var">arg</var> 是一个表达式，那么此命令的行为将与将 <code class="code">explore</code> 命令的参数设置为 <var class="var">arg</var> 的类型时的行为相同。
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Expressions.html">表达式</a></li>
+<li><a accesskey="2" href="Ambiguous-Expressions.html">有歧义的表达式</a></li>
+<li><a accesskey="3" href="Variables.html">程序变量</a></li>
+<li><a accesskey="4" href="Arrays.html">人工数组</a></li>
+<li><a accesskey="5" href="Output-Formats.html">输出格式</a></li>
+<li><a accesskey="6" href="Memory.html">检查内存</a></li>
+<li><a accesskey="7" href="Memory-Tagging.html">内存标记</a></li>
+<li><a accesskey="8" href="Auto-Display.html">自动显示</a></li>
+<li><a accesskey="9" href="Print-Settings.html">打印设置</a></li>
+<li><a href="Pretty-Printing.html">漂亮打印</a></li>
+<li><a href="Value-History.html">值历史记录</a></li>
+<li><a href="Convenience-Vars.html">便利变量</a></li>
+<li><a href="Convenience-Funs.html">便利函数</a></li>
+<li><a href="Registers.html">寄存器</a></li>
+<li><a href="Floating-Point-Hardware.html">浮点硬件</a></li>
+<li><a href="Vector-Unit.html">向量单元</a></li>
+<li><a href="OS-Information.html">操作系统辅助信息</a></li>
+<li><a href="Memory-Region-Attributes.html">内存区域属性</a></li>
+<li><a href="Dump_002fRestore-Files.html">内存与文件之间的复制</a></li>
+<li><a href="Core-File-Generation.html">如何从你的程序生成核心文件</a></li>
+<li><a href="Character-Sets.html">字符集</a></li>
+<li><a href="Caching-Target-Data.html">目标数据缓存</a></li>
+<li><a href="Searching-Memory.html">搜索内存</a></li>
+<li><a href="Value-Sizes.html">值大小</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Optimized-Code.html">调试优化代码</a>, 上一项： <a href="Source.html">检查源文件</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

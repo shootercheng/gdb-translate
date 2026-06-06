@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自动加载详细模式（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Auto-loading verbose mode (Debugging with GDB)"/>
+<meta name="keywords" content="Auto-loading verbose mode (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Auto_002dloading.html" rel="up" title="Auto-loading"/>
+<link href="Auto_002dloading-safe-path.html" rel="prev" title="Auto-loading safe path"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Auto_002dloading-verbose-mode">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Auto_002dloading-safe-path.html" rel="prev">自动加载的安全限制</a>, 上一级： <a accesskey="u" href="Auto_002dloading.html" rel="up">自动加载关联文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Displaying-files-tried-for-auto_002dload"><span>22.8.4 显示尝试自动加载的文件<a class="copiable-link" href="#Displaying-files-tried-for-auto_002dload"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-auto_002dloading-verbose-mode"></a>
+
+<p>为了更清楚地了解可以放置脚本以便与被调试程序一起自动加载的所有文件位置，或者为了防止意外执行不可信的脚本， <small class="sc">GDB</small> 提供了一个功能，用于打印所有尝试加载的文件。既可以打印存在的文件，也可以打印不存在的文件。
+</p>
+<p>例如，可以安全地自动加载文件的目录列表（请参阅 <a class="pxref" href="Auto_002dloading-safe-path.html">自动加载的安全限制</a>）也适用于规范化的文件名，在设置时可能不太明显。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set debug auto-load on
+(gdb) file ~/src/t/true
+自动加载：为目标文件 &#34;/tmp/true&#34; 加载命令脚本 &#34;/tmp/true - gdb.gdb&#34; 的预定义序列。
+自动加载：更新 &#34;/usr:/opt&#34; 目录。
+自动加载：使用目录 &#34;/usr&#34;。
+自动加载：使用目录 &#34;/opt&#34;。
+警告：文件 &#34;/tmp/true - gdb.gdb&#34; 的自动加载已被您设置的 `auto - load safe - path` &#34;/usr:/opt&#34; 拒绝。
+</pre></div>
+
+<dl class="table">
+<dd><a class="anchor" id="set-debug-auto_002dload"></a></dd>
+<dt><a id="index-set-debug-auto_002dload"></a><span><code class="code">set debug auto-load [on|off]</code><a class="copiable-link" href="#index-set-debug-auto_002dload"> ¶</a></span></dt>
+<dd><p>设置是否打印尝试自动加载的文件名。
+</p>
+<a class="anchor" id="show-debug-auto_002dload"></a></dd>
+<dt><a id="index-show-debug-auto_002dload"></a><span><code class="code">show debug auto-load</code><a class="copiable-link" href="#index-show-debug-auto_002dload"> ¶</a></span></dt>
+<dd><p>显示是否开启了打印尝试自动加载的文件名的功能。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

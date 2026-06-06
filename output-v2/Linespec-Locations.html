@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>行规范位置（使用 GDB 调试）</title>
+
+<meta name="description" content="Linespec Locations (Debugging with GDB)"/>
+<meta name="keywords" content="Linespec Locations (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Location-Specifications.html" rel="up" title="Location Specifications"/>
+<link href="Explicit-Locations.html" rel="next" title="Explicit Locations"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Linespec-Locations">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Explicit-Locations.html" rel="next">显式位置</a>, 上一项： <a accesskey="u" href="Location-Specifications.html" rel="up">位置规范</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Linespec-Locations-1"><span>9.2.1 行规范位置<a class="copiable-link" href="#Linespec-Locations-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-linespec-locations"></a>
+
+<p>一个 <em class="dfn">行规范</em> 是一个由冒号分隔的源位置参数列表，
+如文件名、函数名等。以下是指定行规范的所有不同方式：
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">linenum</var></code></dt>
+<dd><p>指定当前源文件的行号 <var class="var">行号</var> 。
+</p>
+</dd>
+<dt><code class="code">-<var class="var">offset</var></code></dt>
+<dt><code class="code">+<var class="var">offset</var></code></dt>
+<dd><p>指定行 <var class="var">偏移量</var> 当前行之前或之后的 <em class="dfn">行。
+对于</em>命令，当前行是最后打印的那一行；对于断点命令，这是在当前选定的 <code class="code">list</code> 栈帧 <em class="dfn">中执行停止的行</em>
+（参见 <a class="pxref" href="Frames.html">帧</a>, 了解栈帧的描述。） 当
+用作 <code class="code">list</code> 命令中两个行规范中的第二个时，
+这指定了从第一个
+行规范向上或向下的 <var class="var">偏移量</var> 行。
+</p>
+</dd>
+<dt><code class="code"><var class="var">filename</var>:<var class="var">linenum</var></code></dt>
+<dd><p>指定源文件中的行 <var class="var">行号</var> 。 <var class="var">文件名</var>
+如果 <var class="var">文件名</var> 是一个相对文件名，那么它将匹配任何具有相同尾部组件的源文件名。例如，如果
+<var class="var">文件名</var> 是 ‘<samp class="samp">gcc/expr.c</samp>’，那么它将匹配源文件名 <samp class="file">/build/trunk/gcc/expr.c</samp>, 但不匹配
+<samp class="file">/build/trunk/libcpp/expr.c</samp> 或 <samp class="file">/build/trunk/gcc/x-expr.c</samp>。
+</p>
+</dd>
+<dt><code class="code"><var class="var">function</var></code></dt>
+<dd><p>指定函数体开始的行 <var class="var">函数</var>.
+例如，在 C 语言中，这是带有左花括号的行。
+</p>
+<p>默认情况下，在 C 语言<code class="t">++</code> 和 Ada 语言中， <var class="var">函数</var> 被解释为指定所有作用域中名为 <var class="var">函数</var> 的所有函数。对于 C 语言<code class="t">++</code>, 这意味着在所有命名空间和类中。对于 Ada 语言，这意味着在所有包中。
+</p>
+<p>例如，假设一个 C 语言程序中有<code class="t">++</code> 符号名为
+<code class="code">A::B::func</code> 和 <code class="code">B::func</code>, 两个命令 <kbd class="kbd">break func</kbd><!-- /@w --> 和 <kbd class="kbd">break B::func</kbd><!-- /@w --> 都会在这两个符号上设置断点。
+</p>
+<p>接受行规范的命令允许你使用
+<code class="code">-qualified</code> 选项来覆盖此行为。例如， <kbd class="kbd">break -qualified func</kbd><!-- /@w --> 在名为 <code class="code">func</code> 的自由函数上设置断点，
+忽略任何 C 语言<code class="t">++</code> 类方法和命名空间函数调用 <code class="code">func</code>。
+</p>
+<p>参见 <a class="xref" href="Explicit-Locations.html">显式位置</a>。
+</p>
+</dd>
+<dt><code class="code"><var class="var">function</var>:<var class="var">label</var></code></dt>
+<dd><p>指定 <var class="var">标签</var> 出现在 <var class="var">函数</var>中的行。
+</p>
+</dd>
+<dt><code class="code"><var class="var">filename</var>:<var class="var">function</var></code></dt>
+<dd><p>指定文件中函数体开始的行 <var class="var">函数</var>
+。 <var class="var">文件名</var>. 当不同源文件中有同名函数时，你只需要文件名和函数名来避免歧义。
+</p>
+</dd>
+<dt><code class="code"><var class="var">label</var></code></dt>
+<dd><p>指定名为 <var class="var">标签</var> 的标签出现在与当前选定栈帧对应的函数中的行。
+如果没有当前选定的栈帧（例如，如果子进程未运行），那么 <small class="sc">GDB</small> 将不会搜索标签。
+</p>
+</dd>
+<dt><a id="index-breakpoint-at-static-probe-point"></a><span><code class="code">-pstap|-probe-stap <span class="r">[</span><var class="var">objfile</var>:<span class="r">[</span><var class="var">provider</var>:<span class="r">]</span><span class="r">]</span><var class="var">name</var></code><a class="copiable-link" href="#index-breakpoint-at-static-probe-point"> ¶</a></span></dt>
+<dd><p>该 <small class="sc">GNU</small>/Linux 工具 <code class="code">SystemTap</code> 为应用程序提供了一种嵌入静态探测点的方法。参见 <a class="xref" href="Static-Probe-Points.html">静态探测点</a>, 了解有关查找和使用静态探测点的更多信息。这种形式的行规范指定了这样一个静态探测点的位置。
+</p>
+<p>如果 <var class="var">目标文件</var> 被指定，只考虑来自与 <var class="var">目标文件匹配的共享库或可执行文件的探测点</var> 作为正则表达式进行考虑。
+如果 <var class="var">提供者</var> 被指定，那么只考虑来自该提供者的探测点。
+如果有多个探测点与规范匹配， <small class="sc">GDB</small> 将在每个这样的探测点处插入一个断点。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Explicit-Locations.html">显式位置</a>, 上一项： <a href="Location-Specifications.html">位置规范</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

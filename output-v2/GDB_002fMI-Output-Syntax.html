@@ -1,0 +1,192 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI输出语法（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI Output Syntax (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Output Syntax (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI-Command-Syntax.html" rel="up" title="GDB/MI Command Syntax"/>
+<link href="GDB_002fMI-Input-Syntax.html" rel="prev" title="GDB/MI Input Syntax"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="GDB_002fMI-Output-Syntax">
+<div class="nav-panel">
+<p>
+上一章： <a accesskey="p" href="GDB_002fMI-Input-Syntax.html" rel="prev"><small class="sc">GDB/MI</small> 输入语法</a>, 上一级： <a accesskey="u" href="GDB_002fMI-Command-Syntax.html" rel="up"><small class="sc">GDB/MI</small> 命令语法</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="gdb_002fmi-Output-Syntax"><span>27.2.2 <small class="sc">GDB/MI</small> 输出语法<a class="copiable-link" href="#gdb_002fmi-Output-Syntax"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-output-syntax-of-gdb_002fmi"></a>
+<a class="index-entry-id" id="index-gdb_002fmi_002c-output-syntax"></a>
+<p>来自 <small class="sc">GDB/MI</small> 的输出由零个或多个带外记录组成，之后可选择跟一个单个的结果记录。这个结果记录是针对最近的命令的。输出记录序列以‘<samp class="samp">(gdb)</samp>’结束。
+</p>
+<p>如果输入命令以一个 <code class="code"><var class="var">token</var></code> 开头，那么该命令对应的输出也将以相同的
+<var class="var">令牌</var>。
+</p>
+<dl class="table">
+<dt><code class="code"><var class="var">output</var> →</code></dt>
+<dd><p><code class="code">( <var class="var">out-of-band-record</var> )* [ <var class="var">result-record</var> ] &#34;(gdb)&#34; <var class="var">nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">result-record</var> →</code></dt>
+<dd><p><code class="code"> [ <var class="var">token</var> ] &#34;^&#34; <var class="var">result-class</var> ( &#34;,&#34; <var class="var">result</var> )* <var class="var">nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">out-of-band-record</var> →</code></dt>
+<dd><p><code class="code"><var class="var">async-record</var> | <var class="var">stream-record</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-record</var> →</code></dt>
+<dd><p><code class="code"><var class="var">exec-async-output</var> | <var class="var">status-async-output</var> | <var class="var">notify-async-output</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">exec-async-output</var> →</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &#34;*&#34; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">status-async-output</var> →</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &#34;+&#34; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">notify-async-output</var> →</code></dt>
+<dd><p><code class="code">[ <var class="var">token</var> ] &#34;=&#34; <var class="var">async-output nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-output</var> →</code></dt>
+<dd><p><code class="code"><var class="var">async-class</var> ( &#34;,&#34; <var class="var">result</var> )*</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">result-class</var> →</code></dt>
+<dd><p><code class="code">&#34;done&#34; | &#34;running&#34; | &#34;connected&#34; | &#34;error&#34; | &#34;exit&#34;</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">async-class</var> →</code></dt>
+<dd><p><code class="code">&#34;stopped&#34; | <var class="var">others</var></code> （其中 <var class="var">其他</var> 将根据需要添加 —— 这仍在开发中）。
+</p>
+</dd>
+<dt><code class="code"><var class="var">result</var> →</code></dt>
+<dd><p><code class="code"> <var class="var">variable</var> &#34;=&#34; <var class="var">value</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">variable</var> →</code></dt>
+<dd><p><code class="code"> <var class="var">string</var> </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">value</var> →</code></dt>
+<dd><p><code class="code"> <var class="var">const</var> | <var class="var">tuple</var> | <var class="var">list</var> </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">const</var> →</code></dt>
+<dd><p><code class="code"><var class="var">c-string</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">tuple</var> →</code></dt>
+<dd><p><code class="code"> &#34;{}&#34; | &#34;{&#34; <var class="var">result</var> ( &#34;,&#34; <var class="var">result</var> )* &#34;}&#34; </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">list</var> →</code></dt>
+<dd><p><code class="code"> &#34;[]&#34; | &#34;[&#34; <var class="var">value</var> ( &#34;,&#34; <var class="var">value</var> )* &#34;]&#34; | &#34;[&#34;
+<var class="var">result</var> ( &#34;,&#34; <var class="var">result</var> )* &#34;]&#34; </code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">stream-record</var> →</code></dt>
+<dd><p><code class="code"><var class="var">console-stream-output</var> | <var class="var">target-stream-output</var> | <var class="var">log-stream-output</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">console-stream-output</var> →</code></dt>
+<dd><p><code class="code">&#34;~&#34; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">target-stream-output</var> →</code></dt>
+<dd><p><code class="code">&#34;@&#34; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">log-stream-output</var> →</code></dt>
+<dd><p><code class="code">&#34;&amp;&#34; <var class="var">c-string nl</var></code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">nl</var> →</code></dt>
+<dd><p><code class="code">CR | CR-LF</code>
+</p>
+</dd>
+<dt><code class="code"><var class="var">token</var> →</code></dt>
+<dd><p><em class="emph">任意数字序列</em>。
+</p></dd>
+</dl>
+
+<p>注意：
+</p>
+<ul class="itemize mark-bullet">
+<li>所有输出序列都以包含一个句点的单行结束。
+
+</li><li>该 <code class="code"><var class="var">token</var></code> 来自相应的请求。请注意，对于所有异步输出，虽然语法允许使用令牌，并且未来版本的 <small class="sc">GDB</small> 对于某些异步输出消息，通常会省略令牌。前端应将所有异步输出视为报告目标状态的一般变化，并且无需将异步输出与任何先前的命令关联。
+
+</li><li><a class="index-entry-id" id="index-status-output-in-gdb_002fmi"></a>
+<var class="var">状态异步输出</var> 包含关于缓慢操作进度的正在进行的状态信息。它可以被丢弃。所有状态输出都以‘<samp class="samp">+</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-async-output-in-gdb_002fmi"></a>
+<var class="var">执行异步输出</var> 包含目标上的异步状态变化（停止、启动、消失）。所有异步输出都以‘<samp class="samp">*</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-notify-output-in-gdb_002fmi"></a>
+<var class="var">通知异步输出</var> 包含客户端应处理的补充信息（例如，新的断点信息）。所有通知输出都以‘<samp class="samp">=</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-console-output-in-gdb_002fmi"></a>
+<var class="var">控制台流输出</var> 是应按原样显示在控制台中的输出。它是对CLI命令的文本响应。所有控制台输出都以‘<samp class="samp">~</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-target-output-in-gdb_002fmi"></a>
+<var class="var">目标流输出</var> 是目标程序产生的输出。所有目标输出都以‘<samp class="samp">@</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-log-output-in-gdb_002fmi"></a>
+<var class="var">日志流输出</var> 是来自 <small class="sc">GDB</small>内部的输出文本，例如应作为错误日志一部分显示的消息。所有日志输出都以‘<samp class="samp">&amp;</samp>’开头。
+
+</li><li><a class="index-entry-id" id="index-list-output-in-gdb_002fmi"></a>
+新的 <small class="sc">GDB/MI</small> 命令应该只输出 <var class="var">列表</var> 包含
+<var class="var">值</var>。
+
+
+</li></ul>
+
+<p>参见 <a class="xref" href="GDB_002fMI-Stream-Records.html"><small class="sc">GDB/MI</small> 流记录</a>, 了解有关各种输出记录的更多详细信息。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一章： <a href="GDB_002fMI-Input-Syntax.html"><small class="sc">GDB/MI</small> 输入语法</a>, 上一级： <a href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> 命令语法</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>中断的系统调用（使用GDB调试）</title>
+
+<meta name="description" content="Interrupted System Calls (Debugging with GDB)"/>
+<meta name="keywords" content="Interrupted System Calls (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Thread-Stops.html" rel="up" title="Thread Stops"/>
+<link href="Observer-Mode.html" rel="next" title="Observer Mode"/>
+<link href="Thread_002dSpecific-Breakpoints.html" rel="prev" title="Thread-Specific Breakpoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Interrupted-System-Calls">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Observer-Mode.html" rel="next">观察模式</a>, 上一项： <a accesskey="p" href="Thread_002dSpecific-Breakpoints.html" rel="prev">线程特定的断点</a>, 上级： <a accesskey="u" href="Thread-Stops.html" rel="up">停止和启动多线程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Interrupted-System-Calls-1"><span>5.5.5 中断的系统调用<a class="copiable-link" href="#Interrupted-System-Calls-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-thread-breakpoints-and-system-calls"></a>
+<a class="index-entry-id" id="index-system-calls-and-thread-breakpoints"></a>
+<a class="index-entry-id" id="index-premature-return-from-system-calls"></a>
+<p>在使用时会有一个不幸的副作用 <small class="sc">GDB</small> 来调试多线程程序。如果一个线程因断点或其他原因停止，而另一个线程在系统调用中被阻塞，那么系统调用可能会提前返回。这是多线程与信号之间相互作用的结果， <small class="sc">GDB</small> 使用这些信号来实现断点和其他停止执行的事件。
+</p>
+<p>为了解决这个问题，你的程序应该检查每个系统调用的返回值并做出适当的反应。无论如何，这都是良好的编程风格。
+</p>
+<p>例如，不要编写这样的代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  sleep (10);
+</pre></div>
+
+<p>对 <code class="code">sleep</code> 的调用如果另一个线程在断点处或因其他原因停止，将会提前返回。
+</p>
+<p>相反，编写这样的代码：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  int unslept = 10;
+  while (unslept &gt; 0)
+    unslept = sleep (unslept);
+</pre></div>
+
+<p>系统调用允许提前返回，所以系统仍然符合其规范。但是 <small class="sc">GDB</small> 确实会导致你的多线程程序的行为与没有
+<small class="sc">GDB</small>时不同。
+</p>
+<p>此外， <small class="sc">GDB</small> 在线程库中使用内部断点来监视某些事件，如线程创建和线程销毁。当发生这样的事件时，另一个线程中的系统调用可能会提前返回，即使你的程序看起来没有停止。
+</p>
+</div>
+
+
+
+
+
+</body></html>

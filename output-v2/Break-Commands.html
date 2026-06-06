@@ -1,0 +1,122 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>断点命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Break Commands (Debugging with GDB)"/>
+<meta name="keywords" content="Break Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Dynamic-Printf.html" rel="next" title="Dynamic Printf"/>
+<link href="Conditions.html" rel="prev" title="Conditions"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Break-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Dynamic-Printf.html" rel="next">动态打印</a>, 上一项： <a accesskey="p" href="Conditions.html" rel="prev">断点条件</a>, 上一级： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Breakpoint-Command-Lists"><span>5.1.7 断点命令列表<a class="copiable-link" href="#Breakpoint-Command-Lists"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-breakpoint-commands"></a>
+<p>当程序因某个断点而停止时，你可以为任何断点（或观察点、捕获点）指定一系列要执行的命令。例如，你可能想打印某些表达式的值，或者启用其他断点。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-end-_0028breakpoint-commands_0029"></a>
+<a id="index-commands"></a><span><code class="code">commands <span class="r">[</span><var class="var">list</var>…<span class="r">]</span></code><a class="copiable-link" href="#index-commands"> ¶</a></span></dt>
+<dt><code class="code">… <var class="var">command-list</var> …</code></dt>
+<dt><code class="code">end</code></dt>
+<dd><p>为给定的断点指定一个命令列表。命令本身出现在后续行中。输入仅包含
+<code class="code">end</code> 的行来结束命令。
+</p>
+<p>要移除断点的所有命令，输入 <code class="code">commands</code> 并紧接着输入 <code class="code">end</code>；也就是说，不给出任何命令。
+</p>
+<p>如果没有参数， <code class="code">commands</code> 指的是最后设置的断点、观察点或捕获点（而不是最近遇到的断点）。如果最近的断点是用一个命令设置的，那么 <code class="code">commands</code> 将应用于该命令设置的所有断点。这适用于由
+<code class="code">rbreak</code>设置的断点，并且当一个 <code class="code">break</code> 命令创建多个断点时也适用（见 <a class="pxref" href="Ambiguous-Expressions.html">模糊表达式</a>）。
+</p></dd>
+</dl>
+
+<p>按下 <kbd class="key">回车键</kbd> 作为重复上一个 <small class="sc">GDB</small> 命令的方式在 <var class="var">命令列表</var>中被禁用。
+</p>
+<p>在命令列表中，你可以使用命令
+<kbd class="kbd">禁用 $_hit_bpnum</kbd> 来禁用遇到的断点。
+</p>
+<p>如果你的断点有多个代码位置，命令
+<kbd class="kbd">禁用 $_hit_bpnum.$_hit_locno</kbd> 将禁用遇到的特定断点代码位置。如果断点只有一个位置，此命令将禁用遇到的断点。
+</p>
+<p>你可以使用断点命令再次启动你的程序。只需使用 <code class="code">continue</code> 命令，或者 <code class="code">step</code>, 或者任何其他恢复执行的命令。
+</p>
+<p>命令列表中，在恢复执行的命令之后的任何其他命令都将被忽略。这是因为任何时候你恢复执行（即使是简单的 <code class="code">next</code> 或 <code class="code">step</code>），你可能会遇到另一个断点 —— 它可能有自己的命令列表，这会导致关于执行哪个列表的歧义。
+</p>
+<a class="index-entry-id" id="index-silent"></a>
+<p>如果你在命令列表中指定的第一个命令是 <code class="code">silent</code>, 则通常关于在断点处停止的消息不会被打印。对于那些要打印特定消息然后继续执行的断点，这可能是理想的。如果其余命令都不打印任何内容，你将看不到断点被触发的迹象。  <code class="code">silent</code> 仅在断点命令列表的开头有意义。
+</p>
+<p>命令 <code class="code">echo</code>, <code class="code">output</code>, 和 <code class="code">printf</code> 允许你精确控制输出，并且在静默断点中通常很有用。见 <a class="xref" href="Output.html">控制输出的命令</a>。
+</p>
+<p>例如，下面展示了如何使用断点命令在每次 <code class="code">x</code> 进入 <code class="code">foo</code> 时打印 <code class="code">x</code> 为正值时的值。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">在 foo 处设置断点，如果 x &gt; 0
+命令
+静默
+打印 &#34;x 是 %d\n&#34;,x
+继续
+结束
+</pre></div>
+
+<p>断点命令的一个应用是弥补一个错误，以便你可以测试另一个错误。在错误代码行之后设置一个断点，给它一个条件来检测出现错误的情况，并给它命令来为需要的变量赋值。以 <code class="code">continue</code> 命令结束，这样你的程序就不会停止，以 <code class="code">silent</code>
+命令开始，这样就不会产生输出。下面是一个例子：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">在 403 行设置断点
+命令
+静默
+设置 x = y + 4
+继续
+结束
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Dynamic-Printf.html">动态打印</a>, 上一项： <a href="Conditions.html">断点条件</a>, 上一级： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

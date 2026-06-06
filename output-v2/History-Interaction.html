@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>历史交互（使用GDB调试）</title>
+
+<meta name="description" content="History Interaction (Debugging with GDB)"/>
+<meta name="keywords" content="History Interaction (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Using-History-Interactively.html" rel="up" title="Using History Interactively"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="History-Interaction">
+<div class="nav-panel">
+<p>
+上一级： <a accesskey="u" href="Using-History-Interactively.html" rel="up">交互式使用历史记录</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="History-Expansion"><span>34.1 历史扩展<a class="copiable-link" href="#History-Expansion"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-history-expansion"></a>
+
+<p>历史库提供了一种历史扩展功能，该功能类似于 <code class="code">csh</code>所提供的历史扩展。本节描述了用于操作历史信息的语法。
+</p>
+<p>历史扩展将历史列表中的单词引入输入流，使得重复命令、将前一个命令的参数插入当前输入行或快速修正前一个命令中的错误变得容易。
+</p>
+
+<p>历史扩展分为两部分。第一部分是确定在替换过程中应使用历史列表中的哪一行。第二部分是选择该行的部分内容以包含到当前行中。从历史中选择的行称为
+<em class="dfn">事件</em>，对该行进行操作的部分称为 <em class="dfn">单词</em>。有各种 <em class="dfn">修饰符</em> 可用于操作所选的单词。该行按照Bash的方式拆分为单词，因此被引号包围的几个单词被视为一个单词。历史扩展通过历史扩展字符的出现来引入，默认情况下该字符是‘<samp class="samp">!</samp>’。
+</p>
+<p>历史扩展实现了类似shell的引用约定：反斜杠可用于去除下一个字符的特殊处理；单引号括起逐字字符序列，可用于抑制历史扩展；双引号内的字符可能会进行历史扩展，因为反斜杠可以转义历史扩展字符，但单引号则不行，因为在双引号内它们不会被特殊处理。
+</p>
+
+
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Event-Designators.html">事件指示符</a></li>
+<li><a accesskey="2" href="Word-Designators.html">单词指示符</a></li>
+<li><a accesskey="3" href="Modifiers.html">修饰符</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一级： <a href="Using-History-Interactively.html">交互式使用历史记录</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

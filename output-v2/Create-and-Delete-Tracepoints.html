@@ -1,0 +1,182 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>创建和删除跟踪点（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Create and Delete Tracepoints (Debugging with GDB)"/>
+<meta name="keywords" content="Create and Delete Tracepoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Set-Tracepoints.html" rel="up" title="Set Tracepoints"/>
+<link href="Enable-and-Disable-Tracepoints.html" rel="next" title="Enable and Disable Tracepoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Create-and-Delete-Tracepoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Enable-and-Disable-Tracepoints.html" rel="next">启用和禁用跟踪点</a>, 上一项： <a accesskey="u" href="Set-Tracepoints.html" rel="up">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index"></a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Create-and-Delete-Tracepoints-1"><span>13.1.1 创建和删除跟踪点<a class="copiable-link" href="#Create-and-Delete-Tracepoints-1"> ¶</a></span></h4>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-trace"></a>
+<a id="index-set-tracepoint"></a><span><code class="code">trace <var class="var">locspec</var></code><a class="copiable-link" href="#index-set-tracepoint"> ¶</a></span></dt>
+<dd><p>该 <code class="code">trace</code> 命令与 <code class="code">break</code> 命令非常相似。
+其参数 <var class="var">locspec</var> 可以是任何有效的位置规范。
+请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>。 该 <code class="code">trace</code> 命令定义一个跟踪点，
+这是目标程序中的一个点，调试器将在此处短暂停止，
+收集一些数据，然后允许程序继续。 如果远程存根支持 ‘<samp class="samp">InstallInTrace</samp>’ 功能（请参阅 <a class="pxref" href="General-Query-Packets.html#install-tracepoint-in-tracing">在跟踪中安装跟踪点</a>），设置跟踪点或更改其动作将立即生效。
+如果远程存根不支持 ‘<samp class="samp">InstallInTrace</samp>’ 功能，所有这些更改直到下一次 <code class="code">tstart</code>
+命令才会生效，并且一旦跟踪实验正在运行，在下次跟踪实验开始之前，进一步的更改将不会有任何效果。 此外，
+<small class="sc">GDB</small> 支持 <em class="dfn">待决跟踪点</em>——其地址尚未解析的跟踪点。 （这类似于待决断点。）
+待决跟踪点在解析之前不会下载到目标并安装。 待决跟踪点的解析需要
+<small class="sc">GDB</small> 支持 —— 在使用远程目标进行调试时，并且
+<small class="sc">GDB</small> 与远程存根断开连接（请参阅 <a class="pxref" href="Starting-and-Stopping-Trace-Experiments.html#disconnected-tracing">断开连接的跟踪</a>），当 <small class="sc">GDB</small> 断开连接时，待决跟踪点无法解析（并下载到远程存根）。
+</p>
+<p>以下是使用 <code class="code">trace</code> 命令的一些示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">trace foo.c:121</b>    // 一个源文件和行号
+
+(gdb) <b class="b">trace +2</b>           // 向前 2 行
+
+(gdb) <b class="b">trace my_function</b>  // 函数的第一行源代码
+
+(gdb) <b class="b">trace *my_function</b> // 函数的确切起始地址
+
+(gdb) <b class="b">trace *0x2117c4</b>    // 一个地址
+</pre></div>
+
+<p>您可以将 <code class="code">trace</code> 缩写为 <code class="code">tr</code>。
+</p>
+</dd>
+<dt><code class="code">trace <var class="var">locspec</var> if <var class="var">cond</var></code></dt>
+<dd><p>设置带有条件 <var class="var">cond</var>的跟踪点；每次到达跟踪点时计算表达式
+<var class="var">cond</var> ，并且仅当值非零 —— 即当 <var class="var">cond</var> 计算结果为真时收集数据。
+请参阅 <a class="xref" href="Tracepoint-Conditions.html">跟踪点条件</a>，以获取有关跟踪点条件的更多信息。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-fast-tracepoints_002c-setting"></a>
+<a class="index-entry-id" id="index-ftrace"></a>
+<a id="index-set-fast-tracepoint"></a><span><code class="code">ftrace <var class="var">locspec</var> [ if <var class="var">cond</var> ]</code><a class="copiable-link" href="#index-set-fast-tracepoint"> ¶</a></span></dt>
+<dd><p>该 <code class="code">ftrace</code> 命令设置一个快速跟踪点。 对于支持它们的目标，快速跟踪点将使用更高效但可能不太通用的技术来触发数据收集，例如使用跳转指令而不是陷阱，或者某种硬件支持。 可能无法在所需位置创建快速跟踪点，在这种情况下，命令将退出并给出解释性消息。
+</p>
+<p><small class="sc">GDB</small> 处理 <code class="code">ftrace</code> 的参数与处理
+<code class="code">trace</code>的参数完全相同。
+</p>
+<p>在 32 位 x86 架构系统上，快速跟踪点通常需要放置在 5 字节或更长的指令处，但如果目标程序的低 64K 内存可用于安装跳板，则可以放置在 4 字节指令处。 一些 Unix 类型的系统，例如 <small class="sc">GNU</small>/Linux，将低地址排除在程序的地址空间之外；但例如对于 Linux 内核，可以通过执行 <small class="sc">GDB</small> 命令来设置 <code class="command">sysctl</code> 内核参数，如下所示 <code class="code">mmap_min_addr</code> 
+</p>
+<div class="example">
+<pre class="example-preformatted">sudo sysctl -w vm.mmap_min_addr=32768
+</pre></div>
+
+<p>这将低地址设置为 32K，为跳板留下了足够的空间。 最小地址应设置为页面边界。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-static-tracepoints_002c-setting"></a>
+<a class="index-entry-id" id="index-probe-static-tracepoint-marker"></a>
+<a class="index-entry-id" id="index-strace"></a>
+<a id="index-set-static-tracepoint"></a><span><code class="code">strace [<var class="var">locspec</var> | -m <var class="var">marker</var>] [ if <var class="var">cond</var> ]</code><a class="copiable-link" href="#index-set-static-tracepoint"> ¶</a></span></dt>
+<dd><p>该 <code class="code">strace</code> 命令设置一个静态跟踪点。 对于支持它的目标，设置静态跟踪点会探测在解析 <var class="var">locspec</var>后得到的代码位置处找到的静态插桩点或标记。 可能无法在所需的代码位置设置静态跟踪点，在这种情况下，命令将退出并给出解释性消息。
+</p>
+<p><small class="sc">GDB</small> 处理 <code class="code">strace</code> 的参数与处理
+<code class="code">trace</code>的参数完全相同，此外用户还可以指定
+<code class="code">-m <var class="var">marker</var></code> 而不是位置规范。 这将探测由 <var class="var">marker</var> 字符串标识符标识的标记。 此标识符取决于您的程序正在使用的静态跟踪点后端库。 您可以在<samp class="samp">ID</samp>字段中找到所有标记标识符。 <code class="code">info static-tracepoint-markers</code> 命令输出。
+请参阅 <a class="xref" href="Listing-Static-Tracepoint-Markers.html">列出静态跟踪点标记</a>。 例如，在以下使用 UST 跟踪引擎的小程序中：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">main ()
+{
+  trace_mark(ust, bar33, &#34;str %s&#34;, &#34;FOOBAZ&#34;);
+}
+</pre></div>
+
+<p>标记 ID 由调用的前两个参数用斜杠连接组成，即：
+<code class="code">trace_mark</code> 
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info static-tracepoint-markers
+Cnt Enb ID         Address            What
+1   n   ust/bar33  0x0000000000400ddc in main at stexample.c:22
+         Data: &#34;str %s&#34;
+[etc...]
+</pre></div>
+
+<p>因此您可以使用以下命令探测上述标记：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) strace -m ust/bar33
+</pre></div>
+
+<p>静态跟踪点接受一个额外的收集动作 —— <code class="code">collect
+$_sdata</code>。 这将收集在探测点调用跟踪库时传递的任意用户数据。 在上面的 UST 示例中，您会看到 <code class="code">trace_mark</code> 的第三个参数是一个类似 printf 的格式字符串。 用户数据就是将该格式字符串应用于后续参数的结果。 请注意 <code class="code">info
+static-tracepoint-markers</code> 命令输出在 ‘<samp class="samp">数据：</samp>字段。
+</p>
+<p>在分析跟踪缓冲区时，您可以通过像打印任何其他可用变量一样打印 $_sdata 变量来检查此数据。
+<small class="sc">GDB</small>请参阅 <a class="xref" href="Tracepoint-Actions.html">跟踪点动作列表</a>。
+</p>
+<a class="index-entry-id" id="index-_0024tpnum"></a>
+<a class="index-entry-id" id="index-last-tracepoint-number"></a>
+<a class="index-entry-id" id="index-recent-tracepoint-number"></a>
+<a class="index-entry-id" id="index-tracepoint-number"></a>
+<p>便利变量 <code class="code">$tpnum</code> 记录最近设置的跟踪点的编号。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-tracepoint-deletion"></a>
+<a id="index-delete-tracepoint"></a><span><code class="code">delete tracepoint <span class="r">[</span><var class="var">num</var><span class="r">]</span></code><a class="copiable-link" href="#index-delete-tracepoint"> ¶</a></span></dt>
+<dd><p>永久删除一个或多个跟踪点。如果没有参数，默认是删除所有跟踪点。请注意，常规
+<code class="code">delete</code> 命令也可以删除跟踪点。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">delete trace 1 2 3</b> // 删除三个跟踪点
+
+(gdb) <b class="b">delete trace</b>       // 删除所有跟踪点
+</pre></div>
+
+<p>您可以将此命令缩写为 <code class="code">del tr</code>。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Enable-and-Disable-Tracepoints.html">启用和禁用跟踪点</a>, 上一项： <a href="Set-Tracepoints.html">设置跟踪点的命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

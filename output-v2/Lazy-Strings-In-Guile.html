@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile中的惰性字符串（使用GDB调试）</title>
+
+<meta name="description" content="Lazy Strings In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Lazy Strings In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Architectures-In-Guile.html" rel="next" title="Architectures In Guile"/>
+<link href="Breakpoints-In-Guile.html" rel="prev" title="Breakpoints In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Lazy-Strings-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Architectures-In-Guile.html" rel="next"></a>, 上一项： <a accesskey="p" href="Breakpoints-In-Guile.html" rel="prev">使用Guile操作断点</a>, 上一级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Guile-representation-of-lazy-strings_002e"><span>23.4.3.20 惰性字符串的Guile表示形式。<a class="copiable-link" href="#Guile-representation-of-lazy-strings_002e"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-lazy-strings-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003alazy_002dstring_003e"></a>
+
+<p>一个 <em class="dfn">惰性字符串</em> 是一种字符串，其内容直到需要时才会被检索或编码。
+</p>
+<p>一个 <code class="code">&lt;gdb:lazy-string&gt;</code> 在 <small class="sc">GDB</small> 中表示为一个
+<code class="code">address</code> 指向内存区域的指针，一个 <code class="code">encoding</code>
+将用于对该内存区域进行编码的编码方式，以及一个 <code class="code">length</code>
+用于界定表示该字符串的内存区域的边界。 一个 <code class="code">&lt;gdb:lazy-string&gt;</code> 和包裹在一个 <code class="code">&lt;gdb:value&gt;</code> 中的字符串之间的区别在于，一个 <code class="code">&lt;gdb:lazy-string&gt;</code> 在打印时会被 <small class="sc">GDB</small> 以不同的方式处理。 一个 <code class="code">&lt;gdb:lazy-string&gt;</code> 在打印时会被检索和编码，而一个 <code class="code">&lt;gdb:value&gt;</code>
+包裹的字符串在创建时会立即被检索和编码。
+</p>
+<p>以下与惰性字符串相关的过程由
+<code class="code">(gdb)</code> 模块提供：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-lazy_002dstring_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是类型为 <code class="code">&lt;gdb:lazy-string&gt;</code>的对象。
+否则返回 <code class="code">#f</code>.
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002daddress"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-address</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002daddress"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">惰性字符串</var>的地址。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dlength"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-length</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002dlength"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">惰性字符串</var> 的字符长度。 如果长度为 -1，则字符串将被提取并编码，直到遇到合适宽度的第一个空字符。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dencoding"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-encoding</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002dencoding"> ¶</a></span></dt>
+<dd><p>返回当字符串被 <var class="var">惰性字符串</var>
+打印时将应用的编码方式。 如果编码方式未设置，或包含空字符串，则 <small class="sc">GDB</small>在打印字符串时将选择最合适的编码方式。 <small class="sc">GDB</small> 。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002dtype"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-type</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002dtype"> ¶</a></span></dt>
+<dd><p>返回由 <var class="var">惰性字符串</var>表示的类型。
+对于惰性字符串，这是一个指针或数组类型。 要将其解析为惰性字符串的字符类型，请使用 <code class="code">type-target-type</code>。
+参见 <a class="xref" href="Types-In-Guile.html">Guile中的类型</a>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-lazy_002dstring_002d_003evalue"><span class="category-def">Scheme过程： </span><span><strong class="def-name">lazy-string-&gt;value</strong> <var class="def-var-arguments">惰性字符串</var><a class="copiable-link" href="#index-lazy_002dstring_002d_003evalue"> ¶</a></span></dt>
+<dd><p>将 <code class="code">&lt;gdb:lazy-string&gt;</code> 转换为 <code class="code">&lt;gdb:value&gt;</code>。 这个值将指向内存中的字符串，但会失去 <small class="sc">GDB</small> 应用于
+<code class="code">&lt;gdb:lazy-string&gt;</code>的所有延迟检索、编码和处理。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Architectures-In-Guile.html">架构的Guile表示形式</a>, 上一项： <a href="Breakpoints-In-Guile.html">使用Guile操作断点</a>, 上一级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

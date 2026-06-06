@@ -1,0 +1,139 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>远程存根（使用GDB进行调试）</title>
+
+<meta name="description" content="Remote Stub (Debugging with GDB)"/>
+<meta name="keywords" content="Remote Stub (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Debugging.html" rel="up" title="Remote Debugging"/>
+<link href="Remote-Configuration.html" rel="prev" title="Remote Configuration"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Remote-Stub">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="p" href="Remote-Configuration.html" rel="prev">远程配置</a>, 上一级： <a accesskey="u" href="Remote-Debugging.html" rel="up">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Implementing-a-Remote-Stub"><span>20.5 实现远程存根<a class="copiable-link" href="#Implementing-a-Remote-Stub"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-debugging-stub_002c-example"></a>
+<a class="index-entry-id" id="index-remote-stub_002c-example"></a>
+<a class="index-entry-id" id="index-stub-example_002c-remote-debugging"></a>
+<p>随附的存根文件 <small class="sc">GDB</small> 实现了通信协议的目标端，而 <small class="sc">GDB</small> 端则在
+<small class="sc">GDB</small> 源文件 <samp class="file">remote.c</samp>中实现。通常，你可以简单地让这些子程序进行通信，而忽略细节。（如果你要实现自己的存根文件，仍然可以忽略细节：从现有的存根文件之一开始。  <samp class="file">sparc - stub.c</samp> 的组织最完善，因此最容易阅读。）
+</p>
+<a class="index-entry-id" id="index-remote-serial-debugging_002c-overview"></a>
+<p>为了调试在另一台机器（调试
+<em class="dfn">目标</em> 机器）上运行的程序，你必须首先安排好程序独立运行的所有常规先决条件。例如，对于一个C程序，你需要：
+</p>
+<ol class="enumerate">
+<li> 一个用于设置C运行时环境的启动例程；这些例程通常有一个类似 <samp class="file">crt0</samp>的名称。启动例程可能由你的硬件供应商提供，或者你可能需要自己编写。
+
+</li><li> 一个C子程序库，以支持你的程序的子程序调用，特别是管理输入和输出。
+
+</li><li> 一种将你的程序传输到另一台机器的方法 —— 例如，一个下载程序。这些通常由硬件制造商提供，但你可能需要根据硬件文档自己编写。
+</li></ol>
+
+<p>下一步是安排你的程序使用串口与运行 <small class="sc">GDB</small> 的机器（即 <em class="dfn">主机</em>
+）进行通信。一般来说，方案如下：
+</p>
+<dl class="table">
+<dt><em class="emph">在主机上，</em></dt>
+<dd><p><small class="sc">GDB</small> 已经知道如何使用这个协议；当其他一切都设置好后，你可以简单地使用 ‘<samp class="samp">target remote</samp>’ 命令（见 <a class="pxref" href="Targets.html">指定调试目标</a>）。
+</p>
+</dd>
+<dt><em class="emph">在目标机上，</em></dt>
+<dd><p>你必须将一些实现 <small class="sc">GDB</small> 远程串行协议的专用子程序与你的程序链接。包含这些子程序的文件称为 <em class="dfn">调试存根</em>。
+</p>
+<p>在某些远程目标上，你可以使用一个辅助程序
+<code class="code">gdbserver</code> 而不是将存根链接到你的程序中。见 <a class="xref" href="Server.html">使用 <code class="code">gdbserver</code> 程序</a>, 了解详情。
+</p></dd>
+</dl>
+
+<p>调试存根是针对远程机器的架构特定的；例如，使用 <samp class="file">sparc - stub.c</samp> 来调试
+<small class="sc">SPARC</small> 板上的程序。
+</p>
+<a class="index-entry-id" id="index-remote-serial-stub-list"></a>
+<p>这些可用的远程存根随 <small class="sc">GDB</small>一起分发：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-Intel"></a>
+<a class="index-entry-id" id="index-i386"></a>
+<a id="index-i386_002dstub_002ec"></a><span><code class="code">i386-stub.c</code><a class="copiable-link" href="#index-i386_002dstub_002ec"> ¶</a></span></dt>
+<dd><p>适用于英特尔386及兼容架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Motorola-680x0"></a>
+<a class="index-entry-id" id="index-m680x0"></a>
+<a id="index-m68k_002dstub_002ec"></a><span><code class="code">m68k-stub.c</code><a class="copiable-link" href="#index-m68k_002dstub_002ec"> ¶</a></span></dt>
+<dd><p>适用于摩托罗拉680x0架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Renesas"></a>
+<a class="index-entry-id" id="index-SH"></a>
+<a id="index-sh_002dstub_002ec"></a><span><code class="code">sh-stub.c</code><a class="copiable-link" href="#index-sh_002dstub_002ec"> ¶</a></span></dt>
+<dd><p>适用于瑞萨SH架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Sparc"></a>
+<a id="index-sparc_002dstub_002ec"></a><span><code class="code">sparc-stub.c</code><a class="copiable-link" href="#index-sparc_002dstub_002ec"> ¶</a></span></dt>
+<dd><p>适用于 <small class="sc">SPARC</small> 架构。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Fujitsu"></a>
+<a class="index-entry-id" id="index-SparcLite"></a>
+<a id="index-sparcl_002dstub_002ec"></a><span><code class="code">sparcl-stub.c</code><a class="copiable-link" href="#index-sparcl_002dstub_002ec"> ¶</a></span></dt>
+<dd><p>适用于富士通 <small class="sc">SPARCLITE</small> 架构。
+</p>
+</dd>
+</dl>
+
+<p>在 <samp class="file">README</samp> 文件中， <small class="sc">GDB</small> 发行版可能列出其他最近添加的存根。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Stub-Contents.html">存根能为你做什么</a></li>
+<li><a accesskey="2" href="Bootstrapping.html">你必须为存根做什么</a></li>
+<li><a accesskey="3" href="Debug-Session.html">整合一切</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一页： <a href="Remote-Configuration.html">远程配置</a>, 上一级： <a href="Remote-Debugging.html">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

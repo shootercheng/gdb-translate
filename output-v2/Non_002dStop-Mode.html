@@ -1,0 +1,109 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>非停止模式（使用GDB调试）</title>
+
+<meta name="description" content="Non-Stop Mode (Debugging with GDB)"/>
+<meta name="keywords" content="Non-Stop Mode (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Thread-Stops.html" rel="up" title="Thread Stops"/>
+<link href="Background-Execution.html" rel="next" title="Background Execution"/>
+<link href="All_002dStop-Mode.html" rel="prev" title="All-Stop Mode"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Non_002dStop-Mode">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Background-Execution.html" rel="next">后台执行</a>, 上一项： <a accesskey="p" href="All_002dStop-Mode.html" rel="prev">全停止模式</a>, 上一级： <a accesskey="u" href="Thread-Stops.html" rel="up">停止和启动多线程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Non_002dStop-Mode-1"><span>5.5.2 非停止模式<a class="copiable-link" href="#Non_002dStop-Mode-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-non_002dstop-mode"></a>
+
+
+<p>对于某些多线程目标， <small class="sc">GDB</small> 支持一种可选的操作模式，在这种模式下，您可以在调试器中检查已停止的程序线程，而其他线程可以继续自由执行。这在调试实时系统（例如某些线程有实时约束或必须继续响应外部事件的程序）时将干扰降至最低。这被称为 <em class="dfn">非停止</em> 模式。
+</p>
+<p>在非停止模式下，当一个线程停止以报告调试事件时，
+<em class="emph">仅</em> 该线程停止； <small class="sc">GDB</small> 与全停止模式的行为不同，不会同时停止其他线程。此外，诸如 <code class="code">continue</code> 和 <code class="code">step</code> 之类的执行命令在非停止模式下默认仅应用于当前线程，而不是像全停止模式那样应用于所有线程。这使您能够以全停止模式无法实现的方式显式控制线程 —— 例如，让一个线程单步执行，同时允许其他线程自由运行；让一个线程单步执行，同时让其他所有线程停止；或者让多个线程独立且同时单步执行。
+</p>
+<p>要进入非停止模式，请在运行或附加到您的程序之前使用以下命令序列：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted"># 如果使用命令行界面，分页会破坏非停止模式。
+关闭分页功能
+
+# 最后，开启它！
+开启非停止模式
+</pre></div>
+
+<p>您可以使用以下命令来操作非停止模式设置：
+</p>
+<dl class="table">
+<dt><a id="index-set-non_002dstop"></a><span><code class="code">set non-stop on</code><a class="copiable-link" href="#index-set-non_002dstop"> ¶</a></span></dt>
+<dd><p>启用非停止模式选择。
+</p></dd>
+<dt><code class="code">set non-stop off</code></dt>
+<dd><p>禁用非停止模式选择。
+<a class="index-entry-id" id="index-show-non_002dstop"></a>
+</p></dd>
+<dt><code class="code">show non-stop</code></dt>
+<dd><p>显示当前非停止模式的启用设置。
+</p></dd>
+</dl>
+
+<p>请注意，这些命令仅反映非停止模式是否已启用，而不反映当前正在执行的程序是否以非停止模式运行。特别是， <code class="code">set non-stop</code> 首选项仅在
+<small class="sc">GDB</small> 启动或连接到目标程序时才会被参考，并且通常在调试开始后无法切换模式。此外，由于并非所有目标都支持非停止模式，即使您已启用非停止模式， <small class="sc">GDB</small> 默认情况下仍可能回退到全停止操作。
+</p>
+<p>在非停止模式下，所有执行命令默认仅应用于当前线程。也就是说， <code class="code">continue</code> 仅继续执行一个线程。要继续执行所有线程，请发出 <code class="code">continue -a</code> 或 <code class="code">c -a</code>命令。
+</p>
+<p>您可以使用 <small class="sc">GDB</small>的后台执行命令（请参阅 <a class="pxref" href="Background-Execution.html">后台执行</a>），在您继续从 <small class="sc">GDB</small>检查或单步执行其他线程时，让一些线程在后台运行。
+机器接口（MI）执行命令（请参阅 <a class="pxref" href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small> 程序执行</a>）在非停止模式下始终异步执行。
+</p>
+<p>在后台运行时，使用 <code class="code">interrupt</code> 命令暂停执行，或者在前台执行期间使用 <kbd class="kbd">Ctrl - c</kbd> 。在全停止模式下，这会停止整个进程；但在非停止模式下，中断仅应用于当前线程。要停止整个程序，请使用 <code class="code">interrupt -a</code>命令。
+</p>
+<p>其他执行命令目前不支持 <code class="code">-a</code> 选项。
+</p>
+<p>在非停止模式下，当一个线程停止时， <small class="sc">GDB</small> 不会像在全停止模式下那样自动将该线程设为当前线程。这是因为线程停止通知相对于 <small class="sc">GDB</small>的命令解释器是异步的，如果 <small class="sc">GDB</small> 在您输入对先前的当前线程进行操作的命令时意外切换到另一个线程，会造成混淆。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Background-Execution.html">后台执行</a>, 上一项： <a href="All_002dStop-Mode.html">全停止模式</a>, 上一级： <a href="Thread-Stops.html">停止和启动多线程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

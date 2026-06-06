@@ -1,0 +1,114 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>引导（使用GDB进行调试）</title>
+
+<meta name="description" content="Bootstrapping (Debugging with GDB)"/>
+<meta name="keywords" content="Bootstrapping (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Stub.html" rel="up" title="Remote Stub"/>
+<link href="Debug-Session.html" rel="next" title="Debug Session"/>
+<link href="Stub-Contents.html" rel="prev" title="Stub Contents"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Bootstrapping">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Debug-Session.html" rel="next"></a> <a accesskey="p" href="Stub-Contents.html" rel="prev">存根能为您做什么</a> <a accesskey="u" href="Remote-Stub.html" rel="up">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="What-You-Must-Do-for-the-Stub"><span>20.5.2 您必须为存根做的事情<a class="copiable-link" href="#What-You-Must-Do-for-the-Stub"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-remote-stub_002c-support-routines"></a>
+<p>随附的调试存根 <small class="sc">GDB</small> 是为特定的芯片架构设置的，但它们没有关于您的调试目标机器其余部分的信息。
+</p>
+<p>首先，您需要告诉存根如何与串口进行通信。
+</p>
+<dl class="table">
+<dt><a id="index-getDebugChar"></a><span><code class="code">int getDebugChar()</code><a class="copiable-link" href="#index-getDebugChar"> ¶</a></span></dt>
+<dd><p>编写此子程序以从串口读取单个字符。它可能与您的目标系统的相同；使用不同的名称是为了让您在需要时能够区分这两者。 <code class="code">getchar</code> 
+</p>
+</dd>
+<dt><a id="index-putDebugChar"></a><span><code class="code">void putDebugChar(int)</code><a class="copiable-link" href="#index-putDebugChar"> ¶</a></span></dt>
+<dd><p>编写此子程序以向串口写入单个字符。它可能与您的目标系统的相同；使用不同的名称是为了让您在需要时能够区分这两者。 <code class="code">putchar</code> 
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-control-C_002c-and-remote-debugging"></a>
+<a class="index-entry-id" id="index-interrupting-remote-targets"></a>
+<p>如果您希望 <small class="sc">GDB</small> 能够在程序运行时停止它，您需要使用中断驱动的串口驱动程序，并安排它在接收到 <code class="code">^C</code> (‘<samp class="samp">\003</samp>’，即控制 - C字符)时停止。这是 <small class="sc">GDB</small> 用于告诉远程系统停止的字符。
+</p>
+<p>让调试目标向 <small class="sc">GDB</small>
+返回正确的状态可能需要对标准存根进行更改；一种快速而粗糙的方法是直接执行一条断点指令（“粗糙”之处在于
+<small class="sc">GDB</small> 报告的是 <code class="code">SIGTRAP</code> 而不是 <code class="code">SIGINT</code>）。
+</p>
+<p>您需要提供的其他例程有：
+</p>
+<dl class="table">
+<dt><a id="index-exceptionHandler"></a><span><code class="code">void exceptionHandler (int <var class="var">exception_number</var>, void *<var class="var">exception_address</var>)</code><a class="copiable-link" href="#index-exceptionHandler"> ¶</a></span></dt>
+<dd><p>编写此函数以将 <var class="var">异常地址</var> 安装到异常处理表中。您需要这样做是因为存根无法知道您的目标系统上的异常处理表是什么样的（例如，处理器的表可能在 <small class="sc">ROM</small>,
+其中包含指向 <small class="sc">RAM</small>中的表的条目）。 <var class="var">异常编号</var> 指定了应该更改的异常；其含义取决于架构（例如，不同的编号可能代表除零错误、未对齐访问等）。当此异常发生时，控制应该直接转移到
+<var class="var">异常地址</var>,并且处理器状态（栈、寄存器等）应该与处理器异常发生时的状态相同。因此，如果您想使用跳转指令来到达 <var class="var">异常地址</var>,它应该是一个简单的跳转，而不是跳转到子程序。
+</p>
+<p>对于386架构， <var class="var">异常地址</var> 应该作为中断门进行安装，以便在处理程序运行时屏蔽中断。该门应该处于特权级别0（最高特权级别）。
+<small class="sc">SPARC</small> 和68k存根能够自行屏蔽中断，无需 <code class="code">exceptionHandler</code>的帮助。
+</p>
+</dd>
+<dt><a id="index-flush_005fi_005fcache"></a><span><code class="code">void flush_i_cache()</code><a class="copiable-link" href="#index-flush_005fi_005fcache"> ¶</a></span></dt>
+<dd><p>仅在 <small class="sc">SPARC</small> 和 <small class="sc">SPARCLITE</small> 上，编写此子程序以刷新目标机器上的指令缓存（如果有的话）。如果没有指令缓存，此子程序可以为空操作。
+</p>
+<p>在具有指令缓存的目标机器上， <small class="sc">GDB</small> 需要此函数来确保您的程序状态稳定。
+</p></dd>
+</dl>
+
+<p>您还必须确保此库例程可用：
+</p>
+<dl class="table">
+<dt><a id="index-memset"></a><span><code class="code">void *memset(void *, int, int)</code><a class="copiable-link" href="#index-memset"> ¶</a></span></dt>
+<dd><p>这是标准库函数 <code class="code">memset</code> ，用于将一块内存区域设置为已知值。如果您有
+<code class="code">libc.a</code>的免费版本之一， <code class="code">memset</code> 可以在那里找到；否则，您必须从硬件制造商处获取它，或者自己编写。
+</p></dd>
+</dl>
+
+<p>如果您不使用GNU C编译器，您可能还需要其他标准库子程序；这因存根而异，但一般来说，存根可能会使用 <code class="code"><small class="sc">GCC</small></code> 作为内联代码生成的任何常见库子程序。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Debug-Session.html">整合一切</a>, 上一项： <a href="Stub-Contents.html">存根能为您做什么</a>, 上级： <a href="Remote-Stub.html">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

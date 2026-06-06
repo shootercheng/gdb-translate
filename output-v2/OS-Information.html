@@ -1,0 +1,139 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>操作系统信息（使用GDB进行调试）</title>
+
+<meta name="description" content="OS Information (Debugging with GDB)"/>
+<meta name="keywords" content="OS Information (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Memory-Region-Attributes.html" rel="next" title="Memory Region Attributes"/>
+<link href="Vector-Unit.html" rel="prev" title="Vector Unit"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="OS-Information">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Memory-Region-Attributes.html" rel="next">内存区域属性</a>, 上一项： <a accesskey="p" href="Vector-Unit.html" rel="prev">向量单元</a>, 上一级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Operating-System-Auxiliary-Information"><span>10.17 操作系统辅助信息<a class="copiable-link" href="#Operating-System-Auxiliary-Information"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-OS-information"></a>
+
+<p><small class="sc">GDB</small> 提供了一些有用的操作系统功能接口，这些接口可以帮助你调试程序。
+</p>
+<a class="index-entry-id" id="index-auxiliary-vector"></a>
+<a class="index-entry-id" id="index-vector_002c-auxiliary"></a>
+<p>一些操作系统在程序启动时会向程序提供一个 <em class="dfn">辅助向量</em> 。这类似于你为程序指定的参数和环境，但包含了各种依赖于系统的二进制值，这些值向系统库告知了有关硬件、操作系统和进程的重要细节。每个值的用途由一个整数标签标识；其含义是已知的，但因系统而异。根据配置和操作系统功能，
+<small class="sc">GDB</small> 可能能够向你展示这些信息。对于远程目标，此功能可能还取决于远程存根对‘<samp class="samp">qXfer:auxv:read</samp>’数据包的支持，参见
+<a class="ref" href="General-Query-Packets.html#qXfer-auxiliary-vector-read">qXfer辅助向量读取</a>.
+</p>
+<dl class="table">
+<dt><a id="index-info-auxv"></a><span><code class="code">info auxv</code><a class="copiable-link" href="#index-info-auxv"> ¶</a></span></dt>
+<dd><p>显示 inferior 的辅助向量，inferior 可以是一个正在运行的进程，也可以是一个核心转储文件。  <small class="sc">GDB</small> 以数字形式打印每个标签值，并为已识别的标签显示名称和文本描述。向量中的一些值是数字，一些是位掩码，还有一些是指向字符串或其他数据的指针。  <small class="sc">GDB</small> 以最适合已识别标签的形式显示每个值，对于未识别的标签则以十六进制显示。
+</p></dd>
+</dl>
+
+<p>在某些目标上， <small class="sc">GDB</small> 可以访问特定于操作系统的信息并将其展示给你。可用信息的类型将根据目标上运行的操作系统类型而有所不同。用于获取数据的机制在
+<a class="ref" href="Operating-System-Information.html">操作系统信息</a>. 对于远程目标，此功能取决于远程存根对
+‘<samp class="samp">qXfer:osdata:read</samp>’数据包的支持，参见 <a class="ref" href="General-Query-Packets.html#qXfer-osdata-read">qXfer操作系统数据读取</a>.
+</p>
+<dl class="table">
+<dt><a id="index-info-os"></a><span><code class="code">info os <var class="var">infotype</var></code><a class="copiable-link" href="#index-info-os"> ¶</a></span></dt>
+<dd>
+<p>显示所请求类型的操作系统信息。
+</p>
+<p>在 <small class="sc">GNU</small>/Linux 上，以下 <var class="var">infotype</var> 的值是有效的：
+</p>
+<a class="anchor" id="linux-info-os-infotypes"></a><dl class="table">
+<dt><a id="index-info-os-cpus"></a><span><code class="code">cpus</code><a class="copiable-link" href="#index-info-os-cpus"> ¶</a></span></dt>
+<dd><p>显示所有 CPU/核心的列表。对于每个 CPU/核心， <small class="sc">GDB</small> 打印 /proc/cpuinfo 中的可用字段。对于每个受支持的架构，可用的字段不同。两个常见的条目是给出 CPU 编号的处理器和 bogomips；bogomips 是一个在内核初始化期间计算的系统常量。
+</p>
+</dd>
+<dt><a id="index-info-os-files"></a><span><code class="code">files</code><a class="copiable-link" href="#index-info-os-files"> ¶</a></span></dt>
+<dd><p>显示目标上打开的文件描述符列表。对于每个文件描述符， <small class="sc">GDB</small> 打印拥有该描述符的进程的标识符、拥有该进程的命令、描述符的值以及描述符的目标。
+</p>
+</dd>
+<dt><a id="index-info-os-modules"></a><span><code class="code">modules</code><a class="copiable-link" href="#index-info-os-modules"> ¶</a></span></dt>
+<dd><p>显示目标上所有已加载的内核模块列表。对于每个模块， <small class="sc">GDB</small> 打印模块名称、模块的大小（以字节为单位）、模块的使用次数、模块的依赖项、模块的状态以及模块在内存中的加载地址。
+</p>
+</dd>
+<dt><a id="index-info-os-msg"></a><span><code class="code">msg</code><a class="copiable-link" href="#index-info-os-msg"> ¶</a></span></dt>
+<dd><p>显示目标上所有 System V 消息队列的列表。对于每个消息队列， <small class="sc">GDB</small> 打印消息队列键、消息队列标识符、访问权限、队列上当前的字节数、队列上当前的消息数、最后在队列上发送和接收消息的进程、消息队列的所有者和创建者的用户和组、最后在队列上发送和接收消息的时间以及消息队列最后一次更改的时间。
+</p>
+</dd>
+<dt><a id="index-info-os-processes"></a><span><code class="code">processes</code><a class="copiable-link" href="#index-info-os-processes"> ¶</a></span></dt>
+<dd><p>显示目标上的进程列表。对于每个进程，
+<small class="sc">GDB</small> 打印进程标识符、用户名称、与该进程对应的命令以及该进程当前正在运行的处理器核心列表。（要理解这些属性的含义，对于此信息类型和以下信息类型，请参考通用的 <small class="sc">GNU</small>/Linux 文档。）
+</p>
+</dd>
+<dt><a id="index-info-os-procgroups"></a><span><code class="code">procgroups</code><a class="copiable-link" href="#index-info-os-procgroups"> ¶</a></span></dt>
+<dd><p>显示目标上的进程组列表。对于每个进程，
+<small class="sc">GDB</small> 打印它所属的进程组的标识符、进程组领导者对应的命令、进程标识符以及进程的命令行。列表首先按进程组标识符排序，然后按进程标识符排序，以便属于同一进程组的进程分组在一起，并且进程组领导者排在第一位。
+</p>
+</dd>
+<dt><a id="index-info-os-semaphores"></a><span><code class="code">semaphores</code><a class="copiable-link" href="#index-info-os-semaphores"> ¶</a></span></dt>
+<dd><p>显示目标上所有 System V 信号量集的列表。对于每个信号量集， <small class="sc">GDB</small> 打印信号量集键、信号量集标识符、访问权限、信号量集中信号量的数量、信号量集的所有者和创建者的用户和组以及信号量集被操作和更改的时间。
+</p>
+</dd>
+<dt><a id="index-info-os-shm"></a><span><code class="code">shm</code><a class="copiable-link" href="#index-info-os-shm"> ¶</a></span></dt>
+<dd><p>显示目标上所有 System V 共享内存区域的列表。对于每个共享内存区域， <small class="sc">GDB</small> 打印区域键、共享内存标识符、访问权限、区域大小、创建该区域的进程、最后附加到或从该区域分离的进程、当前连接到该区域的活动连接数以及该区域最后一次附加、分离和更改的时间。
+</p>
+</dd>
+<dt><a id="index-info-os-sockets"></a><span><code class="code">sockets</code><a class="copiable-link" href="#index-info-os-sockets"> ¶</a></span></dt>
+<dd><p>显示目标上的 Internet 域套接字列表。对于每个套接字， <small class="sc">GDB</small> 打印本地和远程端点的地址和端口、连接的当前状态、套接字的创建者、套接字的 IP 地址族以及连接的类型。
+</p>
+</dd>
+<dt><a id="index-info-os-threads"></a><span><code class="code">threads</code><a class="copiable-link" href="#index-info-os-threads"> ¶</a></span></dt>
+<dd><p>显示目标上正在运行的线程列表。对于每个线程，
+<small class="sc">GDB</small> 打印线程所属进程的标识符、进程的命令、线程标识符以及它当前正在运行的处理器核心。进程的主线程不列出。
+</p></dd>
+</dl>
+
+</dd>
+<dt><code class="code">info os</code></dt>
+<dd><p>如果 <var class="var">infotype</var> 被省略，则列出
+<var class="var">infotype</var> 的可能值以及每个
+<var class="var">infotype</var>可用的操作系统信息类型。如果目标没有返回可能类型的列表，此命令将报告错误。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Memory-Region-Attributes.html">内存区域属性</a>, 上一项： <a href="Vector-Unit.html">向量单元</a>, 上一级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

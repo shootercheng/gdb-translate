@@ -1,0 +1,123 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>条件初始化构造（使用GDB调试）</title>
+
+<meta name="description" content="Conditional Init Constructs (Debugging with GDB)"/>
+<meta name="keywords" content="Conditional Init Constructs (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Readline-Init-File.html" rel="up" title="Readline Init File"/>
+<link href="Sample-Init-File.html" rel="next" title="Sample Init File"/>
+<link href="Readline-Init-File-Syntax.html" rel="prev" title="Readline Init File Syntax"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Conditional-Init-Constructs">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Sample-Init-File.html" rel="next">示例初始化文件</a>, 上一项： <a accesskey="p" href="Readline-Init-File-Syntax.html" rel="prev">Readline初始化文件语法</a>, 上一级： <a accesskey="u" href="Readline-Init-File.html" rel="up">Readline初始化文件</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Conditional-Init-Constructs-1"><span>33.3.2 条件初始化构造<a class="copiable-link" href="#Conditional-Init-Constructs-1"> ¶</a></span></h4>
+
+<p>Readline实现了一种在精神上类似于C预处理器条件编译特性的功能，该功能允许根据测试结果进行键绑定和变量设置。使用了四个解析器指令。
+</p>
+<dl class="table">
+<dt><code class="code">$if</code></dt>
+<dd><p>该 <code class="code">$if</code> 构造允许根据编辑模式、所使用的终端或使用Readline的应用程序进行绑定。测试文本在任何比较运算符之后一直延伸到行尾；除非另有说明，否则不需要任何字符来分隔它。
+</p>
+<dl class="table">
+<dt><code class="code">mode</code></dt>
+<dd><p>该 <code class="code">mode=</code> 形式的 <code class="code">$if</code> 指令用于测试Readline是否处于 <code class="code">emacs</code> 或 <code class="code">vi</code> 模式。例如，这可以与‘<samp class="samp">设置键映射</samp>’命令结合使用，以便仅当Readline最初处于 <code class="code">emacs-standard</code> 和 <code class="code">emacs-ctlx</code> 键映射时设置绑定。 <code class="code">emacs</code> 模式。
+</p>
+</dd>
+<dt><code class="code">term</code></dt>
+<dd><p>该 <code class="code">term=</code> 形式可用于包含特定于终端的键绑定，也许是为了绑定终端功能键输出的键序列。‘<samp class="samp">=</samp>’右侧的单词会与终端的全名以及终端名称中第一个‘<samp class="samp">-</samp>’之前的部分进行比较。这允许 <code class="code">sun</code> 匹配 <code class="code">sun</code> 和 <code class="code">sun-cmd</code>, 例如。
+</p>
+</dd>
+<dt><code class="code">version</code></dt>
+<dd><p>该 <code class="code">version</code> 测试可用于对特定的Readline版本进行比较。 <code class="code">version</code> 扩展为当前的Readline版本。比较运算符集合包括‘<samp class="samp">=</samp>’（和‘<samp class="samp">==</samp>’）、‘<samp class="samp">!=</samp>’、‘<samp class="samp">≤</samp>’、‘<samp class="samp">≥</samp>’、‘<samp class="samp">&lt;</samp>’，以及‘<samp class="samp">&gt;</samp>’。运算符右侧提供的版本号由主版本号、可选的小数点和可选的次版本号组成（例如，‘<samp class="samp">7.1</samp>’）。如果省略次版本号，则假定为‘<samp class="samp">0</samp>’。运算符可以与字符串 <code class="code">version</code> 以及版本号参数之间用空格分隔。以下示例在使用的Readline版本为7.0或更高版本时设置一个变量：
+</p><div class="example">
+<pre class="example-preformatted">$if version ≥ 7.0
+set show - mode - in - prompt on
+$endif
+</pre></div>
+
+</dd>
+<dt><code class="code">application</code></dt>
+<dd><p>该 <var class="var">应用程序</var> 构造用于包含特定于应用程序的设置。每个使用Readline库的程序都会设置 <var class="var">应用程序名称</var>, 并且可以测试特定的值。这可用于将键序列绑定到对特定程序有用的函数。例如，以下命令添加了一个在Bash中引用当前或前一个单词的键序列：
+</p><div class="example">
+<pre class="example-preformatted">$if Bash
+# 引用当前或前一个单词
+&#34;\C - xq&#34;: &#34;\eb\&#34;\ef\&#34;&#34;
+$endif
+</pre></div>
+
+</dd>
+<dt><code class="code">variable</code></dt>
+<dd><p>该 <var class="var">变量</var> 构造为Readline变量和值提供简单的相等性测试。允许的比较运算符是‘<samp class="samp">=</samp>’、‘<samp class="samp">==</samp>’和‘<samp class="samp">!=</samp>’。变量名必须与比较运算符之间用空格分隔；运算符可以与右侧的值之间用空格分隔。字符串和布尔变量都可以进行测试。布尔变量必须与值 <var class="var">开启</var> 和 <var class="var">关闭</var>进行比较。以下示例等同于上面描述的 <code class="code">mode=emacs</code> 测试：
+</p><div class="example">
+<pre class="example-preformatted">$if editing - mode == emacs
+set show - mode - in - prompt on
+$endif
+</pre></div>
+</dd>
+</dl>
+
+</dd>
+<dt><code class="code">$endif</code></dt>
+<dd><p>如前一个示例所示，此命令终止一个
+<code class="code">$if</code> 命令。
+</p>
+</dd>
+<dt><code class="code">$else</code></dt>
+<dd><p>如果测试失败，则执行此 <code class="code">$if</code> 指令分支中的命令。
+</p>
+</dd>
+<dt><code class="code">$include</code></dt>
+<dd><p>此指令接受单个文件名作为参数，并从该文件中读取命令和绑定。例如，以下指令从 <samp class="file">/etc/inputrc</samp>读取：
+</p><div class="example">
+<pre class="example-preformatted">$include /etc/inputrc
+</pre></div>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Sample-Init-File.html">示例初始化文件</a>, 上一项： <a href="Readline-Init-File-Syntax.html">Readline初始化文件语法</a>, 上一级： <a href="Readline-Init-File.html">Readline初始化文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

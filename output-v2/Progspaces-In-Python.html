@@ -1,0 +1,220 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的程序空间（使用 GDB 调试）</title>
+
+<meta name="description" content="Progspaces In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Progspaces In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Objfiles-In-Python.html" rel="next" title="Objfiles In Python"/>
+<link href="Functions-In-Python.html" rel="prev" title="Functions In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Progspaces-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Objfiles-In-Python.html" rel="next">Python 中的目标文件</a> <a accesskey="p" href="Functions-In-Python.html" rel="prev"></a> <a accesskey="u" href="Python-API.html" rel="up"></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Program-Spaces-In-Python"><span>23.3.2.26 Python 中的程序空间<a class="copiable-link" href="#Program-Spaces-In-Python"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-progspaces-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eProgspace"></a>
+<a class="index-entry-id" id="index-Progspace"></a>
+<p> <em class="dfn">程序空间</em>，表示地址空间的符号视图。
+它由程序的所有目标文件组成。
+请参阅 <a class="xref" href="Objfiles-In-Python.html">Python 中的目标文件</a> <a class="xref" href="Inferiors-Connections-and-Programs.html">程序空间</a>，以获取有关程序空间的更多详细信息。
+</p>
+<p>以下与程序空间相关的函数在
+<code class="code">gdb</code> 模块中可用：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005fprogspace"><span class="category-def">函数： </span><span><strong class="def-name">gdb.current_progspace</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005fprogspace"> ¶</a></span></dt>
+<dd><p>此函数返回当前选定 inferior 的程序空间。
+请参阅 <a class="xref" href="Inferiors-Connections-and-Programs.html">调试多个 inferior 连接和程序</a>。 这与
+<code class="code">gdb.selected_inferior().progspace</code> （请参阅 <a class="pxref" href="Inferiors-In-Python.html">Python 中的 Inferiors</a>）相同，包含此函数是为了保持历史兼容性。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eprogspaces"><span class="category-def">函数： </span><span><strong class="def-name">gdb.progspaces</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002eprogspaces"> ¶</a></span></dt>
+<dd><p>返回当前已知的所有程序空间的序列。 <small class="sc">GDB</small>。
+</p></dd></dl>
+
+<p>每个程序空间由 <code class="code">gdb.Progspace</code>
+类的一个实例表示。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002efilename"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.filename</strong><a class="copiable-link" href="#index-Progspace_002efilename"> ¶</a></span></dt>
+<dd><p>程序空间的主符号文件（已从中加载调试符号）的文件名，以字符串形式表示，例如 <kbd class="kbd">symbol-file</kbd> 或 <kbd class="kbd">file</kbd> 命令的参数。
+</p>
+<p>如果当前没有加载主符号表，那么此属性将为 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002esymbol_005ffile"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.symbol_file</strong><a class="copiable-link" href="#index-Progspace_002esymbol_005ffile"> ¶</a></span></dt>
+<dd><p>表示 <code class="code">gdb.Objfile</code> 的 <code class="code">gdb.Progspace</code>。 这是由 <kbd class="kbd">symbol-file</kbd> 或 <kbd class="kbd">file</kbd> 命令设置的符号文件。
+</p>
+<p>这将是表示 <code class="code">gdb.Objfile</code> 的
+<code class="code">Progspace.filename</code> ，当 <code class="code">Progspace.filename</code> 不是
+<code class="code">None</code>时。
+</p>
+<p>如果当前没有加载主符号表，那么此属性将为 <code class="code">None</code>。
+</p>
+<p>如果 <code class="code">Progspace</code> 无效，即当
+<code class="code">Progspace.is_valid()</code> 返回 <code class="code">False</code>时，尝试访问此属性将引发 <code class="code">RuntimeError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002eexecutable_005ffilename"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.executable_filename</strong><a class="copiable-link" href="#index-Progspace_002eexecutable_005ffilename"> ¶</a></span></dt>
+<dd><p>此程序空间正在使用的可执行文件的文件名，以字符串形式表示。 可执行文件是在使用本地目标时 <small class="sc">GDB</small> 为了启动一个 inferior 而调用的文件。 此属性中的文件名由 <kbd class="kbd">exec-file</kbd> 和
+<kbd class="kbd">file</kbd> 命令更新。
+</p>
+<p>如果当前在此 <code class="code">Progspace</code> 中没有设置可执行文件，那么此属性包含 <code class="code">None</code>。
+</p>
+<p>如果 <code class="code">Progspace</code> 无效，即当
+<code class="code">Progspace.is_valid()</code> 返回 <code class="code">False</code>时，尝试访问此属性将引发 <code class="code">RuntimeError</code> 异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002epretty_005fprinters"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.pretty_printers</strong><a class="copiable-link" href="#index-Progspace_002epretty_005fprinters"> ¶</a></span></dt>
+<dd><p>该 <code class="code">pretty_printers</code> 属性是一个函数列表。 它用于查找漂亮打印机。 一个 <code class="code">Value</code> 会依次传递给每个函数；如果函数返回 <code class="code">None</code>，则继续搜索。 否则，返回值应该是一个用于格式化值的对象。 请参阅 <a class="xref" href="Pretty-Printing-API.html">漂亮打印 API</a>，以获取更多信息。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002etype_005fprinters"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.type_printers</strong><a class="copiable-link" href="#index-Progspace_002etype_005fprinters"> ¶</a></span></dt>
+<dd><p>该 <code class="code">type_printers</code> 属性是一个类型打印机对象列表。
+请参阅 <a class="xref" href="Type-Printing-API.html">类型打印 API</a>，以获取更多信息。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002eframe_005ffilters"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.frame_filters</strong><a class="copiable-link" href="#index-Progspace_002eframe_005ffilters"> ¶</a></span></dt>
+<dd><p>该 <code class="code">frame_filters</code> 属性是一个帧过滤器对象的字典。 请参阅 <a class="xref" href="Frame-Filter-API.html">过滤帧</a>，以获取更多信息。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Progspace_002emissing_005ffile_005fhandlers"><span class="category-def">变量： </span><span><strong class="def-name">Progspace.missing_file_handlers</strong><a class="copiable-link" href="#index-Progspace_002emissing_005ffile_005fhandlers"> ¶</a></span></dt>
+<dd><p>该 <code class="code">missing_file_handlers</code> 属性是一个元组列表。 每个元组为这个程序空间保存一个缺失文件处理程序对象。 有关更多信息，请参阅 <a class="pxref" href="Missing-Debug-Info-In-Python.html">Python 中的缺失调试信息</a>和
+<a class="ref" href="Missing-Objfiles-In-Python.html">Python 中的缺失目标文件</a>。
+</p></dd></dl>
+
+<p>一个程序空间有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002eblock_005ffor_005fpc"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.block_for_pc</strong> <var class="def-var-arguments">(pc)</var><a class="copiable-link" href="#index-Progspace_002eblock_005ffor_005fpc"> ¶</a></span></dt>
+<dd><p>返回包含给定 <code class="code">gdb.Block</code> 的最内层 <var class="var">pc</var>
+值。 如果无法为指定的 <var class="var">pc</var> 值找到块，该函数将返回 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002efind_005fpc_005fline"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.find_pc_line</strong> <var class="def-var-arguments">(pc)</var><a class="copiable-link" href="#index-Progspace_002efind_005fpc_005fline"> ¶</a></span></dt>
+<dd><p>返回与 <code class="code">gdb.Symtab_and_line</code> 对应的
+<var class="var">pc</var> 值。 请参阅 <a class="xref" href="Symbol-Tables-In-Python.html">Python 中的符号表表示</a>。 如果传递了无效的 <var class="var">pc</var> 值作为参数，那么返回的 <code class="code">symtab</code> 和
+<code class="code">line</code> 属性将分别为 <code class="code">gdb.Symtab_and_line</code>
+和 0。 <code class="code">None</code> 
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Progspace_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">True</code> 对象有效，则返回 <code class="code">gdb.Progspace</code> ，否则返回
+<code class="code">False</code> 。 如果程序空间文件没有被任何 inferior 引用，那么 <code class="code">gdb.Progspace</code> 对象可能会变得无效。 如果在调用方法时对象无效，所有其他 <code class="code">gdb.Progspace</code> 方法将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002eobjfiles"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.objfiles</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Progspace_002eobjfiles"> ¶</a></span></dt>
+<dd><p>返回此程序空间引用的所有目标文件的序列。 请参阅 <a class="xref" href="Objfiles-In-Python.html">Python 中的目标文件</a>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002esolib_005fname"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.solib_name</strong> <var class="def-var-arguments">(address)</var><a class="copiable-link" href="#index-Progspace_002esolib_005fname"> ¶</a></span></dt>
+<dd><p>以字符串形式返回包含给定 <var class="var">地址</var>
+的共享库的名称，或者 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Progspace_002eobjfile_005ffor_005faddress"><span class="category-def">函数： </span><span><strong class="def-name">Progspace.objfile_for_address</strong> <var class="def-var-arguments">(address)</var><a class="copiable-link" href="#index-Progspace_002eobjfile_005ffor_005faddress"> ¶</a></span></dt>
+<dd><p>返回包含给定地址的 <code class="code">gdb.Objfile</code> ，如果没有目标文件覆盖该地址，则返回
+<code class="code">None</code> 。
+</p></dd></dl>
+
+<p>可以用通常的 Python 方式为 <code class="code">gdb.Progspace</code> 对象添加任意属性。
+例如，如果需要对与程序空间相关的信息进行额外的记录，这将很有用。
+</p>
+<p>请参阅 <a class="xref" href="Inferiors-In-Python.html#choosing-attribute-names">选择属性名称</a>，以获取为新属性选择合适名称的指导。
+</p>
+<p>在这个人为设计的示例中，我们希望在加载包含某个符号的目标文件时执行一些处理，但由于处理成本较高，我们只想执行一次。 为了实现这一点，我们使用程序空间来记录结果，因为我们无法预测所需的目标文件何时会被加载。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) python
+</pre><div class="group"><pre class="example-preformatted">def clear_objfiles_handler(event):
+    event.progspace.expensive_computation = None
+def expensive(symbol):
+    &#34;&#34;&#34;一个模拟例程，用于对符号执行“昂贵”的计算。&#34;&#34;&#34;
+    print (&#34;正在计算终极问题的答案 ...&#34;)
+    return 42
+</pre></div><div class="group"><pre class="example-preformatted">def new_objfile_handler(event):
+    objfile = event.new_objfile
+    progspace = objfile.progspace
+    if not hasattr(progspace, &#39;expensive_computation&#39;) or \
+            progspace.expensive_computation is None:
+        # 为了简化示例，我们使用 &#39;main&#39; 作为符号。
+        # 注意：目前没有办法将查找范围限制在一个目标文件内。
+        symbol = gdb.lookup_global_symbol(&#39;main&#39;)
+        if symbol is not None:
+            progspace.expensive_computation = expensive(symbol)
+gdb.events.clear_objfiles.connect(clear_objfiles_handler)
+gdb.events.new_objfile.connect(new_objfile_handler)
+end
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) file /tmp/hello
+正在从 /tmp/hello 读取符号...
+正在计算终极问题的答案 ...
+(gdb) python print(gdb.current_progspace().expensive_computation)
+42
+(gdb) run
+开始执行程序：/tmp/hello
+你好。
+[Inferior 1 (进程 4242) 正常退出]
+</pre></div></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Objfiles-In-Python.html">Python 中的目标文件</a>，上一项： <a href="Functions-In-Python.html">编写新的便利函数</a>，上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

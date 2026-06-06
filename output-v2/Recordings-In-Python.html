@@ -1,0 +1,312 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的录制（使用 GDB 调试）</title>
+
+<meta name="description" content="Recordings In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Recordings In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="CLI-Commands-In-Python.html" rel="next" title="CLI Commands In Python"/>
+<link href="Threads-In-Python.html" rel="prev" title="Threads In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Recordings-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="CLI-Commands-In-Python.html" rel="next">Python 中的 CLI 命令</a>, 上一项： <a accesskey="p" href="Threads-In-Python.html" rel="prev">Python 中的线程</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Recordings-In-Python-1"><span><a class="copiable-link" href="#Recordings-In-Python-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-recordings-in-python"></a>
+
+<p>以下与录制相关的函数（参见 <a class="pxref" href="Process-Record-and-Replay.html"></a>）在 <code class="code">gdb</code>
+模块：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002estart_005frecording"><span class="category-def">函数： </span><span><strong class="def-name">gdb.start_recording</strong> <var class="def-var-arguments">(<span class="r">[</span>方法<span class="r">]</span>, <span class="r">[</span>格式<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002estart_005frecording"> ¶</a></span></dt>
+<dd><p>使用给定的 <var class="var">方法</var> 和 <var class="var">格式</var>开始录制。如果没有提供 <var class="var">格式</var> ，则使用录制方法的默认格式。如果没有提供 <var class="var">方法</var> ，则使用默认方法。成功时返回一个 <code class="code">gdb.Record</code> 对象。失败时抛出异常。
+</p>
+<p>以下字符串可以作为 <var class="var">方法</var>传递：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">&#34;full&#34;</code>
+</li><li><code class="code">&#34;btrace&#34;</code>： <var class="var">格式</var>的可能值： <code class="code">&#34;pt&#34;</code>,
+<code class="code">&#34;bts&#34;</code> 或者留空使用默认格式。
+</li></ul>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005frecording"><span class="category-def">函数： </span><span><strong class="def-name">gdb.current_recording</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005frecording"> ¶</a></span></dt>
+<dd><p>访问当前正在运行的录制。成功时返回一个 <code class="code">gdb.Record</code>
+对象。如果当前没有活动的录制，则返回 <code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002estop_005frecording"><span class="category-def">函数： </span><span><strong class="def-name">gdb.stop_recording</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002estop_005frecording"> ¶</a></span></dt>
+<dd><p>停止当前的录制。如果当前没有活动的录制，则抛出异常。此调用后，所有记录对象将失效。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Record</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002emethod"><span class="category-def">变量： </span><span><strong class="def-name">Record.method</strong><a class="copiable-link" href="#index-Record_002emethod"> ¶</a></span></dt>
+<dd><p>一个包含当前录制方法的字符串，例如 <code class="code">full</code> 或
+<code class="code">btrace</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002eformat"><span class="category-def">变量： </span><span><strong class="def-name">Record.format</strong><a class="copiable-link" href="#index-Record_002eformat"> ¶</a></span></dt>
+<dd><p>一个包含当前录制格式的字符串，例如 <code class="code">bt</code>, <code class="code">pts</code> 或
+<code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002ebegin"><span class="category-def">变量： </span><span><strong class="def-name">Record.begin</strong><a class="copiable-link" href="#index-Record_002ebegin"> ¶</a></span></dt>
+<dd><p>一个特定于方法的指令对象，表示此录制中的第一条指令。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002eend"><span class="category-def">变量： </span><span><strong class="def-name">Record.end</strong><a class="copiable-link" href="#index-Record_002eend"> ¶</a></span></dt>
+<dd><p>一个特定于方法的指令对象，表示当前指令，但实际上不是录制的一部分。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002ereplay_005fposition"><span class="category-def">变量： </span><span><strong class="def-name">Record.replay_position</strong><a class="copiable-link" href="#index-Record_002ereplay_005fposition"> ¶</a></span></dt>
+<dd><p>表示当前重放位置的指令。如果没有活动的重放，这将是 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002einstruction_005fhistory"><span class="category-def">变量： </span><span><strong class="def-name">Record.instruction_history</strong><a class="copiable-link" href="#index-Record_002einstruction_005fhistory"> ¶</a></span></dt>
+<dd><p>一个包含所有录制指令的列表。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Record_002efunction_005fcall_005fhistory"><span class="category-def">变量： </span><span><strong class="def-name">Record.function_call_history</strong><a class="copiable-link" href="#index-Record_002efunction_005fcall_005fhistory"> ¶</a></span></dt>
+<dd><p>一个包含所有录制的函数调用段的列表。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.Record</code> 对象具有以下方法：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Record_002egoto"><span class="category-def">函数： </span><span><strong class="def-name">Record.goto</strong> <var class="def-var-arguments">（指令）</var><a class="copiable-link" href="#index-Record_002egoto"> ¶</a></span></dt>
+<dd><p>将重放位置移动到给定的 <var class="var">指令</var>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Record_002eclear"><span class="category-def">函数： </span><span><strong class="def-name">Record.clear</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Record_002eclear"> ¶</a></span></dt>
+<dd><p>清除当前录制的跟踪数据。这会强制对后续命令的跟踪进行重新解码。
+</p></dd></dl>
+
+<p>录制方法特定的指令对象所继承的通用 <code class="code">gdb.Instruction</code> 类具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Instruction_002epc"><span class="category-def">变量： </span><span><strong class="def-name">Instruction.pc</strong><a class="copiable-link" href="#index-Instruction_002epc"> ¶</a></span></dt>
+<dd><p>一个表示此指令地址的整数。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Instruction_002edata"><span class="category-def">变量： </span><span><strong class="def-name">Instruction.data</strong><a class="copiable-link" href="#index-Instruction_002edata"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">memoryview</code> 对象，保存原始指令数据。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Instruction_002edecoded"><span class="category-def">变量： </span><span><strong class="def-name">Instruction.decoded</strong><a class="copiable-link" href="#index-Instruction_002edecoded"> ¶</a></span></dt>
+<dd><p>一个包含反汇编指令的可读字符串。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Instruction_002esize"><span class="category-def">变量： </span><span><strong class="def-name">Instruction.size</strong><a class="copiable-link" href="#index-Instruction_002esize"> ¶</a></span></dt>
+<dd><p>指令的字节大小。
+</p></dd></dl>
+
+<p>此外 <code class="code">gdb.RecordInstruction</code> 具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordInstruction_002enumber"><span class="category-def">变量： </span><span><strong class="def-name">RecordInstruction.number</strong><a class="copiable-link" href="#index-RecordInstruction_002enumber"> ¶</a></span></dt>
+<dd><p>一个标识此指令的整数。  <code class="code">number</code> 对应于在 <code class="code">record instruction-history</code>
+（参见 <a class="pxref" href="Process-Record-and-Replay.html">录制被调试程序的执行并进行重放</a>）中看到的编号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordInstruction_002esal"><span class="category-def">变量： </span><span><strong class="def-name">RecordInstruction.sal</strong><a class="copiable-link" href="#index-RecordInstruction_002esal"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">gdb.Symtab_and_line</code> 对象，表示此指令关联的符号表和行。如果没有可用的调试信息，可能为 <code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordInstruction_002eis_005fspeculative"><span class="category-def">变量： </span><span><strong class="def-name">RecordInstruction.is_speculative</strong><a class="copiable-link" href="#index-RecordInstruction_002eis_005fspeculative"> ¶</a></span></dt>
+<dd><p>一个布尔值，指示该指令是否是推测执行的。
+</p></dd></dl>
+
+<p>如果在录制或解码录制过程中发生错误，此错误由指令列表中的一个 <code class="code">gdb.RecordGap</code> 对象表示。它具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordGap_002enumber"><span class="category-def">变量： </span><span><strong class="def-name">RecordGap.number</strong><a class="copiable-link" href="#index-RecordGap_002enumber"> ¶</a></span></dt>
+<dd><p>一个标识此间隙的整数。  <code class="code">number</code> 对应于在 <code class="code">record instruction-history</code> （参见 <a class="pxref" href="Process-Record-and-Replay.html">录制被调试程序的执行并进行重放</a>）中看到的编号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordGap_002eerror_005fcode"><span class="category-def">变量： </span><span><strong class="def-name">RecordGap.error_code</strong><a class="copiable-link" href="#index-RecordGap_002eerror_005fcode"> ¶</a></span></dt>
+<dd><p>间隙原因的数值表示。该值特定于当前的录制方法。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordGap_002eerror_005fstring"><span class="category-def">变量： </span><span><strong class="def-name">RecordGap.error_string</strong><a class="copiable-link" href="#index-RecordGap_002eerror_005fstring"> ¶</a></span></dt>
+<dd><p>一个包含间隙原因的可读字符串。
+</p></dd></dl>
+
+<p>一些 <small class="sc">GDB</small> 功能会将辅助信息写入执行历史记录。此信息由指令列表中的一个 <code class="code">gdb.RecordAuxiliary</code> 对象表示。它具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordAuxiliary_002enumber"><span class="category-def">变量： </span><span><strong class="def-name">RecordAuxiliary.<var class="var">number</var></strong><a class="copiable-link" href="#index-RecordAuxiliary_002enumber"> ¶</a></span></dt>
+<dd><p>一个标识此辅助信息的整数。  <var class="var">编号</var> 对应于在 <code class="code">record instruction-history</code> （参见 <a class="pxref" href="Process-Record-and-Replay.html">录制被调试程序的执行并进行重放</a>）中看到的编号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordAuxiliary_002edata"><span class="category-def">变量： </span><span><strong class="def-name">RecordAuxiliary.data</strong><a class="copiable-link" href="#index-RecordAuxiliary_002edata"> ¶</a></span></dt>
+<dd><p>辅助数据的字符串表示。
+</p></dd></dl>
+
+<p>一个 <code class="code">gdb.RecordFunctionSegment</code> 对象具有以下属性：
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002enumber"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.number</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002enumber"> ¶</a></span></dt>
+<dd><p>一个标识此函数段的整数。  <code class="code">number</code> 对应于在 <code class="code">record function-call-history</code>
+（参见 <a class="pxref" href="Process-Record-and-Replay.html">录制被调试程序的执行并进行重放</a>）中看到的编号。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002esymbol"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.symbol</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002esymbol"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">gdb.Symbol</code> 对象，表示关联的符号。如果没有可用的调试信息，可能为
+<code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002elevel"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.level</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002elevel"> ¶</a></span></dt>
+<dd><p>一个表示函数调用栈级别的整数。如果函数调用是一个间隙，可能为
+<code class="code">None</code> 。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002einstructions"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.instructions</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002einstructions"> ¶</a></span></dt>
+<dd><p>一个包含 <code class="code">gdb.RecordInstruction</code> 或 <code class="code">gdb.RecordGap</code> 对象的列表，与该函数调用相关联。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002eup"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.up</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002eup"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">gdb.RecordFunctionSegment</code> 对象，表示调用者的函数段。如果调用未被录制，这将是控制返回的函数段。如果调用和返回都未被录制，这将是 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002eprev"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.prev</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002eprev"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">gdb.RecordFunctionSegment</code> 对象，表示此函数调用的前一个段。可能为 <code class="code">None</code>。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-RecordFunctionSegment_002enext"><span class="category-def">变量： </span><span><strong class="def-name">RecordFunctionSegment.next</strong><a class="copiable-link" href="#index-RecordFunctionSegment_002enext"> ¶</a></span></dt>
+<dd><p>一个 <code class="code">gdb.RecordFunctionSegment</code> 对象，表示此函数调用的下一个段。可能为 <code class="code">None</code>。
+</p></dd></dl>
+
+<p>以下示例演示了如何使用这些对象和函数来创建一个函数，该函数将记录倒回上一次执行不同文件中的函数的时间。这通常用于跟踪库中用户提供的回调函数的执行，这些函数通常在回溯中不可见。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def bringback ():
+    rec = gdb.current_recording ()
+    if not rec:
+        return
+
+    insn = rec.instruction_history
+    if len (insn) == 0:
+        return
+
+    try:
+        position = insn.index (rec.replay_position)
+    except:
+        position = -1
+    try:
+        filename = insn[position].sal.symtab.fullname ()
+    except:
+        filename = None
+
+    for i in reversed (insn[:position]):
+	try:
+            current = i.sal.symtab.fullname ()
+	except:
+            current = None
+
+        if filename == current:
+            continue
+
+        rec.goto (i)
+        return
+</pre></div>
+
+<p>另一个可能的应用是编写一个函数，用于计算给定行范围内代码执行的次数。这个行范围可以包含函数的部分内容，也可以跨越多个函数，并且不要求是连续的。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">def countrange (filename, linerange):
+    count = 0
+
+    def filter_only (file_name):
+        for call in gdb.current_recording ().function_call_history:
+            try:
+                if file_name in call.symbol.symtab.fullname ():
+                    yield call
+            except:
+                pass
+
+    for c in filter_only (filename):
+        for i in c.instructions:
+            try:
+                if i.sal.line in linerange:
+                    count += 1
+                    break;
+            except:
+                    pass
+
+    return count
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="CLI-Commands-In-Python.html">Python 中的 CLI 命令</a>, 上一项： <a href="Threads-In-Python.html">Python 中的线程</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

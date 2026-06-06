@@ -1,0 +1,336 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>正在连接（使用GDB进行调试）</title>
+
+<meta name="description" content="Connecting (Debugging with GDB)"/>
+<meta name="keywords" content="Connecting (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Debugging.html" rel="up" title="Remote Debugging"/>
+<link href="File-Transfer.html" rel="next" title="File Transfer"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Connecting">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="File-Transfer.html" rel="next">将文件发送到远程系统</a>上一步： <a accesskey="u" href="Remote-Debugging.html" rel="up">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Connecting-to-a-Remote-Target"><span>20.1连接到远程目标<a class="copiable-link" href="#Connecting-to-a-Remote-Target"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-remote-debugging_002c-connecting"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-connecting"></a>
+<a class="index-entry-id" id="index-remote-debugging_002c-types-of-connections"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-types-of-connections"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-target-remote-mode"></a>
+<a class="index-entry-id" id="index-gdbserver_002c-target-extended_002dremote-mode"></a>
+
+<p>本节介绍如何连接到远程目标，包括连接类型及其差异、如何在主机和目标上设置可执行文件和符号文件，以及用于连接到远程目标和从远程目标断开连接的命令。
+</p>
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Types-of-Remote-Connections">远程连接类型</a></li>
+<li><a accesskey="2" href="#Host-and-Target-Files">主机和目标文件</a></li>
+<li><a accesskey="3" href="#Remote-Connection-Commands">远程连接命令</a></li>
+</ul>
+<div class="subsection-level-extent" id="Types-of-Remote-Connections">
+<h4 class="subsection"><span>20.1.1远程连接类型<a class="copiable-link" href="#Types-of-Remote-Connections"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 支持两种远程连接类型， <code class="code">target remote</code>
+模式和 <code class="code">target extended-remote</code> 模式。请注意，许多远程目标仅支持 <code class="code">target remote</code> 模式。这两种连接类型之间存在几个主要差异，在此列举如下：
+</p>
+<dl class="table">
+<dt><a id="index-remote-debugging_002c-detach-and-program-exit"></a><span>分离或程序退出的结果<a class="copiable-link" href="#index-remote-debugging_002c-detach-and-program-exit"> ¶</a></span></dt>
+<dd><p><strong class="strong">使用目标远程模式时：</strong> 当调试的程序退出或您从中分离时， <small class="sc">GDB</small> 会与目标断开连接。当使用
+<code class="code">gdbserver</code>, <code class="code">gdbserver</code> 时，
+</p>
+<p><strong class="strong">将退出。</strong> 当调试的程序退出或您从中分离时， <small class="sc">GDB</small> 仍与目标保持连接，即使没有程序正在运行。您可以重新运行程序、附加到正在运行的程序，或使用 <code class="code">monitor</code> 特定于目标的命令。
+</p>
+<p>当在这种情况下使用 <code class="code">gdbserver</code> 时，除非使用 <samp class="option">--once</samp> 选项调用它，否则它不会退出。如果未使用 <samp class="option">--once</samp> 选项，您可以使用 <code class="code">gdbserver</code> 命令要求
+<code class="code">monitor exit</code> 退出（请参阅 <a class="pxref" href="Server.html#Monitor-Commands-for-gdbserver">gdbserver的监控命令</a>）。
+</p>
+</dd>
+<dt>指定要调试的程序</dt>
+<dd><p>对于两种连接类型，您都使用 <code class="code">file</code> 命令在主机系统上指定程序。如果您使用 <code class="code">gdbserver</code> ，在指定目标上程序的位置方面存在一些差异。
+</p>
+<p><strong class="strong">使用目标远程模式时：</strong> 您必须在 <code class="code">gdbserver</code> 命令行上指定要调试的程序，或使用 <samp class="option">--attach</samp> 选项（请参阅 <a class="pxref" href="Server.html#Attaching-to-a-program">附加到正在运行的程序</a>）。
+</p>
+<a class="index-entry-id" id="index-_002d_002dmulti_002c-gdbserver-option"></a>
+<p><strong class="strong">使用目标扩展远程模式时：</strong> 您可以在 <code class="code">gdbserver</code> 命令行上指定要调试的程序，或者在连接到 <small class="sc">GDB</small> 之后使用 <code class="code">gdbserver</code>命令加载程序或附加到它。
+</p>
+<a class="anchor" id="g_t_002d_002dmulti-Option-in-Types-of-Remote-Connections"></a><p>您可以在不提供初始运行命令或要附加的进程ID的情况下启动 <code class="code">gdbserver</code> 。为此，请使用 <samp class="option">--multi</samp> 命令行选项。然后，您可以使用 <code class="code">target extended-remote</code> 连接并启动要调试的程序（有关在此场景中使用
+<code class="code">run</code> 命令的详细信息，请参阅下文）。请注意，
+<code class="code">gdbserver</code> 终止的条件取决于 <small class="sc">GDB</small> 如何连接到它（<code class="code">target remote</code> 或 <code class="code">target extended-remote</code>）。
+<samp class="option">--multi</samp> 选项对 <code class="code">gdbserver</code> 没有影响。
+</p>
+</dd>
+<dt>命令 <code class="code">run</code> </dt>
+<dd><p><strong class="strong">使用目标远程模式时：</strong> 命令不受支持。建立连接后，您可以使用所有常用的 <code class="code">run</code> 命令来检查和更改数据。远程程序已经在运行，因此您可以使用诸如 <small class="sc">GDB</small> 单步执行
+<kbd class="kbd">和</kbd> and <kbd class="kbd">继续</kbd>等命令。
+</p>
+<p><strong class="strong">使用目标扩展远程模式时：</strong> 命令受支持。 <code class="code">run</code> 命令使用由 <code class="code">run</code> 设置的值（请参阅
+<code class="code">set remote exec-file</code> 设置远程可执行文件 <a class="pxref" href="Remote-Configuration.html#set-remote-exec_002dfile">）来选择要运行的程序。支持命令行参数，但不支持通配符扩展和I/O重定向（请参阅</a>您程序的参数 <a class="pxref" href="Arguments.html">）。</a>
+</p>
+<p>如果您在命令行上指定要调试的程序，则不需要
+<code class="code">run</code> 命令来开始执行，并且您可以像在 <kbd class="kbd">单步执行</kbd> 和 <kbd class="kbd">继续</kbd> 模式下一样继续使用诸如
+<code class="code">target remote</code> 等命令。
+</p>
+<a class="anchor" id="Attaching-in-Types-of-Remote-Connections"></a></dd>
+<dt>附加</dt>
+<dd><p><strong class="strong">使用目标远程模式时：</strong> The <small class="sc">GDB</small> command <code class="code">attach</code> is
+not supported.  To attach to a running program using <code class="code">gdbserver</code>, you
+must use the <samp class="option">--attach</samp> option (see <a class="pxref" href="Server.html#Running-gdbserver">Running gdbserver</a>).
+</p>
+<p><strong class="strong">With target extended-remote mode:</strong> To attach to a running program,
+you may use the <code class="code">attach</code> command after the connection has been
+established.  If you are using <code class="code">gdbserver</code>, you may also invoke
+<code class="code">gdbserver</code> using the <samp class="option">--attach</samp> option
+(see <a class="pxref" href="Server.html#Running-gdbserver">Running gdbserver</a>).
+</p>
+<p>Some remote targets allow <small class="sc">GDB</small> to determine the executable file running
+in the process the debugger is attaching to.  In such a case, <small class="sc">GDB</small>
+uses the value of <code class="code">exec-file-mismatch</code> to handle a possible mismatch
+between the executable file name running in the process and the name of the
+current exec-file loaded by <small class="sc">GDB</small> (see <a class="pxref" href="Attach.html#set-exec_002dfile_002dmismatch">set exec-file-mismatch</a>).
+</p>
+</dd>
+</dl>
+
+<a class="anchor" id="Host-and-target-files"></a></div>
+<div class="subsection-level-extent" id="Host-and-Target-Files">
+<h4 class="subsection"><span>20.1.2 Host and Target Files<a class="copiable-link" href="#Host-and-Target-Files"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-remote-debugging_002c-symbol-files"></a>
+<a class="index-entry-id" id="index-symbol-files_002c-remote-debugging"></a>
+
+<p><small class="sc">GDB</small>, running on the host, needs access to symbol and debugging
+information for your program running on the target.  This requires 
+access to an unstripped copy of your program, and possibly any associated
+symbol files.  Note that this section applies equally to both <code class="code">target
+remote</code> mode and <code class="code">target extended-remote</code> mode.
+</p>
+<p>Some remote targets (see <a class="pxref" href="General-Query-Packets.html#qXfer-executable-filename-read">qXfer executable filename read</a>, and
+see <a class="pxref" href="Host-I_002fO-Packets.html">Host I/O Packets</a>) allow <small class="sc">GDB</small> to access program files over
+the same connection used to communicate with <small class="sc">GDB</small>.  With such a
+target, if the remote program is unstripped, the only command you need is
+<code class="code">target remote</code> (or <code class="code">target extended-remote</code>).
+</p>
+<p>If the remote program is stripped, or the target does not support remote
+program file access, start up <small class="sc">GDB</small> using the name of the local
+unstripped copy of your program as the first argument, or use the
+<code class="code">file</code> command.  Use <code class="code">set sysroot</code> to specify the location (on
+the host) of target libraries (unless your <small class="sc">GDB</small> was compiled with
+the correct sysroot using <code class="code">--with-sysroot</code>).  Alternatively, you
+may use <code class="code">set solib-search-path</code> to specify how <small class="sc">GDB</small> locates
+target libraries.
+</p>
+<p>The symbol file and target libraries must exactly match the executable
+and libraries on the target, with one exception: the files on the host
+system should not be stripped, even if the files on the target system
+are.  Mismatched or missing files will lead to confusing results
+during debugging.  On <small class="sc">GNU</small>/Linux targets, mismatched or missing
+files may also prevent <code class="code">gdbserver</code> from debugging multi-threaded
+programs.
+</p>
+</div>
+<div class="subsection-level-extent" id="Remote-Connection-Commands">
+<h4 class="subsection"><span>20.1.3 Remote Connection Commands<a class="copiable-link" href="#Remote-Connection-Commands"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-remote-connection-commands"></a>
+<p><small class="sc">GDB</small> can communicate with the target over a serial line, a
+local Unix domain socket, or
+over an <abbr class="acronym">IP</abbr> network using <abbr class="acronym">TCP</abbr> or <abbr class="acronym">UDP</abbr>.  In
+each case, <small class="sc">GDB</small> uses the same protocol for debugging your
+program; only the medium carrying the debugging packets varies.  The
+<code class="code">target remote</code> and <code class="code">target extended-remote</code> commands
+establish a connection to the target.  Both commands accept the same
+arguments, which indicate the medium to use:
+</p>
+<dl class="table">
+<dt><a id="index-serial-line_002c-target-remote"></a><span><code class="code">target remote <var class="var">serial-device</var></code><a class="copiable-link" href="#index-serial-line_002c-target-remote"> ¶</a></span></dt>
+<dt><code class="code">target extended-remote <var class="var">serial-device</var></code></dt>
+<dd><p>Use <var class="var">serial-device</var> to communicate with the target.  For example,
+to use a serial line connected to the device named <samp class="file">/dev/ttyb</samp>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">target remote /dev/ttyb
+</pre></div>
+
+<p>If you’re using a serial line, you may want to give <small class="sc">GDB</small> the
+‘<samp class="samp">--baud</samp>’ option, or use the <code class="code">set serial baud</code> command
+(see <a class="pxref" href="Remote-Configuration.html">set serial baud</a>) before the
+<code class="code">target</code> command.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Unix-domain-socket"></a>
+<a id="index-local-socket_002c-target-remote"></a><span><code class="code">target remote <var class="var">local-socket</var></code><a class="copiable-link" href="#index-local-socket_002c-target-remote"> ¶</a></span></dt>
+<dt><code class="code">target extended-remote <var class="var">local-socket</var></code></dt>
+<dd><p>Use <var class="var">local-socket</var> to communicate with the target.  For example,
+to use a local Unix domain socket bound to the file system entry <samp class="file">/tmp/gdb-socket0</samp>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">target remote /tmp/gdb-socket0
+</pre></div>
+
+<p>Note that this command has the same form as the command to connect
+to a serial line.  <small class="sc">GDB</small> will automatically determine which
+kind of file you have specified and will make the appropriate kind
+of connection.
+This feature is not available if the host system does not support
+Unix domain sockets.
+</p>
+</dd>
+<dt><a id="index-TCP-port_002c-target-remote"></a><span><code class="code">target remote <code class="code"><var class="var">host</var>:<var class="var">port</var></code></code><a class="copiable-link" href="#index-TCP-port_002c-target-remote"> ¶</a></span></dt>
+<dt><code class="code">target remote <code class="code">[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">tcp:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">tcp:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">tcp4:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">tcp6:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">tcp6:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code"><var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">tcp:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">tcp:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">tcp4:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">tcp6:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">tcp6:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dd><p>Debug using a <abbr class="acronym">TCP</abbr> connection to <var class="var">port</var> on <var class="var">host</var>.
+The <var class="var">host</var> may be either a host name, a numeric <abbr class="acronym">IPv4</abbr>
+address, or a numeric <abbr class="acronym">IPv6</abbr> address (with or without the
+square brackets to separate the address from the port); <var class="var">port</var>
+必须是一个十进制数。 <var class="var">主机</var> 如果目标机器直接连接到网络，那么它本身可能就是目标机器；或者它可能是一个终端服务器，该终端服务器又通过串行线路连接到目标机器。
+</p>
+<p>例如，要连接到名为
+<code class="code">manyfarms</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">的终端服务器上的2828端口，目标远程 manyfarms:2828
+</pre></div>
+
+<p>要连接到地址为
+<code class="code">2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>的终端服务器上的2828端口，你可以使用方括号语法：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标远程 [2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2828
+</pre></div>
+
+<p>或者显式指定 <abbr class="acronym">IPv6</abbr> 协议：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标远程 tcp6:2001:0db8:85a3:0000:0000:8a2e:0370:7334:2828
+</pre></div>
+
+<p>最后一个示例可能会让读者感到困惑，因为主机名和端口号之间没有明显的分隔。因此，我们建议用户为了清晰起见使用方括号来提供IPv6地址。然而，需要提到的是，对于 <abbr class="acronym">IPv6</abbr> 地址，不存在歧义：最后一个冒号后的数字被视为端口号。 <small class="sc">GDB</small> there is no ambiguity: the number after
+the last colon is considered to be the port number.
+</p>
+<p>如果你的远程目标实际上与你的调试会话在同一台机器上运行（例如，在同一主机上运行的目标模拟器），你可以省略主机名。例如，要连接到本地机器上的1234端口：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">目标远程 :1234
+</pre></div>
+
+<p>请注意，这里仍然需要冒号。
+</p>
+</dd>
+<dt><a id="index-UDP-port_002c-target-remote"></a><span><code class="code">target remote <code class="code">udp:<var class="var">host</var>:<var class="var">port</var></code></code><a class="copiable-link" href="#index-UDP-port_002c-target-remote"> ¶</a></span></dt>
+<dt><code class="code">target remote <code class="code">udp:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">udp4:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target remote <code class="code">udp6:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp4:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp6:<var class="var">host</var>:<var class="var">port</var></code></code></dt>
+<dt><code class="code">target extended-remote <code class="code">udp6:[<var class="var">host</var>]:<var class="var">port</var></code></code></dt>
+<dd><p>使用 <abbr class="acronym">UDP</abbr> 数据包进行调试到 <var class="var">端口</var> 在 <var class="var">主机</var>上。例如，要连接到 <abbr class="acronym">UDP</abbr> 端口2828，在名为 <code class="code">manyfarms</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">的终端服务器上，目标远程 udp:manyfarms:2828
+</pre></div>
+
+<p>当使用 <abbr class="acronym">UDP</abbr> 连接进行远程调试时，你应该记住，‘U’代表“不可靠”。  <abbr class="acronym">UDP</abbr>
+可能会在繁忙或不可靠的网络上静默丢弃数据包，这将对你的调试会话造成严重破坏。
+</p>
+</dd>
+<dt><a id="index-pipe_002c-target-remote-to"></a><span><code class="code">target remote | <var class="var">command</var></code><a class="copiable-link" href="#index-pipe_002c-target-remote-to"> ¶</a></span></dt>
+<dt><code class="code">target extended-remote | <var class="var">command</var></code></dt>
+<dd><p>在后台运行 <var class="var">命令</var> 并使用管道与其通信。 <var class="var">命令</var> 是一个 shell 命令，将由系统的命令 shell 进行解析和展开， <code class="code">/bin/sh</code>；它应该在其标准输入上接收远程协议数据包，并在其标准输出上发送回复。你可以使用此功能来运行一个独立的模拟器，该模拟器使用远程调试协议，使用诸如 <code class="code">ssh</code>之类的程序进行网络连接，或用于其他类似技巧。
+</p>
+<p>如果 <var class="var">命令</var> 关闭其标准输出（可能通过退出），
+<small class="sc">GDB</small> 将尝试向其发送一个 <code class="code">SIGTERM</code> 信号。（如果程序已经退出，这将没有效果。）
+</p>
+</dd>
+</dl>
+
+<a class="index-entry-id" id="index-interrupting-remote-programs"></a>
+<a class="index-entry-id" id="index-remote-programs_002c-interrupting"></a>
+<p>每当 <small class="sc">GDB</small> 等待远程程序时，如果您输入中断字符（通常是 <kbd class="kbd">Ctrl-c</kbd>）， <small class="sc">GDB</small> 将尝试停止程序。这可能成功也可能不成功，部分取决于硬件和远程系统使用的串行驱动程序。如果您再次输入中断字符， <small class="sc">GDB</small> 将显示此提示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">在等待程序时被中断。放弃（并停止调试它）？（y 或 n）
+</pre></div>
+
+<p>在 <code class="code">target remote</code> 模式下，如果您输入 <kbd class="kbd">y</kbd>， <small class="sc">GDB</small> 将放弃远程调试会话。（如果您决定稍后再试，可以再次使用 <kbd class="kbd">目标远程</kbd> 进行连接。）如果您输入
+<kbd class="kbd">n</kbd>， <small class="sc">GDB</small> 将返回等待状态。
+</p>
+<p>在 <code class="code">target extended-remote</code> 模式下，输入 <kbd class="kbd">n</kbd> 将使
+<small class="sc">GDB</small> 保持与目标的连接。
+</p>
+<dl class="table">
+<dt><a id="index-detach-_0028remote_0029"></a><span><code class="code">detach</code><a class="copiable-link" href="#index-detach-_0028remote_0029"> ¶</a></span></dt>
+<dd><p>当您完成对远程程序的调试后，可以使用
+<code class="code">detach</code> 命令将其从 <small class="sc">GDB</small> 控制中释放。从目标分离通常会恢复其执行，但结果将取决于您特定的远程存根。在 <code class="code">detach</code>
+命令在 <code class="code">target remote</code> 模式下之后， <small class="sc">GDB</small> 可以自由连接到另一个目标。在 <code class="code">target extended-remote</code> 模式下， <small class="sc">GDB</small> 仍连接到目标。
+</p>
+</dd>
+<dt><a id="index-disconnect"></a><span><code class="code">disconnect</code><a class="copiable-link" href="#index-disconnect"> ¶</a></span></dt>
+<dd><p>该 <code class="code">disconnect</code> 命令关闭与目标的连接，并且目标通常不会恢复。它将等待 <small class="sc">GDB</small>
+（此实例或另一个实例）连接并继续调试。在 <code class="code">disconnect</code> 命令之后， <small class="sc">GDB</small> 可以再次自由连接到另一个目标。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-extend-gdb-for-remote-targets"></a>
+<a class="index-entry-id" id="index-add-new-commands-for-external-monitor"></a>
+<a class="index-entry-id" id="index-monitor"></a>
+<a id="index-send-command-to-remote-monitor"></a><span><code class="code">monitor <var class="var">cmd</var></code><a class="copiable-link" href="#index-send-command-to-remote-monitor"> ¶</a></span></dt>
+<dd><p>此命令允许您直接向远程监视器发送任意命令。由于 <small class="sc">GDB</small> 不关心它以这种方式发送的命令，此命令是扩展 <small class="sc">GDB</small>的方式 —— 您可以添加只有外部监视器才能理解和实现的新命令。
+</p></dd>
+</dl>
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+接下来： <a href="File-Transfer.html">将文件发送到远程系统</a>，上一级： <a href="Remote-Debugging.html">调试远程程序</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

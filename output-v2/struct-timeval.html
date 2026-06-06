@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>结构体 timeval（使用 GDB 进行调试）</title>
+
+<meta name="description" content="struct timeval (Debugging with GDB)"/>
+<meta name="keywords" content="struct timeval (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up" title="Protocol-specific Representation of Datatypes"/>
+<link href="struct-stat.html" rel="prev" title="struct stat"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="unnumberedsubsubsec-level-extent" id="struct-timeval">
+<div class="nav-panel">
+<p>
+上一个： <a accesskey="p" href="struct-stat.html" rel="prev">结构体 stat</a>, 返回： <a accesskey="u" href="Protocol_002dspecific-Representation-of-Datatypes.html" rel="up">特定协议的数据类型表示</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="unnumberedsubsubsec" id="struct-timeval-1"><span>结构体 timeval<a class="copiable-link" href="#struct-timeval-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-struct-timeval_002c-in-file_002di_002fo-protocol"></a>
+
+<p>文件 I/O 协议使用的类型缓冲区 <code class="code">struct timeval</code> 定义如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">结构体 timeval {
+    time_t tv_sec;  /* 秒 */
+    long   tv_usec; /* 微秒 */
+};
+</pre></div>
+
+<p>整数数据类型符合相应章节（见 <a class="ref" href="Integral-Datatypes.html">整数数据类型</a>，了解详情）中给出的定义，因此该结构体大小为 8 字节。
+</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的断点（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Breakpoints In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Breakpoints In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Finish-Breakpoints-in-Python.html" rel="next" title="Finish Breakpoints in Python"/>
+<link href="Line-Tables-In-Python.html" rel="prev" title="Line Tables In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Breakpoints-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Finish-Breakpoints-in-Python.html" rel="next">完成断点</a>, 上一项： <a accesskey="p" href="Line-Tables-In-Python.html" rel="prev">使用 Python 操作行表</a> <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a></p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Manipulating-breakpoints-using-Python"><span>23.3.2.33 使用 Python 操作断点<a class="copiable-link" href="#Manipulating-breakpoints-using-Python"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-breakpoints-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eBreakpoint"></a>
+
+<p>Python 代码可以通过 <code class="code">gdb.Breakpoint</code>
+类。
+</p>
+<p>
+<code class="code">gdb.Breakpoint</code> 构造函数。第一种形式接受一个字符串，就像你会传递给 <code class="code">break</code>
+(请参阅 <a class="pxref" href="Set-Breaks.html">设置断点</a>) 和 <code class="code">watch</code>
+(请参阅 <a class="pxref" href="Set-Watchpoints.html">设置观察点</a>) 命令，可用于创建断点和观察点。第二种形式接受单独的 Python 参数，类似于 <a class="ref" href="Explicit-Locations.html">显式位置</a>, 只能用于创建断点。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Breakpoint_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">Breakpoint.__init__</strong> <var class="def-var-arguments">(规范 <span class="r"></span>, 类型 <span class="r">][</span>, 观察点类 <span class="r"></span>, 内部的 <span class="r">][</span>, 临时的 <span class="r">][</span>, 限定的 <span class="r">]</span>)</var><a class="copiable-link" href="#index-Breakpoint_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>根据 <var class="var">规范创建一个新的断点，该规范是一个命名断点位置的字符串，或者是一个定义观察点的表达式。该字符串应使用</var>命令（请参阅 <code class="code">break</code>
+设置断点 <a class="pxref" href="Set-Breaks.html">) 或在观察点的情况下使用</a>命令（请参阅 <code class="code">watch</code> 设置观察点 <a class="pxref" href="Set-Watchpoints.html">) 识别的格式描述一个位置。</a>).
+</p>
+<p>可选的 <var class="var">类型</var> 参数指定要创建的断点的类型，如下定义。
+</p>
+<p>可选的 <var class="var">观察点类</var> 参数定义要创建的观察点的类，如果 <var class="var">类型</var> 是 <code class="code">gdb.BP_WATCHPOINT</code>. 如果 <var class="var">观察点类</var> 被省略，它默认值为 <code class="code">gdb.WP_WRITE</code>.
+</p>
+<p>可选的 <var class="var">内部的</var> 参数允许断点对用户不可见。断点在创建时不会被报告，也不会在 <code class="code">info breakpoints</code> 的输出中列出（但会在 <code class="code">maint info breakpoints</code> 命令中列出）。
+</p>
+<p>可选的 <var class="var">临时的</var> 参数使断点成为临时断点。临时断点在被命中后会被删除。在断点被命中后对 Python 断点的任何进一步访问都将导致运行时错误（因为该断点现在已被自动删除）。
+</p>
+<p>可选的 <var class="var">限定的</var> 参数是一个布尔值，允许将传入的函数解释为完全限定的名称。它等同于 <code class="code">spec</code> 的 <code class="code">break</code>标志（请参阅 <code class="code">-qualified</code> 行规范位置 <a class="pxref" href="Linespec-Locations.html">和</a> 显式位置
+<a class="ref" href="Explicit-Locations.html">）。</a>).
+</p>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Breakpoint_002e_005f_005finit_005f_005f-1"><span class="category-def">函数： </span><span><strong class="def-name">Breakpoint.__init__</strong> <var class="def-var-arguments">(<span class="r">[</span> 源文件 <span class="r">][</span>, 函数 <span class="r">][</span>, 标签 <span class="r">][</span>, 行 <span class="r">]</span>, <span class="r">][</span> 内部的 <span class="r">][</span>, 临时的 <span class="r">][</span>, 限定的 <span class="r">]</span>)</var><a class="copiable-link" href="#index-Breakpoint_002e_005f_005finit_005f_005f-1"> ¶</a></span></dt>
+<dd><p>创建新断点的第二种形式指定了显式位置（请参阅 <a class="pxref" href="Explicit-Locations.html">显式位置</a>)，使用关键字。新断点将在指定的源文件中创建 <var class="var">源文件</var>，在指定的
+<var class="var">函数</var>, <var class="var">标签</var> 和 <var class="var">行</var>处。
+</p>
+<p><var class="var">内部的</var>, <var class="var">临时的</var> 和 <var class="var">限定的</var> 的用法与之前解释的相同。
+</p></dd></dl>
+
+<p>可用的类型由 <code class="code">gdb</code>
+模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a class="index-entry-id" id="index-BP_005fBREAKPOINT"></a>
+<a id="index-gdb_002eBP_005fBREAKPOINT"></a><span><code class="code">gdb.BP_BREAKPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fBREAKPOINT"> ¶</a></span></dt>
+<dd><p>普通代码断点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fHARDWARE_005fBREAKPOINT"></a>
+<a id="index-gdb_002eBP_005fHARDWARE_005fBREAKPOINT"></a><span><code class="code">gdb.BP_HARDWARE_BREAKPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fHARDWARE_005fBREAKPOINT"> ¶</a></span></dt>
+<dd><p>硬件辅助代码断点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fWATCHPOINT"></a>
+<a id="index-gdb_002eBP_005fWATCHPOINT"></a><span><code class="code">gdb.BP_WATCHPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fWATCHPOINT"> ¶</a></span></dt>
+<dd><p>观察点断点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fHARDWARE_005fWATCHPOINT"></a>
+<a id="index-gdb_002eBP_005fHARDWARE_005fWATCHPOINT"></a><span><code class="code">gdb.BP_HARDWARE_WATCHPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fHARDWARE_005fWATCHPOINT"> ¶</a></span></dt>
+<dd><p>硬件辅助观察点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fREAD_005fWATCHPOINT"></a>
+<a id="index-gdb_002eBP_005fREAD_005fWATCHPOINT"></a><span><code class="code">gdb.BP_READ_WATCHPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fREAD_005fWATCHPOINT"> ¶</a></span></dt>
+<dd><p>硬件辅助读观察点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fACCESS_005fWATCHPOINT"></a>
+<a id="index-gdb_002eBP_005fACCESS_005fWATCHPOINT"></a><span><code class="code">gdb.BP_ACCESS_WATCHPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fACCESS_005fWATCHPOINT"> ¶</a></span></dt>
+<dd><p>硬件辅助访问观察点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-BP_005fCATCHPOINT"></a>
+<a id="index-gdb_002eBP_005fCATCHPOINT"></a><span><code class="code">gdb.BP_CATCHPOINT</code><a class="copiable-link" href="#index-gdb_002eBP_005fCATCHPOINT"> ¶</a></span></dt>
+<dd><p>捕获点。目前，创建
+<code class="code">gdb.Breakpoint</code> 对象时不能使用此类型，但在
+<code class="code">gdb.Breakpoint</code> 报告的对象中会存在（请参阅
+<code class="code">gdb.BreakpointEvent</code> <a class="pxref" href="Events-In-Python.html">Python 中的事件</a>)。
+</p></dd>
+</dl>
+
+<p>可用的观察点类型由
+<code class="code">gdb</code> 模块中定义的常量表示：
+</p>
+<dl class="vtable">
+<dt><a class="index-entry-id" id="index-WP_005fREAD"></a>
+<a id="index-gdb_002eWP_005fREAD"></a><span><code class="code">gdb.WP_READ</code><a class="copiable-link" href="#index-gdb_002eWP_005fREAD"> ¶</a></span></dt>
+<dd><p>只读观察点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-WP_005fWRITE"></a>
+<a id="index-gdb_002eWP_005fWRITE"></a><span><code class="code">gdb.WP_WRITE</code><a class="copiable-link" href="#index-gdb_002eWP_005fWRITE"> ¶</a></span></dt>
+<dd><p>只写观察点。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-WP_005fACCESS"></a>
+<a id="index-gdb_002eWP_005fACCESS"></a><span><code class="code">gdb.WP_ACCESS</code><a class="copiable-link" href="#index-gdb_002eWP_005fACCESS"> ¶</a></span></dt>
+<dd><p>读写观察点。
+</p></dd>
+</dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Breakpoint_002estop"><span class="category-def">函数： </span><span><strong class="def-name">Breakpoint.stop</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-Breakpoint_002estop"> ¶</a></span></dt>
+<dd><p>该 <code class="code">gdb.Breakpoint</code> 类可以被继承，特别是，你可以选择实现 <code class="code">stop</code> 方法。如果在 <code class="code">gdb.Breakpoint</code>的子类中定义了此方法，当被调试程序到达实例化该子类的断点的任何位置时，将调用此方法。如果该方法返回
+<code class="code">True</code>, 被调试程序将在断点位置停止，否则被调试程序将继续执行。
+</p>
+<p>如果在同一位置有多个具有
+<code class="code">stop</code> 方法的断点，无论前一个方法的返回状态如何，每个方法都会被调用。这确保了所有 <code class="code">stop</code>
+方法都有机会在该位置执行。在这种情况下，如果其中一个方法返回 <code class="code">True</code> 但其他方法返回
+<code class="code">False</code>, 被调试程序仍将停止。
+</p>
+<p>你不应改变被调试程序的执行状态（即单步执行、下一步等），改变当前帧上下文（即更改当前活动帧），或更改、添加或删除任何断点。一般来说，此时你不应更改 <small class="sc">GDB</small> 或被调试程序内的任何数据。
+</p>
+<p>示例 <code class="code">stop</code> 实现：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class MyBreakpoint (gdb.Breakpoint):
+      def stop (self):
+        inf_val = gdb.parse_and_eval(&#34;foo&#34;)
+        if inf_val == 3:
+          return True
+        return False
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Breakpoint_002eis_005fvalid"><span class="category-def">函数： </span><span><strong class="def-name">Breakpoint.is_valid</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Breakpoint_002eis_005fvalid"> ¶</a></span></dt>
+<dd><p>如果此 <code class="code">True</code> 对象有效，则返回 <code class="code">Breakpoint</code> , 否则返回
+<code class="code">False</code> 。如果用户删除了断点， <code class="code">Breakpoint</code> 对象可能会变得无效。在这种情况下，对象仍然存在，但底层的断点不存在了。在观察点作用域的情况下，即使被调试程序的执行离开了该观察点的作用域，观察点仍然有效。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Breakpoint_002edelete"><span class="category-def">函数： </span><span><strong class="def-name">Breakpoint.delete</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Breakpoint_002edelete"> ¶</a></span></dt>
+<dd><p>永久删除 <small class="sc">GDB</small> 断点。这也会使 Python <code class="code">Breakpoint</code> 对象无效。对该对象的属性或方法的任何进一步访问都将引发错误。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002eenabled"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.enabled</strong><a class="copiable-link" href="#index-Breakpoint_002eenabled"> ¶</a></span></dt>
+<dd><p>如果断点已启用，此属性为 <code class="code">True</code> , 否则为
+<code class="code">False</code> 。此属性是可写的。你可以使用它来启用或禁用断点。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002esilent"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.silent</strong><a class="copiable-link" href="#index-Breakpoint_002esilent"> ¶</a></span></dt>
+<dd><p>如果断点是静默的，此属性为 <code class="code">True</code> , 否则为
+<code class="code">False</code> 。此属性是可写的。
+</p>
+<p>请注意，如果断点有命令且第一个命令是 <code class="code">silent</code>, 断点也可以是静默的。这不会通过
+<code class="code">silent</code> 属性报告。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002epending"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.pending</strong><a class="copiable-link" href="#index-Breakpoint_002epending"> ¶</a></span></dt>
+<dd><p>如果断点是挂起的，此属性为 <code class="code">True</code> , 否则为
+<code class="code">False</code> 。请参阅 <a class="xref" href="Set-Breaks.html">设置断点</a>. 此属性是只读的。
+</p></dd></dl>
+
+<a class="anchor" id="python_005fbreakpoint_005fthread"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002ethread"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.thread</strong><a class="copiable-link" href="#index-Breakpoint_002ethread"> ¶</a></span></dt>
+<dd><p>如果断点是特定线程的（请参阅 <a class="pxref" href="Thread_002dSpecific-Breakpoints.html">特定线程的断点</a>），此属性保存线程的全局 ID。如果断点不是特定线程的，此属性为 <code class="code">None</code>. 此属性是可写的。
+</p>
+<p>在任何时候， <code class="code">Breakpoint.thread</code> 或 <code class="code">Breakpoint.inferior</code> 中只有一个可以设置为有效的 ID，也就是说，断点可以是特定线程的，也可以是特定被调试程序的，但不能两者都是。
+</p></dd></dl>
+
+<a class="anchor" id="python_005fbreakpoint_005finferior"></a><dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002einferior"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.inferior</strong><a class="copiable-link" href="#index-Breakpoint_002einferior"> ¶</a></span></dt>
+<dd><p>如果断点是特定被调试程序的（请参阅 <a class="pxref" href="Inferior_002dSpecific-Breakpoints.html">特定被调试程序的断点</a>），此属性保存被调试程序的 ID。如果断点不是特定被调试程序的，此属性为 <code class="code">None</code>.
+</p>
+<p>此属性可以为类型为
+<code class="code">gdb.BP_BREAKPOINT</code> 和 <code class="code">gdb.BP_HARDWARE_BREAKPOINT</code>的断点写入。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002etask"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.task</strong><a class="copiable-link" href="#index-Breakpoint_002etask"> ¶</a></span></dt>
+<dd><p>如果断点是特定 Ada 任务的，此属性保存 Ada 任务的 ID。如果断点不是特定任务的（或者底层语言不是 Ada），此属性为 <code class="code">None</code>. 此属性是可写的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002eignore_005fcount"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.ignore_count</strong><a class="copiable-link" href="#index-Breakpoint_002eignore_005fcount"> ¶</a></span></dt>
+<dd><p>此属性保存断点的忽略计数，是一个整数。此属性是可写的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002enumber"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.number</strong><a class="copiable-link" href="#index-Breakpoint_002enumber"> ¶</a></span></dt>
+<dd><p>此属性保存断点的编号 —— 用户用于操作断点的标识符。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002etype"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.type</strong><a class="copiable-link" href="#index-Breakpoint_002etype"> ¶</a></span></dt>
+<dd><p>此属性保存断点的类型 —— 用于确定实际断点类型或用例的标识符。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002evisible"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.visible</strong><a class="copiable-link" href="#index-Breakpoint_002evisible"> ¶</a></span></dt>
+<dd><p>此属性指示断点在设置时或运行 ‘<samp class="samp">info breakpoints</samp>’ 命令时是否对用户可见。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002etemporary"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.temporary</strong><a class="copiable-link" href="#index-Breakpoint_002etemporary"> ¶</a></span></dt>
+<dd><p>此属性指示断点是否作为临时断点创建。临时断点在被命中后会自动删除。在断点被命中后（因为它已被自动删除），访问此属性以及除 <code class="code">is_valid</code>
+函数之外的所有其他属性和函数将导致错误。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002ehit_005fcount"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.hit_count</strong><a class="copiable-link" href="#index-Breakpoint_002ehit_005fcount"> ¶</a></span></dt>
+<dd><p>此属性保存断点的命中计数，是一个整数。此属性是可写的，但目前只能设置为零。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002elocation"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.location</strong><a class="copiable-link" href="#index-Breakpoint_002elocation"> ¶</a></span></dt>
+<dd><p>此属性保存用户指定的断点位置。它是一个字符串。如果断点没有位置（即它是一个观察点），此属性的值为 <code class="code">None</code>. 此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002elocations"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.locations</strong><a class="copiable-link" href="#index-Breakpoint_002elocations"> ¶</a></span></dt>
+<dd><p>获取为此断点插入的最新断点位置列表，元素类型为 <code class="code">gdb.BreakpointLocation</code>
+（如下所述）。此功能与
+<code class="code">info breakpoint</code> 命令（请参阅 <a class="pxref" href="Set-Breaks.html">设置断点</a>）相匹配，因为它只检索最新的位置列表，因此返回的列表本身不会在后台更新。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002eexpression"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.expression</strong><a class="copiable-link" href="#index-Breakpoint_002eexpression"> ¶</a></span></dt>
+<dd><p>此属性保存用户指定的断点表达式。它是一个字符串。如果断点没有表达式（断点不是观察点），此属性的值为 <code class="code">None</code>. 此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002econdition"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.condition</strong><a class="copiable-link" href="#index-Breakpoint_002econdition"> ¶</a></span></dt>
+<dd><p>此属性保存用户指定的断点条件。它是一个字符串。如果没有条件，此属性的值为 <code class="code">None</code>. 此属性是可写的。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Breakpoint_002ecommands"><span class="category-def">变量： </span><span><strong class="def-name">Breakpoint.commands</strong><a class="copiable-link" href="#index-Breakpoint_002ecommands"> ¶</a></span></dt>
+<dd><p>此属性保存附加到断点的命令。如果有命令，此属性的值是一个包含所有命令的字符串，命令之间用换行符分隔。如果没有命令，此属性为 <code class="code">None</code>. 此属性是可写的。
+</p></dd></dl>
+
+<h4 class="subheading" id="Breakpoint-Locations"><span>断点位置<a class="copiable-link" href="#Breakpoint-Locations"> ¶</a></span></h4>
+
+<p>断点位置是设置断点的实际位置之一，在 Python API 中由 <code class="code">gdb.BreakpointLocation</code>
+类型表示。此类型不会由用户直接实例化，而是从 <code class="code">Breakpoint.locations</code> 中检索，它返回当前设置断点的位置列表。如果加载了新的符号文件或关闭了动态加载的库，断点位置可能会变得无效。访问无效断点位置的属性将抛出 <code class="code">RuntimeError</code> 异常。再次访问 <code class="code">Breakpoint.locations</code>
+属性以检索新的有效断点位置列表。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002esource"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.source</strong><a class="copiable-link" href="#index-BreakpointLocation_002esource"> ¶</a></span></dt>
+<dd><p>此属性返回设置此位置的源文件路径和行号。此属性的类型是一个由 <var class="var">字符串</var> 和
+<var class="var">长整型</var>组成的元组。如果断点位置没有源位置，它将返回 None，观察点和捕获点就是这种情况。如果位置已无效，这将抛出 <code class="code">RuntimeError</code> 异常。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002eaddress"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.address</strong><a class="copiable-link" href="#index-BreakpointLocation_002eaddress"> ¶</a></span></dt>
+<dd><p>此属性返回设置此位置的地址。此属性的类型是长整型。如果位置已无效，这将抛出 <code class="code">RuntimeError</code>
+异常。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002eenabled"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.enabled</strong><a class="copiable-link" href="#index-BreakpointLocation_002eenabled"> ¶</a></span></dt>
+<dd><p>此属性保存此位置是否启用的值。此属性是可写的（布尔型）。如果位置已无效，这将抛出 <code class="code">RuntimeError</code>
+异常。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002eowner"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.owner</strong><a class="copiable-link" href="#index-BreakpointLocation_002eowner"> ¶</a></span></dt>
+<dd><p>此属性保存对 <code class="code">gdb.Breakpoint</code> 所有者对象的引用，从此对象中检索到了此 <code class="code">gdb.BreakpointLocation</code> 。如果位置已无效，这将抛出 <code class="code">RuntimeError</code> 异常。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002efunction"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.function</strong><a class="copiable-link" href="#index-BreakpointLocation_002efunction"> ¶</a></span></dt>
+<dd><p>此属性获取设置此位置的函数的名称。如果找不到函数，此属性返回 <code class="code">None</code>. 如果位置已无效，这将抛出 <code class="code">RuntimeError</code> 异常。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002efullname"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.fullname</strong><a class="copiable-link" href="#index-BreakpointLocation_002efullname"> ¶</a></span></dt>
+<dd><p>此属性获取设置此位置的完整名称。如果找不到完整名称，此属性返回 <code class="code">None</code>. 如果位置已无效，这将抛出 <code class="code">RuntimeError</code> 异常。此属性不可写。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-BreakpointLocation_002ethread_005fgroups"><span class="category-def">变量： </span><span><strong class="def-name">BreakpointLocation.thread_groups</strong><a class="copiable-link" href="#index-BreakpointLocation_002ethread_005fgroups"> ¶</a></span></dt>
+<dd><p>此属性获取设置此位置的线程组。它返回一个 <code class="code">List</code>
+线程组 ID 的列表。如果位置已无效，这将抛出 <code class="code">RuntimeError</code>
+异常。此属性不可写。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Finish-Breakpoints-in-Python.html">完成断点</a>, 上一项： <a href="Line-Tables-In-Python.html">使用 Python 操作行表</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

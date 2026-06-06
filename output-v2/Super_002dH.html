@@ -1,0 +1,71 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>超级H（使用GDB调试）</title>
+
+<meta name="description" content="Super-H (Debugging with GDB)"/>
+<meta name="keywords" content="Super-H (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Embedded-Processors.html" rel="up" title="Embedded Processors"/>
+<link href="CRIS.html" rel="prev" title="CRIS"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Super_002dH">
+<div class="nav-panel">
+<p>
+上一个： <a accesskey="p" href="CRIS.html" rel="prev">CRIS</a>, 上一级： <a accesskey="u" href="Embedded-Processors.html" rel="up">嵌入式处理器</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Renesas-Super_002dH"><span>21.3.11 瑞萨超级H<a class="copiable-link" href="#Renesas-Super_002dH"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-Super_002dH"></a>
+
+<p>对于瑞萨超级H处理器， <small class="sc">GDB</small> 提供以下命令：
+</p>
+<dl class="table">
+<dt><a id="index-set-sh-calling_002dconvention"></a><span><code class="code">set sh calling-convention <var class="var">convention</var></code><a class="copiable-link" href="#index-set-sh-calling_002dconvention"> ¶</a></span></dt>
+<dd><p>设置从以下位置调用函数时使用的调用约定 <small class="sc">GDB</small>.
+允许的值有 ‘<samp class="samp">GCC</samp>’，这是默认设置，以及 ‘<samp class="samp">瑞萨</samp>’。
+使用 ‘<samp class="samp">GCC</samp>’ 设置时，函数使用 <small class="sc">GCC</small> 调用约定进行调用。 如果被调用函数的DWARF - 2信息指定该函数遵循瑞萨调用约定，则使用瑞萨调用约定调用该函数。 如果调用约定设置为 ‘<samp class="samp">瑞萨</samp>’，则始终使用瑞萨调用约定，而不管DWARF - 2信息如何。 如果缺少调试信息，或者编译器没有为函数发出DWARF - 2调用约定条目，则可以使用此设置来覆盖默认的 ‘<samp class="samp">GCC</samp>’。
+</p>
+</dd>
+<dt><a id="index-show-sh-calling_002dconvention"></a><span><code class="code">show sh calling-convention</code><a class="copiable-link" href="#index-show-sh-calling_002dconvention"> ¶</a></span></dt>
+<dd><p>显示当前的调用约定设置。
+</p>
+</dd>
+</dl>
+
+
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的算术运算（使用 GDB 调试）</title>
+
+<meta name="description" content="Arithmetic In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Arithmetic In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Types-In-Guile.html" rel="next" title="Types In Guile"/>
+<link href="Values-From-Inferior-In-Guile.html" rel="prev" title="Values From Inferior In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Arithmetic-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Types-In-Guile.html" rel="next">Guile 中的类型</a>, 上一项： <a accesskey="p" href="Values-From-Inferior-In-Guile.html" rel="prev">Guile 中来自下级进程的值</a>, 上级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Arithmetic-In-Guile-1"><span>23.4.3.6 Guile 中的算术运算<a class="copiable-link" href="#Arithmetic-In-Guile-1"> ¶</a></span></h4>
+
+<p>该 <code class="code">(gdb)</code> 模块提供了几个用于对 <code class="code">&lt;gdb:value&gt;</code> 对象执行算术运算的函数。
+算术运算的执行就好像是由目标执行的一样，
+因此具有目标语义，这些语义不一定是 Scheme 的语义。 例如，运算使用固定精度，
+而不是 Scheme 的任意精度。
+</p>
+<p>只要一个函数将整数或指针作为操作数，
+<small class="sc">GDB</small> 就会将合适的 Scheme 值进行转换以执行
+该操作。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dadd"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值相加</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dadd"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dsub"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值相减</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dsub"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dmul"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值相乘</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dmul"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002ddiv"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值相除</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002ddiv"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002drem"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取余</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002drem"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dmod"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取模</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dmod"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dpow"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值求幂</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dpow"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dnot"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取反</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_002dnot"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dneg"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取负</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_002dneg"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dpos"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取正</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_002dpos"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dabs"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取绝对值</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_002dabs"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlsh"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值左移</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dlsh"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002drsh"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值右移</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002drsh"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dmin"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取最小值</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dmin"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dmax"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值取最大值</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dmax"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlognot"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值按位取反</strong> <var class="def-var-arguments">a</var><a class="copiable-link" href="#index-value_002dlognot"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlogand"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值按位与</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dlogand"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlogior"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值按位或</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dlogior"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_002dlogxor"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值按位异或</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_002dlogxor"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003d_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值相等?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_003d_003f"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003c_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值 &lt; ?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_003c_003f"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003c_003d_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值 &lt;= ?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_003c_003d_003f"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003e_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值 &gt; ?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_003e_003f"> ¶</a></span></dt>
+</dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-value_003e_003d_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">值 &gt;= ?</strong> <var class="def-var-arguments">a b</var><a class="copiable-link" href="#index-value_003e_003d_003f"> ¶</a></span></dt>
+</dl>
+
+<p>Scheme 未提供一个 <code class="code">not-equal</code> 函数，
+因此 Guile 在 <small class="sc">GDB</small> 中也不支持。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Types-In-Guile.html">Guile 中的类型</a>, 上一项： <a href="Values-From-Inferior-In-Guile.html">Guile 中来自下级进程的值</a>, 上级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

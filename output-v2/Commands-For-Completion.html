@@ -1,0 +1,112 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>完成命令（使用GDB调试）</title>
+
+<meta name="description" content="Commands For Completion (Debugging with GDB)"/>
+<meta name="keywords" content="Commands For Completion (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Bindable-Readline-Commands.html" rel="up" title="Bindable Readline Commands"/>
+<link href="Keyboard-Macros.html" rel="next" title="Keyboard Macros"/>
+<link href="Numeric-Arguments.html" rel="prev" title="Numeric Arguments"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Commands-For-Completion">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Keyboard-Macros.html" rel="next">键盘宏</a> <a accesskey="p" href="Numeric-Arguments.html" rel="prev">指定数字参数</a>, 上级： <a accesskey="u" href="Bindable-Readline-Commands.html" rel="up">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Letting-Readline-Type-For-You"><span>33.4.6 让Readline为你输入<a class="copiable-link" href="#Letting-Readline-Type-For-You"> ¶</a></span></h4>
+
+<dl class="ftable">
+<dt><a id="index-complete-_0028TAB_0029"></a><span><code class="code">complete (<kbd class="key">TAB</kbd>)</code><a class="copiable-link" href="#index-complete-_0028TAB_0029"> ¶</a></span></dt>
+<dd><p>尝试对光标前的文本进行补全。
+实际执行的补全操作是特定于应用程序的。
+默认情况下是文件名补全。
+</p>
+</dd>
+<dt><a id="index-possible_002dcompletions-_0028M_002d_003f_0029"></a><span><code class="code">possible-completions (M-?)</code><a class="copiable-link" href="#index-possible_002dcompletions-_0028M_002d_003f_0029"> ¶</a></span></dt>
+<dd><p>列出光标前文本的可能补全项。
+在显示补全项时，Readline会将用于显示的列数设置为
+ <code class="code">completion-display-width</code>的值，或者环境变量
+ <code class="env">COLUMNS</code>的值，或者屏幕宽度，按此顺序确定。
+</p>
+</dd>
+<dt><a id="index-insert_002dcompletions-_0028M_002d_002a_0029"></a><span><code class="code">insert-completions (M-*)</code><a class="copiable-link" href="#index-insert_002dcompletions-_0028M_002d_002a_0029"> ¶</a></span></dt>
+<dd><p>插入光标前文本的所有补全项，这些补全项本应由
+ <code class="code">possible-completions</code>生成。
+</p>
+</dd>
+<dt><a id="index-menu_002dcomplete-_0028_0029"></a><span><code class="code">menu-complete ()</code><a class="copiable-link" href="#index-menu_002dcomplete-_0028_0029"> ¶</a></span></dt>
+<dd><p>与
+ <code class="code">complete</code>类似，但用可能补全列表中的单个匹配项替换要补全的单词。
+重复执行
+ <code class="code">menu-complete</code> 会遍历可能补全的列表，依次插入每个匹配项。
+在补全列表的末尾，会响铃（取决于
+ <code class="code">bell-style</code>的设置）
+并恢复原始文本。
+参数
+ <var class="var">n</var> 将向前移动
+ <var class="var">n</var> 个位置；可以使用负参数向后遍历列表。
+此命令旨在绑定到
+ <kbd class="key">TAB</kbd>，但默认未绑定。
+</p>
+</dd>
+<dt><a id="index-menu_002dcomplete_002dbackward-_0028_0029"></a><span><code class="code">menu-complete-backward ()</code><a class="copiable-link" href="#index-menu_002dcomplete_002dbackward-_0028_0029"> ¶</a></span></dt>
+<dd><p>与
+ <code class="code">menu-complete</code>相同，但向后遍历可能补全的列表，就好像
+ <code class="code">menu-complete</code> 被赋予了一个负参数。
+</p>
+</dd>
+<dt><a id="index-delete_002dchar_002dor_002dlist-_0028_0029"></a><span><code class="code">delete-char-or-list ()</code><a class="copiable-link" href="#index-delete_002dchar_002dor_002dlist-_0028_0029"> ¶</a></span></dt>
+<dd><p>如果光标不在行的开头或结尾，则删除光标下的字符（类似于
+ <code class="code">delete-char</code>）。
+如果在行的末尾，其行为与
+
+<code class="code">possible-completions</code>相同。
+此命令默认未绑定。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Keyboard-Macros.html">键盘宏</a>, 上一项： <a href="Numeric-Arguments.html">指定数字参数</a>, 上级： <a href="Bindable-Readline-Commands.html">可绑定的Readline命令</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

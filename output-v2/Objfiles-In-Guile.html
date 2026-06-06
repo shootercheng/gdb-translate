@@ -1,0 +1,115 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 中的目标文件（使用 GDB 调试）</title>
+
+<meta name="description" content="Objfiles In Guile (Debugging with GDB)"/>
+<meta name="keywords" content="Objfiles In Guile (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Frames-In-Guile.html" rel="next" title="Frames In Guile"/>
+<link href="Progspaces-In-Guile.html" rel="prev" title="Progspaces In Guile"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Objfiles-In-Guile">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Frames-In-Guile.html" rel="next">从 Guile 访问 inferior 栈帧。</a>, 上一项： <a accesskey="p" href="Progspaces-In-Guile.html" rel="prev">Guile 中的程序空间</a>, 返回上一级： <a accesskey="u" href="Guile-API.html" rel="up">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Objfiles-In-Guile-1"><span>23.4.3.14 Guile 中的目标文件<a class="copiable-link" href="#Objfiles-In-Guile-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-objfiles-in-guile"></a>
+<a class="index-entry-id" id="index-_003cgdb_003aobjfile_003e"></a>
+<p><small class="sc">GDB</small> 从各种包含符号的文件中为 inferior 加载符号（请参阅 <a class="pxref" href="Files.html">指定文件的命令</a>）。这些文件包括主可执行文件、inferior 使用的任何共享库，以及任何单独的调试信息文件（请参阅 <a class="pxref" href="Separate-Debug-Files.html">单独文件中的调试信息</a>）。
+<small class="sc">GDB</small> 将这些包含符号的文件称为 <em class="dfn">目标文件</em>。
+</p>
+<p>每个目标文件都表示为类型为 <code class="code">&lt;gdb:objfile&gt;</code>的对象。
+</p>
+<p>以下与目标文件相关的过程由
+<code class="code">(gdb)</code> 模块提供：
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfile_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-objfile_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:objfile&gt;</code> 对象。否则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfile_002dvalid_003f"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件是否有效?</strong> <var class="def-var-arguments">目标文件</var><a class="copiable-link" href="#index-objfile_002dvalid_003f"> ¶</a></span></dt>
+<dd><p>返回 <code class="code">#t</code> 如果 <var class="var">目标文件</var> 有效， <code class="code">#f</code> 如果无效。一个 <code class="code">&lt;gdb:objfile&gt;</code> 对象可能会变得无效，如果它所引用的目标文件不再加载到 <small class="sc">GDB</small> 中。所有其他 <code class="code">&lt;gdb:objfile&gt;</code> 过程在调用时如果目标文件无效将抛出异常。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfile_002dfilename"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件文件名</strong> <var class="def-var-arguments">目标文件</var><a class="copiable-link" href="#index-objfile_002dfilename"> ¶</a></span></dt>
+<dd><p>返回 <var class="var">目标文件</var> 的文件名，以字符串形式，解析符号链接。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfile_002dprogspace"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件程序空间</strong> <var class="def-var-arguments">目标文件</var><a class="copiable-link" href="#index-objfile_002dprogspace"> ¶</a></span></dt>
+<dd><p>返回此目标文件所在的 <code class="code">&lt;gdb:progspace&gt;</code> 。请参阅 <a class="xref" href="Progspaces-In-Guile.html">Guile 中的程序空间</a>，了解有关程序空间的更多信息。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfile_002dpretty_002dprinters"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件漂亮打印机</strong> <var class="def-var-arguments">目标文件</var><a class="copiable-link" href="#index-objfile_002dpretty_002dprinters"> ¶</a></span></dt>
+<dd><p>返回为 <code class="code">&lt;gdb:pretty-printer&gt;</code> 对象注册的列表
+<var class="var">目标文件</var>。请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile 漂亮打印 API</a>，了解更多信息。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-set_002dobjfile_002dpretty_002dprinters_0021"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">设置目标文件漂亮打印机!</strong> <var class="def-var-arguments">目标文件 打印机列表</var><a class="copiable-link" href="#index-set_002dobjfile_002dpretty_002dprinters_0021"> ¶</a></span></dt>
+<dd><p>将为 <code class="code">&lt;gdb:pretty-printer&gt;</code> 对象注册的列表
+<var class="var">目标文件</var> 设置为 <var class="var">打印机列表</var>。
+<var class="var">打印机列表</var> 必须是一个 <code class="code">&lt;gdb:pretty-printer&gt;</code> 对象的列表。请参阅 <a class="xref" href="Guile-Pretty-Printing-API.html">Guile 漂亮打印 API</a>，了解更多信息。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-current_002dobjfile"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">当前目标文件</strong><a class="copiable-link" href="#index-current_002dobjfile"> ¶</a></span></dt>
+<dd><p>在自动加载 Guile 脚本时（请参阅 <a class="pxref" href="Guile-Auto_002dloading.html">Guile 自动加载</a>）， <small class="sc">GDB</small>
+将“当前目标文件”设置为相应的目标文件。此函数返回当前目标文件。如果没有当前目标文件，此函数返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-objfiles"><span class="category-def">Scheme 过程： </span><span><strong class="def-name">目标文件</strong><a class="copiable-link" href="#index-objfiles"> ¶</a></span></dt>
+<dd><p>返回当前程序空间中所有目标文件的列表。
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Frames-In-Guile.html">从 Guile 访问 inferior 栈帧。</a>，上一项： <a href="Progspaces-In-Guile.html">Guile 中的程序空间</a>，返回上一级： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

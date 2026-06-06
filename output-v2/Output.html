@@ -1,0 +1,186 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>输出（使用GDB调试）</title>
+
+<meta name="description" content="Output (Debugging with GDB)"/>
+<meta name="keywords" content="Output (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Sequences.html" rel="up" title="Sequences"/>
+<link href="Auto_002dloading-sequences.html" rel="next" title="Auto-loading sequences"/>
+<link href="Command-Files.html" rel="prev" title="Command Files"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Output">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Auto_002dloading-sequences.html" rel="next">控制自动加载原生 <small class="sc">GDB</small> 脚本</a>, 上一项： <a accesskey="p" href="Command-Files.html" rel="prev">命令文件</a> <a accesskey="u" href="Sequences.html" rel="up">预定义命令序列</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Commands-for-Controlled-Output"><span>23.1.4 用于控制输出的命令<a class="copiable-link" href="#Commands-for-Controlled-Output"> ¶</a></span></h4>
+
+<p>在执行命令文件或用户定义的命令期间，正常
+<small class="sc">GDB</small> 输出被抑制；唯一出现的输出是定义中的命令明确打印的内容。 本节描述了三个有助于生成你想要的精确输出的命令。
+</p>
+<dl class="table">
+<dt><a id="index-echo"></a><span><code class="code">echo <var class="var">text</var></code><a class="copiable-link" href="#index-echo"> ¶</a></span></dt>
+<dd><p>打印 <var class="var">文本</var>. 非打印字符可以包含在
+<var class="var">文本</var> 中，使用C转义序列，例如 ‘<samp class="samp">\n</samp>’ 来打印一个换行符。  <strong class="strong">除非你指定，否则不会打印换行符。</strong>
+除了标准的C转义序列外，反斜杠后跟一个空格表示一个空格。 这对于显示开头或结尾有空格的字符串很有用，因为否则所有参数的前导和尾随空格都会被去除。要打印 ‘<samp class="samp"> <!-- /@w -->并且 foo = <!-- /@w --></samp>’，使用命令 ‘<samp class="samp">echo \ <!-- /@w -->并且 foo = \ <!-- /@w --></samp>’。
+</p>
+<p>在 <var class="var">文本</var> 末尾的反斜杠可以像在C中一样使用，将命令延续到后续行。 例如，
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">echo This is some text\n\
+which is continued\n\
+onto several lines.\n
+</pre></div>
+
+<p>产生的输出与
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">echo This is some text\n
+echo which is continued\n
+echo onto several lines.\n
+</pre></div>
+
+</dd>
+<dt><a id="index-output"></a><span><code class="code">output <var class="var">expression</var></code><a class="copiable-link" href="#index-output"> ¶</a></span></dt>
+<dd><p>打印 <var class="var">表达式</var> 的值，仅此而已：没有换行符，没有 ‘<samp class="samp">$<var class="var">nn</var> = </samp>’。 该值也不会进入值历史记录。 请参阅 <a class="xref" href="Expressions.html">表达式</a>, 以获取有关表达式的更多信息。
+</p>
+</dd>
+<dt><code class="code">output/<var class="var">fmt</var> <var class="var">expression</var></code></dt>
+<dd><p>以 <var class="var">表达式</var> 的格式打印 <var class="var">fmt</var>。 你可以使用与 <code class="code">print</code>相同的格式。 请参阅 <a class="xref" href="Output-Formats.html">输出格式</a>, 以获取更多信息。
+</p>
+</dd>
+<dt><a id="index-printf"></a><span><code class="code">printf <var class="var">template</var>, <var class="var">expressions</var>…</code><a class="copiable-link" href="#index-printf"> ¶</a></span></dt>
+<dd><p>在字符串 <var class="var">表达式</var> 的控制下打印一个或多个 <var class="var">模板</var>的值。 要打印多个值，使
+<var class="var">表达式</var> 成为由逗号分隔的单个表达式列表，这些表达式可以是数字或指针。 它们的值按照 <var class="var">模板</var>的指定进行打印，就像C程序执行以下代码一样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">printf (<var class="var">模板</var>, <var class="var">表达式</var>...);
+</pre></div>
+
+<p>如同 <code class="code">C</code> <code class="code">printf</code>, <var class="var">模板</var>
+中的普通字符按原样打印，而 <em class="dfn">转换规范</em> 由 ‘<samp class="samp">%</samp>’ 字符引入，导致后续 <var class="var">表达式</var> 被求值，它们的值根据转换规范中编码的类型和样式信息进行转换和格式化，然后打印。
+</p>
+<p>例如，你可以像这样以十六进制打印两个值：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">printf &#34;foo, bar-foo = 0x%x, 0x%x\n&#34;, foo, bar-foo
+</pre></div>
+
+<p><code class="code">printf</code> 支持所有标准 <code class="code">C</code> 转换规范，包括 ‘<samp class="samp">%</samp>’ 字符和转换字母之间的标志和修饰符，但有以下例外：
+</p>
+<ul class="itemize mark-bullet">
+<li>参数排序修饰符，如 ‘<samp class="samp">2$</samp>’，不支持。
+
+</li><li>修饰符 ‘<samp class="samp">*</samp>’ 不支持用于指定精度或宽度。
+
+</li><li>‘<samp class="samp">&#39;</samp>’ 标志（用于根据
+<code class="code">LC_NUMERIC&#39;</code>) 将数字分隔成组）不支持。
+
+</li><li>类型修饰符 ‘<samp class="samp">hh</samp>’， ‘<samp class="samp">j</samp>’， ‘<samp class="samp">t</samp>’ 和 ‘<samp class="samp">z</samp>’ 不支持。
+
+</li><li>转换字母 ‘<samp class="samp">n</samp>’（如 ‘<samp class="samp">%n</samp>’）不支持。
+
+</li><li>转换字母 ‘<samp class="samp">a</samp>’ 和 ‘<samp class="samp">A</samp>’ 不支持。
+</li></ul>
+
+<p>请注意，‘<samp class="samp">ll</samp>’ 类型修饰符仅在底层 <code class="code">C</code> 用于构建的实现 <small class="sc">GDB</small> 支持该 <code class="code">long long int</code> 类型时才支持，并且 ‘<samp class="samp">L</samp>’ 类型修饰符仅在 <code class="code">long double</code> 类型可用时才支持。
+</p>
+<p>如同 <code class="code">C</code>, <code class="code">printf</code> 支持简单的反斜杠转义序列，例如 <code class="code">\n</code>, ‘<samp class="samp">\t</samp>’, ‘<samp class="samp">\\</samp>’, ‘<samp class="samp">\&#34;</samp>’,
+‘<samp class="samp">\a</samp>’, 和 ‘<samp class="samp">\f</samp>’，它们由反斜杠后跟一个字符组成。 八进制和十六进制转义序列不支持。
+</p>
+<p>此外， <code class="code">printf</code> 支持使用以下长度修饰符与浮点说明符一起用于DFP（<em class="dfn">十进制浮点数</em>) 类型的转换规范。字母：
+</p>
+<ul class="itemize mark-bullet">
+<li>‘<samp class="samp">H</samp>’ 用于打印 <code class="code">Decimal32</code> 类型。
+
+</li><li>‘<samp class="samp">D</samp>’ 用于打印 <code class="code">Decimal64</code> 类型。
+
+</li><li>‘<samp class="samp">DD</samp>’ 用于打印 <code class="code">Decimal128</code> 类型。
+</li></ul>
+
+<p>如果底层 <code class="code">C</code> 用于构建的实现 <small class="sc">GDB</small> 支持DFP类型的三个长度修饰符，其他修饰符，如宽度和精度，也将可供 <small class="sc">GDB</small> 使用。
+</p>
+<p>如果没有这样的 <code class="code">C</code> 支持，将没有额外的修饰符可用，并且值将以标准方式打印。
+</p>
+<p>以下是使用上述转换字母打印DFP类型的示例：
+</p><div class="example smallexample">
+<pre class="example-preformatted">printf &#34;D32: %Hf - D64: %Df - D128: %DDf\n&#34;,1.2345df,1.2E10dd,1.2E1dl
+</pre></div>
+
+<a class="anchor" id="g_t_0025V-Format-Specifier"></a><p>此外， <code class="code">printf</code> 支持特殊的 ‘<samp class="samp">%V</samp>’ 输出格式。此格式打印表达式的字符串表示形式，就像
+<small class="sc">GDB</small> 使用标准 <kbd class="kbd">print</kbd> 命令（见 <a class="pxref" href="Data.html">检查数据</a>) 产生的结果一样：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print array
+$1 = {0, 1, 2, 3, 4, 5}
+(gdb) printf &#34;Array is: %V\n&#34;, array
+Array is: {0, 1, 2, 3, 4, 5}
+</pre></div>
+
+<p>可以通过将打印选项放在 ‘<samp class="samp">%V</samp>’ 格式的 ‘<samp class="samp">[...]</samp>’ 中，紧跟在 ‘<samp class="samp">%V</samp>’ 之后，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) printf &#34;Array is: %V[-array-indexes on]\n&#34;, array
+Array is: {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5}
+</pre></div>
+
+<p>如果你需要在 ‘<samp class="samp">[</samp>’ 直接跟在 ‘<samp class="samp">%V</samp>’ 后面打印，那么只需包含一个空的打印选项列表：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) printf &#34;Array is: %V[][Hello]\n&#34;, array
+Array is: {0, 1, 2, 3, 4, 5}[Hello]
+</pre></div>
+
+<a class="anchor" id="eval"></a></dd>
+<dt><a id="index-eval"></a><span><code class="code">eval <var class="var">template</var>, <var class="var">expressions</var>…</code><a class="copiable-link" href="#index-eval"> ¶</a></span></dt>
+<dd><p>将一个或多个 <var class="var">表达式</var> 的值在字符串 <var class="var">模板</var> 的控制下转换为命令行，并调用它。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Auto_002dloading-sequences.html">控制自动加载原生 <small class="sc">GDB</small> 脚本</a>, 上一项： <a href="Command-Files.html">命令文件</a>, 上级： <a href="Sequences.html">预定义命令序列</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>SVR4目标的库列表格式（使用GDB进行调试）</title>
+
+<meta name="description" content="Library List Format for SVR4 Targets (Debugging with GDB)"/>
+<meta name="keywords" content="Library List Format for SVR4 Targets (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Memory-Map-Format.html" rel="next" title="Memory Map Format"/>
+<link href="Library-List-Format.html" rel="prev" title="Library List Format"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-minus {list-style-type: "\2212"}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Library-List-Format-for-SVR4-Targets">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Memory-Map-Format.html" rel="next">内存映射格式</a>, 上一项： <a accesskey="p" href="Library-List-Format.html" rel="prev">库列表格式</a>, 上级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Library-List-Format-for-SVR4-Targets-1"><span>E.16 SVR4目标的库列表格式<a class="copiable-link" href="#Library-List-Format-for-SVR4-Targets-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-library-list-format_002c-remote-protocol-1"></a>
+
+<p>在SVR4平台上 <small class="sc">GDB</small> 可以使用动态加载器的符号表
+（例如 <samp class="file">ld.so</samp>）和正常的内存操作来维护共享库列表。不过，此数据包提供的特殊库列表对于 <small class="sc">GDB</small> 远程协议而言更为高效。
+</p>
+<p>‘<samp class="samp">qXfer:libraries - svr4:read</samp>’数据包返回一个XML文档，该文档列出了已加载的库及其SVR4链接器参数。对于SVR4目标上的每个库，将报告以下参数：
+</p>
+<ul class="itemize mark-minus">
+<li><code class="code">name</code>, 来自 <code class="code">l_name</code> 字段的绝对文件名
+<code class="code">struct link_map</code>.
+</li><li><code class="code">lm</code> 的地址 <code class="code">struct link_map</code> 用于TLS
+（线程本地存储）访问。
+</li><li><code class="code">l_addr</code>, 从字段读取的位移量 <code class="code">l_addr</code> 的
+<code class="code">struct link_map</code>. 对于预链接的库，这不是一个绝对内存地址。它是在库加载期间，相对于文件预链接地址的绝对内存地址的位移量。
+</li><li><code class="code">l_ld</code>, 即 <code class="code">PT_DYNAMIC</code> 段的内存地址
+</li><li><code class="code">lmid</code>, 这是链接器命名空间的标识符，例如 <code class="code">r_debug</code> 包含此命名空间加载映射的对象的内存地址，或者由
+<code class="code">dlinfo (3)</code>返回的命名空间标识符。
+</li></ul>
+
+<p>此外，单个 <code class="code">main-lm</code> 属性指定了
+<code class="code">struct link_map</code> 用于主可执行文件的地址。此参数用于TLS访问，并且它是可选的。
+</p>
+<p><small class="sc">GDB</small> 必须与Expat库链接以支持XML SVR4库列表。请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+<p>一个简单的内存映射，包含两个已加载的库（不使用预链接），如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;library - list - svr4 version=&#34;1.0&#34; main - lm=&#34;0xe4f8f8&#34;&gt;
+  &lt;library name=&#34;/lib/ld - linux.so.2&#34; lm=&#34;0xe4f51c&#34; l_addr=&#34;0xe2d000&#34;
+           l_ld=&#34;0xe4eefc&#34; lmid=&#34;0xfffe0&#34;/&gt;
+  &lt;library name=&#34;/lib/libc.so.6&#34; lm=&#34;0xe4fbe8&#34; l_addr=&#34;0x154000&#34;
+           l_ld=&#34;0x152350&#34; lmid=&#34;0xfffe0&#34;/&gt;
+&lt;/library - list - svr&gt;
+</pre></div>
+
+<p>SVR4库列表的格式由以下DTD描述：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!-- library - list - svr4: 带有版本信息的根元素 --&gt;
+&lt;!ELEMENT library - list - svr4  (library)*&gt;
+&lt;!ATTLIST library - list - svr4  version CDATA   #FIXED  &#34;1.0&#34;&gt;
+&lt;!ATTLIST library - list - svr4  main - lm CDATA   #IMPLIED&gt;
+&lt;!ELEMENT library            EMPTY&gt;
+&lt;!ATTLIST library            name    CDATA   #REQUIRED&gt;
+&lt;!ATTLIST library            lm      CDATA   #REQUIRED&gt;
+&lt;!ATTLIST library            l_addr  CDATA   #REQUIRED&gt;
+&lt;!ATTLIST library            l_ld    CDATA   #REQUIRED&gt;
+&lt;!ATTLIST library            lmid    CDATA   #IMPLIED&gt;
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Memory-Map-Format.html">内存映射格式</a>, 上一项： <a href="Library-List-Format.html">库列表格式</a>, 上级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

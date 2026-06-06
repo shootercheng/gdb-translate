@@ -1,0 +1,109 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>类型打印 API（使用 GDB 调试）</title>
+
+<meta name="description" content="Type Printing API (Debugging with GDB)"/>
+<meta name="keywords" content="Type Printing API (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Frame-Filter-API.html" rel="next" title="Frame Filter API"/>
+<link href="Writing-a-Pretty_002dPrinter.html" rel="prev" title="Writing a Pretty-Printer"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Type-Printing-API">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Frame-Filter-API.html" rel="next">过滤帧</a>, 上一项： <a accesskey="p" href="Writing-a-Pretty_002dPrinter.html" rel="prev">编写漂亮打印机</a> <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Type-Printing-API-1"><span>23.3.2.9 类型打印 API<a class="copiable-link" href="#Type-Printing-API-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-type-printing-API-for-Python"></a>
+
+<p><small class="sc">GDB</small> 为 Python 代码提供了一种自定义类型显示的方法。
+这主要用于用规范的 typedef 名称替换类型。
+</p>
+<a class="index-entry-id" id="index-type-printer"></a>
+<p>一个 <em class="dfn">类型打印机</em> 只是一个符合特定协议的 Python 对象。 提供了一个实现该协议的简单基类；
+请参阅 <a class="ref" href="gdb_002etypes.html">gdb.types</a>。 一个类型打印机必须至少提供：
+</p>
+<dl class="first-defcv first-defivar-alias-first-defcv">
+<dt class="defcv defivar-alias-defcv" id="index-enabled-of-type_005fprinter"><span class="category-def">的实例变量 <code class="code">type_printer</code>: </span><span><strong class="def-name">已启用</strong><a class="copiable-link" href="#index-enabled-of-type_005fprinter"> ¶</a></span></dt>
+<dd><p>一个布尔值，如果打印机已启用则为 True，否则为 False。 这由 <code class="code">enable type-printer</code>
+和 <code class="code">disable type-printer</code> 命令进行操作。
+</p></dd></dl>
+
+<dl class="first-defcv first-defivar-alias-first-defcv">
+<dt class="defcv defivar-alias-defcv" id="index-name-of-type_005fprinter"><span class="category-def">的实例变量 <code class="code">type_printer</code>: </span><span><strong class="def-name">名称</strong><a class="copiable-link" href="#index-name-of-type_005fprinter"> ¶</a></span></dt>
+<dd><p>类型打印机的名称。 这必须是一个字符串。 这由 <code class="code">enable type-printer</code> 和 <code class="code">disable type-printer</code>
+命令使用。
+</p></dd></dl>
+
+<dl class="first-defop first-defmethod-alias-first-defop">
+<dt class="defop defmethod-alias-defop" id="index-instantiate-on-type_005fprinter"><span class="category-def">上的方法 <code class="code">type_printer</code>: </span><span><strong class="def-name">实例化</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-instantiate-on-type_005fprinter"> ¶</a></span></dt>
+<dd><p>这由 <small class="sc">GDB</small> 在类型打印开始时调用。 只有在类型打印机已启用时才会调用。 此方法必须返回一个
+新对象，该对象提供一个 <code class="code">recognize</code> 方法，如下所述。
+</p></dd></dl>
+
+
+<p>当显示一个类型时，例如通过 <code class="code">ptype</code> 命令， <small class="sc">GDB</small>
+将计算一个类型识别器列表。 这是通过首先遍历每个目标文件的类型打印机（请参阅 <a class="pxref" href="Objfiles-In-Python.html">Python 中的目标文件</a>），
+接着是每个程序空间的类型打印机（请参阅 <a class="pxref" href="Progspaces-In-Python.html">Python 中的程序空间</a>），最后是全局类型打印机来完成的。
+</p>
+<p><small class="sc">GDB</small> 将调用每个已启用的
+类型打印机的 <code class="code">instantiate</code> 方法。 如果此方法返回 <code class="code">None</code>, 则结果将被忽略； 否则，它将被添加到识别器列表中。
+</p>
+<p>然后，当 <small class="sc">GDB</small> 要显示一个类型名称时，它会遍历识别器列表。 对于每个识别器，它会调用识别
+函数，如果函数返回非<code class="code">None</code> 值则停止。
+识别函数定义如下：
+</p>
+<dl class="first-defop first-defmethod-alias-first-defop">
+<dt class="defop defmethod-alias-defop" id="index-recognize-on-type_005frecognizer"><span class="category-def">上的方法 <code class="code">type_recognizer</code>: </span><span><strong class="def-name">识别</strong> <var class="def-var-arguments">(self, type)</var><a class="copiable-link" href="#index-recognize-on-type_005frecognizer"> ¶</a></span></dt>
+<dd><p>如果 <var class="var">类型</var> 未被识别，则返回 <code class="code">None</code>. 否则，
+返回一个字符串，该字符串将作为 <var class="var">类型</var>的名称进行打印。
+ <var class="var">类型</var> 参数将是 <code class="code">gdb.Type</code>
+的一个实例（请参阅 <a class="pxref" href="Types-In-Python.html">Python 中的类型</a>).
+</p></dd></dl>
+
+<p><small class="sc">GDB</small> 使用这种两步方法，以便类型打印机可以有效地缓存信息，而不会长时间保留这些信息。 例如，在类型打印机中查找类型信息并在识别器的生命周期内保留它可能会很方便； 如果只进行一次遍历，那么类型打印机将不得不使用事件系统，以避免保留可能随着 inferior 的变化而过时的信息。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Frame-Filter-API.html">过滤帧</a>, 上一项： <a href="Writing-a-Pretty_002dPrinter.html">编写漂亮打印机</a>, 上一项： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

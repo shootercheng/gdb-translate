@@ -1,0 +1,123 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>自动显示（使用GDB进行调试）</title>
+
+<meta name="description" content="Auto Display (Debugging with GDB)"/>
+<meta name="keywords" content="Auto Display (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Print-Settings.html" rel="next" title="Print Settings"/>
+<link href="Memory-Tagging.html" rel="prev" title="Memory Tagging"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Auto-Display">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Print-Settings.html" rel="next">打印设置</a> <a accesskey="p" href="Memory-Tagging.html" rel="prev">内存标记</a>, 上级： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Automatic-Display"><span>10.8 自动显示<a class="copiable-link" href="#Automatic-Display"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-automatic-display"></a>
+<a class="index-entry-id" id="index-display-of-expressions"></a>
+
+<p>如果你发现自己经常想打印某个表达式的值（以查看其如何变化），你可能想将其添加到 <em class="dfn">自动显示列表</em> 中，以便 <small class="sc">GDB</small> 每次程序停止时都打印其值。添加到列表中的每个表达式都会被赋予一个编号以识别它；要从列表中移除一个表达式，你需要指定该编号。自动显示如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">2: foo = 38
+3: bar[5] = (struct hack *) 0x3804
+</pre></div>
+
+<p>此显示显示了项目编号、表达式及其当前值。与你使用 <code class="code">x</code> 或 <code class="code">print</code>, 手动请求的显示一样，你可以指定你喜欢的输出格式；实际上， <code class="code">display</code> 会根据你的格式规范决定使用 <code class="code">print</code> 还是 <code class="code">x</code>  —— 如果你指定了‘ <code class="code">x</code> ；否则使用<samp class="samp">’</samp>或‘<samp class="samp">s</samp>’格式，或者指定了单位大小，则使用 <code class="code">print</code>.
+</p>
+<dl class="table">
+<dt><a id="index-display"></a><span><code class="code">display <var class="var">expr</var></code><a class="copiable-link" href="#index-display"> ¶</a></span></dt>
+<dd><p>将表达式 <var class="var">expr</var> 添加到每次程序停止时要显示的表达式列表中。请参阅 <a class="xref" href="Expressions.html">表达式</a>.
+</p>
+<p><code class="code">display</code> 如果你在使用它之后再次按下 <kbd class="key">RET</kbd> ，它不会重复。
+</p>
+</dd>
+<dt><code class="code">display/<var class="var">fmt</var> <var class="var">expr</var></code></dt>
+<dd><p>对于 <var class="var">fmt</var> 仅指定显示格式而不指定大小或计数的情况，将表达式 <var class="var">expr</var> 添加到自动显示列表中，并安排每次以指定的格式 <var class="var">fmt</var>显示它。请参阅 <a class="xref" href="Output-Formats.html">输出格式</a>.
+</p>
+</dd>
+<dt><code class="code">display/<var class="var">fmt</var> <var class="var">addr</var></code></dt>
+<dd><p>对于 <var class="var">fmt</var> ‘<samp class="samp">i</samp>’或‘<samp class="samp">s</samp>’，或者包含单位大小或单位数量的情况，将表达式 <var class="var">addr</var> 作为内存地址添加，以便每次程序停止时进行检查。检查实际上意味着执行‘<samp class="samp">x/<var class="var">fmt</var> <var class="var">addr</var></samp>’。请参阅 <a class="xref" href="Memory.html">检查内存</a>.
+</p></dd>
+</dl>
+
+<p>例如，‘<samp class="samp">display/i $pc</samp>’可能会很有帮助，以便每次执行停止时查看即将执行的机器指令（‘<samp class="samp">$pc</samp>’是程序计数器的常用名称；请参阅 <a class="pxref" href="Registers.html">寄存器</a>).
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-undisplay"></a>
+<a id="index-delete-display"></a><span><code class="code">undisplay <var class="var">dnums</var>…</code><a class="copiable-link" href="#index-delete-display"> ¶</a></span></dt>
+<dt><code class="code">delete display <var class="var">dnums</var>…</code></dt>
+<dd><p>从要显示的表达式列表中移除项目。使用命令参数 <var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即‘<samp class="samp">info display</samp>’显示中第一个字段显示的编号之一；也可以是显示编号的范围，如 <code class="code">2-4</code>.
+</p>
+<p><code class="code">undisplay</code> 如果你在使用它之后按下 <kbd class="key">RET</kbd> ，它不会重复。（否则你会得到错误‘<samp class="samp">No display number …</samp>’。）
+</p>
+</dd>
+<dt><a id="index-disable-display"></a><span><code class="code">disable display <var class="var">dnums</var>…</code><a class="copiable-link" href="#index-disable-display"> ¶</a></span></dt>
+<dd><p>禁用项目编号 <var class="var">dnums</var>的显示。禁用的显示项目不会自动打印，但不会被遗忘。它稍后可能会再次启用。使用命令参数 <var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即‘<samp class="samp">info display</samp>’显示中第一个字段显示的编号之一；也可以是显示编号的范围，如 <code class="code">2-4</code>.
+</p>
+</dd>
+<dt><a id="index-enable-display"></a><span><code class="code">enable display <var class="var">dnums</var>…</code><a class="copiable-link" href="#index-enable-display"> ¶</a></span></dt>
+<dd><p>启用项目编号 <var class="var">dnums</var>的显示。它在自动显示其表达式时会再次生效，直到你另行指定。使用命令参数 <var class="var">dnums</var>指定你想要影响的显示编号。它可以是单个显示编号，即‘<samp class="samp">info display</samp>’显示中第一个字段显示的编号之一；也可以是显示编号的范围，如 <code class="code">2-4</code>.
+</p>
+</dd>
+<dt><code class="code">display</code></dt>
+<dd><p>显示列表中表达式的当前值，就像程序停止时所做的那样。
+</p>
+</dd>
+<dt><a id="index-info-display"></a><span><code class="code">info display</code><a class="copiable-link" href="#index-info-display"> ¶</a></span></dt>
+<dd><p>打印之前设置为自动显示的表达式列表，每个表达式都有其编号，但不显示值。这包括已禁用的表达式，会进行相应标记。它还包括由于引用当前不可用的自动变量而现在不会显示的表达式。
+</p></dd>
+</dl>
+
+<a class="index-entry-id" id="index-display-disabled-out-of-scope"></a>
+<p>如果一个显示表达式引用了局部变量，那么在其设置的词法上下文之外就没有意义。当执行进入其某个变量未定义的上下文时，这样的表达式会被禁用。例如，如果你给出命令
+<code class="code">display last_char</code> 在带有参数的函数内部时
+<code class="code">last_char</code>, <small class="sc">GDB</small> 当程序继续在该函数内部停止时，会显示这个参数。当程序在其他地方停止时 —— 那里没有变量 <code class="code">last_char</code> —— 显示会自动禁用。下次程序在 <code class="code">last_char</code>
+有意义的地方停止时，你可以再次启用该显示表达式。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Print-Settings.html">打印设置</a>, 上一项： <a href="Memory-Tagging.html">内存标记</a>, 上级： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

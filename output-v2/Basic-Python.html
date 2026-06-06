@@ -1,0 +1,468 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>基础Python（使用GDB调试）</title>
+
+<meta name="description" content="Basic Python (Debugging with GDB)"/>
+<meta name="keywords" content="Basic Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Threading-in-GDB.html" rel="next" title="Threading in GDB"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Basic-Python">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Threading-in-GDB.html" rel="next">GDB中的线程</a>，上一步： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Basic-Python-1"><span>23.3.2.1基础Python<a class="copiable-link" href="#Basic-Python-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-python-stdout"></a>
+<a class="index-entry-id" id="index-python-pagination"></a>
+<p>在启动时 <small class="sc">GDB</small> 覆盖Python的 <code class="code">sys.stdout</code> 并且
+<code class="code">sys.stderr</code> 以便使用 <small class="sc">GDB</small>的输出分页流进行打印。
+一个向这些流之一输出的Python程序可能会被用户中断其输出（见 <a class="pxref" href="Screen-Size.html">屏幕尺寸</a>）。在这种
+情况下，会抛出一个Python <code class="code">KeyboardInterrupt</code> 异常。
+</p>
+<p>在编写要在
+<small class="sc">GDB</small>中运行的Python代码时必须格外小心。特别需要注意的两件事：
+</p>
+<ul class="itemize mark-bullet">
+<li><small class="sc">GDB</small> 为 <code class="code">SIGCHLD</code> 和 <code class="code">SIGINT</code>安装处理程序。
+Python代码不得覆盖这些，甚至不能使用
+<code class="code">sigaction</code>更改选项。如果你的程序更改了这些
+信号的处理方式， <small class="sc">GDB</small> 很可能会停止正常工作。请注意，不幸的是，GUI工具包通常会安装一个
+<code class="code">SIGCHLD</code> 处理程序。在创建新的Python线程时，你可以
+使用 <code class="code">gdb.blocked_signals</code> 或 <code class="code">gdb.Thread</code> 来正确处理此问题；见 <a class="ref" href="Threading-in-GDB.html">GDB中的线程</a>。
+
+</li><li><small class="sc">GDB</small> 会小心地将其内部文件描述符标记为在执行时关闭。然而，并非所有平台都能以线程安全的方式做到这一点。你的Python程序应该意识到这一点，
+并且应该在设置了执行时关闭标志的情况下创建新的文件描述符，并在启动子进程之前安排关闭不需要的文件描述符。
+</li></ul>
+
+<a class="index-entry-id" id="index-python-functions"></a>
+<a class="index-entry-id" id="index-python-module"></a>
+<a class="index-entry-id" id="index-gdb-module"></a>
+<p><small class="sc">GDB</small> 引入了一个新的Python模块，名为 <code class="code">gdb</code>。 <small class="sc">GDB</small> 添加的所有方法和类都放在这个模块中。
+<small class="sc">GDB</small> 自动地 <code class="code">import</code>将 <code class="code">gdb</code> 模块 <code class="code">python</code> 用于通过
+</p>
+<p>某些 <code class="code">gdb</code> 模块的类型带有文本表示形式
+（可通过 <code class="code">repr</code> 或 <code class="code">str</code> 函数访问）。这些仅用于调试目的，预计它们会随时间变化。
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-gdb_002ePYTHONDIR"><span class="category-def">变量： </span><span><strong class="def-name">gdb.PYTHONDIR</strong><a class="copiable-link" href="#index-gdb_002ePYTHONDIR"> ¶</a></span></dt>
+<dd><p>一个包含Python目录的字符串（见 <a class="pxref" href="Python.html">扩展 <small class="sc">GDB</small> 使用Python</a>)。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eexecute"><span class="category-def">函数： </span><span><strong class="def-name">gdb.execute</strong> <var class="def-var-arguments">(命令 <span class="r">[</span>, 来自终端 <span class="r">[</span>, 转换为字符串 <span class="r">[</span>, 样式设置 <span class="r">]]</span><!-- /@w -->)</var><a class="copiable-link" href="#index-gdb_002eexecute"> ¶</a></span></dt>
+<dd><p>将 <var class="var">命令（一个字符串）作为</var>CLI命令进行求值。
+如果在 <small class="sc">GDB</small> 命令 <var class="var">运行时发生GDB异常，它将按照</var> 异常处理 <a class="ref" href="Exception-Handling.html">中所述进行转换。</a>。
+</p>
+<p>来自终端 <var class="var">标志指定</var> 是否应将此
+命令视为由用户交互式调用产生。
+它必须是一个布尔值。如果省略，默认值为 <small class="sc">GDB</small> 。 <code class="code">False</code>默认情况下，由
+</p>
+<p>命令 <var class="var">产生的任何输出都会发送到</var> 的标准输出（如果启用了日志记录，则会发送到日志输出）。如果
+<small class="sc">GDB</small>’s standard output (and to the log output if logging is
+turned on).  If the <var class="var">转换为字符串</var> 参数为
+<code class="code">True</code>，则输出将由 <code class="code">gdb.execute</code> 收集并
+作为字符串返回。默认值为 <code class="code">False</code>，在这种情况下返回值为 <code class="code">None</code>。如果 <var class="var">转换为字符串</var> 为 <code class="code">True</code>，则虚拟终端将临时设置为无限宽度
+和高度，并且其分页将被禁用；见
+<small class="sc">GDB</small> virtual terminal will be temporarily set to unlimited width
+and height, and its pagination will be disabled; see <a class="pxref" href="Screen-Size.html">屏幕尺寸</a>。
+</p>
+<p>当 <var class="var">样式设置</var> 为 <code class="code">True</code>时，如果
+<small class="sc">GDB</small>的标准输出支持样式设置，并且 <kbd class="kbd">显示样式
+启用</kbd> 为 <kbd class="kbd">开启</kbd>. 当 <var class="var">样式设置</var> 是 <code class="code">False</code> 时，则不应用任何样式设置。默认情况下 <var class="var">样式设置</var> 是 <code class="code">True</code> 当
+<var class="var">转换为字符串</var> 是 <code class="code">False</code>，并且 <code class="code">False</code> 当 <var class="var">转换为字符串</var>
+是 <code class="code">True</code>。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ebreakpoints"><span class="category-def">函数： </span><span><strong class="def-name">gdb.breakpoints</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ebreakpoints"> ¶</a></span></dt>
+<dd><p>返回一个序列，其中包含所有 <small class="sc">GDB</small>’s的断点。
+有关更多信息，请参阅 <a class="xref" href="Breakpoints-In-Python.html">使用Python操作断点</a>。在 <small class="sc">GDB</small>
+7.11及更早版本中，如果没有断点，此函数返回 <code class="code">None</code> 。此特殊情况随后得到修复，现在在这种情况下
+<code class="code">gdb.breakpoints</code> 返回一个空序列。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002erbreak"><span class="category-def">函数： </span><span><strong class="def-name">gdb.rbreak</strong> <var class="def-var-arguments">(正则表达式 <span class="r">[</span>, 最小符号数 <span class="r">[</span>, 节流阀， <span class="r">[</span>, 符号表 <span class="r">]]]</span>)</var><a class="copiable-link" href="#index-gdb_002erbreak"> ¶</a></span></dt>
+<dd><p>返回一个Python列表，其中包含一组新设置的
+<code class="code">gdb.Breakpoint</code> 与由
+<var class="var">正则表达式</var> 模式定义的函数名称匹配的对象。如果 <var class="var">最小符号数</var> 关键字是 <code class="code">True</code>，则所有系统函数（那些未在下级中明确定义的函数）也将包含在匹配中。 <var class="var">节流阀</var> 关键字接受一个整数，该整数定义了与 <var class="var">正则表达式</var> 模式匹配的函数的最大模式匹配数。如果匹配数超过 <var class="var">节流阀</var>的整数值，则会引发
+<code class="code">RuntimeError</code> ，并且不会创建任何断点。
+如果 <var class="var">节流阀</var> 未定义，则对要创建的最大匹配数和断点没有限制。
+<var class="var">符号表</var> 关键字接受一个Python可迭代对象，该对象产生一组 <code class="code">gdb.Symtab</code> 对象，并将搜索限制为仅包含在 <code class="code">gdb.Symtab</code> 对象中的那些函数。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.parameter</strong> <var class="def-var-arguments">(参数)</var><a class="copiable-link" href="#index-gdb_002eparameter"> ¶</a></span></dt>
+<dd><p>返回由其名称给出的 <small class="sc">GDB</small> <var class="var">参数</var> 的值，一个字符串；如果参数有多个部分的名称，则参数名称字符串可能包含空格。例如，‘<samp class="samp">打印对象</samp>’是一个有效的参数名称。
+</p>
+<p>如果命名的参数不存在，此函数将引发
+<code class="code">gdb.error</code> (请参阅 <a class="pxref" href="Exception-Handling.html">异常处理</a>)。否则，参数的值将转换为适当类型的Python值并返回。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eset_005fparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.set_parameter</strong> <var class="def-var-arguments">(名称, 值)</var><a class="copiable-link" href="#index-gdb_002eset_005fparameter"> ¶</a></span></dt>
+<dd><p>将gdb参数 <var class="var">名称</var> 设置为 <var class="var">值</var>。与
+<code class="code">gdb.parameter</code>一样，如果参数有多个部分的名称，则参数名称字符串可能包含空格。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ewith_005fparameter"><span class="category-def">函数： </span><span><strong class="def-name">gdb.with_parameter</strong> <var class="def-var-arguments">(名称, 值)</var><a class="copiable-link" href="#index-gdb_002ewith_005fparameter"> ¶</a></span></dt>
+<dd><p>创建一个Python上下文管理器（用于与Python
+<code class="command">with</code> 语句一起使用），该管理器将gdb参数
+<var class="var">名称</var> 临时设置为 <var class="var">值</var>。在退出上下文时，将恢复先前的值。
+</p>
+<p>此函数在其实现中使用 <code class="code">gdb.parameter</code> ，因此它可能引发与该函数相同的异常。
+</p>
+<p>例如，有时使用特定的gdb语言评估一些Python代码很有用：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">with gdb.with_parameter(&#39;language&#39;, &#39;pascal&#39;):
+ ... 特定语言的操作
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ehistory"><span class="category-def">函数： </span><span><strong class="def-name">gdb.history</strong> <var class="def-var-arguments">(数字)</var><a class="copiable-link" href="#index-gdb_002ehistory"> ¶</a></span></dt>
+<dd><p>从 <small class="sc">GDB</small>’s的值历史记录中返回一个值（请参阅 <a class="pxref" href="Value-History.html">Value History</a>).  The <var class="var">number</var> argument indicates which history element to return.
+If <var class="var">number</var> is negative, then <small class="sc">GDB</small> will take its absolute value
+and count backward from the last element (i.e., the most recent element) to
+find the value to return.  If <var class="var">number</var> is zero, then <small class="sc">GDB</small> will
+return the most recent element.  If the element specified by <var class="var">number</var>
+doesn’t exist in the value history, a <code class="code">gdb.error</code> exception will be
+raised.
+</p>
+<p>If no exception is raised, the return value is always an instance of
+<code class="code">gdb.Value</code> (see <a class="pxref" href="Values-From-Inferior.html">Values From Inferior</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eadd_005fhistory"><span class="category-def">Function: </span><span><strong class="def-name">gdb.add_history</strong> <var class="def-var-arguments">(value)</var><a class="copiable-link" href="#index-gdb_002eadd_005fhistory"> ¶</a></span></dt>
+<dd><p>Takes <var class="var">value</var>, an instance of <code class="code">gdb.Value</code> (see <a class="pxref" href="Values-From-Inferior.html">Values From Inferior</a>), and appends the value this object represents to
+<small class="sc">GDB</small>’s value history (see <a class="pxref" href="Value-History.html">Value History</a>), and return an
+integer, its history number.  If <var class="var">value</var> is not a
+<code class="code">gdb.Value</code>, it is is converted using the <code class="code">gdb.Value</code>
+constructor.  If <var class="var">value</var> can’t be converted to a <code class="code">gdb.Value</code>
+then a <code class="code">TypeError</code> is raised.
+</p>
+<p>When a command implemented in Python prints a single <code class="code">gdb.Value</code>
+as its result, then placing the value into the history will allow the
+user convenient access to those values via CLI history facilities.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ehistory_005fcount"><span class="category-def">Function: </span><span><strong class="def-name">gdb.history_count</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ehistory_005fcount"> ¶</a></span></dt>
+<dd><p>Return an integer indicating the number of values in <small class="sc">GDB</small>’s
+value history (see <a class="pxref" href="Value-History.html">Value History</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002econvenience_005fvariable"><span class="category-def">Function: </span><span><strong class="def-name">gdb.convenience_variable</strong> <var class="def-var-arguments">(name)</var><a class="copiable-link" href="#index-gdb_002econvenience_005fvariable"> ¶</a></span></dt>
+<dd><p>Return the value of the convenience variable (see <a class="pxref" href="Convenience-Vars.html">Convenience Variables</a>) named <var class="var">name</var>.  <var class="var">name</var> must be a string.  The name
+should not include the ‘<samp class="samp">$</samp>’ that is used to mark a convenience
+variable in an expression.  If the convenience variable does not
+exist, then <code class="code">None</code> is returned.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eset_005fconvenience_005fvariable"><span class="category-def">Function: </span><span><strong class="def-name">gdb.set_convenience_variable</strong> <var class="def-var-arguments">(name, value)</var><a class="copiable-link" href="#index-gdb_002eset_005fconvenience_005fvariable"> ¶</a></span></dt>
+<dd><p>Set the value of the convenience variable (see <a class="pxref" href="Convenience-Vars.html">Convenience Variables</a>)
+named <var class="var">name</var>.  <var class="var">name</var> must be a string.  The name should not
+include the ‘<samp class="samp">$</samp>’ that is used to mark a convenience variable in an
+expression.  If <var class="var">value</var> is <code class="code">None</code>, then the convenience
+variable is removed.  Otherwise, if <var class="var">value</var> is not a
+<code class="code">gdb.Value</code> (see <a class="pxref" href="Values-From-Inferior.html">Values From Inferior</a>), it is is converted
+using the <code class="code">gdb.Value</code> constructor.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eparse_005fand_005feval"><span class="category-def">Function: </span><span><strong class="def-name">gdb.parse_and_eval</strong> <var class="def-var-arguments">(expression <span class="r">[</span>, global_context<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002eparse_005fand_005feval"> ¶</a></span></dt>
+<dd><p>Parse <var class="var">expression</var>, which must be a string, as an expression in
+the current language, evaluate it, and return the result as a
+<code class="code">gdb.Value</code>.
+</p>
+<p><var class="var">global_context</var>, if provided, is a boolean indicating whether the
+parsing should be done in the global context.  The default is
+‘<samp class="samp">False</samp>’, meaning that the current frame or current static context
+should be used.
+</p>
+<p>This function can be useful when implementing a new command
+(see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>, see <a class="pxref" href="GDB_002fMI-Commands-In-Python.html"><small class="sc">GDB/MI</small> Commands In Python</a>),
+as it provides a way to parse the
+command’s argument as an expression.  It is also useful simply to
+compute values.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002efind_005fpc_005fline"><span class="category-def">Function: </span><span><strong class="def-name">gdb.find_pc_line</strong> <var class="def-var-arguments">(pc)</var><a class="copiable-link" href="#index-gdb_002efind_005fpc_005fline"> ¶</a></span></dt>
+<dd><p>Return the <code class="code">gdb.Symtab_and_line</code> object corresponding to the
+<var class="var">pc</var> value.  See <a class="xref" href="Symbol-Tables-In-Python.html">Symbol table representation in Python</a>.  If an invalid
+value of <var class="var">pc</var> is passed as an argument, then the <code class="code">symtab</code> and
+<code class="code">line</code> attributes of the returned <code class="code">gdb.Symtab_and_line</code> object
+will be <code class="code">None</code> and 0 respectively.  This is identical to
+<code class="code">gdb.current_progspace().find_pc_line(pc)</code> and is included for
+historical compatibility.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ewrite"><span class="category-def">Function: </span><span><strong class="def-name">gdb.write</strong> <var class="def-var-arguments">(string <span class="r">[</span>, stream<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002ewrite"> ¶</a></span></dt>
+<dd><p>Print a string to <small class="sc">GDB</small>’s paginated output stream.  The
+optional <var class="var">stream</var> determines the stream to print to.  The default
+stream is <small class="sc">GDB</small>’s standard output stream.  Possible stream
+values are:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002eSTDOUT"></a>
+<a id="index-STDOUT"></a><span><code class="code">gdb.STDOUT</code><a class="copiable-link" href="#index-STDOUT"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s standard output stream.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eSTDERR"></a>
+<a id="index-STDERR"></a><span><code class="code">gdb.STDERR</code><a class="copiable-link" href="#index-STDERR"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s standard error stream.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eSTDLOG"></a>
+<a id="index-STDLOG"></a><span><code class="code">gdb.STDLOG</code><a class="copiable-link" href="#index-STDLOG"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s log stream (see <a class="pxref" href="Logging-Output.html">Logging Output</a>).
+</p></dd>
+</dl>
+
+<p>Writing to <code class="code">sys.stdout</code> or <code class="code">sys.stderr</code> will automatically
+call this function and will automatically direct the output to the
+relevant stream.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eflush"><span class="category-def">Function: </span><span><strong class="def-name">gdb.flush</strong> <var class="def-var-arguments">(<span class="r">[</span>stream<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002eflush"> ¶</a></span></dt>
+<dd><p>Flush the buffer of a <small class="sc">GDB</small> paginated stream so that the
+contents are displayed immediately.  <small class="sc">GDB</small> will flush the
+contents of a stream automatically when it encounters a newline in the
+buffer.  The optional <var class="var">stream</var> determines the stream to flush.  The
+default stream is <small class="sc">GDB</small>’s standard output stream.  Possible
+stream values are: 
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002eSTDOUT-1"></a>
+<a id="index-STDOUT-1"></a><span><code class="code">gdb.STDOUT</code><a class="copiable-link" href="#index-STDOUT-1"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s standard output stream.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eSTDERR-1"></a>
+<a id="index-STDERR-1"></a><span><code class="code">gdb.STDERR</code><a class="copiable-link" href="#index-STDERR-1"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s standard error stream.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eSTDLOG-1"></a>
+<a id="index-STDLOG-1"></a><span><code class="code">gdb.STDLOG</code><a class="copiable-link" href="#index-STDLOG-1"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small>’s log stream (see <a class="pxref" href="Logging-Output.html">Logging Output</a>).
+</p>
+</dd>
+</dl>
+
+<p>Flushing <code class="code">sys.stdout</code> or <code class="code">sys.stderr</code> will automatically
+call this function for the relevant stream.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ewarning"><span class="category-def">Function: </span><span><strong class="def-name">gdb.warning</strong> <var class="def-var-arguments">(text)</var><a class="copiable-link" href="#index-gdb_002ewarning"> ¶</a></span></dt>
+<dd><p>Print a warning message to <small class="sc">GDB</small>’s standard output stream.  The
+warning message is the warning prefix (see <a class="pxref" href="Output-Styling.html#warning_002dprefix">warning-prefix</a>), the
+string ‘<samp class="samp">warning: </samp>’<!-- /@w -->, and then <var class="var">text</var>, which must be a
+non-empty string.
+</p>
+<p>Due to the warning prefix, <var class="var">text</var> should not begin with a capital
+letter (except for proper nouns), and <var class="var">text</var> should end with a
+period.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002etarget_005fcharset"><span class="category-def">Function: </span><span><strong class="def-name">gdb.target_charset</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002etarget_005fcharset"> ¶</a></span></dt>
+<dd><p>Return the name of the current target character set (see <a class="pxref" href="Character-Sets.html">Character Sets</a>).  This differs from <code class="code">gdb.parameter(&#39;target-charset&#39;)</code> in
+that ‘<samp class="samp">auto</samp>’ is never returned.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002etarget_005fwide_005fcharset"><span class="category-def">Function: </span><span><strong class="def-name">gdb.target_wide_charset</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002etarget_005fwide_005fcharset"> ¶</a></span></dt>
+<dd><p>Return the name of the current target wide character set
+(see <a class="pxref" href="Character-Sets.html">Character Sets</a>).  This differs from
+<code class="code">gdb.parameter(&#39;target-wide-charset&#39;)</code> in that ‘<samp class="samp">auto</samp>’ is
+never returned.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ehost_005fcharset"><span class="category-def">Function: </span><span><strong class="def-name">gdb.host_charset</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ehost_005fcharset"> ¶</a></span></dt>
+<dd><p>Return a string, the name of the current host character set
+(see <a class="pxref" href="Character-Sets.html">Character Sets</a>).  This differs from
+<code class="code">gdb.parameter(&#39;host-charset&#39;)</code> in that ‘<samp class="samp">auto</samp>’ is never
+returned.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002esolib_005fname"><span class="category-def">Function: </span><span><strong class="def-name">gdb.solib_name</strong> <var class="def-var-arguments">(address)</var><a class="copiable-link" href="#index-gdb_002esolib_005fname"> ¶</a></span></dt>
+<dd><p>Return the name of the shared library holding the given <var class="var">address</var>
+as a string, or <code class="code">None</code>.  This is identical to
+<code class="code">gdb.current_progspace().solib_name(address)</code> and is included for
+historical compatibility.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002edecode_005fline"><span class="category-def">Function: </span><span><strong class="def-name">gdb.decode_line</strong> <var class="def-var-arguments">(<span class="r">[</span>expression<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002edecode_005fline"> ¶</a></span></dt>
+<dd><p>Return locations of the line specified by <var class="var">expression</var>, or of the
+current line if no argument was given.  This function returns a Python
+tuple containing two elements.  The first element contains a string
+holding any unparsed section of <var class="var">expression</var> (or <code class="code">None</code> if
+the expression has been fully parsed).  The second element contains
+either <code class="code">None</code> or another tuple that contains all the locations
+that match the expression represented as <code class="code">gdb.Symtab_and_line</code>
+objects (see <a class="pxref" href="Symbol-Tables-In-Python.html">Symbol table representation in Python</a>).  If <var class="var">expression</var> is
+provided, it is decoded the way that <small class="sc">GDB</small>’s inbuilt
+<code class="code">break</code> or <code class="code">edit</code> commands do (see <a class="pxref" href="Location-Specifications.html">Location Specifications</a>).
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eprompt_005fhook"><span class="category-def">Function: </span><span><strong class="def-name">gdb.prompt_hook</strong> <var class="def-var-arguments">(current_prompt)</var><a class="copiable-link" href="#index-gdb_002eprompt_005fhook"> ¶</a></span></dt>
+<dd><a class="anchor" id="prompt_005fhook"></a>
+<p>If <var class="var">prompt_hook</var> is callable, <small class="sc">GDB</small> will call the method
+assigned to this operation before a prompt is displayed by
+<small class="sc">GDB</small>.
+</p>
+<p>The parameter <code class="code">current_prompt</code> contains the current <small class="sc">GDB</small> 
+prompt.  This method must return a Python string, or <code class="code">None</code>.  If
+a string is returned, the <small class="sc">GDB</small> prompt will be set to that
+string.  If <code class="code">None</code> is returned, <small class="sc">GDB</small> will continue to use
+the current prompt.
+</p>
+<p>Some prompts cannot be substituted in <small class="sc">GDB</small>.  Secondary prompts
+such as those used by readline for command input, and annotation
+related prompts are prohibited from being changed.
+</p></dd></dl>
+
+<a class="anchor" id="gdb_005farchitecture_005fnames"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002earchitecture_005fnames"><span class="category-def">Function: </span><span><strong class="def-name">gdb.architecture_names</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002earchitecture_005fnames"> ¶</a></span></dt>
+<dd><p>Return a list containing all of the architecture names that the
+current build of <small class="sc">GDB</small> supports.  Each architecture name is a
+string.  The names returned in this list are the same names as are
+returned from <code class="code">gdb.Architecture.name</code>
+(see <a class="pxref" href="Architectures-In-Python.html#gdbpy_005farchitecture_005fname">Architecture.name</a>).
+</p></dd></dl>
+
+<a class="anchor" id="gdbpy_005fconnections"></a><dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002econnections"><span class="category-def">Function: </span><span><strong class="def-name">gdb.connections</strong><a class="copiable-link" href="#index-gdb_002econnections"> ¶</a></span></dt>
+<dd><p>Return a list of <code class="code">gdb.TargetConnection</code> objects, one for each
+currently active connection (see <a class="pxref" href="Connections-In-Python.html">Connections In Python</a>).  The
+connection objects are in no particular order in the returned list.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002eformat_005faddress"><span class="category-def">Function: </span><span><strong class="def-name">gdb.format_address</strong> <var class="def-var-arguments">(address <span class="r">[</span>, progspace, architecture<span class="r">]</span>)</var><a class="copiable-link" href="#index-gdb_002eformat_005faddress"> ¶</a></span></dt>
+<dd><p>Return a string in the format ‘<samp class="samp"><var class="var">addr</var>
+&lt;<var class="var">symbol</var>+<var class="var">offset</var>&gt;</samp>’, where <var class="var">addr</var> is <var class="var">address</var>
+formatted in hexadecimal, <var class="var">symbol</var> is the symbol whose address is
+the nearest to <var class="var">address</var> and below it in memory, and <var class="var">offset</var>
+is the offset from <var class="var">symbol</var> to <var class="var">address</var> in decimal.
+</p>
+<p>If no suitable <var class="var">symbol</var> was found, then the
+&lt;<var class="var">symbol</var>+<var class="var">offset</var>&gt; part is not included in the returned
+string, instead the returned string will just contain the
+<var class="var">address</var> formatted as hexadecimal.  How far <small class="sc">GDB</small> looks
+back for a suitable symbol can be controlled with <kbd class="kbd">set print
+max-symbolic-offset</kbd> (see <a class="pxref" href="Print-Settings.html">Print Settings</a>).
+</p>
+<p>Additionally, the returned string can include file name and line
+number information when <kbd class="kbd">set print symbol-filename on</kbd>
+(see <a class="pxref" href="Print-Settings.html">Print Settings</a>), in this case the format of the returned
+string is ‘<samp class="samp"><var class="var">addr</var> &lt;<var class="var">symbol</var>+<var class="var">offset</var>&gt; at
+<var class="var">filename</var>:<var class="var">line-number</var></samp>’.
+</p>
+
+<p>The <var class="var">progspace</var> is the gdb.Progspace in which <var class="var">symbol</var> is
+looked up, and <var class="var">architecture</var> is used when formatting <var class="var">addr</var>,
+e.g. in order to determine the size of an address in bytes.
+</p>
+<p>If neither <var class="var">progspace</var> or <var class="var">architecture</var> are passed, then by
+default <small class="sc">GDB</small> will use the program space and architecture of
+the currently selected inferior, thus, the following two calls are
+equivalent:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">gdb.format_address(address)
+gdb.format_address(address,
+                   gdb.selected_inferior().progspace,
+                   gdb.selected_inferior().architecture())
+</pre></div>
+
+<p>It is not valid to only pass one of <var class="var">progspace</var> or
+<var class="var">architecture</var>, either they must both be provided, or neither must
+be provided (and the defaults will be used).
+</p>
+<p>This method uses the same mechanism for formatting address, symbol,
+and offset information as core <small class="sc">GDB</small> does in commands such as
+<kbd class="kbd">disassemble</kbd>.
+</p>
+<p>Here are some examples of the possible string formats:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">0x00001042
+0x00001042 &lt;symbol+16&gt;
+0x00001042 &lt;symbol+16 at file.c:123&gt;
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-gdb_002ecurrent_005flanguage"><span class="category-def">Function: </span><span><strong class="def-name">gdb.current_language</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-gdb_002ecurrent_005flanguage"> ¶</a></span></dt>
+<dd><p>Return the name of the current language as a string.  Unlike
+<code class="code">gdb.parameter(&#39;language&#39;)</code>, this function will never return
+‘<samp class="samp">auto</samp>’.  If a <code class="code">gdb.Frame</code> object is available (see <a class="pxref" href="Frames-In-Python.html">Accessing inferior stack frames from Python</a>), the <code class="code">language</code> method might be preferable in some
+cases, as that is not affected by the user’s language setting.
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+Next: <a href="Threading-in-GDB.html">Threading in GDB</a>, Up: <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">Contents</a>][<a href="Concept-Index.html" rel="index" title="Index">Index</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

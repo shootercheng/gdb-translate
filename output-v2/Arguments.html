@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>参数（使用GDB进行调试）</title>
+
+<meta name="description" content="Arguments (Debugging with GDB)"/>
+<meta name="keywords" content="Arguments (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Environment.html" rel="next" title="Environment"/>
+<link href="Starting.html" rel="prev" title="Starting"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Arguments">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Environment.html" rel="next">您程序的环境</a>, 上一项： <a accesskey="p" href="Starting.html" rel="prev">启动您的程序</a>, 上级： <a accesskey="u" href="Running.html" rel="up">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Your-Program_0027s-Arguments"><span>4.3 您程序的参数<a class="copiable-link" href="#Your-Program_0027s-Arguments"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-arguments-_0028to-your-program_0029"></a>
+<p>您程序的参数可以通过以下命令的参数来指定
+<code class="code">run</code> 该命令。它们会传递给一个shell，shell会展开通配符并执行I/O重定向，然后传递给您的程序。您的
+<code class="env">SHELL</code> 环境变量（如果存在）指定了使用的shell
+<small class="sc">GDB</small> 如果您没有定义 <code class="env">SHELL</code>, <small class="sc">GDB</small> 使用默认的shell（<samp class="file">/bin/sh</samp> 在Unix系统上）。
+</p>
+<p>在非Unix系统上，程序通常由
+<small class="sc">GDB</small>, 它通过适当的系统调用来模拟I/O重定向，通配符由程序的启动代码展开，而不是由shell展开。
+</p>
+<p><code class="code">run</code> 不带参数使用与上一次相同的参数
+<code class="code">run</code>, 或者由 <code class="code">set args</code> 命令设置的参数。
+</p>
+<dl class="table">
+<dt><a id="index-set-args"></a><span><code class="code">set args</code><a class="copiable-link" href="#index-set-args"> ¶</a></span></dt>
+<dd><p>指定下次运行程序时要使用的参数。如果
+<code class="code">set args</code> 没有参数， <code class="code">run</code> 无参数执行您的程序。一旦您使用参数运行了程序，在下次 <code class="code">set args</code> 之前使用 <code class="code">run</code> 是再次无参数运行程序的唯一方法。
+</p>
+</dd>
+<dt><a id="index-show-args"></a><span><code class="code">show args</code><a class="copiable-link" href="#index-show-args"> ¶</a></span></dt>
+<dd><p>显示程序启动时要给出的参数。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

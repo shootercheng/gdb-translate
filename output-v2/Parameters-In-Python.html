@@ -1,0 +1,311 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Python 中的参数（使用 GDB 调试）</title>
+
+<meta name="description" content="Parameters In Python (Debugging with GDB)"/>
+<meta name="keywords" content="Parameters In Python (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Python-API.html" rel="up" title="Python API"/>
+<link href="Functions-In-Python.html" rel="next" title="Functions In Python"/>
+<link href="GDB_002fMI-Notifications-In-Python.html" rel="prev" title="GDB/MI Notifications In Python"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Parameters-In-Python">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Functions-In-Python.html" rel="next">编写新的便利函数</a>, 上一项： <a accesskey="p" href="GDB_002fMI-Notifications-In-Python.html" rel="prev"><small class="sc">GDB/MI</small> Python 中的通知</a>, 上级： <a accesskey="u" href="Python-API.html" rel="up">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a><a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Parameters-In-Python-1"><span>23.3.2.24 Python 中的参数<a class="copiable-link" href="#Parameters-In-Python-1"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-parameters-in-python"></a>
+<a class="index-entry-id" id="index-python-parameters"></a>
+<a class="index-entry-id" id="index-gdb_002eParameter"></a>
+<a class="index-entry-id" id="index-Parameter"></a>
+<p>你可以使用 Python 实现新的 <small class="sc">GDB</small> 参数。新参数作为 <code class="code">gdb.Parameter</code>
+类的实例来实现。
+</p>
+<p>参数通过 <code class="code">set</code> 和
+<code class="code">show</code> 命令向用户公开。请参阅 <a class="xref" href="Help.html">获取帮助</a>.
+</p>
+<p>已经存在许多可以设置的参数。
+<small class="sc">GDB</small>. 两个示例是： <code class="code">set follow fork</code> 和
+<code class="code">set charset</code>. 设置这些参数会影响 <small class="sc">GDB</small>. 同样，你可以定义可用于影响自定义 Python 脚本和命令行为的参数。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">Parameter.__init__</strong> <var class="def-var-arguments">(name, command_class, parameter_class <span class="r">[</span>, enum_sequence<span class="r">]</span>)</var><a class="copiable-link" href="#index-Parameter_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>的对象初始化器 <code class="code">Parameter</code> 向 <small class="sc">GDB</small>注册新参数。此初始化器通常从子类自己的 <code class="code">__init__</code> 方法中调用。
+</p>
+<p><var class="var">name</var> 是新参数的名称。如果 <var class="var">name</var> 由多个单词组成，那么会查找初始单词作为前缀参数。可以用一组参数来说明这一点。如果
+<code class="code">set print</code> 参数集。如果 <var class="var">name</var> 是
+<code class="code">print foo</code>, 那么 <code class="code">print</code> 将作为前缀参数进行搜索。在这种情况下，该参数随后可以在
+<small class="sc">GDB</small> 中作为 <code class="code">set print foo</code>访问。
+</p>
+<p>如果 <var class="var">name</var> 由多个单词组成，并且找不到前缀参数组，则会抛出异常。
+</p>
+<p><var class="var">command_class</var> 应该是 ‘<samp class="samp">COMMAND_</samp>’ 常量之一（请参阅 <a class="pxref" href="CLI-Commands-In-Python.html">Python 中的 CLI 命令</a>）。此参数告诉 <small class="sc">GDB</small> 如何在帮助系统中对新参数进行分类。
+</p>
+<p><var class="var">parameter_class</var> 应该是下面定义的 ‘<samp class="samp">PARAM_</samp>’ 常量之一。此参数告诉 <small class="sc">GDB</small> 新参数的类型；此信息用于输入验证和自动补全。
+</p>
+<p>如果 <var class="var">parameter_class</var> 为 <code class="code">PARAM_ENUM</code>, 那么
+<var class="var">enum_sequence</var> 必须是一个字符串序列。这些字符串表示参数的可能值。
+</p>
+<p>如果 <var class="var">parameter_class</var> 不为 <code class="code">PARAM_ENUM</code>, 那么存在第四个参数将导致抛出异常。
+</p>
+<p>新参数的帮助文本包括参数类的 Python 文档字符串（如果有的话）。如果没有文档字符串，则使用默认值。文档字符串包含在参数的 <code class="code">help set</code> 和
+<code class="code">help show</code> 命令的输出中，编写时应考虑到这一点。如果参数类的文档字符串为空，则 <small class="sc">GDB</small> 将仅使用 <code class="code">Parameter.set_doc</code>
+或 <code class="code">Parameter.show_doc</code> （见下文）在 <kbd class="kbd">帮助</kbd> 输出中。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002eset_005fdoc"><span class="category-def">变量： </span><span><strong class="def-name">Parameter.set_doc</strong><a class="copiable-link" href="#index-Parameter_002eset_005fdoc"> ¶</a></span></dt>
+<dd><p>如果此属性存在且是一个字符串，那么其值将用作此参数的 <code class="code">set</code>
+命令帮助文本的第一部分。帮助文本的第二部分取自参数类的文档字符串（如果有的话）。
+</p>
+<p>的值 <code class="code">set_doc</code> 应该给出特定于设置操作的简要摘要，只有当用户运行此参数的
+<code class="code">help set</code> 命令时才会显示此文本。类文档应用于更全面地描述参数的作用，此文本会在 <code class="code">help set</code> 和
+<code class="code">help show</code> 命令中显示。
+</p>
+<p>当 <code class="code">set_doc</code> 被调用时，会检查 <code class="code">Parameter.__init__</code> 的值；后续的更改没有效果。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002eshow_005fdoc"><span class="category-def">变量： </span><span><strong class="def-name">Parameter.show_doc</strong><a class="copiable-link" href="#index-Parameter_002eshow_005fdoc"> ¶</a></span></dt>
+<dd><p>如果此属性存在且是一个字符串，那么其值将用作此参数的 <code class="code">show</code>
+命令。帮助文本的第二部分取自参数类的文档字符串（如果有的话）。
+</p>
+<p>的值 <code class="code">show_doc</code> 应该给出特定于显示操作的简要摘要，只有当用户运行此参数的
+<code class="code">help show</code> 命令时才会显示此文本。类文档应用于更全面地描述参数的作用，此文本会在 <code class="code">help set</code> 和
+<code class="code">help show</code> 命令中显示。
+</p>
+<p>当 <code class="code">show_doc</code> 被调用时，会检查 <code class="code">Parameter.__init__</code>
+的值；后续的更改没有效果。
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002evalue"><span class="category-def">变量： </span><span><strong class="def-name">Parameter.value</strong><a class="copiable-link" href="#index-Parameter_002evalue"> ¶</a></span></dt>
+<dd><p>该 <code class="code">value</code> 属性保存参数的底层值。它可以像任何其他属性一样被读取和赋值。  <small class="sc">GDB</small> 在进行赋值时会进行验证。
+</p></dd></dl>
+
+<p>任何 <code class="code">Parameter</code>
+类中可能实现两种方法。它们是：
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002eget_005fset_005fstring"><span class="category-def">函数： </span><span><strong class="def-name">Parameter.get_set_string</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-Parameter_002eget_005fset_005fstring"> ¶</a></span></dt>
+<dd><p>如果此方法存在， <small class="sc">GDB</small> 在通过
+<var class="var">参数</var>的 <code class="code">set</code> API（例如， <kbd class="kbd">set foo off</kbd>）更改参数值时会调用它。 <code class="code">value</code> 属性已经用新值填充，可用于输出。此方法必须返回一个字符串。如果返回的字符串不为空，
+<small class="sc">GDB</small> 会将其呈现给用户。
+</p>
+<p>如果此方法抛出 <code class="code">gdb.GdbError</code> 异常（请参阅 <a class="pxref" href="Exception-Handling.html">异常处理</a>），那么 <small class="sc">GDB</small> 会打印异常字符串，并且 <code class="code">set</code> 命令将失败。但是请注意，在这种情况下， <code class="code">value</code> 属性不会被重置。因此，如果你的参数必须验证值，它应该在内部存储旧值并重置公开的值，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ExampleParam (gdb.Parameter):
+   def __init__ (self, name):
+      super (ExampleParam, self).__init__ (name,
+                   gdb.COMMAND_DATA,
+                   gdb.PARAM_BOOLEAN)
+      self.value = True
+      self.saved_value = True
+   def validate(self):
+      return False
+   def get_set_string (self):
+      if not self.validate():
+        self.value = self.saved_value
+        raise gdb.GdbError(&#39;Failed to validate&#39;)
+      self.saved_value = self.value
+      return &#34;&#34;
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002eget_005fshow_005fstring"><span class="category-def">函数： </span><span><strong class="def-name">Parameter.get_show_string</strong> <var class="def-var-arguments">(self, svalue)</var><a class="copiable-link" href="#index-Parameter_002eget_005fshow_005fstring"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 在调用 <var class="var">参数</var>的
+<code class="code">show</code> API（例如， <kbd class="kbd">show foo</kbd>）时会调用此方法。参数 <code class="code">svalue</code> 接收当前值的字符串表示形式。此方法必须返回一个字符串。
+</p></dd></dl>
+
+<p>定义新参数时，必须指定其类型。可用的类型由 <code class="code">gdb</code>
+模块中定义的常量表示：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fBOOLEAN"></a>
+<a id="index-PARAM_005fBOOLEAN"></a><span><code class="code">gdb.PARAM_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fBOOLEAN"> ¶</a></span></dt>
+<dd><p>值是一个普通布尔值。Python 布尔值 <code class="code">True</code>
+和 <code class="code">False</code> 是唯一有效的值。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fAUTO_005fBOOLEAN"></a>
+<a id="index-PARAM_005fAUTO_005fBOOLEAN"></a><span><code class="code">gdb.PARAM_AUTO_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fAUTO_005fBOOLEAN"> ¶</a></span></dt>
+<dd><p>值有三种可能的状态：真、假和 ‘<samp class="samp">自动</samp>’。在 Python 中，真和假用布尔常量表示，‘<samp class="samp">自动</samp>’ 用 <code class="code">None</code>表示。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fUINTEGER"></a>
+<a id="index-PARAM_005fUINTEGER"></a><span><code class="code">gdb.PARAM_UINTEGER</code><a class="copiable-link" href="#index-PARAM_005fUINTEGER"> ¶</a></span></dt>
+<dd><p>值是一个无符号整数。 <code class="code">None</code> 的值应解释为 “无限制”（也可以使用字面量 <code class="code">&#39;unlimited&#39;</code> 来设置该值），并且值 0 是保留的，不应使用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fINTEGER"></a>
+<a id="index-PARAM_005fINTEGER"></a><span><code class="code">gdb.PARAM_INTEGER</code><a class="copiable-link" href="#index-PARAM_005fINTEGER"> ¶</a></span></dt>
+<dd><p>值是一个有符号整数。 <code class="code">None</code> 的值应解释为 “无限制”（也可以使用字面量 <code class="code">&#39;unlimited&#39;</code> 来设置该值），并且值 0 是保留的，不应使用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fSTRING"></a>
+<a id="index-PARAM_005fSTRING"></a><span><code class="code">gdb.PARAM_STRING</code><a class="copiable-link" href="#index-PARAM_005fSTRING"> ¶</a></span></dt>
+<dd><p>值是一个字符串。当用户修改字符串时，任何转义序列，如 ‘<samp class="samp">\t</samp>’、‘<samp class="samp">\f</samp>’ 和八进制转义，都会被转换为相应的字符并编码为当前主机字符集。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fSTRING_005fNOESCAPE"></a>
+<a id="index-PARAM_005fSTRING_005fNOESCAPE"></a><span><code class="code">gdb.PARAM_STRING_NOESCAPE</code><a class="copiable-link" href="#index-PARAM_005fSTRING_005fNOESCAPE"> ¶</a></span></dt>
+<dd><p>值是一个字符串。当用户修改字符串时，转义字符会原样传递，不进行转换。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fOPTIONAL_005fFILENAME"></a>
+<a id="index-PARAM_005fOPTIONAL_005fFILENAME"></a><span><code class="code">gdb.PARAM_OPTIONAL_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fOPTIONAL_005fFILENAME"> ¶</a></span></dt>
+<dd><p>值要么是一个文件名（字符串），要么是 <code class="code">None</code>。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fFILENAME"></a>
+<a id="index-PARAM_005fFILENAME"></a><span><code class="code">gdb.PARAM_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fFILENAME"> ¶</a></span></dt>
+<dd><p>值是一个文件名。这与
+<code class="code">PARAM_STRING_NOESCAPE</code>类似，但使用文件名进行自动补全。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZINTEGER"></a>
+<a id="index-PARAM_005fZINTEGER"></a><span><code class="code">gdb.PARAM_ZINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZINTEGER"> ¶</a></span></dt>
+<dd><p>值是一个有符号整数。这与 <code class="code">PARAM_INTEGER</code>类似，不同之处在于允许值为 0，并且不支持 <code class="code">None</code> 的值。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZUINTEGER"></a>
+<a id="index-PARAM_005fZUINTEGER"></a><span><code class="code">gdb.PARAM_ZUINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER"> ¶</a></span></dt>
+<dd><p>值是一个无符号整数。这与 <code class="code">PARAM_UINTEGER</code>类似，不同之处在于允许值为 0，并且不支持 <code class="code">None</code> 的值。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZUINTEGER_005fUNLIMITED"></a>
+<a id="index-PARAM_005fZUINTEGER_005fUNLIMITED"></a><span><code class="code">gdb.PARAM_ZUINTEGER_UNLIMITED</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER_005fUNLIMITED"> ¶</a></span></dt>
+<dd><p>值是一个有符号整数。这与 <code class="code">PARAM_INTEGER</code>
+类似，包括 <code class="code">None</code> 的值应解释为 “无限制”（也可以使用字面量 <code class="code">&#39;unlimited&#39;</code> 来设置该值），不同之处在于允许值为 0，并且值不能为负，除非设置为 “无限制” 时返回特殊值 -1。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fENUM"></a>
+<a id="index-PARAM_005fENUM"></a><span><code class="code">gdb.PARAM_ENUM</code><a class="copiable-link" href="#index-PARAM_005fENUM"> ¶</a></span></dt>
+<dd><p>值是一个字符串，必须是创建参数时提供的一组字符串常量之一。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fCOLOR"></a>
+<a id="index-PARAM_005fCOLOR"></a><span><code class="code">gdb.PARAM_COLOR</code><a class="copiable-link" href="#index-PARAM_005fCOLOR"> ¶</a></span></dt>
+<dd><p>值是 <code class="code">gdb.Color</code> 实例。
+</p></dd>
+</dl>
+
+<p>使用 <code class="code">gdb.Parameter</code>创建多个新参数时，通常希望创建一个前缀命令，用于将相关参数分组在一起。例如，如果你想添加参数 <kbd class="kbd">插件名称 功能 1</kbd> 和 <kbd class="kbd">插件名称
+功能 2</kbd>，那么 <kbd class="kbd">插件名称</kbd> 需要是一个前缀命令（请参阅 <a class="pxref" href="CLI-Commands-In-Python.html">Python 中的 CLI 命令</a>）。
+</p>
+<p>然而，创建参数时，几乎总是需要创建两个前缀命令，一个作为 <kbd class="kbd">set</kbd> 子命令，另一个作为 <kbd class="kbd">show</kbd> 子命令。  <small class="sc">GDB</small> 提供了
+<code class="code">gdb.ParameterPrefix</code> 辅助类，使创建这两个前缀更容易。
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002e_005f_005finit_005f_005f"><span class="category-def">函数： </span><span><strong class="def-name">ParameterPrefix.__init__</strong> <var class="def-var-arguments">(name, command_class, doc = <code class="code">None</code>)</var><a class="copiable-link" href="#index-ParameterPrefix_002e_005f_005finit_005f_005f"> ¶</a></span></dt>
+<dd><p>的对象初始化器 <code class="code">ParameterPrefix</code> 注册两个新的
+<code class="code">gdb.Command</code> 前缀，一个作为 <kbd class="kbd">set</kbd> 子命令，另一个作为 <kbd class="kbd">show</kbd> 子命令。
+</p>
+<p><var class="var">name</var>, 一个字符串，是新前缀的名称，不包含
+<kbd class="kbd">set</kbd> 或 <kbd class="kbd">show</kbd>, 类似于传递给 <var class="var">name</var> 的
+<code class="code">gdb.Parameter</code> （请参阅 <a class="pxref" href="#Parameters-In-Python">Python 中的参数</a>）。例如，要创建前缀 <kbd class="kbd">set 插件名称</kbd> 和 <kbd class="kbd">show 插件名称</kbd>, 你将传递字符串 <kbd class="kbd">插件名称</kbd>。
+</p>
+<p><var class="var">command_class</var> 应该是 ‘<samp class="samp">COMMAND_</samp>’ 常量之一（请参阅 <a class="pxref" href="CLI-Commands-In-Python.html">Python 中的 CLI 命令</a>）。此参数告诉 <small class="sc">GDB</small> 如何在帮助系统中对新的参数前缀进行分类。
+</p>
+<p>有多种方法可以为两个新的前缀命令提供帮助文本。如果 <var class="var">doc</var> 参数不为
+<code class="code">None</code>, 那么它将用作两个前缀命令的文档字符串。
+</p>
+<p>如果 <var class="var">doc</var> 为 <code class="code">None</code>, 但 <code class="code">gdb.ParameterPrefix</code> 已被子类化，那么前缀命令文档将取自子类的文档字符串（即 <code class="code">__doc__</code> 属性）。
+</p>
+<p>如果 <var class="var">doc</var> 为 <code class="code">None</code>, 并且没有 <code class="code">__doc__</code> 字符串，那么将使用默认值 ‘<samp class="samp">此命令未记录。</samp>’。
+</p>
+<p>编写帮助文本时，请记住相同的文本用于 <kbd class="kbd">set</kbd> 和 <kbd class="kbd">show</kbd> 前缀命令。
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002einvoke_005fset"><span class="category-def">函数： </span><span><strong class="def-name">ParameterPrefix.invoke_set</strong> <var class="def-var-arguments">(argument, from_tty)</var><a class="copiable-link" href="#index-ParameterPrefix_002einvoke_005fset"> ¶</a></span></dt>
+<dd><p>如果子类定义了此方法，那么 <small class="sc">GDB</small> 在使用前缀命令时遇到未知子命令时会调用此方法。
+<var class="var">argument</var> 和 <var class="var">from_tty</var> 参数与
+<code class="code">gdb.Command.invoke</code> （请参阅 <a class="pxref" href="CLI-Commands-In-Python.html#Command_002einvoke">Command.invoke</a>）中的参数相同。
+</p>
+<p>如果此方法抛出异常，它将转换为 <small class="sc">GDB</small>
+<code class="code">error</code> 调用。否则，返回值将被忽略。
+</p>
+<p>不是必须让 <code class="code">ParameterPrefix</code> 子类重写此方法。通常，参数前缀仅作为将相关参数分组在一起的一种方式存在。  <small class="sc">GDB</small> 会自动处理这种情况，无需实现 <code class="code">invoke_set</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002einvoke_005fshow"><span class="category-def">函数： </span><span><strong class="def-name">ParameterPrefix.invoke_show</strong> <var class="def-var-arguments">(argument, from_tty)</var><a class="copiable-link" href="#index-ParameterPrefix_002einvoke_005fshow"> ¶</a></span></dt>
+<dd><p>这与 <code class="code">invoke_set</code> 方法类似，但适用于 <kbd class="kbd">show</kbd>
+前缀命令。与 <code class="code">invoke_set</code>一样，此方法的实现是可选的，通常不需要。
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-don_0027t-repeat-Python-command-1"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002edont_005frepeat"><span class="category-def">函数： </span><span><strong class="def-name">ParameterPrefix.dont_repeat</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-ParameterPrefix_002edont_005frepeat"> ¶</a></span></dt>
+<dd><p>与 <code class="code">Command.dont_repeat</code> （请参阅 <a class="pxref" href="CLI-Commands-In-Python.html#Command_002edont_005frepeat">Command.dont_repeat</a>）一样，这可以从 <code class="code">ParameterPrefix.invoke_set</code> 或
+<code class="code">ParameterPrefix.invoke_show</code> 调用，以防止前缀命令被重复执行。
+</p></dd></dl>
+
+<p>这里有一个小示例，使用 <code class="code">gdb.ParameterPrefix</code> 和 <code class="code">gdb.Parameter</code> 创建两个新参数
+<kbd class="kbd">插件名称 功能 1</kbd> 和 <kbd class="kbd">插件名称 功能 2</kbd>. 由于不需要 <code class="code">invoke_set</code> 或 <code class="code">invoke_show</code> ，此示例不子类化 <code class="code">gdb.ParameterPrefix</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ExampleParam(gdb.Parameter):
+   def __init__ (self, name):
+      super ().__init__ (name, gdb.COMMAND_DATA, gdb.PARAM_BOOLEAN)
+      self.value = True
+
+gdb.ParameterPrefix(&#34;插件名称&#34;, gdb.COMMAND_NONE,
+                    &#34;&#34;&#34;一个示例参数前缀。
+
+                    这将一些参数分组在一起。&#34;&#34;&#34;)
+ExampleParam(&#34;插件名称 功能 1&#34;)
+ExampleParam(&#34;插件名称 功能 2&#34;)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Functions-In-Python.html">编写新的便利函数</a>, 上一项： <a href="GDB_002fMI-Notifications-In-Python.html"><small class="sc">GDB/MI</small> Python 中的通知</a>, 上级： <a href="Python-API.html">Python API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 栈操作（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI Stack Manipulation (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI Stack Manipulation (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Variable-Objects.html" rel="next" title="GDB/MI Variable Objects"/>
+<link href="GDB_002fMI-Program-Execution.html" rel="prev" title="GDB/MI Program Execution"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-Stack-Manipulation">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Variable-Objects.html" rel="next"><small class="sc">GDB/MI</small> 变量对象</a>, 上一项： <a accesskey="p" href="GDB_002fMI-Program-Execution.html" rel="prev"><small class="sc">GDB/MI</small> 程序执行</a>, 上级： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-Stack-Manipulation-Commands"><span>27.14 <small class="sc">GDB/MI</small> 栈操作命令<a class="copiable-link" href="#gdb_002fmi-Stack-Manipulation-Commands"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-_002denable_002dframe_002dfilters"></a>
+<h4 class="subheading" id="The-_002denable_002dframe_002dfilters-Command"><span>该 <code class="code">-enable-frame-filters</code> 命令<a class="copiable-link" href="#The-_002denable_002dframe_002dfilters-Command"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p><small class="sc">GDB</small> 允许基于 Python 的帧过滤器影响与栈跟踪相关的 MI 命令的输出。由于无法以完全向后兼容的方式实现此功能，前端必须请求启用此功能。
+</p>
+<p>一旦启用，此功能无法禁用。
+</p>
+<p> <small class="sc">GDB</small>,
+此命令仍然会成功（但不执行任何操作）。
+</p>
+<a class="index-entry-id" id="index-_002dstack_002dinfo_002dframe"></a>
+<h4 class="subheading" id="The-_002dstack_002dinfo_002dframe-Command"><span>该 <code class="code">-stack-info-frame</code> 命令<a class="copiable-link" href="#The-_002dstack_002dinfo_002dframe-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-41"><span>概要<a class="copiable-link" href="#Synopsis-41"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-info-frame
+</pre></div>
+
+<p>获取所选帧的信息。
+</p>
+<h4 class="subsubheading" id="gdb-Command-40"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-40"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">查看帧信息</samp>’ 或 ‘<samp class="samp">帧</samp>’（不带参数）。
+</p>
+<h4 class="subsubheading" id="Example-39"><span>示例<a class="copiable-link" href="#Example-39"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-info-frame
+^done,frame={level=&#34;1&#34;,addr=&#34;0x0001076c&#34;,func=&#34;callee3&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;17&#34;,
+arch=&#34;i386:x86_64&#34;}
+(gdb)
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dstack_002dinfo_002ddepth"></a>
+<h4 class="subheading" id="The-_002dstack_002dinfo_002ddepth-Command"><span>该 <code class="code">-stack-info-depth</code> 命令<a class="copiable-link" href="#The-_002dstack_002dinfo_002ddepth-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-42"><span>概要<a class="copiable-link" href="#Synopsis-42"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-info-depth [ <var class="var">最大深度</var> ]
+</pre></div>
+
+<p>返回栈的深度。如果指定了整数参数 <var class="var">最大深度</var>
+，则不会计算超过 <var class="var">最大深度</var> 的帧数。
+</p>
+<h4 class="subsubheading" id="gdb-Command-41"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-41"> ¶</a></span></h4>
+
+<p>没有等效的 <small class="sc">GDB</small> 命令。
+</p>
+<h4 class="subsubheading" id="Example-40"><span>示例<a class="copiable-link" href="#Example-40"> ¶</a></span></h4>
+
+<p>对于帧级别从 0 到 11 的栈：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-info-depth
+^done,depth=&#34;12&#34;
+(gdb)
+-stack-info-depth 4
+^done,depth=&#34;4&#34;
+(gdb)
+-stack-info-depth 12
+^done,depth=&#34;12&#34;
+(gdb)
+-stack-info-depth 11
+^done,depth=&#34;11&#34;
+(gdb)
+-stack-info-depth 13
+^done,depth=&#34;12&#34;
+(gdb)
+</pre></div>
+
+<a class="anchor" id="g_t_002dstack_002dlist_002darguments"></a><a class="index-entry-id" id="index-_002dstack_002dlist_002darguments"></a>
+<h4 class="subheading" id="The-_002dstack_002dlist_002darguments-Command"><span>该 <code class="code">-stack-list-arguments</code> 命令<a class="copiable-link" href="#The-_002dstack_002dlist_002darguments-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-43"><span>概要<a class="copiable-link" href="#Synopsis-43"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-arguments [ --no-frame-filters ] [ --skip-unavailable ] <var class="var">打印值</var>
+    [ <var class="var">低帧号</var> <var class="var">高帧号</var> ]
+</pre></div>
+
+<p>显示 <var class="var">低帧号</var>
+和 <var class="var">高帧号</var> 之间（包括这两个帧）的帧的参数列表。如果 <var class="var">低帧号</var> 和
+<var class="var">高帧号</var> 未提供，则列出整个调用栈的参数。如果这两个参数相等，则显示对应级别的单个帧的参数。如果 <var class="var">低帧号</var> 大于实际的帧数，则会出错。另一方面，
+<var class="var">高帧号</var> 可以大于实际的帧数，在这种情况下，只会返回存在的帧。
+</p>
+<p>如果 <var class="var">打印值</var> 为 0 或 <code class="code">--no-values</code>, 则只打印变量名；如果为 1 或 <code class="code">--all-values</code>, 则还打印它们的值；如果为 2 或 <code class="code">--simple-values</code>, 则打印简单数据类型的名称、类型和值，以及数组、结构体和联合体的名称和类型。如果提供了选项 <code class="code">--no-frame-filters</code> ，则不会执行 Python 帧过滤器。
+</p>
+<p>如果 <code class="code">--skip-unavailable</code> 选项被指定，则不会列出不可用的参数。但是，部分可用的参数仍然会显示。
+</p>
+<p>使用此命令获取单个帧的参数已被弃用，建议使用 ‘<samp class="samp">-stack-list-variables</samp>’ 命令。
+</p>
+<h4 class="subsubheading" id="gdb-Command-42"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-42"> ¶</a></span></h4>
+
+<p><small class="sc">GDB</small> 没有等效的命令。  <code class="code">gdbtk</code> 有一个
+‘<samp class="samp">gdb_get_args</samp>’ 命令，其功能与 ‘<samp class="samp">-stack-list-arguments</samp>’ 部分重叠。
+</p>
+<h4 class="subsubheading" id="Example-41"><span>示例<a class="copiable-link" href="#Example-41"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-frames
+^done,
+stack=[
+frame={level=&#34;0&#34;,addr=&#34;0x00010734&#34;,func=&#34;callee4&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;8&#34;,
+arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;1&#34;,addr=&#34;0x0001076c&#34;,func=&#34;callee3&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;17&#34;,
+arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;2&#34;,addr=&#34;0x0001078c&#34;,func=&#34;callee2&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;22&#34;,
+arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;3&#34;,addr=&#34;0x000107b4&#34;,func=&#34;callee1&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;27&#34;,
+arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;4&#34;,addr=&#34;0x000107e0&#34;,func=&#34;main&#34;,
+file=&#34;../../../devo/gdb/testsuite/gdb.mi/basics.c&#34;,
+fullname=&#34;/home/foo/bar/devo/gdb/testsuite/gdb.mi/basics.c&#34;,line=&#34;32&#34;,
+arch=&#34;i386:x86_64&#34;}]
+(gdb)
+-stack-list-arguments 0
+^done,
+stack-args=[
+frame={level=&#34;0&#34;,args=[]},
+frame={level=&#34;1&#34;,args=[name=&#34;strarg&#34;]},
+frame={level=&#34;2&#34;,args=[name=&#34;intarg&#34;,name=&#34;strarg&#34;]},
+frame={level=&#34;3&#34;,args=[name=&#34;intarg&#34;,name=&#34;strarg&#34;,name=&#34;fltarg&#34;]},
+frame={level=&#34;4&#34;,args=[]}]
+(gdb)
+-stack-list-arguments 1
+^done,
+stack-args=[
+frame={level=&#34;0&#34;,args=[]},
+frame={level=&#34;1&#34;,
+ args=[{name=&#34;strarg&#34;,value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;}]},
+frame={level=&#34;2&#34;,args=[
+{name=&#34;intarg&#34;,value=&#34;2&#34;},
+{name=&#34;strarg&#34;,value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;}]},
+{frame={level=&#34;3&#34;,args=[
+{name=&#34;intarg&#34;,value=&#34;2&#34;},
+{name=&#34;strarg&#34;,value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;},
+{name=&#34;fltarg&#34;,value=&#34;3.5&#34;}]},
+frame={level=&#34;4&#34;,args=[]}]
+(gdb)
+-stack-list-arguments 0 2 2
+^done,stack-args=[frame={level=&#34;2&#34;,args=[name=&#34;intarg&#34;,name=&#34;strarg&#34;]}]
+(gdb)
+-stack-list-arguments 1 2 2
+^done,stack-args=[frame={level=&#34;2&#34;,
+args=[{name=&#34;intarg&#34;,value=&#34;2&#34;},
+{name=&#34;strarg&#34;,value=&#34;0x11940 \&#34;A string argument.\&#34;&#34;}]}]
+(gdb)
+</pre></div>
+
+
+
+<a class="anchor" id="g_t_002dstack_002dlist_002dframes"></a><a class="index-entry-id" id="index-_002dstack_002dlist_002dframes"></a>
+<h4 class="subheading" id="The-_002dstack_002dlist_002dframes-Command"><span>该 <code class="code">-stack-list-frames</code> 命令<a class="copiable-link" href="#The-_002dstack_002dlist_002dframes-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-44"><span>概要<a class="copiable-link" href="#Synopsis-44"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-frames [ --no-frame-filters <var class="var">低帧号</var> <var class="var">高帧号</var> ]
+</pre></div>
+
+<p>列出当前栈上的帧。对于每个帧，它会显示以下信息：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp"><var class="var">级别</var></samp>’</dt>
+<dd><p>帧编号，0 表示最顶层的帧，即最内层的函数。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">地址</var></samp>’</dt>
+<dd><p>该 <code class="code">$pc</code> 帧的值。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">函数名</var></samp>’</dt>
+<dd><p>函数名称。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">文件名</var></samp>’</dt>
+<dd><p>函数所在源文件的名称。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">完整文件名</var></samp>’</dt>
+<dd><p>函数所在源文件的完整名称。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">行号</var></samp>’</dt>
+<dd><p>对应的行号 <code class="code">$pc</code>.
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">来自</var></samp>’</dt>
+<dd><p>定义此函数的共享库。只有在帧的函数未知时才会给出此信息。
+</p></dd>
+<dt>‘<samp class="samp"><var class="var">架构</var></samp>’</dt>
+<dd><p>帧的架构。
+</p></dd>
+</dl>
+
+<p>如果不带参数调用此命令，则会打印整个栈的回溯信息。如果给定两个整数参数，则会显示级别在这两个参数之间（包括这两个参数）的帧。如果这两个参数相等，则会显示对应级别的单个帧。如果 <var class="var">低帧号</var> 大于实际的帧数，则会出错。另一方面， <var class="var">高帧号</var> 可以大于实际的帧数，在这种情况下，只会返回存在的帧。如果提供了选项 <code class="code">--no-frame-filters</code> ，则不会执行 Python 帧过滤器。
+</p>
+<h4 class="subsubheading" id="gdb-Command-43"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-43"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">回溯</samp>’ 和 ‘<samp class="samp">当前位置</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-42"><span>示例<a class="copiable-link" href="#Example-42"> ¶</a></span></h4>
+
+<p>完整栈回溯信息：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-frames
+^done,stack=
+[frame={level=&#34;0&#34;,addr=&#34;0x0001076c&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;11&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;1&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;2&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;3&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;4&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;5&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;6&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;7&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;8&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;9&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;10&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;11&#34;,addr=&#34;0x00010738&#34;,func=&#34;main&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;4&#34;,
+  arch=&#34;i386:x86_64&#34;}]
+(gdb)
+</pre></div>
+
+<p>显示 <var class="var">低帧号</var> 和 <var class="var">高帧号</var>之间的帧：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-frames 3 5
+^done,stack=
+[frame={level=&#34;3&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;4&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;},
+frame={level=&#34;5&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;}]
+(gdb)
+</pre></div>
+
+<p>显示单个帧：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-frames 3 3
+^done,stack=
+[frame={level=&#34;3&#34;,addr=&#34;0x000107a4&#34;,func=&#34;foo&#34;,
+  file=&#34;recursive2.c&#34;,fullname=&#34;/home/foo/bar/recursive2.c&#34;,line=&#34;14&#34;,
+  arch=&#34;i386:x86_64&#34;}]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dstack_002dlist_002dlocals"></a>
+<a class="anchor" id="g_t_002dstack_002dlist_002dlocals"></a><h4 class="subheading" id="The-_002dstack_002dlist_002dlocals-Command"><span>该 <code class="code">-stack-list-locals</code> 命令<a class="copiable-link" href="#The-_002dstack_002dlist_002dlocals-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-45"><span>概要<a class="copiable-link" href="#Synopsis-45"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-locals [ --no-frame-filters ] [ --skip-unavailable ] <var class="var">打印值</var>
+</pre></div>
+
+<p>显示所选帧的局部变量名。如果
+<var class="var">打印值</var> 为 0 或 <code class="code">--no-values</code>, 则只打印变量名；如果为 1 或 <code class="code">--all-values</code>, 则还打印它们的值；如果为 2 或 <code class="code">--simple-values</code>, 则打印简单数据类型的名称、类型和值，以及数组、结构体和联合体的名称和类型。在最后一种情况下，前端可以立即显示简单数据类型的值，并在用户希望更详细地探索其他数据类型的值时为其创建变量对象。如果提供了选项 <code class="code">--no-frame-filters</code> ，则不会执行 Python 帧过滤器。
+</p>
+<p>如果 <code class="code">--skip-unavailable</code> 选项被指定，则不会列出不可用的局部变量。但是，部分可用的局部变量仍然会显示。
+</p>
+<p>此命令已被弃用，建议使用 ‘<samp class="samp">-stack-list-variables</samp>’ 命令。
+</p>
+<h4 class="subsubheading" id="gdb-Command-44"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-44"> ¶</a></span></h4>
+
+<p>‘<samp class="samp">查看局部变量</samp>’ 在 <small class="sc">GDB</small>, ‘<samp class="samp">gdb_get_locals</samp>’ 在 <code class="code">gdbtk</code>.
+</p>
+<h4 class="subsubheading" id="Example-43"><span>示例<a class="copiable-link" href="#Example-43"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-locals 0
+^done,locals=[name=&#34;A&#34;,name=&#34;B&#34;,name=&#34;C&#34;]
+(gdb)
+-stack-list-locals --all-values
+^done,locals=[{name=&#34;A&#34;,value=&#34;1&#34;},{name=&#34;B&#34;,value=&#34;2&#34;},
+  {name=&#34;C&#34;,value=&#34;{1, 2, 3}&#34;}]
+-stack-list-locals --simple-values
+^done,locals=[{name=&#34;A&#34;,type=&#34;int&#34;,value=&#34;1&#34;},
+  {name=&#34;B&#34;,type=&#34;int&#34;,value=&#34;2&#34;},{name=&#34;C&#34;,type=&#34;int [3]&#34;}]
+(gdb)
+</pre></div>
+
+<a class="anchor" id="g_t_002dstack_002dlist_002dvariables"></a><a class="index-entry-id" id="index-_002dstack_002dlist_002dvariables"></a>
+<h4 class="subheading" id="The-_002dstack_002dlist_002dvariables-Command"><span>该 <code class="code">-stack-list-variables</code> 命令<a class="copiable-link" href="#The-_002dstack_002dlist_002dvariables-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-46"><span>概要<a class="copiable-link" href="#Synopsis-46"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-list-variables [ --no-frame-filters ] [ --skip-unavailable ] <var class="var">打印值</var>
+</pre></div>
+
+<p>显示所选帧的局部变量和函数参数的名称。如果
+<var class="var">打印值</var> 为 0 或 <code class="code">--no-values</code>, 则只打印变量名；如果为 1 或 <code class="code">--all-values</code>, 则还打印它们的值；如果为 2 或 <code class="code">--simple-values</code>, 则打印简单数据类型的名称、类型和值，以及数组、结构体和联合体的名称和类型。如果提供了选项 <code class="code">--no-frame-filters</code> ，则不会执行 Python 帧过滤器。
+</p>
+<p>如果 <code class="code">--skip-unavailable</code> 选项被指定，则不会列出不可用的局部变量和参数。但是，部分可用的参数和局部变量仍然会显示。
+</p>
+<h4 class="subsubheading" id="Example-44"><span>示例<a class="copiable-link" href="#Example-44"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-list-variables --thread 1 --frame 0 --all-values
+^done,variables=[{name=&#34;x&#34;,value=&#34;11&#34;},{name=&#34;s&#34;,value=&#34;{a = 1, b = 2}&#34;}]
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dstack_002dselect_002dframe"></a>
+<h4 class="subheading" id="The-_002dstack_002dselect_002dframe-Command"><span>该 <code class="code">-stack-select-frame</code> 命令<a class="copiable-link" href="#The-_002dstack_002dselect_002dframe-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-47"><span>概要<a class="copiable-link" href="#Synopsis-47"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -stack-select-frame <var class="var">帧编号</var>
+</pre></div>
+
+<p>更改所选帧。选择栈上的不同帧 <var class="var">帧编号</var> 。
+</p>
+<p>此命令已被弃用，建议在每个命令中传递 ‘<samp class="samp">--frame</samp>’ 选项。
+</p>
+<h4 class="subsubheading" id="gdb-Command-45"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-45"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">帧</samp>’, ‘<samp class="samp">上移</samp>’,
+‘<samp class="samp">下移</samp>’, ‘<samp class="samp">选择帧</samp>’, ‘<samp class="samp">上移（静默）</samp>’, 和 ‘<samp class="samp">下移（静默）</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-45"><span>示例<a class="copiable-link" href="#Example-45"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-stack-select-frame 2
+^done
+(gdb)
+</pre></div>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Variable-Objects.html"><small class="sc">GDB/MI</small> 变量对象</a>, 上一项： <a href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small> 程序执行</a>, 上级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

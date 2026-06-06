@@ -1,0 +1,121 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>符号错误 (使用 GDB 调试)</title>
+
+<meta name="description" content="Symbol Errors (Debugging with GDB)"/>
+<meta name="keywords" content="Symbol Errors (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB-Files.html" rel="up" title="GDB Files"/>
+<link href="Data-Files.html" rel="next" title="Data Files"/>
+<link href="Debug-Names.html" rel="prev" title="Debug Names"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Symbol-Errors">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Data-Files.html" rel="next">GDB 数据文件</a>, 上一项： <a accesskey="p" href="Debug-Names.html" rel="prev">‘的扩展<samp class="samp">.debug_names</samp>’</a>, 上级： <a accesskey="u" href="GDB-Files.html" rel="up"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Errors-Reading-Symbol-Files"><span>18.7 读取符号文件时的错误<a class="copiable-link" href="#Errors-Reading-Symbol-Files"> ¶</a></span></h3>
+
+<p>在读取符号文件时， <small class="sc">GDB</small> 偶尔会遇到问题，例如它不识别的符号类型，或者编译器输出中已知的错误。默认情况下， <small class="sc">GDB</small> 不会通知你这些问题，因为它们相对常见，主要是对调试编译器的人有吸引力。如果你有兴趣查看有关构造不良的符号表的信息，你可以要求 <small class="sc">GDB</small> 只打印关于每种此类问题的一条消息，无论该问题发生多少次；或者你可以要求 <small class="sc">GDB</small> 打印更多消息，以查看问题发生的次数，使用 <code class="code">set
+complaints</code> 命令（请参阅 <a class="pxref" href="Messages_002fWarnings.html">可选警告和消息</a>）。
+</p>
+<p>当前打印的消息及其含义包括：
+</p>
+<dl class="table">
+<dt><code class="code">inner block not inside outer block in <var class="var">symbol</var></code></dt>
+<dd>
+<p>符号信息显示符号作用域的开始和结束位置（例如在函数或语句块的开头）。此错误表明内部作用域块未完全包含在其外部作用域块中。
+</p>
+<p><small class="sc">GDB</small> 通过将内部块视为与外部块具有相同的作用域来解决此问题。在错误消息中， <var class="var">符号</var>
+如果外部块不是函数，可能会显示为 “<code class="code">(don&#39;t know)</code>”。
+</p>
+</dd>
+<dt><code class="code">block at <var class="var">address</var> out of order</code></dt>
+<dd>
+<p>符号作用域块的符号信息应按地址递增的顺序出现。此错误表明并非如此。
+</p>
+<p><small class="sc">GDB</small> 不会解决此问题，并且在定位正在读取其符号的源文件中的符号时会遇到问题。（你通常可以通过指定
+<code class="code">set verbose on</code>来确定受影响的源文件。请参阅 <a class="xref" href="Messages_002fWarnings.html">可选警告和消息</a>。）
+</p>
+</dd>
+<dt><code class="code">bad block start address patched</code></dt>
+<dd>
+<p>符号作用域块的符号信息的起始地址小于前一个源行的地址。已知在 SunOS 4.1.1（及更早版本）的 C 编译器中会出现这种情况。
+</p>
+<p><small class="sc">GDB</small> 通过将符号作用域块视为从前一个源行开始来解决此问题。
+</p>
+</dd>
+<dt><code class="code">bad string table offset in symbol <var class="var">n</var></code></dt>
+<dd>
+<a class="index-entry-id" id="index-foo"></a>
+<p>符号编号 <var class="var">n</var> 包含一个指向字符串表的指针，该指针大于字符串表的大小。
+</p>
+<p><small class="sc">GDB</small> 通过将该符号视为具有名称 <code class="code">foo</code>来解决此问题，如果许多符号最终都使用此名称，可能会导致其他问题。
+</p>
+</dd>
+<dt><code class="code">unknown symbol type <code class="code">0x<var class="var">nn</var></code></code></dt>
+<dd>
+<p>符号信息包含新的数据类型， <small class="sc">GDB</small> 还不知道如何读取。  <code class="code">0x<var class="var">nn</var></code> 是以十六进制表示的无法理解的信息的符号类型。
+</p>
+<p><small class="sc">GDB</small> 通过忽略此符号信息来解决此错误。这通常允许你调试程序，尽管某些符号无法访问。如果你遇到此类问题并想调试它，你可以使用自身调试 <code class="code">gdb</code> ，在 <code class="code">complain</code>处设置断点，然后转到函数 <code class="code">read_dbx_symtab</code>
+并检查 <code class="code">*bufp</code> 以查看该符号。
+</p>
+</dd>
+<dt><code class="code">stub type has NULL name</code></dt>
+<dd>
+<p><small class="sc">GDB</small> 无法找到结构体或类的完整定义。
+</p>
+</dd>
+<dt><code class="code">const/volatile indicator missing (ok if using g++ v1.x), got…</code></dt>
+<dd><p>C 的符号信息<code class="t">++</code> 成员函数缺少编译器最新版本应该为其输出的一些信息。
+</p>
+</dd>
+<dt><code class="code">info mismatch between compiler and debugger</code></dt>
+<dd>
+<p><small class="sc">GDB</small> 无法解析编译器输出的类型规范。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Data-Files.html">GDB 数据文件</a>, 上一项： <a href="Debug-Names.html">‘的扩展<samp class="samp">.debug_names</samp>’</a>, 上级： <a href="GDB-Files.html"><small class="sc">GDB</small> 文件</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

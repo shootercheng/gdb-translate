@@ -1,0 +1,320 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 文件命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI File Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI File Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Target-Manipulation.html" rel="next" title="GDB/MI Target Manipulation"/>
+<link href="GDB_002fMI-Symbol-Query.html" rel="prev" title="GDB/MI Symbol Query"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-File-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Target-Manipulation.html" rel="next"><small class="sc">GDB/MI</small> 目标操作命令</a>, 上一项： <a accesskey="p" href="GDB_002fMI-Symbol-Query.html" rel="prev"><small class="sc">GDB/MI</small> 符号查询命令</a>, 上级： <a accesskey="u" href="GDB_002fMI.html" rel="up">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-File-Commands"><span>27.19 <small class="sc">GDB/MI</small> 文件命令<a class="copiable-link" href="#gdb_002fmi-File-Commands"> ¶</a></span></h3>
+
+<p>本节描述了用于指定可执行文件名以及读取和获取符号表信息的 GDB/MI 命令。
+</p>
+<a class="index-entry-id" id="index-_002dfile_002dexec_002dand_002dsymbols"></a>
+<h4 class="subheading" id="The-_002dfile_002dexec_002dand_002dsymbols-Command"><span>该 <code class="code">-file-exec-and-symbols</code> 命令<a class="copiable-link" href="#The-_002dfile_002dexec_002dand_002dsymbols-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-87"><span>概要<a class="copiable-link" href="#Synopsis-87"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-exec-and-symbols <var class="var">文件</var>
+</pre></div>
+
+<p>指定要调试的可执行文件。此文件也是从中读取符号表的文件。如果未指定文件，该命令将清除可执行文件和符号信息。如果在不使用参数的情况下使用此命令时设置了断点， <small class="sc">GDB</small> 将产生错误消息。否则，除完成通知外，不产生任何输出。
+</p>
+<h4 class="subsubheading" id="gdb-Command-69"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-69"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">文件</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-69"><span>示例<a class="copiable-link" href="#Example-69"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-file-exec-and-symbols /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dfile_002dexec_002dfile"></a>
+<h4 class="subheading" id="The-_002dfile_002dexec_002dfile-Command"><span>该 <code class="code">-file-exec-file</code> 命令<a class="copiable-link" href="#The-_002dfile_002dexec_002dfile-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-88"><span>概要<a class="copiable-link" href="#Synopsis-88"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-exec-file <var class="var">文件</var>
+</pre></div>
+
+<p>指定要调试的可执行文件。与<samp class="samp">-file-exec-and-symbols</samp>不同，符号表 <em class="emph">不会</em> 从此文件中读取。如果不使用参数， <small class="sc">GDB</small> 清除有关可执行文件的信息。除完成通知外，不产生任何输出。
+</p>
+<h4 class="subsubheading" id="gdb-Command-70"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-70"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">exec-file</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-70"><span>示例<a class="copiable-link" href="#Example-70"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-file-exec-file /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</pre></div>
+
+
+
+
+<a class="index-entry-id" id="index-_002dfile_002dlist_002dexec_002dsource_002dfile"></a>
+<h4 class="subheading" id="The-_002dfile_002dlist_002dexec_002dsource_002dfile-Command"><span>该 <code class="code">-file-list-exec-source-file</code> 命令<a class="copiable-link" href="#The-_002dfile_002dlist_002dexec_002dsource_002dfile-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-89"><span>概要<a class="copiable-link" href="#Synopsis-89"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-list-exec-source-file
+</pre></div>
+
+<p>列出当前可执行文件的行号、当前源文件以及当前源文件的绝对路径。宏信息字段的值为 ‘<samp class="samp">1</samp>’ 或 ‘<samp class="samp">0</samp>’，具体取决于文件是否包含预处理器宏信息。
+</p>
+<h4 class="subsubheading" id="gdb-Command-71"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-71"> ¶</a></span></h4>
+
+<p>该 <small class="sc">GDB</small> 等效命令是 ‘<samp class="samp">info source</samp>’
+</p>
+<h4 class="subsubheading" id="Example-71"><span>示例<a class="copiable-link" href="#Example-71"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+123-file-list-exec-source-file
+123^done,line=&#34;1&#34;,file=&#34;foo.c&#34;,fullname=&#34;/home/bar/foo.c,macro-info=&#34;1&#34;
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dfile_002dlist_002dexec_002dsource_002dfiles"></a>
+<h4 class="subheading" id="The-_002dfile_002dlist_002dexec_002dsource_002dfiles-Command"><span>该 <code class="code">-file-list-exec-source-files</code> 命令<a class="copiable-link" href="#The-_002dfile_002dlist_002dexec_002dsource_002dfiles-Command"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-info-sources-1"></a>
+
+<h4 class="subsubheading" id="Synopsis-90"><span>概要<a class="copiable-link" href="#Synopsis-90"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-list-exec-source-files <span class="r">[</span> <var class="var">--group-by-objfile</var> <span class="r">]</span>
+                              <span class="r">[</span> <var class="var">--dirname</var> <span class="r">|</span> <var class="var">--basename</var> <span class="r">]</span>
+                              <span class="r">[</span> -- <span class="r">]</span>
+                              <span class="r">[</span> <var class="var">正则表达式</var> <span class="r">]</span>
+</pre></div>
+
+<p>此命令返回有关 <small class="sc">GDB</small>
+已知的源文件的信息，它将输出源文件的文件名和完整名称（绝对文件名），不过如果 <small class="sc">GDB</small>不知道此信息，则可以省略完整名称。
+</p>
+<p>不带参数时，此命令返回一个源文件列表。每个源文件由一个元组表示，该元组包含以下字段； <var class="var">文件</var>,
+<var class="var">完整名称</var>, 以及 <var class="var">调试信息已完全读取</var>. 其中 <var class="var">文件</var> 是文件的显示名称，而 <var class="var">完整名称</var> 是文件的绝对名称。如果无法计算源文件的绝对名称，则可以省略 <var class="var">完整名称</var> 字段。字段
+<var class="var">调试信息已完全读取</var> 将是一个字符串，要么是 <code class="code">true</code> 要么是
+<code class="code">false</code>. 当 <code class="code">true</code>时，表示描述此文件的编译单元的完整调试信息已被读取。当 <code class="code">false</code>时，完整的调试信息尚未被读取。在读取完整的调试信息时，有可能 <small class="sc">GDB</small> 会发现其他源文件。
+</p>
+<p>可选的 <var class="var">正则表达式</var> 可用于过滤返回的源文件列表。 <var class="var">正则表达式</var> 将与源文件的完整名称进行匹配。匹配区分大小写，除非在不区分大小写的文件系统的操作系统上（例如，Windows 系统）。‘<samp class="samp">--</samp>’ 可在 <var class="var">正则表达式</var> 之前使用，以防止
+<small class="sc">GDB</small> 将 <var class="var">正则表达式</var> 解释为命令选项（例如，如果
+<var class="var">正则表达式</var> 以 ‘<samp class="samp">-</samp>’ 开头）。
+</p>
+<p>如果 <code class="code">--dirname</code> 被提供，那么 <var class="var">正则表达式</var> 仅与每个源文件的目录名进行匹配。如果 <code class="code">--basename</code>
+被提供，那么 <var class="var">正则表达式</var> 将与每个源文件的基本名称进行匹配。 <code class="code">--dirname</code> 或 <code class="code">--basename</code> 只能给出一个，如果给出了其中任何一个，那么 <var class="var">正则表达式</var> 是必需的。
+</p>
+<p>如果 <code class="code">--group-by-objfile</code> 被使用，那么结果的格式将改变。结果现在将是一个元组列表，每个元组代表一个加载到
+<small class="sc">GDB</small>中的目标文件（可执行文件或共享库）。这些元组的字段如下； <var class="var">文件名</var>,
+<var class="var">调试信息</var>, 以及 <var class="var">源文件</var>. 其中 <var class="var">文件名</var> 是目标文件的绝对名称， <var class="var">调试信息</var> 是一个字符串，具有以下值之一：
+</p>
+<dl class="table">
+<dt><code class="code">none</code></dt>
+<dd><p>此目标文件没有调试信息。
+</p></dd>
+<dt><code class="code">partially-read</code></dt>
+<dd><p>此目标文件有调试信息，但尚未完全读取。稍后读取时，GDB 可能会发现其他源文件。
+</p></dd>
+<dt><code class="code">fully-read</code></dt>
+<dd><p>此目标文件有调试信息，并且此信息已完全读入 GDB。源文件列表是完整的。
+</p></dd>
+</dl>
+
+<p>其中 <var class="var">源文件</var> 是一个元组列表，每个元组描述一个源文件，其字段与前面描述的相同。对于没有调试信息的目标文件，
+<var class="var">源文件</var> 列表可以为空。
+</p>
+<h4 class="subsubheading" id="gdb-Command-72"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-72"> ¶</a></span></h4>
+
+<p>该 <small class="sc">GDB</small> 等效命令是 ‘<samp class="samp">info sources</samp>’。
+<code class="code">gdbtk</code> 有一个类似的命令 ‘<samp class="samp">gdb_listfiles</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-72"><span>示例<a class="copiable-link" href="#Example-72"> ¶</a></span></h4>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-file-list-exec-source-files
+^done,files=[{file=&#34;foo.c&#34;,fullname=&#34;/home/foo.c&#34;,debug-fully-read=&#34;true&#34;},
+             {file=&#34;/home/bar.c&#34;,fullname=&#34;/home/bar.c&#34;,debug-fully-read=&#34;true&#34;},
+             {file=&#34;gdb_could_not_find_fullpath.c&#34;,debug-fully-read=&#34;true&#34;}]
+(gdb)
+-file-list-exec-source-files
+^done,files=[{file=&#34;test.c&#34;,
+              fullname=&#34;/tmp/info-sources/test.c&#34;,
+              debug-fully-read=&#34;true&#34;},
+             {file=&#34;/usr/include/stdc-predef.h&#34;,
+              fullname=&#34;/usr/include/stdc-predef.h&#34;,
+              debug-fully-read=&#34;true&#34;},
+             {file=&#34;header.h&#34;,
+              fullname=&#34;/tmp/info-sources/header.h&#34;,
+              debug-fully-read=&#34;true&#34;},
+             {file=&#34;helper.c&#34;,
+              fullname=&#34;/tmp/info-sources/helper.c&#34;,
+              debug-fully-read=&#34;true&#34;}]
+(gdb)
+-file-list-exec-source-files -- \\.c
+^done,files=[{file=&#34;test.c&#34;,
+              fullname=&#34;/tmp/info-sources/test.c&#34;,
+              debug-fully-read=&#34;true&#34;},
+             {file=&#34;helper.c&#34;,
+              fullname=&#34;/tmp/info-sources/helper.c&#34;,
+              debug-fully-read=&#34;true&#34;}]
+(gdb)
+-file-list-exec-source-files --group-by-objfile
+^done,files=[{filename=&#34;/tmp/info-sources/test.x&#34;,
+              debug-info=&#34;fully-read&#34;,
+              sources=[{file=&#34;test.c&#34;,
+                        fullname=&#34;/tmp/info-sources/test.c&#34;,
+                        debug-fully-read=&#34;true&#34;},
+                       {file=&#34;/usr/include/stdc-predef.h&#34;,
+                        fullname=&#34;/usr/include/stdc-predef.h&#34;,
+                        debug-fully-read=&#34;true&#34;},
+                       {file=&#34;header.h&#34;,
+                        fullname=&#34;/tmp/info-sources/header.h&#34;,
+                        debug-fully-read=&#34;true&#34;}]},
+             {filename=&#34;/lib64/ld-linux-x86-64.so.2&#34;,
+              debug-info=&#34;none&#34;,
+              sources=[]},
+             {filename=&#34;system-supplied DSO at 0x7ffff7fcf000&#34;,
+              debug-info=&#34;none&#34;,
+              sources=[]},
+             {filename=&#34;/tmp/info-sources/libhelper.so&#34;,
+              debug-info=&#34;fully-read&#34;,
+              sources=[{file=&#34;helper.c&#34;,
+                        fullname=&#34;/tmp/info-sources/helper.c&#34;,
+                        debug-fully-read=&#34;true&#34;},
+                       {file=&#34;/usr/include/stdc-predef.h&#34;,
+                        fullname=&#34;/usr/include/stdc-predef.h&#34;,
+                        debug-fully-read=&#34;true&#34;},
+                       {file=&#34;header.h&#34;,
+                        fullname=&#34;/tmp/info-sources/header.h&#34;,
+                        debug-fully-read=&#34;true&#34;}]},
+             {filename=&#34;/lib64/libc.so.6&#34;,
+              debug-info=&#34;none&#34;,
+              sources=[]}]
+</pre></div>
+
+<a class="index-entry-id" id="index-_002dfile_002dlist_002dshared_002dlibraries"></a>
+<h4 class="subheading" id="The-_002dfile_002dlist_002dshared_002dlibraries-Command"><span>该 <code class="code">-file-list-shared-libraries</code> 命令<a class="copiable-link" href="#The-_002dfile_002dlist_002dshared_002dlibraries-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-91"><span>概要<a class="copiable-link" href="#Synopsis-91"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-list-shared-libraries [ <var class="var">正则表达式</var> ]
+</pre></div>
+
+<p>列出程序中的共享库。使用正则表达式 <var class="var">正则表达式</var>, 仅列出名称与 <var class="var">正则表达式</var> 匹配的库。
+</p>
+<h4 class="subsubheading" id="gdb-Command-73"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-73"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">info shared</samp>’。这些字段的含义与 <code class="code">=library-loaded</code> 通知类似。 <code class="code">ranges</code> 字段指定属于此库的多个段。每个范围有以下字段：
+</p>
+<dl class="table">
+<dt>‘<samp class="samp">从</samp>’</dt>
+<dd><p>定义段的包含下限的地址。
+</p></dd>
+<dt>‘<samp class="samp">到</samp>’</dt>
+<dd><p>定义段的排除上限的地址。
+</p></dd>
+</dl>
+
+<h4 class="subsubheading" id="Example-73"><span>示例<a class="copiable-link" href="#Example-73"> ¶</a></span></h4>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-file-list-exec-source-files
+^done,shared-libraries=[
+{id=&#34;/lib/libfoo.so&#34;,target-name=&#34;/lib/libfoo.so&#34;,host-name=&#34;/lib/libfoo.so&#34;,symbols-loaded=&#34;1&#34;,thread-group=&#34;i1&#34;,ranges=[{from=&#34;0x72815989&#34;,to=&#34;0x728162c0&#34;}]},
+{id=&#34;/lib/libbar.so&#34;,target-name=&#34;/lib/libbar.so&#34;,host-name=&#34;/lib/libbar.so&#34;,symbols-loaded=&#34;1&#34;,thread-group=&#34;i1&#34;,ranges=[{from=&#34;0x76ee48c0&#34;,to=&#34;0x76ee9160&#34;}]}]
+(gdb)
+</pre></div>
+
+
+
+
+<a class="index-entry-id" id="index-_002dfile_002dsymbol_002dfile"></a>
+<h4 class="subheading" id="The-_002dfile_002dsymbol_002dfile-Command"><span>该 <code class="code">-file-symbol-file</code> 命令<a class="copiable-link" href="#The-_002dfile_002dsymbol_002dfile-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-92"><span>概要<a class="copiable-link" href="#Synopsis-92"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -file-symbol-file <var class="var">文件</var>
+</pre></div>
+
+<p>从指定的 <var class="var">文件</var> 参数中读取符号表信息。不使用参数时，清除 <small class="sc">GDB</small>的符号表信息。除完成通知外，不产生任何输出。
+</p>
+<h4 class="subsubheading" id="gdb-Command-74"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-74"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">symbol-file</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-74"><span>示例<a class="copiable-link" href="#Example-74"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-file-symbol-file /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</pre></div>
+
+
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="GDB_002fMI-Target-Manipulation.html"><small class="sc">GDB/MI</small> 目标操作命令</a>, 上一项： <a href="GDB_002fMI-Symbol-Query.html"><small class="sc">GDB/MI</small> 符号查询命令</a>, 上级： <a href="GDB_002fMI.html">该 <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

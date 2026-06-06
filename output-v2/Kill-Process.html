@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>终止进程（使用GDB调试）</title>
+
+<meta name="description" content="Kill Process (Debugging with GDB)"/>
+<meta name="keywords" content="Kill Process (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Running.html" rel="up" title="Running"/>
+<link href="Inferiors-Connections-and-Programs.html" rel="next" title="Inferiors Connections and Programs"/>
+<link href="Attach.html" rel="prev" title="Attach"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Kill-Process">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Inferiors-Connections-and-Programs.html" rel="next">调试多个下级连接和程序</a>, 上一项： <a accesskey="p" href="Attach.html" rel="prev">调试一个已经在运行的进程</a>, 返回： <a accesskey="u" href="Running.html" rel="up">在……下运行程序 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Killing-the-Child-Process"><span>4.8 终止子进程<a class="copiable-link" href="#Killing-the-Child-Process"> ¶</a></span></h3>
+
+<dl class="table">
+<dt><a id="index-kill"></a><span><code class="code">kill</code><a class="copiable-link" href="#index-kill"> ¶</a></span></dt>
+<dd><p>终止你的程序正在其中运行的子进程 <small class="sc">GDB</small>.
+</p></dd>
+</dl>
+
+<p>如果你希望调试核心转储文件而不是正在运行的进程，此命令很有用。  <small class="sc">GDB</small> 在你的程序运行时忽略任何核心转储文件。
+</p>
+<p>在某些操作系统上，一个程序不能在外部执行 <small class="sc">GDB</small>
+而你在内部为其设置了断点 <small class="sc">GDB</small>.  在这种情况下，你可以使用
+<code class="code">kill</code> 命令来允许在调试器外部运行你的程序。
+</p>
+<p>如果您希望重新编译和重新链接你的程序， <code class="code">kill</code> 命令也很有用，因为在许多系统上，当一个可执行文件在进程中运行时，不可能对其进行修改。 在这种情况下，当下次你输入 <code class="code">run</code>, <small class="sc">GDB</small> 会注意到文件已更改，并再次读取符号表（同时尝试保留你当前的断点设置）。
+</p>
+</div>
+
+
+
+
+
+</body></html>

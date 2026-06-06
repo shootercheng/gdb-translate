@@ -1,0 +1,749 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>符号（使用GDB进行调试）</title>
+
+<meta name="description" content="Symbols (Debugging with GDB)"/>
+<meta name="keywords" content="Symbols (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Altering.html" rel="next" title="Altering"/>
+<link href="Languages.html" rel="prev" title="Languages"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Symbols">
+<div class="nav-panel">
+<p>
+下一个： <a accesskey="n" href="Altering.html" rel="next">改变执行</a>, 上一个： <a accesskey="p" href="Languages.html" rel="prev"> <small class="sc">GDB</small> </a> <a accesskey="u" href="index.html" rel="up"> <small class="sc">GDB</small></a>   <a href="index.html#SEC_Contents" rel="contents" title="Table of contents"></a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Examining-the-Symbol-Table"><span><a class="copiable-link" href="#Examining-the-Symbol-Table"> ¶</a></span></h2>
+
+<p>本章中描述的命令允许你查询程序中定义的符号（变量、函数和类型的名称）。此信息是程序文本固有的，并且不会随着程序的执行而改变。  <small class="sc">GDB</small>  <small class="sc">GDB</small>
+(请参阅 <a class="pxref" href="File-Options.html">选择文件</a>), 或者通过其中一个文件管理命令（请参阅 <a class="pxref" href="Files.html"></a>
+</p>
+<a class="index-entry-id" id="index-symbol-names"></a>
+<a class="index-entry-id" id="index-names-of-symbols"></a>
+<a class="index-entry-id" id="index-quoting-names"></a>
+<a class="anchor" id="quoting-names"></a><p>偶尔，你可能需要引用包含不寻常字符的符号，这些字符 <small class="sc">GDB</small> 通常将其视为单词分隔符。最常见的情况是引用其他源文件中的静态变量（请参阅 <a class="pxref" href="Variables.html">程序变量</a>). 文件名作为调试符号记录在目标文件中，但 <small class="sc">GDB</small> 通常会解析一个典型的文件名，如 <samp class="file">foo.c</samp>, 作为三个单词 ‘<samp class="samp">foo</samp><samp class="samp"></samp><samp class="samp"></samp> <small class="sc">GDB</small> <samp class="samp"></samp>
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">
+
+</pre></div>
+
+<p> <code class="code">x</code>  <samp class="file"></samp>
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-case-sensitivity-in-symbol-names"></a>
+<a class="index-entry-id" id="index-set-case_002dsensitive"></a>
+<a id="index-case_002dinsensitive-symbol-names"></a><span><code class="code">set case-sensitive on</code><a class="copiable-link" href="#index-case_002dinsensitive-symbol-names"> </a></span></dt>
+<dt><code class="code">set case-sensitive off</code></dt>
+<dt><code class="code">set case-sensitive auto</code></dt>
+<dd><p> <small class="sc">GDB</small>  <code class="code">set
+case-sensitive</code>  <code class="code">on</code>  <code class="code">off</code>  <code class="code">auto</code>
+</p>
+</dd>
+<dt><a id="index-show-case_002dsensitive"></a><span><code class="code">show case-sensitive</code><a class="copiable-link" href="#index-show-case_002dsensitive"> </a></span></dt>
+<dd><p>
+</p>
+</dd>
+<dt><a id="index-set-print-type-methods"></a><span><code class="code">set print type methods</code><a class="copiable-link" href="#index-set-print-type-methods"> </a></span></dt>
+<dt><code class="code">set print type methods on</code></dt>
+<dt><code class="code">set print type methods off</code></dt>
+<dd><p> <small class="sc">GDB</small>  <code class="code">ptype</code> <code class="command">set
+print type methods</code> <code class="code">on</code>  <small class="sc">GDB</small>  <code class="code">off</code>  <small class="sc">GDB</small> 
+</p>
+</dd>
+<dt><a id="index-show-print-type-methods"></a><span><code class="code">show print type methods</code><a class="copiable-link" href="#index-show-print-type-methods"> </a></span></dt>
+<dd><p>
+</p>
+</dd>
+<dt><a id="index-set-print-type-nested_002dtype_002dlimit"></a><span><code class="code">set print type nested-type-limit <var class="var">limit</var></code><a class="copiable-link" href="#index-set-print-type-nested_002dtype_002dlimit"> </a></span></dt>
+<dt><code class="code">set print type nested-type-limit unlimited</code></dt>
+<dd><p> <var class="var"></var>  <code class="code">unlimited</code>  <code class="code">-1</code> 
+</p>
+</dd>
+<dt><a id="index-show-print-type-nested_002dtype_002dlimit"></a><span><code class="code">show print type nested-type-limit</code><a class="copiable-link" href="#index-show-print-type-nested_002dtype_002dlimit"> </a></span></dt>
+<dd><p>
+</p>
+</dd>
+<dt><a id="index-set-print-type-typedefs"></a><span><code class="code">set print type typedefs</code><a class="copiable-link" href="#index-set-print-type-typedefs"> </a></span></dt>
+<dt><code class="code">set print type typedefs on</code></dt>
+<dt><code class="code">set print type typedefs off</code></dt>
+<dd>
+<p> <small class="sc">GDB</small>  <code class="code">ptype</code> <code class="command">set
+print type typedefs</code> <code class="code">on</code>  <small class="sc">GDB</small> 
+<code class="code">off</code>  <small class="sc">GDB</small> 
+</p>
+</dd>
+<dt><a id="index-show-print-type-typedefs"></a><span><code class="code">show print type typedefs</code><a class="copiable-link" href="#index-show-print-type-typedefs"> </a></span></dt>
+<dd><p>
+</p>
+</dd>
+<dt><a id="index-set-print-type-hex"></a><span><code class="code">set print type hex</code><a class="copiable-link" href="#index-set-print-type-hex"> </a></span></dt>
+<dt><code class="code">set print type hex on</code></dt>
+<dt><code class="code">set print type hex off</code></dt>
+<dd>
+<p> <small class="sc">GDB</small>  <code class="code">ptype</code> <code class="command">set print type hex</code> 
+</p>
+</dd>
+<dt><a id="index-show-print-type-hex"></a><span><code class="code">show print type hex</code><a class="copiable-link" href="#index-show-print-type-hex"> </a></span></dt>
+<dd><p>
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-address-of-a-symbol"></a>
+<a id="index-info-address"></a><span><code class="code">info address <var class="var">symbol</var></code><a class="copiable-link" href="#index-info-address"> </a></span></dt>
+<dd><p> <var class="var"></var> 
+</p>
+<p><samp class="samp"><var class="var"></var></samp>
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-symbol-from-address"></a>
+<a class="index-entry-id" id="index-closest-symbol-and-offset-for-an-address"></a>
+<a id="index-info-symbol"></a><span><code class="code">info symbol <var class="var">addr</var></code><a class="copiable-link" href="#index-info-symbol"> </a></span></dt>
+<dd><p> <var class="var"></var>.
+如果没有符号精确存储在 <var class="var">地址</var>, <small class="sc">GDB</small> 则打印
+最近的符号及其偏移量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info symbol 0x54320
+_initialize_vx + 396 在 .text 节中
+</pre></div>
+
+<p>这与 <code class="code">info address</code> 命令相反。你可以使用它根据变量或函数的地址找出其名称。
+</p>
+<p>对于动态链接的可执行文件，还会打印包含该符号的可执行文件或共享库的名称：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) info symbol 0x400225
+_start + 5 在 /tmp/a.out 的 .text 节中
+(gdb) info symbol 0x2aaaac2811cf
+__read_nocancel + 6 在 /usr/lib64/libc.so.6 的 .text 节中
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-demangle"></a>
+<a id="index-demangle-1"></a><span><code class="code">demangle <span class="r">[</span>-l <var class="var">language</var><span class="r">]</span> <span class="r">[</span><var class="var">--</var><span class="r">]</span> <var class="var">name</var></code><a class="copiable-link" href="#index-demangle-1"> ¶</a></span></dt>
+<dd><p>反修饰 <var class="var">名称</var>.
+如果 <var class="var">语言</var> 被提供，它是用于反修饰
+<var class="var">名称</var> 的语言名称。否则， <var class="var">名称</var> 将以当前语言进行反修饰。
+</p>
+<p>‘<samp class="samp">--</samp>’ 选项指定选项的结束，当 <var class="var">名称</var> 以破折号开头时很有用。
+</p>
+<p>参数 <code class="code">demangle-style</code> 指定如何解释所使用的修饰类型。请参阅 <a class="xref" href="Print-Settings.html">打印设置</a>.
+</p>
+</dd>
+<dt><a id="index-whatis"></a><span><code class="code">whatis[/<var class="var">flags</var>] [<var class="var">arg</var>]</code><a class="copiable-link" href="#index-whatis"> ¶</a></span></dt>
+<dd><p>打印 <var class="var">参数</var>, 它可以是一个表达式或数据类型的名称。如果没有参数，则打印
+<code class="code">$</code>, 值历史记录中的最后一个值的数据类型。
+</p>
+<p>如果 <var class="var">参数</var> 是一个表达式（请参阅 <a class="pxref" href="Expressions.html">表达式</a>），它实际上不会被求值，并且其中的任何有副作用的操作（如赋值或函数调用）都不会发生。
+</p>
+<p>如果 <var class="var">参数</var> 是一个变量或表达式， <code class="code">whatis</code> 则打印其在源代码中使用的字面类型。如果该类型是使用 <code class="code">typedef</code>, <code class="code">whatis</code> 将 <em class="emph">不</em> 打印 <code class="code">typedef</code>下面的数据类型。如果变量或表达式的类型是复合数据类型，如
+<code class="code">struct</code> 或  <code class="code">class</code>, <code class="code">whatis</code> 永远不会打印它们的字段或方法。它只是打印 <code class="code">struct</code>/<code class="code">class</code>
+名称（也称为其 <em class="dfn">标签</em>）。如果你想查看这种复合数据类型的成员，请使用 <code class="code">ptype</code>.
+</p>
+<p>如果 <var class="var">参数</var> 是使用 <code class="code">typedef</code>,
+<code class="code">whatis</code> <em class="dfn">定义的类型名称，它将展开</em> 该类型的仅一层。展开意味着 <code class="code">typedef</code>将显示在 <code class="code">whatis</code> 中使用的底层类型 <code class="code">typedef</code> 声明的 <var class="var">参数</var>。但是，如果该底层类型也是 <code class="code">typedef</code>, <code class="code">whatis</code> 将不会展开它。
+</p>
+<p>对于C代码，类型名称也可能具有 ‘<samp class="samp">类
+<var class="var">类名</var></samp>’, ‘<samp class="samp">结构体 <var class="var">结构体标签</var></samp>’, ‘<samp class="samp">联合体
+<var class="var">联合体标签</var></samp>’ 或 ‘<samp class="samp">枚举 <var class="var">枚举标签</var></samp>’。
+</p>
+<p><var class="var">标志</var> 可用于修改类型的显示方式。可用的标志有：
+</p>
+<dl class="table">
+<dt><code class="code">r</code></dt>
+<dd><p>以 “原始” 形式显示。通常， <small class="sc">GDB</small> 在打印类的成员时会替换类中定义的模板参数和 typedef。 <code class="code">/r</code> 标志禁用此功能。
+</p>
+</dd>
+<dt><code class="code">m</code></dt>
+<dd><p>不打印类中定义的方法。
+</p>
+</dd>
+<dt><code class="code">M</code></dt>
+<dd><p>打印类中定义的方法。这是默认设置，但如果使用 <code class="command">set print type methods</code>. 更改了默认设置，则该标志存在。
+</p>
+</dd>
+<dt><code class="code">t</code></dt>
+<dd><p>不打印类中定义的 typedef。请注意，这控制的是 typedef 定义本身是否被打印，而不是在打印其他类型时是否替换 typedef 名称。
+</p>
+</dd>
+<dt><code class="code">T</code></dt>
+<dd><p>打印类中定义的 typedef。这是默认设置，但如果使用 <code class="command">set print type typedefs</code>. 更改了默认设置，则该标志存在。
+</p>
+</dd>
+<dt><code class="code">o</code></dt>
+<dd><p>打印结构体中字段的偏移量和大小，类似于
+<code class="command">pahole</code> 工具的做法。此选项意味着 <code class="code">/tm</code> 标志。
+</p>
+</dd>
+<dt><code class="code">x</code></dt>
+<dd><p>在打印结构体中字段的偏移量和大小时使用十六进制表示法。
+</p>
+</dd>
+<dt><code class="code">d</code></dt>
+<dd><p>在打印结构体中字段的偏移量和大小时使用十进制表示法。
+</p>
+<p>例如，给定以下声明：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">struct tuv
+{
+  int a1;
+  char *a2;
+  int a3;
+};
+
+struct xyz
+{
+  int f1;
+  char f2;
+  void *f3;
+  struct tuv f4;
+};
+
+union qwe
+{
+  struct tuv fff1;
+  struct xyz fff2;
+};
+
+struct tyu
+{
+  int a1 : 1;
+  int a2 : 3;
+  int a3 : 23;
+  char a4 : 2;
+  int64_t a5;
+  int a6 : 5;
+  int64_t a7 : 3;
+};
+</pre></div>
+
+<p>执行 <kbd class="kbd">ptype /o struct tuv</kbd> 命令将打印：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype /o struct tuv
+/* 偏移量      |    大小 */  类型 = struct tuv {
+/*      0      |       4 */    int a1;
+/* XXX  4 字节空洞      */
+/*      8      |       8 */    char *a2;
+/*     16      |       4 */    int a3;
+
+                               /* 总大小（字节）:   24 */
+                             }
+</pre></div>
+
+<p>注意注释第一列的格式。在那里，你可以找到由 ‘<samp class="samp">|</samp>’ 字符分隔的两部分： <em class="emph">偏移量</em>, 它指示字段在结构体内部的位置，以字节为单位，以及 <em class="emph">字段的大小</em> 。另一个有趣的行是结构体中 <em class="emph">空洞</em> 的标记，表明可以通过重新组织其字段来压缩结构体并使其使用更少的空间。
+</p>
+<p>也可以打印联合体内部的偏移量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype /o union qwe
+/* 偏移量      |    大小 */  类型 = union qwe {
+/*                    24 */    struct tuv {
+/*      0      |       4 */        int a1;
+/* XXX  4 字节空洞      */
+/*      8      |       8 */        char *a2;
+/*     16      |       4 */        int a3;
+
+                                   /* 总大小（字节）:   24 */
+                               } fff1;
+/*                    40 */    struct xyz {
+/*      0      |       4 */        int f1;
+/*      4      |       1 */        char f2;
+/* XXX  3 字节空洞      */
+/*      8      |       8 */        void *f3;
+/*     16      |      24 */        struct tuv {
+/*     16      |       4 */            int a1;
+/* XXX  4 字节空洞      */
+/*     24      |       8 */            char *a2;
+/*     32      |       4 */            int a3;
+
+                                       /* 总大小（字节）:   24 */
+                                   } f4;
+
+                                   /* 总大小（字节）:   40 */
+                               } fff2;
+
+                               /* 总大小（字节）:   40 */
+                             }
+</pre></div>
+
+<p>在这种情况下，由于 <code class="code">struct tuv</code> 和 <code class="code">struct xyz</code> 占用相同的空间（因为我们处理的是联合体），所以不会为它们打印偏移量。但是，你仍然可以检查这些结构体字段的偏移量。
+</p>
+<p>另一个有用的场景是打印包含位字段的结构体的偏移量：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) ptype /o struct tyu
+/* 偏移量      |    大小 */  类型 = struct tyu {
+/*      0:31   |       4 */    int a1 : 1;
+/*      0:28   |       4 */    int a2 : 3;
+/*      0: 5   |       4 */    int a3 : 23;
+/*      3: 3   |       1 */    signed char a4 : 2;
+/* XXX  3 位空洞       */
+/* XXX  4 字节空洞      */
+/*      8      |       8 */    int64_t a5;
+/*     16: 0   |       4 */    int a6 : 5;
+/*     16: 5   |       8 */    int64_t a7 : 3;
+/* XXX  7 字节填充   */
+
+                               /* 总大小（字节）:   24 */
+                             }
+</pre></div>
+
+<p>注意现在偏移量信息如何扩展到还包括位字段的第一位。
+</p></dd>
+</dl>
+
+</dd>
+<dt><a id="index-ptype"></a><span><code class="code">ptype[/<var class="var">flags</var>] [<var class="var">arg</var>]</code><a class="copiable-link" href="#index-ptype"> ¶</a></span></dt>
+<dd><p><code class="code">ptype</code> 接受与 <code class="code">whatis</code>, 相同的参数，但打印类型的详细描述，而不仅仅是类型的名称。请参阅 <a class="xref" href="Expressions.html">表达式</a>.
+</p>
+<p>与 <code class="code">whatis</code>, 相反 <code class="code">ptype</code> 总是展开其参数声明中的任何
+<code class="code">typedef</code>，无论参数是变量、表达式还是数据类型。这意味着 <code class="code">ptype</code>
+变量或表达式的类型不会按源代码中出现的那样逐字打印 — 使用 <code class="code">whatis</code> 来实现这一点。  <code class="code">typedef</code>指针或引用目标处的 <code class="code">typedef</code>也会被展开。只有 <code class="code">class typedef</code>字段、方法和内部 <code class="code">struct</code>的
+<code class="code">class</code>和 <code class="code">union</code>即使使用 <code class="code">ptype</code>. 也不会被展开。
+</p>
+<p>例如，对于这个变量声明：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">typedef double real_t;
+struct complex { real_t real; double imag; };
+typedef struct complex complex_t;
+complex_t var;
+real_t *real_pointer_var;
+</pre></div>
+
+<p>这两个命令给出以下输出：
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) whatis var
+type = complex_t
+(gdb) ptype var
+type = struct complex {
+    real_t real;
+    double imag;
+}
+(gdb) whatis complex_t
+type = struct complex
+(gdb) whatis struct complex
+type = struct complex
+(gdb) ptype struct complex
+type = struct complex {
+    real_t real;
+    double imag;
+}
+(gdb) whatis real_pointer_var
+type = real_t *
+(gdb) ptype real_pointer_var
+type = double *
+</pre></div></div>
+
+<p>与 <code class="code">whatis</code>, 一样，使用 <code class="code">ptype</code> 没有参数时指的是 <code class="code">$</code>, 值历史记录中的最后一个值的类型。
+</p>
+<a class="index-entry-id" id="index-incomplete-type"></a>
+<p>有时，程序使用不透明数据类型或复杂数据结构的不完整规范。如果程序中包含的调试信息不允许 <small class="sc">GDB</small> 显示数据类型的完整声明，它将显示 ‘<samp class="samp">&lt;不完整类型&gt;</samp>’。例如，给定这些声明：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">    struct foo;
+    struct foo *fooptr;
+</pre></div>
+
+<p>但没有 <code class="code">struct foo</code> 本身的定义 <small class="sc">GDB</small> 将显示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  (gdb) ptype foo
+  $1 = &lt;不完整类型&gt;
+</pre></div>
+
+<p>“不完整类型” 是C术语，用于表示未完全指定的数据类型。
+</p>
+<a class="index-entry-id" id="index-unknown-type"></a>
+<p>其他时候，程序中包含的调试信息中完全没有关于变量类型的信息。这最常发生在定义变量的程序或库根本不包含调试信息时。  <small class="sc">GDB</small> 通过检查链接器/加载器符号表（例如，ELF动态符号表）知道变量存在，但这些符号不包含类型信息。检查没有类型信息的（全局）变量的类型会显示：
+<small class="sc">GDB</small> has no type information shows:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">  (gdb) ptype var
+  type = &lt;数据变量，无调试信息&gt;
+</pre></div>
+
+<p>请参阅 <a class="xref" href="Variables.html">无调试信息的变量</a>, 了解如何打印此类变量的值。
+</p>
+</dd>
+<dt><a id="index-info-types"></a><span><code class="code">info types [-q] [<var class="var">regexp</var>]</code><a class="copiable-link" href="#index-info-types"> ¶</a></span></dt>
+<dd><p>打印所有名称与正则表达式 <var class="var">正则表达式</var> 匹配的类型的简要描述（如果你不提供参数，则打印程序中的所有类型）。每个完整的类型名就像它是完整的一行一样进行匹配；因此，‘<samp class="samp">i type value</samp>’ 提供程序中所有名称包含字符串 <code class="code">value</code>, 的类型的信息，但 ‘<samp class="samp">i type ^value$</samp>’ 仅提供名称完全为 <code class="code">value</code>. 的类型的信息。
+</p>
+<p>在使用不同语言的程序中 <small class="sc">GDB</small> 根据<samp class="samp">set language</samp>’ 的值选择打印类型描述的语法：使用 ‘<samp class="samp">set language auto</samp>’
+(请参阅 <a class="ref" href="Automatically.html">自动设置语言</a>) 意味着使用类型的语言，其他值意味着使用手动指定的语言（请参阅 <a class="ref" href="Manually.html">手动设置语言</a>).
+</p>
+<p>此命令与 <code class="code">ptype</code> 在两个方面不同：首先，像
+<code class="code">whatis</code>, 一样，它不打印详细描述；其次，它列出类型定义所在的所有源文件和行号。
+</p>
+<p>‘<samp class="samp">into types</samp>’ 的输出前面有一个标题行，描述正在列出的类型。可选标志 ‘<samp class="samp">-q</samp>’, 它代表 ‘<samp class="samp">安静</samp>’, 禁用打印此标题信息。
+</p>
+</dd>
+<dt><a id="index-info-type_002dprinters"></a><span><code class="code">info type-printers</code><a class="copiable-link" href="#index-info-type_002dprinters"> ¶</a></span></dt>
+<dd><p>启用Python脚本功能的 <small class="sc">GDB</small> 版本可能有 “类型打印机” 可用。使用 <code class="command">ptype</code> 或
+<code class="command">whatis</code>, 时，在需要类型名称时会咨询这些打印机。请参阅 <a class="xref" href="Type-Printing-API.html">类型打印API</a>, 了解有关编写类型打印机的更多信息。
+</p>
+<p><code class="code">info type-printers</code> 显示所有可用的类型打印机。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-disable-type_002dprinter"></a>
+<a id="index-enable-type_002dprinter"></a><span><code class="code">enable type-printer <var class="var">name</var>…</code><a class="copiable-link" href="#index-enable-type_002dprinter"> ¶</a></span></dt>
+<dt><code class="code">disable type-printer <var class="var">name</var>…</code></dt>
+<dd><p>这些命令可用于启用或禁用类型打印机。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-local-variables"></a>
+<a id="index-info-scope"></a><span><code class="code">info scope <var class="var">locspec</var></code><a class="copiable-link" href="#index-info-scope"> ¶</a></span></dt>
+<dd><p>列出解析 <var class="var">位置规范</var>. 后得到的代码位置的词法作用域内的所有局部变量。请参阅 <a class="xref" href="Location-Specifications.html">位置规范</a>, 了解支持的 <var class="var">位置规范</var>. 形式的详细信息。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) <b class="b">info scope command_line_handler</b>
+command_line_handler 的作用域：
+符号 rl 是栈/帧偏移量为 8 处的参数，长度为 4。
+符号 linebuffer 位于地址 0x150a18 的静态存储中，长度为 4。
+符号 linelength 位于地址 0x150a1c 的静态存储中，长度为 4。
+符号 p 是寄存器 $esi 中的局部变量，长度为 4。
+符号 p1 是寄存器 $ebx 中的局部变量，长度为 4。
+符号 nline 是寄存器 $edx 中的局部变量，长度为 4。
+符号 repeat 是帧偏移量为 -8 处的局部变量，长度为 4。
+</pre></div>
+
+<p>此命令对于确定在 <em class="dfn">跟踪实验</em>, 期间要收集哪些数据特别有用，请参阅 <a class="ref" href="Tracepoint-Actions.html">收集</a>.
+</p>
+</dd>
+<dt><a id="index-info-source"></a><span><code class="code">info source</code><a class="copiable-link" href="#index-info-source"> ¶</a></span></dt>
+<dd><p>显示有关当前源文件的信息 — 即包含当前执行点的函数的源文件的信息：
+</p><ul class="itemize mark-bullet">
+<li>源文件的名称及其所在的目录
+</li><li>它编译时所在的目录
+</li><li>它的行数
+</li><li>它所使用的编程语言
+</li><li>如果调试信息提供了，编译该文件的程序（可能包括，例如，编译器版本和命令行参数）
+</li><li>可执行文件是否包含该文件的调试信息，如果包含，该信息的格式是什么（例如，STABS、Dwarf 2 等），以及
+</li><li>调试信息是否包含有关预处理器宏的信息。
+</li></ul>
+
+
+</dd>
+<dt><a id="index-info-sources"></a><span><code class="code">info sources <span class="r">[</span>-dirname | -basename<span class="r">]</span> <span class="r">[</span>--<span class="r">]</span> <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-info-sources"> ¶</a></span></dt>
+<dd>
+
+<p>没有选项时，‘<samp class="samp">info sources</samp>’ 打印程序中所有有调试信息的源文件的名称。源文件是根据当前加载到 <small class="sc">GDB</small>. 中的目标文件（可执行文件和库）列表呈现的。对于每个目标文件，列出所有关联的源文件。
+</p>
+<p>每个源文件对于每个目标文件只会打印一次，但如果一个源文件是多个目标文件的一部分，则它可能会在输出中重复出现。
+</p>
+<p>如果提供了可选的 <var class="var">正则表达式</var> ，则只打印与正则表达式匹配的源文件。匹配是区分大小写的，除非在不区分大小写的文件系统（例如，MS-Windows）的操作系统上。‘<samp class="samp">--</samp>’ 可在
+<var class="var">正则表达式</var> 之前使用，以防止 <small class="sc">GDB</small> 将 <var class="var">正则表达式</var> 解释为命令选项（例如，如果 <var class="var">正则表达式</var> 以 ‘<samp class="samp">-</samp>’ 开头）。
+</p>
+<p>默认情况下， <var class="var">正则表达式</var> 用于在文件名的任何位置进行匹配。如果 <code class="code">-dirname</code>, 则只显示目录名与
+<var class="var">正则表达式</var> 匹配的文件。如果 <code class="code">-basename</code>, 则只显示基本文件名与 <var class="var">正则表达式</var> 匹配的文件。
+</p>
+<p>目标文件可能会在列表中打印出来，但没有关联的源文件。这可能发生在没有源文件与 <var class="var">正则表达式</var>匹配，或者目标文件是在没有调试信息的情况下编译的，因此 <small class="sc">GDB</small> 无法找到任何源文件名。
+</p>
+</dd>
+<dt><a id="index-info-functions"></a><span><code class="code">info functions [-q] [-n]</code><a class="copiable-link" href="#index-info-functions"> ¶</a></span></dt>
+<dd><p>打印所有已定义函数的名称和数据类型。与 ‘<samp class="samp">info types</samp>’ 类似，此命令按源文件对输出进行分组，并为每个函数定义标注其源行号。
+</p>
+<p>在使用不同语言的程序中 <small class="sc">GDB</small> 根据<samp class="samp">set language</samp>’ 的值选择打印函数名称和类型的语法：使用 ‘<samp class="samp">set language auto</samp>’
+(请参阅 <a class="ref" href="Automatically.html">自动设置语言</a>) 意味着使用函数的语言，其他值意味着使用手动指定的语言（请参阅 <a class="ref" href="Manually.html">手动设置语言</a>).
+</p>
+<p>‘<samp class="samp">-n</samp>’ 标志排除 <em class="dfn">非调试符号</em> 从结果中。非调试符号是来自可执行文件符号表的符号，而不是来自与可执行文件关联的调试信息（例如，DWARF）。
+</p>
+<p>可选标志 ‘<samp class="samp">-q</samp>’, 它代表 ‘<samp class="samp">安静</samp>’, 禁用打印标题信息和解释为什么没有打印函数的消息。
+</p>
+</dd>
+<dt><code class="code">info functions [-q] [-n] [-t <var class="var">type_regexp</var>] [<var class="var">regexp</var>]</code></dt>
+<dd><p>与 ‘<samp class="samp">info functions</samp>’ 类似，但只打印使用提供的正则表达式选择的函数的名称和数据类型。
+</p>
+<p>如果 <var class="var">正则表达式</var> 被提供，则只打印名称与正则表达式 <var class="var">正则表达式</var>. 匹配的函数。因此，‘<samp class="samp">info fun step</samp>’ 查找名称包含 <code class="code">step</code>的所有函数；‘<samp class="samp">info fun ^step</samp>’ 查找名称以 <code class="code">step</code>. 开头的函数。如果函数名称包含与正则表达式语言冲突的字符（例如<samp class="samp">operator*()</samp>’），可以使用反斜杠进行转义。
+</p>
+<p>如果 <var class="var">类型正则表达式</var> 被提供，则只打印其类型（由 <code class="code">whatis</code> 命令打印）与正则表达式 <var class="var">类型正则表达式</var>. 匹配的函数。如果 <var class="var">类型正则表达式</var> 包含空格，则应将其用引号括起来。如果需要，使用反斜杠转义特殊字符或引号的含义。因此，‘<samp class="samp">info fun -t &#39;^int (&#39;</samp>’ 查找返回整数的函数；‘<samp class="samp">info fun -t &#39;(.*int.*&#39;</samp>’ 查找具有包含 int 的参数类型的函数；‘<samp class="samp">info fun -t &#39;^int (&#39; ^step</samp>’ 查找名称以 <code class="code">step</code> 开头且返回 int 的函数。
+</p>
+<p>如果同时提供了 <var class="var">正则表达式</var> 和 <var class="var">类型正则表达式</var> ，则只有当函数的名称与 <var class="var">正则表达式</var> 匹配且其类型与
+<var class="var">类型正则表达式</var>. 匹配时才会打印该函数。
+</p>
+
+</dd>
+<dt><a id="index-info-variables"></a><span><code class="code">info variables [-q] [-n]</code><a class="copiable-link" href="#index-info-variables"> ¶</a></span></dt>
+<dd><p>打印所有在函数外部定义的变量（即不包括局部变量）的名称和数据类型。打印的变量按源文件分组，并标注其各自的源行号。
+</p>
+<p>在使用不同语言的程序中 <small class="sc">GDB</small> 根据<samp class="samp">set language</samp>’ 的值选择打印变量名称和类型的语法：使用 ‘<samp class="samp">set language auto</samp>’
+(请参阅 <a class="ref" href="Automatically.html">自动设置语言</a>) 意味着使用变量的语言，其他值意味着使用手动指定的语言（请参阅 <a class="ref" href="Manually.html">手动设置语言</a>).
+</p>
+<p>‘<samp class="samp">-n</samp>’ 标志排除非调试符号从结果中。
+</p>
+<p>可选标志 ‘<samp class="samp">-q</samp>’, 它代表 ‘<samp class="samp">安静</samp>’, 禁用打印标题信息和解释为什么没有打印变量的消息。
+</p>
+</dd>
+<dt><code class="code">info variables [-q] [-n] [-t <var class="var">type_regexp</var>] [<var class="var">regexp</var>]</code></dt>
+<dd><p>与 <kbd class="kbd">info variables</kbd>, 类似，但只打印使用提供的正则表达式选择的变量。
+</p>
+<p>如果 <var class="var">正则表达式</var> 被提供，则只打印名称与正则表达式 <var class="var">正则表达式</var>. 匹配的变量。
+</p>
+<p>如果 <var class="var">类型正则表达式</var> 被提供，则只打印其类型（由 <code class="code">whatis</code> 命令打印）与正则表达式 <var class="var">类型正则表达式</var>. 匹配的变量。如果 <var class="var">类型正则表达式</var> 包含空格，则应将其用引号括起来。如果需要，使用反斜杠转义特殊字符或引号的含义。
+</p>
+<p>如果同时提供了 <var class="var">正则表达式</var> 和 <var class="var">类型正则表达式</var> ，则只有当参数的名称与 <var class="var">正则表达式</var> 匹配且其类型与
+<var class="var">类型正则表达式</var>. 匹配时才会打印该参数。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-modules"></a>
+<a id="index-info-modules"></a><span><code class="code">info modules <span class="r">[</span>-q<span class="r">]</span> <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-info-modules"> ¶</a></span></dt>
+<dd><p>列出程序中的所有Fortran模块，或所有与可选的正则表达式 <var class="var">正则表达式</var>. 匹配的模块。
+</p>
+<p>可选标志 ‘<samp class="samp">-q</samp>’, 它代表 ‘<samp class="samp">安静</samp>’, 禁用打印标题信息和解释为什么没有打印模块的消息。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Fortran-modules_002c-information-about"></a>
+<a class="index-entry-id" id="index-functions-and-variables-by-Fortran-module"></a>
+<a class="index-entry-id" id="index-module-functions-and-variables"></a>
+<a id="index-info-module"></a><span><code class="code">info module functions <span class="r">[</span>-q<span class="r">]</span> <span class="r">[</span>-m <var class="var">module-regexp</var><span class="r">]</span> <span class="r">[</span>-t <var class="var">type-regexp</var><span class="r">]</span> <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-info-module"> ¶</a></span></dt>
+<dt><code class="code">info module variables <span class="r">[</span>-q<span class="r">]</span> <span class="r">[</span>-m <var class="var">module-regexp</var><span class="r">]</span> <span class="r">[</span>-t <var class="var">type-regexp</var><span class="r">]</span> <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code></dt>
+<dd><p>列出所有Fortran模块内的所有函数或变量。列出的函数或变量集合可以通过提供一些或所有可选的正则表达式来限制。如果 <var class="var">模块正则表达式</var> 被提供，则只搜索与 <var class="var">模块正则表达式</var> 匹配的Fortran模块。只列出类型与可选的正则表达式 <var class="var">类型正则表达式</var> 匹配的函数或变量。并且只列出名称与可选的正则表达式 <var class="var">正则表达式</var> 匹配的函数或变量。
+</p>
+<p>可选标志 ‘<samp class="samp">-q</samp>’, 它代表 ‘<samp class="samp">安静</samp>’, 禁用打印标题信息和解释为什么没有打印函数或变量的消息。
+</p>
+</dd>
+<dt><a id="index-info-main"></a><span><code class="code">info main</code><a class="copiable-link" href="#index-info-main"> ¶</a></span></dt>
+<dd><p>打印程序的起始函数的名称。这主要用于Fortran程序，它为主子程序提供了用户指定的名称。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Objective_002dC_002c-classes-and-selectors"></a>
+<a id="index-info-classes"></a><span><code class="code">info classes</code><a class="copiable-link" href="#index-info-classes"> ¶</a></span></dt>
+<dt><code class="code">info classes <var class="var">regexp</var></code></dt>
+<dd><p>显示程序中的所有Objective-C类，或（使用 <var class="var">正则表达式</var> 参数）所有与特定正则表达式匹配的类。
+</p>
+</dd>
+<dt><a id="index-info-selectors"></a><span><code class="code">info selectors</code><a class="copiable-link" href="#index-info-selectors"> ¶</a></span></dt>
+<dt><code class="code">info selectors <var class="var">regexp</var></code></dt>
+<dd><p>显示程序中的所有Objective-C选择器，或（使用 <var class="var">正则表达式</var> 参数）所有与特定正则表达式匹配的选择器。
+</p>
+
+</dd>
+<dt><a class="index-entry-id" id="index-set-opaque_002dtype_002dresolution"></a>
+<a id="index-opaque-data-types"></a><span><code class="code">set opaque-type-resolution on</code><a class="copiable-link" href="#index-opaque-data-types"> ¶</a></span></dt>
+<dd><p>告诉 <small class="sc">GDB</small> 解析不透明类型。不透明类型是声明为指向 <code class="code">struct</code>, <code class="code">class</code>, 或
+<code class="code">union</code>的指针的类型 — 例如 <code class="code">struct MyType *</code>— 它在一个源文件中使用，尽管 <code class="code">struct MyType</code> 的完整声明在另一个源文件中。默认设置为开启。
+</p>
+<p>此子命令设置的更改直到下次加载文件的符号时才会生效。
+</p>
+</dd>
+<dt><code class="code">set opaque-type-resolution off</code></dt>
+<dd><p>告诉 <small class="sc">GDB</small> 不解析不透明类型。在这种情况下，类型将如下打印：
+</p><div class="example smallexample">
+<pre class="example-preformatted">{&lt;无数据字段&gt;}
+</pre></div>
+
+</dd>
+<dt><a id="index-show-opaque_002dtype_002dresolution"></a><span><code class="code">show opaque-type-resolution</code><a class="copiable-link" href="#index-show-opaque_002dtype_002dresolution"> ¶</a></span></dt>
+<dd><p>显示是否解析不透明类型。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-print-messages-when-symbols-are-loaded"></a>
+<a id="index-set-print-symbol_002dloading"></a><span><code class="code">set print symbol-loading</code><a class="copiable-link" href="#index-set-print-symbol_002dloading"> ¶</a></span></dt>
+<dt><code class="code">set print symbol-loading full</code></dt>
+<dt><code class="code">set print symbol-loading brief</code></dt>
+<dt><code class="code">set print symbol-loading off</code></dt>
+<dd><p>该 <code class="code">set print symbol-loading</code> 命令允许你控制 <small class="sc">GDB</small> 加载符号信息时消息的打印。默认情况下，会为可执行文件和每个共享库打印一条消息，通常这是你想要的。但是，在调试具有大量共享库的应用程序时，这些消息可能会很烦人。当设置为 <code class="code">brief</code> 时，会为每个可执行文件打印一条消息，并且当 <small class="sc">GDB</small> 一次加载一组共享库时，无论共享库的数量如何，它只会打印一条消息。当设置为 <code class="code">off</code> 时，不打印任何消息。
+</p>
+</dd>
+<dt><a id="index-show-print-symbol_002dloading"></a><span><code class="code">show print symbol-loading</code><a class="copiable-link" href="#index-show-print-symbol_002dloading"> ¶</a></span></dt>
+<dd><p>显示从键盘输入的 <small class="sc">GDB</small> 命令导致加载符号信息时是否会打印消息。
+</p>
+<a class="anchor" id="maint-print-symbols"></a></dd>
+<dt><a class="index-entry-id" id="index-symbol-dump"></a>
+<a class="index-entry-id" id="index-maint-print-psymbols"></a>
+<a class="index-entry-id" id="index-partial-symbol-dump"></a>
+<a class="index-entry-id" id="index-maint-print-msymbols"></a>
+<a class="index-entry-id" id="index-minimal-symbol-dump"></a>
+<a id="index-maint-print-symbols"></a><span><code class="code">maint print symbols <span class="r">[</span>-pc <var class="var">address</var><span class="r">]</span> <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code><a class="copiable-link" href="#index-maint-print-symbols"> ¶</a></span></dt>
+<dt><code class="code">maint print symbols <span class="r">[</span>-objfile <var class="var">objfile</var><span class="r">]</span> <span class="r">[</span>-source <var class="var">source</var><span class="r">]</span> <span class="r">[</span>--<span class="r">]</span> <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print psymbols <span class="r">[</span>-objfile <var class="var">objfile</var><span class="r">]</span> <span class="r">[</span>-pc <var class="var">address</var><span class="r">]</span> <span class="r">[</span>--<span class="r">]</span> <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print psymbols <span class="r">[</span>-objfile <var class="var">objfile</var><span class="r">]</span> <span class="r">[</span>-source <var class="var">source</var><span class="r">]</span> <span class="r">[</span>--<span class="r">]</span> <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code></dt>
+<dt><code class="code">maint print msymbols <span class="r">[</span>-objfile <var class="var">objfile</var><span class="r">]</span> <span class="r">[</span>--<span class="r">]</span> <span class="r">[</span><var class="var">filename</var><span class="r">]</span></code></dt>
+<dd><p>将调试符号数据转储到文件 <var class="var">文件名</var> 中，或者如果 <var class="var">文件名</var> 未指定，则转储到终端。如果 <code class="code">-objfile <var class="var">objfile</var></code> 被指定，则只转储该目标文件的符号。如果 <code class="code">-pc <var class="var">address</var></code> 被指定，则只转储代码位于该地址的文件的符号。请注意， <var class="var">地址</var> 可能是像
+<code class="code">main</code>. 这样的符号。如果 <code class="code">-source <var class="var">source</var></code> 被指定，则只转储该源文件的符号。
+</p>
+<p>这些命令用于调试 <small class="sc">GDB</small> 符号读取代码。这些命令不会修改内部 <small class="sc">GDB</small> 状态，因此 ‘<samp class="samp">maint print symbols</samp>’ 只会打印已经展开的符号表中的符号。你可以使用命令 <code class="code">info sources</code> 找出这些文件是哪些。如果你使用 ‘<samp class="samp">maint print psymbols</samp>’ 代替，转储将显示 <small class="sc">GDB</small> 只部分了解的符号的信息 — 即 <small class="sc">GDB</small> 已经略读但尚未完全读取的文件中定义的符号。最后，‘<samp class="samp">maint print msymbols</samp>’ 只是转储 “最小符号”，例如 “ELF符号”。
+</p>
+<p>请参阅 <a class="xref" href="Files.html">指定文件的命令</a>, 了解
+<small class="sc">GDB</small> 如何读取符号（在 <code class="code">symbol-file</code>. 的描述中）。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-info-psymtabs"></a>
+<a class="index-entry-id" id="index-listing-gdb_0027s-internal-symbol-tables"></a>
+<a class="index-entry-id" id="index-symbol-tables_002c-listing-gdb_0027s-internal"></a>
+<a class="index-entry-id" id="index-full-symbol-tables_002c-listing-gdb_0027s-internal"></a>
+<a class="index-entry-id" id="index-partial-symbol-tables_002c-listing-gdb_0027s-internal"></a>
+<a id="index-maint-info-symtabs"></a><span><code class="code">maint info symtabs <span class="r">[</span> <var class="var">regexp</var> <span class="r">]</span></code><a class="copiable-link" href="#index-maint-info-symtabs"> ¶</a></span></dt>
+<dt><code class="code">maint info psymtabs <span class="r">[</span> <var class="var">regexp</var> <span class="r">]</span></code></dt>
+<dd>
+<p>列出 <code class="code">struct symtab</code> 或 <code class="code">struct partial_symtab</code>
+名称与 <var class="var">正则表达式</var>匹配的结构。如果 <var class="var">正则表达式</var> 未给出，则列出所有结构。输出包括你可以复制到 <small class="sc">GDB</small> 调试中以更详细地检查特定结构的表达式。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) maint info psymtabs dwarf2read
+{ objfile /home/gnu/build/gdb/gdb
+  ((struct objfile *) 0x82e69d0)
+  { psymtab /home/gnu/src/gdb/dwarf2read.c
+    ((struct partial_symtab *) 0x8474b10)
+    readin no
+    fullname (null)
+    text addresses 0x814d3c8 -- 0x8158074
+    globals (* (struct partial_symbol **) 0x8507a08 @ 9)
+    statics (* (struct partial_symbol **) 0x40e95b78 @ 2882)
+    dependencies (none)
+  }
+}
+(gdb) maint info symtabs
+(gdb)
+</pre></div>
+<p>我们看到有一个部分符号表，其文件名包含字符串 ‘<samp class="samp">dwarf2read</samp>’，属于 ‘<samp class="samp">gdb</samp>’ 可执行文件；并且我们看到 <small class="sc">GDB</small> 还没有读取任何符号表。如果我们在一个函数上设置断点，这将导致 <small class="sc">GDB</small> 读取包含该函数的编译单元的符号表：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break dwarf2_psymtab_to_symtab
+Breakpoint 1 at 0x814e5da: file /home/gnu/src/gdb/dwarf2read.c,
+line 1574.
+(gdb) maint info symtabs
+{ objfile /home/gnu/build/gdb/gdb
+  ((struct objfile *) 0x82e69d0)
+  { symtab /home/gnu/src/gdb/dwarf2read.c
+    ((struct symtab *) 0x86c1f38)
+    dirname (null)
+    fullname (null)
+    blockvector ((struct blockvector *) 0x86c1bd0) (primary)
+    linetable ((struct linetable *) 0x8370fa0)
+    debugformat DWARF 2
+  }
+}
+(gdb)
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-listing-gdb_0027s-internal-line-tables"></a>
+<a class="index-entry-id" id="index-line-tables_002c-listing-gdb_0027s-internal"></a>
+<a id="index-maint-info-line_002dtable"></a><span><code class="code">maint info line-table <span class="r">[</span> <var class="var">regexp</var> <span class="r">]</span></code><a class="copiable-link" href="#index-maint-info-line_002dtable"> ¶</a></span></dt>
+<dd>
+<p>列出所有 <code class="code">struct linetable</code> 名称与 <code class="code">struct symtab</code>
+正则表达式 <var class="var">匹配的实例的</var>. 如果 <var class="var">正则表达式</var> 未给出，则列出所有 <code class="code">struct linetable</code> 的 <code class="code">struct symtab</code>. 例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) maint info line-table
+objfile: /home/gnu/build/a.out ((struct objfile *) 0x6120000e0d40)
+compunit_symtab: simple.cpp ((struct compunit_symtab *) 0x6210000ff450)
+symtab: /home/gnu/src/simple.cpp ((struct symtab *) 0x6210000ff4d0)
+linetable: ((struct linetable *) 0x62100012b760):
+INDEX  LINE   ADDRESS            IS-STMT PROLOGUE-END EPILOGUE-BEGIN
+0      3      0x0000000000401110 Y
+1      4      0x0000000000401114 Y       Y            Y
+2      9      0x0000000000401120 Y
+3      10     0x0000000000401124 Y       Y
+4      10     0x0000000000401129 Y                    Y
+5      15     0x0000000000401130 Y
+6      16     0x0000000000401134 Y       Y
+7      16     0x0000000000401139
+8      21     0x0000000000401140 Y                    Y
+9      22     0x000000000040114f Y       Y
+10     22     0x0000000000401154                      Y
+11     END    0x000000000040115a Y
+</pre></div>
+<p>‘<samp class="samp">IS-STMT</samp>’ 列指示该地址是否是表示一行或一条语句的推荐断点位置。‘<samp class="samp">PROLOGUE-END</samp>’ 列指示给定地址是在函数序言之后的第一条指令处设置断点的合适位置。‘<samp class="samp">EPILOGUE-BEGIN</samp>’ 列指示给定地址标记了块的帧被销毁的点，使得局部变量难以或无法找到。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-show-always_002dread_002dctf"></a>
+<a class="index-entry-id" id="index-always_002dread_002dctf"></a>
+<a class="index-entry-id" id="index-CTF-info_002c-when-to-read"></a>
+<a id="index-set-always_002dread_002dctf-_005bon_007coff_005d"></a><span><code class="code">set always-read-ctf [on|off]</code><a class="copiable-link" href="#index-set-always_002dread_002dctf-_005bon_007coff_005d"> ¶</a></span></dt>
+<dt><code class="code">show always-read-ctf</code></dt>
+<dd>
+<p>关闭时，只有在没有DWARF调试信息时才会读取CTF调试信息。打开时，无论是否有DWARF调试信息，都会读取CTF调试信息。默认值为关闭。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-symbol-cache-size"></a>
+<a id="index-maint-set-symbol_002dcache_002dsize"></a><span><code class="code">maint set symbol-cache-size <var class="var">size</var></code><a class="copiable-link" href="#index-maint-set-symbol_002dcache_002dsize"> ¶</a></span></dt>
+<dd><p>将符号缓存的大小设置为 <var class="var">大小</var>. 默认大小旨在足以调试大多数应用程序。此选项存在是为了允许尝试不同的大小。
+</p>
+</dd>
+<dt><a id="index-maint-show-symbol_002dcache_002dsize"></a><span><code class="code">maint show symbol-cache-size</code><a class="copiable-link" href="#index-maint-show-symbol_002dcache_002dsize"> ¶</a></span></dt>
+<dd><p>显示符号缓存的大小。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-symbol-cache_002c-printing-its-contents"></a>
+<a id="index-maint-print-symbol_002dcache"></a><span><code class="code">maint print symbol-cache</code><a class="copiable-link" href="#index-maint-print-symbol_002dcache"> ¶</a></span></dt>
+<dd><p>打印符号缓存的内容。这在调试符号缓存问题时很有用。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-symbol-cache_002c-printing-usage-statistics"></a>
+<a id="index-maint-print-symbol_002dcache_002dstatistics"></a><span><code class="code">maint print symbol-cache-statistics</code><a class="copiable-link" href="#index-maint-print-symbol_002dcache_002dstatistics"> ¶</a></span></dt>
+<dd><p>打印符号缓存使用统计信息。这有助于确定缓存的利用情况。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-maint-flush_002dsymbol_002dcache"></a>
+<a class="index-entry-id" id="index-symbol-cache_002c-flushing"></a>
+<a id="index-maint-flush-symbol_002dcache"></a><span><code class="code">maint flush symbol-cache</code><a class="copiable-link" href="#index-maint-flush-symbol_002dcache"> ¶</a></span></dt>
+<dt><code class="code">maint flush-symbol-cache</code></dt>
+<dd><p>刷新符号缓存的内容，移除所有条目。此命令在调试符号缓存时很有用。在收集性能数据时也很有用。该命令 <code class="code">maint
+flush-symbol-cache</code> 已被弃用，建议使用 <code class="code">maint flush
+symbol-cache</code>..
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-prologue_002dend"></a>
+<a id="index-maint-set-ignore_002dprologue_002dend_002dflag"></a><span><code class="code">maint set ignore-prologue-end-flag [on|off]</code><a class="copiable-link" href="#index-maint-set-ignore_002dprologue_002dend_002dflag"> ¶</a></span></dt>
+<dd><p>启用或禁用使用行表中的 ‘<samp class="samp">PROLOGUE-END</samp>’ 标志。当 ‘<samp class="samp">off</samp>’（默认）时， <small class="sc">GDB</small> 使用 ‘<samp class="samp">PROLOGUE-END</samp>’ 标志在函数序言结束后放置断点。当 ‘<samp class="samp">on</samp>’ 时，
+<small class="sc">GDB</small> 忽略该标志并依赖序言分析器跳过函数序言。
+</p>
+</dd>
+<dt><a id="index-maint-show-ignore_002dprologue_002dend_002dflag"></a><span><code class="code">maint show ignore-prologue-end-flag</code><a class="copiable-link" href="#index-maint-show-ignore_002dprologue_002dend_002dflag"> ¶</a></span></dt>
+<dd><p>显示 <small class="sc">GDB</small> 是否会忽略 ‘<samp class="samp">PROLOGUE-END</samp>’ 标志。
+</p>
+</dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一个： <a href="Altering.html">改变执行</a>, 上一个： <a href="Languages.html">使用 <small class="sc">GDB</small> 不同语言</a>, 上一级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

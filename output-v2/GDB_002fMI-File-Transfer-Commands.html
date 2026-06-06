@@ -1,0 +1,134 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI 文件传输命令（使用 GDB 进行调试）</title>
+
+<meta name="description" content="GDB/MI File Transfer Commands (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI File Transfer Commands (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="GDB_002fMI.html" rel="up" title="GDB/MI"/>
+<link href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="next" title="GDB/MI Ada Exceptions Commands"/>
+<link href="GDB_002fMI-Target-Manipulation.html" rel="prev" title="GDB/MI Target Manipulation"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="GDB_002fMI-File-Transfer-Commands">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="GDB_002fMI-Ada-Exceptions-Commands.html" rel="next">Ada 异常 <small class="sc">GDB/MI</small> 命令</a>, 上一项： <a accesskey="p" href="GDB_002fMI-Target-Manipulation.html" rel="prev"><small class="sc">GDB/MI</small> 目标操作命令</a>, 上级： <a accesskey="u" href="GDB_002fMI.html" rel="up"> <small class="sc">GDB/MI</small> 接口</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="gdb_002fmi-File-Transfer-Commands"><span>27.21 <small class="sc">GDB/MI</small> 文件传输命令<a class="copiable-link" href="#gdb_002fmi-File-Transfer-Commands"> ¶</a></span></h3>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002dput"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002dput-Command"><span>该 <code class="code">-target-file-put</code> 命令<a class="copiable-link" href="#The-_002dtarget_002dfile_002dput-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-99"><span>概要<a class="copiable-link" href="#Synopsis-99"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-put <var class="var">主机文件</var> <var class="var">目标文件</var>
+</pre></div>
+
+<p>复制文件 <var class="var">主机文件</var> 从主机系统（运行该程序的机器
+<small class="sc">GDB</small>) 到 <var class="var">目标文件</var> 到目标系统上。
+</p>
+<h4 class="subsubheading" id="gdb-Command-81"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-81"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">远程放置</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-81"><span>示例<a class="copiable-link" href="#Example-81"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-put 本地文件 远程文件
+^完成
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002dget"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002dget-Command"><span>该 <code class="code">-target-file-get</code> 命令<a class="copiable-link" href="#The-_002dtarget_002dfile_002dget-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-100"><span>概要<a class="copiable-link" href="#Synopsis-100"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-get <var class="var">目标文件</var> <var class="var">主机文件</var>
+</pre></div>
+
+<p>复制文件 <var class="var">目标文件</var> 从目标系统到 <var class="var">主机系统上的</var>
+主机文件。
+</p>
+<h4 class="subsubheading" id="gdb-Command-82"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-82"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">远程获取</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-82"><span>示例<a class="copiable-link" href="#Example-82"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-get 远程文件 本地文件
+^完成
+(gdb)
+</pre></div>
+
+
+<a class="index-entry-id" id="index-_002dtarget_002dfile_002ddelete"></a>
+<h4 class="subheading" id="The-_002dtarget_002dfile_002ddelete-Command"><span>该 <code class="code">-target-file-delete</code> 命令<a class="copiable-link" href="#The-_002dtarget_002dfile_002ddelete-Command"> ¶</a></span></h4>
+
+<h4 class="subsubheading" id="Synopsis-101"><span>概要<a class="copiable-link" href="#Synopsis-101"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted"> -target-file-delete <var class="var">目标文件</var>
+</pre></div>
+
+<p>删除 <var class="var">目标文件</var> 从目标系统中。
+</p>
+<h4 class="subsubheading" id="gdb-Command-83"><span><small class="sc">GDB</small> 命令<a class="copiable-link" href="#gdb-Command-83"> ¶</a></span></h4>
+
+<p>对应的 <small class="sc">GDB</small> 命令是 ‘<samp class="samp">远程删除</samp>’。
+</p>
+<h4 class="subsubheading" id="Example-83"><span>示例<a class="copiable-link" href="#Example-83"> ¶</a></span></h4>
+
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)
+-target-file-delete 远程文件
+^完成
+(gdb)
+</pre></div>
+
+
+</div>
+
+
+
+
+
+</body></html>

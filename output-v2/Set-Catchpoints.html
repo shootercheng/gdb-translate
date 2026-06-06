@@ -1,0 +1,311 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>设置捕获点（使用 GDB 调试）</title>
+
+<meta name="description" content="Set Catchpoints (Debugging with GDB)"/>
+<meta name="keywords" content="Set Catchpoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Breakpoints.html" rel="up" title="Breakpoints"/>
+<link href="Delete-Breaks.html" rel="next" title="Delete Breaks"/>
+<link href="Set-Watchpoints.html" rel="prev" title="Set Watchpoints"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Set-Catchpoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Delete-Breaks.html" rel="next">删除断点</a>, 上一项： <a accesskey="p" href="Set-Watchpoints.html" rel="prev">设置观察点</a>, 上级： <a accesskey="u" href="Breakpoints.html" rel="up">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Setting-Catchpoints"><span>5.1.3 设置捕获点<a class="copiable-link" href="#Setting-Catchpoints"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-catchpoints_002c-setting"></a>
+<a class="index-entry-id" id="index-exception-handlers"></a>
+<a class="index-entry-id" id="index-event-handling"></a>
+
+<p>您可以使用 <em class="dfn">捕获点</em> 使调试器在某些类型的程序事件发生时停止，例如 C<code class="t">++</code> 异常或共享库的加载。使用 <code class="code">catch</code> 命令来设置捕获点。
+</p>
+<dl class="table">
+<dt><a id="index-catch"></a><span><code class="code">catch <var class="var">event</var></code><a class="copiable-link" href="#index-catch"> ¶</a></span></dt>
+<dd><p>当 <var class="var">事件</var> 发生时停止。 <var class="var">事件</var> 可以是以下任何一种：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-catch-rethrow"></a>
+<a class="index-entry-id" id="index-catch-catch"></a>
+<a class="index-entry-id" id="index-stop-on-C_002b_002b-exceptions"></a>
+<a id="index-catch-throw"></a><span><code class="code">throw <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-catch-throw"> ¶</a></span></dt>
+<dt><code class="code">rethrow <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code></dt>
+<dt><code class="code">catch <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code></dt>
+<dd><p>C++ 异常的抛出、重新抛出或捕获。<code class="t">++</code> 异常。
+</p>
+<p>如果 <var class="var">正则表达式</var> 被给出，那么只有类型与正则表达式匹配的异常才会被捕获。
+</p>
+<a class="index-entry-id" id="index-_0024_005fexception_002c-convenience-variable"></a>
+<p>便利变量 <code class="code">$_exception</code> 在某些系统上，在与异常相关的捕获点处可用。它保存着正在抛出的异常。
+</p>
+<p>目前在<code class="t">++</code> 中对 C++ 异常处理存在一些限制：
+<small class="sc">GDB</small>:
+</p>
+<ul class="itemize mark-bullet">
+<li>对这些命令的支持依赖于系统。目前，仅支持使用 ‘<samp class="samp">gnu - v3</samp>’ C++ ABI（请参阅<code class="t">++</code>  <a class="pxref" href="ABI.html">配置当前 ABI</a>)的系统。
+
+</li><li>正则表达式功能和 <code class="code">$_exception</code> 便利变量依赖于 <code class="code">libstdc++</code>中存在一些 SDT 探针。如果这些探针不存在，那么这些功能将无法使用。这些探针在 GCC 4.8 版本中首次可用，但您的 GCC 中是否有这些探针还取决于它的构建方式。
+
+</li><li>该 <code class="code">$_exception</code> 便利变量仅在设置了与异常相关的捕获点的指令处有效。
+
+</li><li>当与异常相关的捕获点被触发时， <small class="sc">GDB</small> 会在系统库中的某个位置停止，该位置实现了 C++ 的运行时异常支持，通常是<code class="t">++</code>, 通常 <code class="code">libstdc++</code>.  您可以使用 <code class="code">up</code>
+（请参阅 <a class="pxref" href="Selection.html">选择帧</a>)回到您的代码。
+
+</li><li>如果您交互式地调用一个函数， <small class="sc">GDB</small> 通常在函数执行完毕后将控制权返回给您。然而，如果调用引发了异常，该调用可能会绕过将控制权返回给您的机制，导致您的程序要么中止，要么继续运行，直到遇到断点、捕获到 <small class="sc">GDB</small> 正在监听的信号，或者退出。即使您为该异常设置了捕获点，情况也是如此；在交互式调用中，异常捕获点会被禁用。请参阅 <a class="xref" href="Calling.html">调用程序函数</a>, 了解如何使用 <code class="code">set unwind-on-terminating-exception</code>.  进行控制的信息。
+
+</li><li>您不能交互式地引发异常。
+
+</li><li>您不能交互式地安装异常处理程序。
+</li></ul>
+
+</dd>
+<dt><a class="index-entry-id" id="index-Ada-exception-catching"></a>
+<a class="index-entry-id" id="index-catch-Ada-exceptions"></a>
+<a id="index-catch-exception"></a><span><code class="code">exception <span class="r">[</span><var class="var">name</var><span class="r">]</span></code><a class="copiable-link" href="#index-catch-exception"> ¶</a></span></dt>
+<dd><p>Ada 异常被引发。如果在命令末尾指定了异常名称（例如 <code class="code">catch exception Program_Error</code>），调试器将仅在引发此特定异常时停止。否则，调试器将在引发任何 Ada 异常时停止执行。
+</p>
+<p>当为用户定义的异常插入异常捕获点，且该异常的名称与语言定义的异常之一相同时，必须使用完全限定名称作为异常名称。否则，
+<small class="sc">GDB</small> 将假设它应该在预定义的异常而不是用户定义的异常处停止。例如，假设在包 <code class="code">Constraint_Error</code> 中定义了一个名为 <code class="code">Pck</code>的异常，那么用于捕获此类异常的命令是 <kbd class="kbd">catch exception
+Pck.Constraint_Error</kbd>.
+</p>
+<a class="index-entry-id" id="index-_0024_005fada_005fexception_002c-convenience-variable"></a>
+<p>便利变量 <code class="code">$_ada_exception</code> 保存着正在抛出的异常的地址。这在为这样的捕获点设置条件时可能会有用。
+</p>
+</dd>
+<dt><a id="index-catch-exception-unhandled"></a><span><code class="code">exception unhandled</code><a class="copiable-link" href="#index-catch-exception-unhandled"> ¶</a></span></dt>
+<dd><p>程序引发但未处理的异常。便利变量 <code class="code">$_ada_exception</code> 的设置与 <code class="code">catch
+exception</code>相同。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-Ada-exception-handlers-catching"></a>
+<a class="index-entry-id" id="index-catch-Ada-exceptions-when-handled"></a>
+<a id="index-catch-handlers"></a><span><code class="code">handlers <span class="r">[</span><var class="var">name</var><span class="r">]</span></code><a class="copiable-link" href="#index-catch-handlers"> ¶</a></span></dt>
+<dd><p>Ada 异常被处理。如果在命令末尾指定了异常名称（例如 <kbd class="kbd">catch handlers Program_Error</kbd>），调试器将仅在处理此特定异常时停止。否则，调试器将在处理任何 Ada 异常时停止执行。
+</p>
+<p>当为用户定义的异常插入处理程序捕获点，且该异常的名称与语言定义的异常之一相同时，必须使用完全限定名称作为异常名称。否则， <small class="sc">GDB</small> 将假设它应该在预定义的异常而不是用户定义的异常处停止。例如，假设在包
+ <code class="code">Constraint_Error</code> 中定义了一个名为 <code class="code">Pck</code>的异常，那么用于捕获此类异常处理的命令是
+<kbd class="kbd">catch handlers Pck.Constraint_Error</kbd>.
+</p>
+<p>便利变量 <code class="code">$_ada_exception</code> 的设置与
+<code class="code">catch exception</code>相同。
+</p>
+</dd>
+<dt><a id="index-catch-assert"></a><span><code class="code">assert</code><a class="copiable-link" href="#index-catch-assert"> ¶</a></span></dt>
+<dd><p>Ada 断言失败。请注意，此捕获点不会设置便利变量
+<code class="code">$_ada_exception</code> 。 <em class="emph">不</em> 设置。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-break-on-fork_002fexec"></a>
+<a id="index-catch-exec"></a><span><code class="code">exec</code><a class="copiable-link" href="#index-catch-exec"> ¶</a></span></dt>
+<dd><p>调用 <code class="code">exec</code>.
+</p>
+<a class="anchor" id="catch-syscall"></a></dd>
+<dt><a class="index-entry-id" id="index-break-on-a-system-call_002e"></a>
+<a id="index-catch-syscall"></a><span><code class="code">syscall</code><a class="copiable-link" href="#index-catch-syscall"> ¶</a></span></dt>
+<dt><code class="code">syscall <span class="r">[</span><var class="var">name</var> <span class="r">|</span> <var class="var">number</var> <span class="r">|</span> <span class="r">group:</span><var class="var">groupname</var> <span class="r">|</span> <span class="r">g:</span><var class="var">groupname</var><span class="r">]</span> …</code></dt>
+<dd><p>系统调用的调用或返回，也称为 <em class="dfn">系统调用</em>.  系统调用是应用程序向操作系统（OS）或其中一个操作系统服务请求服务的一种机制。
+<small class="sc">GDB</small> 可以捕获被调试程序发出的部分或全部系统调用，并显示每个系统调用的相关信息。如果未指定参数，将捕获所有系统调用的调用和返回。
+</p>
+<p><var class="var">名称</var> 可以是底层操作系统有效的任何系统调用名称。哪些系统调用有效取决于操作系统。在 GNU 和 Unix 系统上，您可以在以下位置找到有效系统调用名称的完整列表 <samp class="file">/usr/include/asm/unistd.h</samp>.
+</p>
+
+<p>通常， <small class="sc">GDB</small> 预先知道每个操作系统的哪些系统调用是有效的，因此您可以使用 <small class="sc">GDB</small> 命令行补全功能（请参阅 <a class="pxref" href="Completion.html">命令补全</a>)来列出可用选项。
+</p>
+<p>您也可以用数字指定系统调用。系统调用的编号是传递给操作系统的系统调用调度程序以标识所请求服务的值。当您通过名称指定系统调用时， <small class="sc">GDB</small> 使用其系统调用数据库将名称转换为相应的数字代码，但如果 <small class="sc">GDB</small>的数据库没有您系统上完整的系统调用列表（例如，因为 <small class="sc">GDB</small> 落后于操作系统升级），直接使用编号可能会有用。
+</p>
+<p>您可以使用以下语法一次指定一组相关的系统调用进行捕获 <code class="code">group:</code> 语法（<code class="code">g:</code> 是其更简短的等效形式）。例如，在某些平台上 <small class="sc">GDB</small> 允许您通过传递参数来捕获所有与网络相关的系统调用 <code class="code">group:network</code>
+到 <code class="code">catch syscall</code>.  请注意，并非所有系统调用组在每个系统中都可用。您可以使用命令补全功能（请参阅 <a class="pxref" href="Completion.html">命令补全</a>)来列出您的环境中可用的系统调用组。
+</p>
+<p>下面的示例说明了如果您不向此命令提供参数，它是如何工作的：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall
+捕获点 1（系统调用）
+(gdb) r
+开始执行程序：/tmp/catch - syscall
+
+捕获点 1（调用系统调用 &#39;close&#39;）， \
+	   0xffffe424 在 __kernel_vsyscall () 中
+(gdb) c
+继续执行。
+
+捕获点 1（从系统调用 &#39;close&#39; 返回）， \
+	0xffffe424 在 __kernel_vsyscall () 中
+(gdb)
+</pre></div>
+
+<p>以下是按名称捕获系统调用的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall chroot
+捕获点 1（系统调用 &#39;chroot&#39; [61]）
+(gdb) r
+开始执行程序：/tmp/catch - syscall
+
+捕获点 1（调用系统调用 &#39;chroot&#39;）， \
+		   0xffffe424 在 __kernel_vsyscall () 中
+(gdb) c
+继续执行。
+
+捕获点 1（从系统调用 &#39;chroot&#39; 返回）， \
+	0xffffe424 在 __kernel_vsyscall () 中
+(gdb)
+</pre></div>
+
+<p>按数字指定系统调用的示例。在以下情况下，系统调用编号在 XML 文件中有对应的条目，因此 <small class="sc">GDB</small> 找到其名称并打印出来：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall 252
+捕获点 1（系统调用 &#39;exit_group&#39;）
+(gdb) r
+开始执行程序：/tmp/catch - syscall
+
+捕获点 1（调用系统调用 &#39;exit_group&#39;）， \
+		   0xffffe424 在 __kernel_vsyscall () 中
+(gdb) c
+继续执行。
+
+程序正常退出。
+(gdb)
+</pre></div>
+
+<p>以下是捕获系统调用组的示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall group:process
+捕获点 1（系统调用 &#39;exit&#39; [1] &#39;fork&#39; [2] &#39;waitpid&#39; [7]
+&#39;execve&#39; [11] &#39;wait4&#39; [114] &#39;clone&#39; [120] &#39;vfork&#39; [190]
+&#39;exit_group&#39; [252] &#39;waitid&#39; [284] &#39;unshare&#39; [310]）
+(gdb) r
+开始执行程序：/tmp/catch - syscall
+
+捕获点 1（调用系统调用 fork），0x00007ffff7df4e27 在 open64 () 中
+   来自 /lib64/ld - linux - x86 - 64.so.2
+
+(gdb) c
+继续执行。
+</pre></div>
+
+<p>但是，可能会出现这样的情况：对于该系统调用编号，XML 文件中没有对应的名称。在这种情况下， <small class="sc">GDB</small> 会打印一条警告消息，说明无法找到系统调用名称，但捕获点仍会被设置。请参阅以下示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall 764
+警告：数字 &#39;764&#39; 不代表已知的系统调用。
+捕获点 2（系统调用 764）
+(gdb)
+</pre></div>
+
+<p>如果您使用 <small class="sc">GDB</small> 使用 ‘<samp class="samp">--without - expat</samp>’ 选项进行配置，它将无法显示系统调用名称。此外，如果您的架构没有描述其系统调用的 XML 文件，您将无法看到系统调用名称。重要的是要注意，这两个功能用于访问系统调用名称数据库。在任何一种情况下，您都会看到如下警告：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall
+警告：无法打开 &#34;syscalls/i386 - linux.xml&#34;
+警告：无法加载系统调用 XML 文件 &#39;syscalls/i386 - linux.xml&#39;。
+GDB 将无法显示系统调用名称。
+捕获点 1（系统调用）
+(gdb)
+</pre></div>
+
+<p>当然，文件名会根据您的架构和系统而变化。
+</p>
+<p>仍然使用上面的示例，您也可以尝试按编号捕获系统调用。在这种情况下，您会看到类似如下的内容：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) catch syscall 252
+捕获点 1（系统调用 252）
+</pre></div>
+
+<p>同样，在这种情况下 <small class="sc">GDB</small> 将无法显示系统调用的名称。
+</p>
+</dd>
+<dt><a id="index-catch-fork"></a><span><code class="code">fork</code><a class="copiable-link" href="#index-catch-fork"> ¶</a></span></dt>
+<dd><p>调用 <code class="code">fork</code>.
+</p>
+</dd>
+<dt><a id="index-catch-vfork"></a><span><code class="code">vfork</code><a class="copiable-link" href="#index-catch-vfork"> ¶</a></span></dt>
+<dd><p>调用 <code class="code">vfork</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-catch-unload"></a>
+<a id="index-catch-load"></a><span><code class="code">load <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code><a class="copiable-link" href="#index-catch-load"> ¶</a></span></dt>
+<dt><code class="code">unload <span class="r">[</span><var class="var">regexp</var><span class="r">]</span></code></dt>
+<dd><p>共享库的加载或卸载。如果 <var class="var">正则表达式</var> 被给出，那么只有当正则表达式与受影响的库之一匹配时，捕获点才会使程序停止。
+</p>
+</dd>
+<dt><a id="index-catch-signal"></a><span><code class="code">signal <span class="r">[</span><var class="var">signal</var>… <span class="r">|</span> ‘<samp class="samp">all</samp>’<span class="r">]</span></code><a class="copiable-link" href="#index-catch-signal"> ¶</a></span></dt>
+<dd><p>信号的传递。
+</p>
+<p>如果没有参数，此捕获点将捕获任何未被 <small class="sc">GDB</small>内部使用的信号，具体来说，除了 ‘<samp class="samp">SIGTRAP</samp>’ 和 ‘<samp class="samp">SIGINT</samp>’ 之外的所有信号。
+</p>
+<p>使用参数 ‘<samp class="samp">all</samp>’，将捕获所有信号，包括被
+<small class="sc">GDB</small>使用的信号。此参数不能与其他信号名称一起使用。
+</p>
+<p>否则，参数是传递给
+<code class="code">handle</code> 的信号名称列表（请参阅 <a class="pxref" href="Signals.html">信号</a>)。只有此列表中指定的信号才会被捕获。
+</p>
+<p>使用 <code class="code">catch signal</code> 比
+<code class="code">handle</code> 更有用的一个原因是，您可以为捕获点附加命令和条件。
+</p>
+<p>当信号被捕获点捕获时，信号的 <code class="code">stop</code> 和
+<code class="code">print</code> 设置（由 <code class="code">handle</code>指定）将被忽略。然而，信号是否仍会传递给被调试程序取决于 <code class="code">pass</code> 设置；这可以在捕获点的命令中更改。
+</p>
+</dd>
+</dl>
+
+</dd>
+<dt><a id="index-tcatch"></a><span><code class="code">tcatch <var class="var">event</var></code><a class="copiable-link" href="#index-tcatch"> ¶</a></span></dt>
+<dd><p>设置一个仅在一次停止时启用的捕获点。该捕获点在首次捕获到事件后会自动删除。
+</p>
+</dd>
+</dl>
+
+<p>使用 <code class="code">info break</code> 命令列出当前的捕获点。
+</p>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Delete-Breaks.html">删除断点</a>, 上一项： <a href="Set-Watchpoints.html">设置观察点</a>, 上级： <a href="Breakpoints.html">断点、观察点和捕获点</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

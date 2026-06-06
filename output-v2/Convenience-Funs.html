@@ -1,0 +1,326 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>便利函数（使用GDB调试）</title>
+
+<meta name="description" content="Convenience Funs (Debugging with GDB)"/>
+<meta name="keywords" content="Convenience Funs (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Data.html" rel="up" title="Data"/>
+<link href="Registers.html" rel="next" title="Registers"/>
+<link href="Convenience-Vars.html" rel="prev" title="Convenience Vars"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Convenience-Funs">
+<div class="nav-panel">
+<p>
+下一步： <a accesskey="n" href="Registers.html" rel="next">寄存器</a>, 上一步： <a accesskey="p" href="Convenience-Vars.html" rel="prev">便利变量</a>, 向上： <a accesskey="u" href="Data.html" rel="up">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">内容</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Convenience-Functions"><span>10.13便利函数<a class="copiable-link" href="#Convenience-Functions"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-convenience-functions"></a>
+<p><small class="sc">GDB</small> 还提供了一些 <em class="dfn">便利函数</em>。这些函数的语法类似于便利变量。便利函数可以像普通函数一样在表达式中使用；然而，便利函数是在内部实现的，
+<small class="sc">GDB</small>.
+</p>
+<p>这些函数不需要 <small class="sc">GDB</small> 进行配置
+<code class="code">Python</code> 支持，这意味着它们始终可用。
+</p>
+<dl class="table">
+<dt><a id="index-_0024_005fisvoid_002c-convenience-function"></a><span><code class="code">$_isvoid (<var class="var">expr</var>)</code><a class="copiable-link" href="#index-_0024_005fisvoid_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果表达式 <var class="var">expr</var> 为 <code class="code">void</code>，则返回1。否则返回零。
+</p>
+<p>一个 <code class="code">void</code> 表达式是一个结果类型为 <code class="code">void</code>的表达式。例如，你可以检查一个便利变量（见 <a class="ref" href="Convenience-Vars.html">便利变量</a>），以检查它是否 <code class="code">void</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)打印 $_exitcode
+$1 = void
+(gdb)打印 $_isvoid ($_exitcode)
+$2 = 1
+(gdb)运行
+启动程序：./a.out
+[进程1（进程29572）正常退出]
+(gdb)打印 $_exitcode
+$3 = 0
+(gdb)打印 $_isvoid ($_exitcode)
+$4 = 0
+</pre></div>
+
+<p>在上面的示例中，我们使用 <code class="code">$_isvoid</code> 来检查
+<code class="code">$_exitcode</code> 是否 <code class="code">void</code> 在调试程序执行之前和之后。在执行之前，没有退出码可供检查，因此 <code class="code">$_exitcode</code> 是 <code class="code">void</code>。在执行之后，调试程序返回零，因此
+<code class="code">$_exitcode</code> 为零，这意味着它不是 <code class="code">void</code>
+了。
+</p>
+<p>这个 <code class="code">void</code> 表达式也可以是对正在调试的程序中的函数的调用。例如，给定以下函数：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">void
+foo (void)
+{
+}
+</pre></div>
+
+<p>在 <small class="sc">GDB</small> 内部调用它的结果是 <code class="code">void</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)打印 foo ()
+$1 = void
+(gdb)打印 $_isvoid (foo ())
+$2 = 1
+(gdb)设置 $v = foo ()
+(gdb)打印 $v
+$3 = void
+(gdb)打印 $_isvoid ($v)
+$4 = 1
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fsetting_005fstr_002c-convenience-function"></a><span><code class="code">$_gdb_setting_str (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fsetting_005fstr_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>返回 <small class="sc">GDB</small> <var class="var">设置</var> 的值作为字符串。
+<var class="var">设置</var> 是任何可以在 <code class="code">set</code> 或
+<code class="code">show</code> 命令中使用的设置（见 <a class="pxref" href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a>）。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb)显示打印帧参数
+打印非标量帧参数为 &#34;标量&#34;。
+(gdb) p $_gdb_setting_str(&#34;打印帧参数&#34;)
+$1 = &#34;标量&#34;
+(gdb) p $_gdb_setting_str(&#34;高度&#34;)
+$2 = &#34;30&#34;
+(gdb)
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fsetting_002c-convenience-function"></a><span><code class="code">$_gdb_setting (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fsetting_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>返回 <small class="sc">GDB</small> <var class="var">设置</var>的值。返回值的类型取决于设置。
+</p>
+<p>布尔和自动布尔设置的值类型是 <code class="code">int</code>。布尔值 <code class="code">off</code> 和 <code class="code">on</code> 被转换为整数值 <code class="code">0</code> 和 <code class="code">1</code>。值 <code class="code">auto</code> 被转换为值 <code class="code">-1</code>.
+</p>
+<p>整数设置的值类型要么是 <code class="code">unsigned int</code>
+要么是 <code class="code">int</code>，取决于设置。
+</p>
+<p>一些整数设置接受一个 <code class="code">unlimited</code> 值。根据设置， <code class="code">set</code> 命令也接受值 <code class="code">0</code> 或值 <code class="code">−1</code> 作为
+<code class="code">unlimited</code>的同义词。例如， <code class="code">set height unlimited</code> 等同于
+<code class="code">set height 0</code>。
+</p>
+<p>一些其他接受 <code class="code">unlimited</code> 值的设置使用值 <code class="code">0</code> 字面意思表示零。例如， <code class="code">set history size 0</code> 表示不记录命令历史中的任何 <small class="sc">GDB</small> 命令。对于这样的设置， <code class="code">−1</code> 是 <code class="code">unlimited</code>的同义词。
+</p>
+<p>请参阅相应的 <code class="code">set</code> 命令的文档，以获取与 <code class="code">unlimited</code>等效的数值。
+</p>
+<p>函数根据 <code class="code">$_gdb_setting</code> 命令使用的内容将无限制值转换为 <code class="code">0</code> 或 <code class="code">−1</code> 值。
+<code class="code">set</code> command uses.
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&#34;高度&#34;)
+$1 = &#34;30&#34;
+(gdb) p $_gdb_setting(&#34;高度&#34;)
+$2 = 30
+(gdb)设置高度无限制
+(gdb) p $_gdb_setting_str(&#34;高度&#34;)
+$3 = &#34;无限制&#34;
+(gdb) p $_gdb_setting(&#34;高度&#34;)
+$4 = 0
+</pre></div><div class="group"><pre class="example-preformatted">(gdb) p $_gdb_setting_str(&#34;历史大小&#34;)
+$5 = &#34;无限制&#34;
+(gdb) p $_gdb_setting(&#34;历史大小&#34;)
+$6 = -1
+(gdb) p $_gdb_setting_str(&#34;反汇编下一行&#34;)
+$7 = &#34;自动&#34;
+(gdb) p $_gdb_setting(&#34;反汇编下一行&#34;)
+$8 = -1
+(gdb)
+</pre></div></div>
+
+<p>其他设置类型（枚举、文件名、可选文件名、字符串、无转义字符串）作为字符串值返回。
+</p>
+
+</dd>
+<dt><a id="index-_0024_005fgdb_005fmaint_005fsetting_005fstr_002c-convenience-function"></a><span><code class="code">$_gdb_maint_setting_str (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fmaint_005fsetting_005fstr_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>与 <code class="code">$_gdb_setting_str</code> 函数类似，但适用于
+<code class="code">maintenance set</code> 变量。
+</p>
+</dd>
+<dt><a id="index-_0024_005fgdb_005fmaint_005fsetting_002c-convenience-function"></a><span><code class="code">$_gdb_maint_setting (<var class="var">setting</var>)</code><a class="copiable-link" href="#index-_0024_005fgdb_005fmaint_005fsetting_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>与 <code class="code">$_gdb_setting</code> 函数类似，但适用于
+<code class="code">maintenance set</code> 变量。
+</p>
+<a class="anchor" id="g_t_0024_005fshell-convenience-function"></a></dd>
+<dt><a id="index-_0024_005fshell_002c-convenience-function"></a><span><code class="code">$_shell (<var class="var">command-string</var>)</code><a class="copiable-link" href="#index-_0024_005fshell_002c-convenience-function"> ¶</a></span></dt>
+<dd>
+<p>调用一个 shell 来执行 <var class="var">命令字符串</var>。  <var class="var">命令字符串</var>
+必须是一个字符串。该 shell 在运行调试器的主机机器上运行。返回命令的退出状态。在 Unix 系统上，以零退出状态退出的命令表示成功，非零退出状态表示失败。当一个命令因致命信号终止，信号编号为
+<small class="sc">GDB</small> N <var class="var">时，</var>， <small class="sc">GDB</small>
+使用值 128 +<var class="var">N</var> 作为退出状态，这是 Unix 外壳中的标准做法。请注意， <var class="var">N</var> 是主机信号编号，而不是目标信号编号。如果是本地调试，它们将是相同的，但如果是交叉调试，主机与目标信号编号可能完全无关。请查阅主机操作系统的文档，以获取主机信号编号与信号名称之间的映射。要运行的 shell 以与
+<code class="code">shell</code> 命令相同的方式确定。请参阅 <a class="xref" href="Shell-Commands.html">Shell 命令</a>。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) print $_shell(&#34;true&#34;)
+$1 = 0
+(gdb) print $_shell(&#34;false&#34;)
+$2 = 1
+(gdb) p $_shell(&#34;echo hello&#34;)
+hello
+$3 = 0
+(gdb) p $_shell(&#34;foobar&#34;)
+bash: line 1: foobar: command not found
+$4 = 127
+</pre></div>
+
+<p>这在断点条件中也可能有用。例如：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) break function if $_shell(&#34;some command&#34;) == 0
+</pre></div>
+
+<p>在这种情况下，你需要确保在断点条件中运行的 shell 命令尽可能少地占用时间。例如，避免运行可能无限期阻塞或在退出前睡眠一段时间的命令。最好使用分析某些状态并立即退出的命令或脚本。这很重要，因为每次调试程序遇到断点时都会停止，然后 <small class="sc">GDB</small> 评估断点条件。如果条件为假，程序将透明地重新恢复，而不会通知你停止。因此，一个快速的 shell 命令可以避免不必要地显著减慢调试程序的速度。
+</p>
+<p>注意：与 <code class="code">shell</code> 命令不同， <code class="code">$_shell</code> 便利函数不会影响 <code class="code">$_shell_exitcode</code> 和
+<code class="code">$_shell_exitsignal</code> 便利变量。
+</p>
+</dd>
+</dl>
+
+<p>以下函数需要 <small class="sc">GDB</small> 配置为具有
+<code class="code">Python</code> 支持。
+</p>
+<dl class="table">
+<dt><a id="index-_0024_005fmemeq_002c-convenience-function"></a><span><code class="code">$_memeq(<var class="var">buf1</var>, <var class="var">buf2</var>, <var class="var">length</var>)</code><a class="copiable-link" href="#index-_0024_005fmemeq_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果由 <var class="var">长度</var> 字节组成的位于
+<var class="var">buf1</var> 和 <var class="var">buf2</var> 所给定地址处的内容相等，则返回 1。否则返回 0。
+</p>
+</dd>
+<dt><a id="index-_0024_005fregex_002c-convenience-function"></a><span><code class="code">$_regex(<var class="var">str</var>, <var class="var">regex</var>)</code><a class="copiable-link" href="#index-_0024_005fregex_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果字符串 <var class="var">str</var> 与正则表达式
+<var class="var">regex</var>匹配，则返回 1。否则返回 零。正则表达式的语法由 <code class="code">Python</code>’s 的正则表达式支持指定。
+</p>
+</dd>
+<dt><a id="index-_0024_005fstreq_002c-convenience-function"></a><span><code class="code">$_streq(<var class="var">str1</var>, <var class="var">str2</var>)</code><a class="copiable-link" href="#index-_0024_005fstreq_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果字符串 <var class="var">str1</var> 和 <var class="var">str2</var> 相等，则返回 1。否则返回 0。
+</p>
+</dd>
+<dt><a id="index-_0024_005fstrlen_002c-convenience-function"></a><span><code class="code">$_strlen(<var class="var">str</var>)</code><a class="copiable-link" href="#index-_0024_005fstrlen_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>返回字符串 <var class="var">str</var>的长度。
+</p>
+</dd>
+<dt><a id="index-_0024_005fcaller_005fis_002c-convenience-function"></a><span><code class="code">$_caller_is(<var class="var">name</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fcaller_005fis_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果调用函数的名称等于 <var class="var">name</var>，则返回 1。否则返回 0。
+</p>
+<p>如果提供了可选参数 <var class="var">帧数</var> ，则它是堆栈中向上查找的帧数。默认值为 1。
+</p>
+<p>示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) backtrace
+#0  bottom_func ()
+    at testsuite/gdb.python/py-caller-is.c:21
+#1  0x00000000004005a0 in middle_func ()
+    at testsuite/gdb.python/py-caller-is.c:27
+#2  0x00000000004005ab in top_func ()
+    at testsuite/gdb.python/py-caller-is.c:33
+#3  0x00000000004005b6 in main ()
+    at testsuite/gdb.python/py-caller-is.c:39
+(gdb) print $_caller_is (&#34;middle_func&#34;)
+$1 = 1
+(gdb) print $_caller_is (&#34;top_func&#34;, 2)
+$1 = 1
+</pre></div>
+
+</dd>
+<dt><a id="index-_0024_005fcaller_005fmatches_002c-convenience-function"></a><span><code class="code">$_caller_matches(<var class="var">regexp</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fcaller_005fmatches_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果调用函数的名称与正则表达式
+<var class="var">regexp</var>匹配，则返回 1。否则返回 0。
+</p>
+<p>如果提供了可选参数 <var class="var">帧数</var> ，则它是堆栈中向上查找的帧数。默认值为 1。
+</p>
+</dd>
+<dt><a id="index-_0024_005fany_005fcaller_005fis_002c-convenience-function"></a><span><code class="code">$_any_caller_is(<var class="var">name</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fany_005fcaller_005fis_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果任何调用函数的名称等于 <var class="var">name</var>，则返回 1。否则返回 0。
+</p>
+<p>如果提供了可选参数 <var class="var">帧数</var> ，则它是堆栈中向上查找的帧数。默认值为 1。
+</p>
+<p>此函数与 <code class="code">$_caller_is</code> 的不同之处在于，此函数检查从直接调用者到由 <var class="var">帧数</var>指定的帧的所有堆栈帧，而 <code class="code">$_caller_is</code> 仅检查由 <var class="var">帧数</var>指定的帧。
+</p>
+</dd>
+<dt><a id="index-_0024_005fany_005fcaller_005fmatches_002c-convenience-function"></a><span><code class="code">$_any_caller_matches(<var class="var">regexp</var><span class="r">[</span>, <var class="var">number_of_frames</var><span class="r">]</span>)</code><a class="copiable-link" href="#index-_0024_005fany_005fcaller_005fmatches_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>如果任何调用函数的名称与正则表达式
+<var class="var">regexp</var>匹配，则返回 1。否则返回 0。
+</p>
+<p>如果提供了可选参数 <var class="var">帧数</var> ，则它是堆栈中向上查找的帧数。默认值为 1。
+</p>
+<p>此函数与……不同 <code class="code">$_caller_matches</code> 在于此函数会检查从直接调用者到由……指定的帧数所对应的所有栈帧 <var class="var">帧数</var>而 <code class="code">$_caller_matches</code> 仅检查由……指定的帧数所对应的帧 <var class="var">帧数</var>。
+</p>
+</dd>
+<dt><a id="index-_0024_005fas_005fstring_002c-convenience-function"></a><span><code class="code">$_as_string(<var class="var">value</var>)</code><a class="copiable-link" href="#index-_0024_005fas_005fstring_002c-convenience-function"> ¶</a></span></dt>
+<dd><p>此便利函数被视为已弃用，可能会在未来版本中移除。请改用‘ <small class="sc">GDB</small><samp class="samp">%V</samp>’格式说明符（请参阅 <a class="pxref" href="Output.html#g_t_0025V-Format-Specifier">%V格式说明符</a>）。
+</p>
+<p>返回……的值的字符串表示形式 <var class="var">值</var>。
+</p>
+<p>此函数对于获取枚举值的文本标签（枚举常量）很有用。例如，假设变量 <var class="var">节点</var> 是枚举类型：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) printf &#34;正在访问类型为%s的节点\n&#34;, $_as_string(节点)
+正在访问类型为NODE_INTEGER的节点
+</pre></div>
+
+</dd>
+<dt><a class="index-entry-id" id="index-_0024_005fcreal_002c-convenience-function"></a>
+<a id="index-_0024_005fcimag_002c-convenience-function"></a><span><code class="code">$_cimag(<var class="var">value</var>)</code><a class="copiable-link" href="#index-_0024_005fcimag_002c-convenience-function"> ¶</a></span></dt>
+<dt><code class="code">$_creal(<var class="var">value</var>)</code></dt>
+<dd><p>返回复数<code class="code">$_cimag</code>（<code class="code">$_creal</code>）或实数（ <var class="var">值</var>）部分。
+</p>
+<p>虚部或实部的类型取决于复数的类型，例如，对……使用 <code class="code">$_cimag</code> 在一个 <code class="code">float complex</code>
+上会返回类型为 <code class="code">float</code>的虚部。
+</p>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> 提供列出便利函数并获取其帮助的功能。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-show-all-convenience-functions"></a>
+<a id="index-help-function"></a><span><code class="code">help function</code><a class="copiable-link" href="#index-help-function"> ¶</a></span></dt>
+<dd><p>打印所有便利函数的列表。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一步： <a href="Registers.html">寄存器</a>，上一步： <a href="Convenience-Vars.html">便利变量</a>，向上： <a href="Data.html">检查数据</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

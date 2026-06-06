@@ -1,0 +1,80 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>进程列表（使用 GDB 调试）</title>
+
+<meta name="description" content="Process list (Debugging with GDB)"/>
+<meta name="keywords" content="Process list (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Operating-System-Information.html" rel="up" title="Operating System Information"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="appendixsection-level-extent" id="Process-list">
+<div class="nav-panel">
+<p>
+上一页： <a accesskey="u" href="Operating-System-Information.html" rel="up">操作系统信息</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="appendixsection" id="Process-list-1"><span>H.1 进程列表<a class="copiable-link" href="#Process-list-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-operating-system-information_002c-process-list"></a>
+
+<p>在请求进程列表时， <var class="var">附件</var> 字段在
+‘<samp class="samp">qXfer</samp>’ 请求中应为 ‘<samp class="samp">进程</samp>’。返回的数据是
+一个 XML 文档。该文档的正式语法在
+<samp class="file">gdb/特性/osdata.dtd</samp>中定义。
+</p>
+<p>一个示例文档如下：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&#34;1.0&#34;?&gt;
+&lt;!DOCTYPE target SYSTEM &#34;osdata.dtd&#34;&gt;
+&lt;osdata type=&#34;processes&#34;&gt;
+  &lt;item&gt;
+    &lt;column name=&#34;pid&#34;&gt;1&lt;/column&gt;
+    &lt;column name=&#34;user&#34;&gt;root&lt;/column&gt;
+    &lt;column name=&#34;command&#34;&gt;/sbin/init&lt;/column&gt;
+    &lt;column name=&#34;cores&#34;&gt;1,2,3&lt;/column&gt;
+  &lt;/item&gt;
+&lt;/osdata&gt;
+</pre></div>
+
+<p>每个条目应包含一个名为 ‘<samp class="samp">进程 ID</samp>’ 的列。该列的值
+应标识目标上的进程。‘<samp class="samp">用户</samp>’ 和 ‘<samp class="samp">命令</samp>’ 列是可选的，将由 <small class="sc">GDB</small>显示。‘<samp class="samp">核心</samp>’ 列（如果存在）
+应包含此进程正在运行的核心的逗号分隔列表。目标可能提供额外的列，
+而 <small class="sc">GDB</small> 当前会忽略这些列。
+</p>
+</div>
+
+
+
+
+
+</body></html>

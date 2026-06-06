@@ -1,0 +1,176 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile异常处理（使用GDB调试）</title>
+
+<meta name="description" content="Guile Exception Handling (Debugging with GDB)"/>
+<meta name="keywords" content="Guile Exception Handling (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile-API.html" rel="up" title="Guile API"/>
+<link href="Values-From-Inferior-In-Guile.html" rel="next" title="Values From Inferior In Guile"/>
+<link href="GDB-Scheme-Data-Types.html" rel="prev" title="GDB Scheme Data Types"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsubsection-level-extent" id="Guile-Exception-Handling">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Values-From-Inferior-In-Guile.html" rel="next">Guile中来自被调试程序的值</a> <a accesskey="p" href="GDB-Scheme-Data-Types.html" rel="prev">GDB Scheme数据类型</a>, 上一项： <a accesskey="u" href="Guile-API.html" rel="up"></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsubsection" id="Guile-Exception-Handling-1"><span>23.4.3.4 Guile异常处理<a class="copiable-link" href="#Guile-Exception-Handling-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-guile-exceptions"></a>
+<a class="index-entry-id" id="index-exceptions_002c-guile"></a>
+<a class="index-entry-id" id="index-set-guile-print_002dstack"></a>
+
+<p>执行 <code class="code">guile</code> 命令时，Guile代码中未捕获的Guile异常会被转换为对
+<small class="sc">GDB</small> 错误报告机制的调用。如果调用
+<code class="code">guile</code> 的命令未处理该错误， <small class="sc">GDB</small> 将根据 <code class="code">guile print-stack</code> 参数的设置终止该命令并报告错误。
+</p>
+<p>该 <code class="code">guile print-stack</code> 参数有三种设置：
+</p>
+<dl class="table">
+<dt><code class="code">none</code></dt>
+<dd><p>不打印任何内容。
+</p>
+</dd>
+<dt><code class="code">message</code></dt>
+<dd><p>打印一条错误消息，其中包含Guile异常名称、关联值以及异常抛出点的Guile调用栈回溯信息。示例：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) guile (display foo)
+错误：在过程memoize-variable-access!中：
+错误：未绑定的变量：foo
+执行Scheme代码时出错。
+</pre></div>
+
+</dd>
+<dt><code class="code">full</code></dt>
+<dd><p>除了错误消息外，还会打印完整的回溯信息。
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">(gdb) set guile print-stack full
+(gdb) guile (display foo)
+Guile回溯信息：
+在ice-9/boot-9.scm中：
+ 157: 10 [catch #t #&lt;catch-closure 2c76e20&gt; ...]
+在未知文件中：
+   ?: 9 [apply-smob/1 #&lt;catch-closure 2c76e20&gt;]
+在ice-9/boot-9.scm中：
+ 157: 8 [catch #t #&lt;catch-closure 2c76d20&gt; ...]
+在未知文件中：
+   ?: 7 [apply-smob/1 #&lt;catch-closure 2c76d20&gt;]
+   ?: 6 [call-with-input-string &#34;(display foo)&#34; ...]
+在ice-9/boot-9.scm中：
+2320: 5 [save-module-excursion #&lt;procedure 2c2dc30 ... ()&gt;]
+在ice-9/eval-string.scm中：
+  44: 4 [read-and-eval #&lt;input: string 27cb410&gt; #:lang ...]
+  37: 3 [lp (display foo)]
+在ice-9/eval.scm中：
+ 387: 2 [eval # ()]
+ 393: 1 [eval #&lt;memoized foo&gt; ()]
+在未知文件中：
+   ?: 0 [memoize-variable-access! #&lt;memoized foo&gt; ...]
+
+错误：在过程memoize-variable-access!中：
+错误：未绑定的变量：foo
+执行Scheme代码时出错。
+</pre></div>
+</dd>
+</dl>
+
+<p><small class="sc">GDB</small> 在 <small class="sc">GDB</small> 由Guile代码调用的命令中发生的错误会转换为Guile异常。Guile异常的类型取决于错误情况。
+</p>
+<p>由 <small class="sc">GDB</small> 提供的Guile过程可以抛出标准的Guile异常，如 <code class="code">wrong-type-arg</code> 和 <code class="code">out-of-range</code>。
+</p>
+<p>用户中断（通过 <kbd class="kbd">C-c</kbd> 或在分页提示时输入 <kbd class="kbd">q</kbd> ）会转换为一个Guile <code class="code">signal</code> 异常，其值为
+<code class="code">SIGINT</code>。
+</p>
+<p><small class="sc">GDB</small> Guile过程还可以抛出以下异常：
+</p>
+<dl class="vtable">
+<dt><a id="index-gdb_003aerror"></a><span><code class="code">gdb:error</code><a class="copiable-link" href="#index-gdb_003aerror"> ¶</a></span></dt>
+<dd><p>此异常是对 <small class="sc">GDB</small>内部生成的错误的通用捕获。
+</p>
+</dd>
+<dt><a id="index-gdb_003ainvalid_002dobject"></a><span><code class="code">gdb:invalid-object</code><a class="copiable-link" href="#index-gdb_003ainvalid_002dobject"> ¶</a></span></dt>
+<dd><p>当访问包装底层
+<small class="sc">GDB</small> 对象的Guile对象时，如果这些对象已变得无效，会抛出此异常。例如，如果用户从命令行删除了一个
+<code class="code">&lt;gdb:breakpoint&gt;</code> 对象，该对象在Guile中仍然存在，但它所代表的对象已不存在。对这个断点进行进一步操作将抛出此异常。
+</p>
+</dd>
+<dt><a id="index-gdb_003amemory_002derror"></a><span><code class="code">gdb:memory-error</code><a class="copiable-link" href="#index-gdb_003amemory_002derror"> ¶</a></span></dt>
+<dd><p>当操作试图访问被调试程序中的无效内存时，会抛出此异常。
+</p>
+</dd>
+<dt><a id="index-gdb_003app_002dtype_002derror"></a><span><code class="code">gdb:pp-type-error</code><a class="copiable-link" href="#index-gdb_003app_002dtype_002derror"> ¶</a></span></dt>
+<dd><p>当Guile漂亮打印机将一个错误的对象传递给 <small class="sc">GDB</small>时，会抛出此异常。
+</p></dd>
+</dl>
+
+<p>以下与异常相关的过程由
+<code class="code">(gdb)</code> 模块提供。
+</p>
+<dl class="first-deffn">
+<dt class="deffn" id="index-make_002dexception"><span class="category-def">Scheme过程： </span><span><strong class="def-name">make-exception</strong> <var class="def-var-arguments">键 参数</var><a class="copiable-link" href="#index-make_002dexception"> ¶</a></span></dt>
+<dd><p>根据其 <code class="code">&lt;gdb:exception&gt;</code> 对象的 <var class="var">键</var> 和
+<var class="var">参数返回一个对象，这些是异常的标准Guile参数。
+有关更多信息，请参阅Guile文档（请参阅</var> <a data-manual="guile" href="https://www.gnu.org/software/guile/manual/html_node/Exceptions.html#Exceptions">异常</a> 在 <cite class="cite">GNU Guile参考手册</cite>中）。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-exception_003f"><span class="category-def">Scheme过程： </span><span><strong class="def-name">exception?</strong> <var class="def-var-arguments">对象</var><a class="copiable-link" href="#index-exception_003f"> ¶</a></span></dt>
+<dd><p>如果 <code class="code">#t</code> 。否则返回 <var class="var">对象</var> 是一个 <code class="code">&lt;gdb:exception&gt;</code> 对象，则返回 <code class="code">#f</code>。
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-exception_002dkey"><span class="category-def">Scheme过程： </span><span><strong class="def-name">exception-key</strong> <var class="def-var-arguments">异常</var><a class="copiable-link" href="#index-exception_002dkey"> ¶</a></span></dt>
+<dd><p>返回一个 <var class="var">参数</var> 字段。 <code class="code">&lt;gdb:exception&gt;</code> 对象的
+</p></dd></dl>
+
+<dl class="first-deffn">
+<dt class="deffn" id="index-exception_002dargs"><span class="category-def">Scheme过程： </span><span><strong class="def-name">exception-args</strong> <var class="def-var-arguments">异常</var><a class="copiable-link" href="#index-exception_002dargs"> ¶</a></span></dt>
+<dd><p>返回一个 <var class="var">参数</var> 字段。 <code class="code">&lt;gdb:exception&gt;</code> 对象的
+</p></dd></dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Values-From-Inferior-In-Guile.html">Guile中来自被调试程序的值</a>, 上一项： <a href="GDB-Scheme-Data-Types.html">GDB Scheme数据类型</a>, 上一项： <a href="Guile-API.html">Guile API</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

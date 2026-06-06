@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>库列表格式（使用GDB调试）</title>
+
+<meta name="description" content="Library List Format (Debugging with GDB)"/>
+<meta name="keywords" content="Library List Format (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Library-List-Format-for-SVR4-Targets.html" rel="next" title="Library List Format for SVR4 Targets"/>
+<link href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="prev" title="File-I/O Remote Protocol Extension"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Library-List-Format">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Library-List-Format-for-SVR4-Targets.html" rel="next">SVR4目标的库列表格式</a>, 上一项： <a accesskey="p" href="File_002dI_002fO-Remote-Protocol-Extension.html" rel="prev">文件I/O远程协议扩展</a>, 上级： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Library-List-Format-1"><span>E.15 库列表格式<a class="copiable-link" href="#Library-List-Format-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-library-list-format_002c-remote-protocol"></a>
+
+<p>在某些平台上，动态加载器（例如 <samp class="file">ld.so</samp>) 与您的应用程序在同一进程中运行以管理库。在这种情况下，
+<small class="sc">GDB</small> 可以使用加载器的符号表和正常的内存操作来维护共享库列表。在其他平台上，操作系统管理已加载的库。
+<small class="sc">GDB</small> 无法通过内存操作检索当前已加载的库列表，因此它使用 ‘<samp class="samp">qXfer:libraries:read</samp>’ 数据包（请参阅 <a class="pxref" href="General-Query-Packets.html#qXfer-library-list-read">qXfer库列表读取</a>) 代替。远程存根查询目标的操作系统并报告哪些库已加载。
+</p>
+<p>‘<samp class="samp">qXfer:libraries:read</samp>’ 数据包返回一个XML文档，该文档列出了已加载的库及其偏移量。每个库都有一个关联的名称和一个或多个段或节基地址，这些地址报告库在内存中的加载位置。
+</p>
+<p>对于完全链接的二进制库的常见情况，库应该有一个段列表。如果目标支持可重定位目标文件的动态链接，其库XML元素应该包含一个已分配节的列表。段或节基地址是起始地址，而不是重定位偏移量；它们不依赖于库的链接时基地址。
+</p>
+<p><small class="sc">GDB</small> 必须与Expat库链接以支持XML库列表。请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+<p>一个简单的内存映射，其中一个已加载的库通过单个偏移量进行重定位，如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;library-list&gt;
+  &lt;library name=&#34;/lib/libc.so.6&#34;&gt;
+    &lt;segment address=&#34;0x10000000&#34;/&gt;
+  &lt;/library&gt;
+&lt;/library-list&gt;
+</pre></div>
+
+<p>另一个简单的内存映射，其中一个已加载的库有三个已分配的节（.text、.data、.bss），如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;library-list&gt;
+  &lt;library name=&#34;sharedlib.o&#34;&gt;
+    &lt;section address=&#34;0x10000000&#34;/&gt;
+    &lt;section address=&#34;0x20000000&#34;/&gt;
+    &lt;section address=&#34;0x30000000&#34;/&gt;
+  &lt;/library&gt;
+&lt;/library-list&gt;
+</pre></div>
+
+<p>库列表的格式由以下DTD描述：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!-- library-list: 带有版本信息的根元素 --&gt;
+&lt;!ELEMENT library-list  (library)*&gt;
+&lt;!ATTLIST library-list  version CDATA   #FIXED  &#34;1.0&#34;&gt;
+&lt;!ELEMENT library       (segment*, section*)&gt;
+&lt;!ATTLIST library       name    CDATA   #REQUIRED&gt;
+&lt;!ELEMENT segment       EMPTY&gt;
+&lt;!ATTLIST segment       address CDATA   #REQUIRED&gt;
+&lt;!ELEMENT section       EMPTY&gt;
+&lt;!ATTLIST section       address CDATA   #REQUIRED&gt;
+</pre></div>
+
+<p>此外，段和节描述符不能在单个库元素中混合使用，并且每个库必须至少提供一个段或节。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Library-List-Format-for-SVR4-Targets.html">SVR4目标的库列表格式</a>, 上一项： <a href="File_002dI_002fO-Remote-Protocol-Extension.html">文件I/O远程协议扩展</a>, 上级： <a href="Remote-Protocol.html"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

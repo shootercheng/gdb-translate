@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>系统范围的配置脚本（使用 GDB 调试）</title>
+
+<meta name="description" content="System-wide Configuration Scripts (Debugging with GDB)"/>
+<meta name="keywords" content="System-wide Configuration Scripts (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="System_002dwide-configuration.html" rel="up" title="System-wide configuration"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="System_002dwide-Configuration-Scripts">
+<div class="nav-panel">
+<p>
+上一级： <a accesskey="u" href="System_002dwide-configuration.html" rel="up">系统范围的配置和设置</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Installed-System_002dwide-Configuration-Scripts"><span>C.6.1 已安装的系统范围配置脚本<a class="copiable-link" href="#Installed-System_002dwide-Configuration-Scripts"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-system_002dwide-configuration-scripts"></a>
+
+<p> <samp class="file">system - gdbinit</samp> 目录，位于数据目录内
+（如在配置时由 <samp class="option">--with - gdb - datadir</samp> 指定）包含
+多个可作为系统范围初始化文件使用的脚本。要在启动时自动加载这些脚本， <small class="sc">GDB</small> 应使用 <samp class="option">--with - system - gdbinit</samp>进行配置。否则，任何用户都应该能够根据需要手动加载它们。
+</p>
+<p>目前可用的脚本如下：
+</p><ul class="itemize mark-bullet">
+<li><samp class="file">elinos.py</samp>
+<a class="index-entry-id" id="index-elinos_002epy"></a>
+<a class="index-entry-id" id="index-ELinOS-system_002dwide-configuration-script"></a>
+此脚本在调试 ELinOS 目标上的程序时很有用。
+它利用标准 ELinOS 环境中定义的环境变量来确定系统共享库的位置，然后适当地设置 ‘<samp class="samp">solib - absolute - prefix</samp>’
+和 ‘<samp class="samp">solib - search - path</samp>’ 变量。
+
+</li><li><samp class="file">wrs - linux.py</samp>
+<a class="index-entry-id" id="index-wrs_002dlinux_002epy"></a>
+<a class="index-entry-id" id="index-Wind-River-Linux-system_002dwide-configuration-script"></a>
+此脚本在调试运行 Wind River Linux 的目标上的程序时很有用。它期望 <code class="env">ENV_PREFIX</code> 设置为目标系统使用的主机端根文件系统。
+
+</li></ul>
+
+</div>
+
+
+
+
+
+</body></html>

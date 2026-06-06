@@ -1,0 +1,140 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>反向执行（使用 GDB 调试）</title>
+
+<meta name="description" content="Reverse Execution (Debugging with GDB)"/>
+<meta name="keywords" content="Reverse Execution (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Process-Record-and-Replay.html" rel="next" title="Process Record and Replay"/>
+<link href="Stopping.html" rel="prev" title="Stopping"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="Reverse-Execution">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Process-Record-and-Replay.html" rel="next">记录被调试程序的执行并回放</a>, 上一项： <a accesskey="p" href="Stopping.html" rel="prev">停止和继续</a> <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="Running-programs-backward"><span>6 反向运行程序<a class="copiable-link" href="#Running-programs-backward"> ¶</a></span></h2>
+<a class="index-entry-id" id="index-reverse-execution"></a>
+<a class="index-entry-id" id="index-running-programs-backward"></a>
+
+<p>在调试程序时，你可能会发现自己已经走得太远，一些感兴趣的事件已经发生，这并不罕见。如果目标环境支持， <small class="sc">GDB</small> 可以让你通过反向运行程序来“倒带”。
+</p>
+<p>支持反向执行的目标环境应该能够“撤销”程序正常执行时发生的机器状态变化。变量、寄存器等应该恢复到它们之前的值。显然，这需要目标环境具备很高的复杂度；并非所有目标环境都能支持反向执行。
+</p>
+<p>当程序反向执行时，最近执行的指令会按相反顺序“反执行”。程序计数器反向运行，沿着之前的执行线程反向进行。当每条指令被“反执行”时，该指令所改变的内存和/或寄存器的值会恢复到它们之前的状态。反向执行一段源代码后，该代码的所有副作用都应该被“撤销”，所有变量都应该恢复到它们之前的值。<a class="footnote" href="#FOOT7" id="DOCF7"><sup>7</sup></a>.
+</p>
+<p>在某些平台上， <small class="sc">GDB</small> 内置了对反向执行的支持，可通过 <code class="code">record</code> 或 <code class="code">record btrace</code>
+命令激活。请参阅 <a class="xref" href="Process-Record-and-Replay.html">记录被调试程序的执行并回放</a>. 一些远程目标，通常是全系统模拟器，直接支持反向执行，无需任何特殊命令。
+</p>
+<p>如果你在支持反向执行的目标环境中进行调试， <small class="sc">GDB</small> 提供以下命令。
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-rc-_0028reverse_002dcontinue_0029"></a>
+<a id="index-reverse_002dcontinue"></a><span><code class="code">reverse-continue <span class="r">[</span><var class="var">ignore-count</var><span class="r">]</span></code><a class="copiable-link" href="#index-reverse_002dcontinue"> ¶</a></span></dt>
+<dt><code class="code">rc <span class="r">[</span><var class="var">ignore-count</var><span class="r">]</span></code></dt>
+<dd><p>从程序最后停止的点开始，开始反向执行。反向执行会像正常执行一样，在断点和同步异常（信号）处停止。异步信号的行为取决于目标环境。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-rs-_0028step_0029"></a>
+<a id="index-reverse_002dstep"></a><span><code class="code">reverse-step <span class="r">[</span><var class="var">count</var><span class="r">]</span></code><a class="copiable-link" href="#index-reverse_002dstep"> ¶</a></span></dt>
+<dd><p>反向运行程序，直到控制到达不同源代码行的开头；然后停止程序，并将控制权返回给 <small class="sc">GDB</small>.
+</p>
+<p>与 <code class="code">step</code> 命令类似， <code class="code">reverse-step</code> 只会在源代码行的开头停止。它“反执行”之前执行的源代码行。如果之前的源代码行包含对可调试函数的调用， <code class="code">reverse-step</code> 将（反向）进入被调用的函数，停在 <em class="emph">最后</em>
+一条语句（通常是返回语句）的开头。
+</p>
+<p>此外，与 <code class="code">step</code> 命令一样，如果调用了不可调试的函数， <code class="code">reverse-step</code> 将反向运行通过它们而不停止。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-rsi-_0028reverse_002dstepi_0029"></a>
+<a id="index-reverse_002dstepi"></a><span><code class="code">reverse-stepi <span class="r">[</span><var class="var">count</var><span class="r">]</span></code><a class="copiable-link" href="#index-reverse_002dstepi"> ¶</a></span></dt>
+<dd><p>反向执行一条机器指令。请注意，要反向执行的指令 <em class="emph">不是</em> 程序计数器所指向的指令，而是在它之前执行的指令。例如，如果最后一条指令是跳转指令， <code class="code">reverse-stepi</code> 将带你从跳转的目标位置返回到跳转指令本身。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-rn-_0028reverse_002dnext_0029"></a>
+<a id="index-reverse_002dnext"></a><span><code class="code">reverse-next <span class="r">[</span><var class="var">count</var><span class="r">]</span></code><a class="copiable-link" href="#index-reverse_002dnext"> ¶</a></span></dt>
+<dd><p>反向运行到当前（最内层）栈帧中之前执行的行的开头。如果该行包含函数调用，它们将被“反执行”而不停止。从函数的第一行开始， <code class="code">reverse-next</code> 将带你返回到该函数的调用者， <em class="emph">在</em> 函数被调用之前，就像正常的 <code class="code">next</code> 命令会带你从函数的最后一行返回到其返回给调用者的位置一样。
+<a class="footnote" href="#FOOT8" id="DOCF8"><sup>8</sup></a>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-rni-_0028reverse_002dnexti_0029"></a>
+<a id="index-reverse_002dnexti"></a><span><code class="code">reverse-nexti <span class="r">[</span><var class="var">count</var><span class="r">]</span></code><a class="copiable-link" href="#index-reverse_002dnexti"> ¶</a></span></dt>
+<dd><p>与 <code class="code">nexti</code>, <code class="code">reverse-nexti</code> 反向执行一条指令，不同的是被调用的函数会被原子性地“反执行”。也就是说，如果之前执行的指令是从另一个函数返回， <code class="code">reverse-nexti</code> 将继续反向执行，直到到达从当前栈帧对该函数的调用位置。
+</p>
+</dd>
+<dt><a id="index-reverse_002dfinish"></a><span><code class="code">reverse-finish</code><a class="copiable-link" href="#index-reverse_002dfinish"> ¶</a></span></dt>
+<dd><p>就像 <code class="code">finish</code> 命令会带你到当前函数返回的点一样， <code class="code">reverse-finish</code> 会带你到它被调用的点。你不会停在当前函数调用的末尾，而是停在开头。
+</p>
+</dd>
+<dt><a id="index-set-exec_002ddirection"></a><span><code class="code">set exec-direction</code><a class="copiable-link" href="#index-set-exec_002ddirection"> ¶</a></span></dt>
+<dd><p>设置目标执行的方向。
+</p></dd>
+<dt><a id="index-execute-forward-or-backward-in-time"></a><span><code class="code">set exec-direction reverse</code><a class="copiable-link" href="#index-execute-forward-or-backward-in-time"> ¶</a></span></dt>
+<dd><p><small class="sc">GDB</small> 将以反向方式执行所有执行命令，直到执行方向模式更改为“正向”。受影响的命令包括
+<code class="code">step, stepi, next, nexti, continue, and finish</code>. 不能在反向模式下使用 <code class="code">return</code>
+命令。
+</p></dd>
+<dt><code class="code">set exec-direction forward</code></dt>
+<dd><p><small class="sc">GDB</small> 将以正常方式执行所有执行命令。这是默认设置。
+</p></dd>
+</dl>
+
+
+</div>
+<div class="footnotes-segment">
+<hr/>
+<h4 class="footnotes-heading">脚注</h4>
+
+<h5 class="footnote-body-heading"><a href="#DOCF7" id="FOOT7">(7)</a></h5>
+<p>请注意，有些副作用比其他副作用更容易撤销。例如，内存和寄存器相对容易处理，但设备 I/O 则比较困难。有些目标可能能够撤销设备 I/O 之类的操作，而有些则可能不行。
+</p>
+<p>之间的约定 <small class="sc">GDB</small> 和反向执行目标只要求目标在
+<small class="sc">GDB</small> 要求它反向执行时做一些合理的事情，然后将结果报告回 <small class="sc">GDB</small>. 无论目标报告给
+<small class="sc">GDB</small>, <small class="sc">GDB</small> 都会报告给用户。  <small class="sc">GDB</small>
+假定目标报告的内存和寄存器处于一致状态，但 <small class="sc">GDB</small> 会接受所提供的任何内容。
+</p>
+<h5 class="footnote-body-heading"><a href="#DOCF8" id="FOOT8">(8)</a></h5>
+<p>除非代码经过了过度优化。</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Process-Record-and-Replay.html">记录被调试程序的执行并回放</a>, 上一项： <a href="Stopping.html">停止和继续</a>, 上一项： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

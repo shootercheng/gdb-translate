@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>屏幕尺寸（使用GDB调试）</title>
+
+<meta name="description" content="Screen Size (Debugging with GDB)"/>
+<meta name="keywords" content="Screen Size (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Controlling-GDB.html" rel="up" title="Controlling GDB"/>
+<link href="Output-Styling.html" rel="next" title="Output Styling"/>
+<link href="Command-History.html" rel="prev" title="Command History"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Screen-Size">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Output-Styling.html" rel="next">输出样式设置</a>, 上一项： <a accesskey="p" href="Command-History.html" rel="prev">命令历史记录</a>, 上级： <a accesskey="u" href="Controlling-GDB.html" rel="up">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Screen-Size-1"><span>22.4 屏幕尺寸<a class="copiable-link" href="#Screen-Size-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-size-of-screen"></a>
+<a class="index-entry-id" id="index-screen-size"></a>
+<a class="index-entry-id" id="index-pagination"></a>
+<a class="index-entry-id" id="index-page-size"></a>
+<a class="index-entry-id" id="index-pauses-in-output"></a>
+
+<p>某些命令 <small class="sc">GDB</small> 可能会产生大量的信息输出到屏幕上。为了帮助您阅读所有内容，
+<small class="sc">GDB</small> 会在每一页输出结束时暂停并要求您输入。输入 <kbd class="key">回车键</kbd> 当您想查看下一页输出时，
+<kbd class="kbd">q</kbd> 以丢弃剩余的输出，或者 <kbd class="kbd">c</kbd> 以继续执行当前命令而不进行分页。此外，屏幕宽度设置决定了何时换行输出。根据输出内容的不同， <small class="sc">GDB</small> 会尝试在一个易读的位置换行，而不是简单地让其溢出到下一行。
+</p>
+<p>通常情况下 <small class="sc">GDB</small> 会从终端驱动软件获取屏幕尺寸信息。例如，在Unix系统上 <small class="sc">GDB</small> 会使用termcap数据库以及 <code class="env">TERM</code> 环境变量的值和
+<code class="code">stty rows</code> 以及 <code class="code">stty cols</code> 设置。如果这些信息不正确，您可以使用 <code class="code">set height</code> 和 <code class="code">set
+width</code> 命令来覆盖它：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set-width"></a>
+<a class="index-entry-id" id="index-show-width"></a>
+<a class="index-entry-id" id="index-show-height"></a>
+<a id="index-set-height"></a><span><code class="code">set height <var class="var">lpp</var></code><a class="copiable-link" href="#index-set-height"> ¶</a></span></dt>
+<dt><code class="code">set height unlimited</code></dt>
+<dt><code class="code">show height</code></dt>
+<dt><code class="code">set width <var class="var">cpl</var></code></dt>
+<dt><code class="code">set width unlimited</code></dt>
+<dt><code class="code">show width</code></dt>
+<dd><p>这些 <code class="code">set</code> 命令指定屏幕高度为 <var class="var">每页行数</var> 行，屏幕宽度为 <var class="var">每行字符数</var> 个字符。相关的 <code class="code">show</code>
+命令用于显示当前设置。
+</p>
+<p>如果您指定的高度为 <code class="code">unlimited</code> 或零行，
+<small class="sc">GDB</small> 无论输出有多长，在输出过程中都不会暂停。如果输出是到文件或编辑器缓冲区，这很有用。
+</p>
+<p>同样，您可以指定 ‘<samp class="samp">设置宽度无限制</samp>’ 或 ‘<samp class="samp">设置宽度为0</samp>’ 以防止 <small class="sc">GDB</small> 对其输出进行换行。
+</p>
+</dd>
+<dt><a id="index-set-pagination"></a><span><code class="code">set pagination on</code><a class="copiable-link" href="#index-set-pagination"> ¶</a></span></dt>
+<dt><code class="code">set pagination off</code></dt>
+<dd><p>开启或关闭输出分页；默认是开启的。关闭分页是替代 <code class="code">set height unlimited</code>的另一种方法。请注意，运行 <small class="sc">GDB</small> 时使用 <samp class="option">--batch</samp> 选项（见 <a class="pxref" href="Mode-Options.html">-batch</a>) 也会自动禁用分页。
+</p>
+</dd>
+<dt><a id="index-show-pagination"></a><span><code class="code">show pagination</code><a class="copiable-link" href="#index-show-pagination"> ¶</a></span></dt>
+<dd><p>显示当前的分页模式。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Output-Styling.html">输出样式设置</a>, 上一项： <a href="Command-History.html">命令历史记录</a>, 上级： <a href="Controlling-GDB.html">控制 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

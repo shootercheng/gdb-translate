@@ -1,0 +1,108 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>跟踪帧信息格式（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Traceframe Info Format (Debugging with GDB)"/>
+<meta name="keywords" content="Traceframe Info Format (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Protocol.html" rel="up" title="Remote Protocol"/>
+<link href="Branch-Trace-Format.html" rel="next" title="Branch Trace Format"/>
+<link href="Thread-List-Format.html" rel="prev" title="Thread List Format"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Traceframe-Info-Format">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Branch-Trace-Format.html" rel="next">分支跟踪格式</a> <a accesskey="p" href="Thread-List-Format.html" rel="prev">线程列表格式</a>, 上一项： <a accesskey="u" href="Remote-Protocol.html" rel="up"><small class="sc">GDB</small> 远程串行协议</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Traceframe-Info-Format-1"><span>E.19 跟踪帧信息格式<a class="copiable-link" href="#Traceframe-Info-Format-1"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-traceframe-info-format"></a>
+
+<p>为了能够在检查跟踪点命中时知道可以检查 inferior 中的哪些对象， <small class="sc">GDB</small> 需要获取在跟踪帧中收集的内存范围、寄存器和跟踪状态变量的列表。
+</p>
+<p>此列表是使用 ‘<samp class="samp">qXfer:traceframe-info:read</samp>’
+（请参阅 <a class="pxref" href="General-Query-Packets.html#qXfer-traceframe-info-read">qXfer 跟踪帧信息读取</a>) 数据包获取的，并且是一个 XML 文档。
+</p>
+<p><small class="sc">GDB</small> 必须与 Expat 库链接以支持 XML 跟踪帧信息发现。 请参阅 <a class="xref" href="Requirements.html#Expat">Expat</a>.
+</p>
+<p>文档的顶级结构如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;?xml version=&#34;1.0&#34;?&gt;
+&lt;!DOCTYPE traceframe-info
+          PUBLIC &#34;+//IDN gnu.org//DTD GDB Memory Map V1.0//EN&#34;
+                 &#34;http://sourceware.org/gdb/gdb-traceframe-info.dtd&#34;&gt;
+&lt;traceframe-info&gt;
+   block...
+&lt;/traceframe-info&gt;
+</pre></div>
+
+<p>每个跟踪帧块可以是以下两种类型之一：
+</p>
+<ul class="itemize mark-bullet">
+<li>从 <var class="var">地址</var> 开始收集的内存区域，
+<var class="var">长度</var> 为从该地址起的字节数：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;memory start=&#34;<var class="var">地址</var>&#34; length=&#34;<var class="var">长度</var>&#34;/&gt;
+</pre></div>
+
+</li><li>一个块，表示编号为 <var class="var">编号</var> 的跟踪状态变量已被收集：
+
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;tvar id=&#34;<var class="var">编号</var>&#34;/&gt;
+</pre></div>
+
+</li></ul>
+
+<p>跟踪帧信息格式的正式 DTD 如下所示：
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">&lt;!ELEMENT traceframe-info  (memory | tvar)* &gt;
+&lt;!ATTLIST traceframe-info  version CDATA   #FIXED  &#34;1.0&#34;&gt;
+
+&lt;!ELEMENT memory        EMPTY&gt;
+&lt;!ATTLIST memory        start   CDATA   #REQUIRED
+                        length  CDATA   #REQUIRED&gt;
+&lt;!ELEMENT tvar&gt;
+&lt;!ATTLIST tvar          id      CDATA   #REQUIRED&gt;
+</pre></div>
+
+</div>
+
+
+
+
+
+</body></html>

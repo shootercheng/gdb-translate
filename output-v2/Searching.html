@@ -1,0 +1,76 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>搜索（使用GDB调试）</title>
+
+<meta name="description" content="Searching (Debugging with GDB)"/>
+<meta name="keywords" content="Searching (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Readline-Interaction.html" rel="up" title="Readline Interaction"/>
+<link href="Readline-Arguments.html" rel="prev" title="Readline Arguments"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Searching">
+<div class="nav-panel">
+<p>
+上一项： <a accesskey="p" href="Readline-Arguments.html" rel="prev">Readline参数</a>, 上一级： <a accesskey="u" href="Readline-Interaction.html" rel="up">Readline交互</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Searching-for-Commands-in-the-History"><span>33.2.5 在历史记录中搜索命令<a class="copiable-link" href="#Searching-for-Commands-in-the-History"> ¶</a></span></h4>
+
+<p>Readline提供了用于在命令历史记录中搜索包含指定字符串的行的命令。有两种搜索模式：  <em class="dfn">增量式</em> 和 <em class="dfn">非增量式</em>.
+</p>
+<p>增量式搜索在用户输入完搜索字符串之前就开始。当输入搜索字符串的每个字符时，Readline会显示历史记录中与到目前为止输入的字符串匹配的下一个条目。增量式搜索只需要输入足够的字符来找到所需的历史记录条目。要在历史记录中向后搜索特定字符串，请输入
+<kbd class="kbd">C-r</kbd>. 输入 <kbd class="kbd">C-s</kbd> 可在历史记录中向前搜索。 <code class="code">isearch-terminators</code> 变量的值中的字符用于终止增量式搜索。如果该变量未被赋值，则 <kbd class="key">ESC</kbd> 和
+<kbd class="kbd">C-J</kbd> 字符将终止增量式搜索。
+<kbd class="kbd">C-g</kbd> 将中止增量式搜索并恢复原始行。当搜索终止时，包含搜索字符串的历史记录条目将成为当前行。
+</p>
+<p>要在历史记录列表中查找其他匹配的条目，请输入 <kbd class="kbd">C-r</kbd> 或
+<kbd class="kbd">C-s</kbd> 视情况而定。这将在历史记录中向后或向前搜索与到目前为止输入的搜索字符串匹配的下一个条目。任何其他绑定到Readline命令的键序列将终止搜索并执行该命令。例如，一个 <kbd class="key">RET</kbd> 将终止搜索并接受该行，从而执行历史记录列表中的命令。移动命令将终止搜索，使最后找到的行成为当前行，并开始编辑。
+</p>
+<p>Readline会记住上一次增量式搜索字符串。如果连续输入两个
+<kbd class="kbd">C-r</kbd>且中间没有输入定义新搜索字符串的字符，则会使用之前记住的搜索字符串。
+</p>
+<p>非增量式搜索在开始搜索匹配的历史记录行之前会读取整个搜索字符串。搜索字符串可以由用户输入，也可以是当前行内容的一部分。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+上一项： <a href="Readline-Arguments.html">Readline参数</a>, 上一级： <a href="Readline-Interaction.html">Readline交互</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

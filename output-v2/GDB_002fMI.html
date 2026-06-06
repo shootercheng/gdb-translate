@@ -1,0 +1,125 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>GDB/MI（使用GDB进行调试）</title>
+
+<meta name="description" content="GDB/MI (Debugging with GDB)"/>
+<meta name="keywords" content="GDB/MI (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="index.html" rel="up" title="Top"/>
+<link href="Annotations.html" rel="next" title="Annotations"/>
+<link href="Emacs.html" rel="prev" title="Emacs"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="chapter-level-extent" id="GDB_002fMI">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Annotations.html" rel="next"><small class="sc">GDB</small> 注释</a>, 上一项： <a accesskey="p" href="Emacs.html" rel="prev">使用 <small class="sc">GDB</small>  <small class="sc">GNU</small> Emacs</a>, 上级： <a accesskey="u" href="index.html" rel="up">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h2 class="chapter" id="The-gdb_002fmi-Interface"><span>27 关于 <small class="sc">GDB/MI</small> 接口<a class="copiable-link" href="#The-gdb_002fmi-Interface"> ¶</a></span></h2>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="#Function-and-Purpose">功能和用途</a></li>
+<li><a accesskey="2" href="#Notation-and-Terminology">符号和术语</a></li>
+<li><a accesskey="3" href="GDB_002fMI-General-Design.html"><small class="sc">GDB/MI</small> 总体设计</a></li>
+<li><a accesskey="4" href="GDB_002fMI-Command-Syntax.html"><small class="sc">GDB/MI</small> 命令语法</a></li>
+<li><a accesskey="5" href="GDB_002fMI-Compatibility-with-CLI.html"><small class="sc">GDB/MI</small> 与命令行界面的兼容性</a></li>
+<li><a accesskey="6" href="GDB_002fMI-Development-and-Front-Ends.html"><small class="sc">GDB/MI</small> 开发和前端</a></li>
+<li><a accesskey="7" href="GDB_002fMI-Output-Records.html"><small class="sc">GDB/MI</small> 输出记录</a></li>
+<li><a accesskey="8" href="GDB_002fMI-Simple-Examples.html">简单示例 <small class="sc">GDB/MI</small> 交互</a></li>
+<li><a accesskey="9" href="GDB_002fMI-Command-Description-Format.html"><small class="sc">GDB/MI</small> 命令描述格式</a></li>
+<li><a href="GDB_002fMI-Breakpoint-Commands.html"><small class="sc">GDB/MI</small> 断点命令</a></li>
+<li><a href="GDB_002fMI-Catchpoint-Commands.html"><small class="sc">GDB/MI</small> 捕获点命令</a></li>
+<li><a href="GDB_002fMI-Program-Context.html"><small class="sc">GDB/MI</small>  程序上下文</a></li>
+<li><a href="GDB_002fMI-Thread-Commands.html"><small class="sc">GDB/MI</small> 线程命令</a></li>
+<li><a href="GDB_002fMI-Ada-Tasking-Commands.html"><small class="sc">GDB/MI</small> Ada任务命令</a></li>
+<li><a href="GDB_002fMI-Program-Execution.html"><small class="sc">GDB/MI</small> 程序执行</a></li>
+<li><a href="GDB_002fMI-Stack-Manipulation.html"><small class="sc">GDB/MI</small> 栈操作命令</a></li>
+<li><a href="GDB_002fMI-Variable-Objects.html"><small class="sc">GDB/MI</small> 变量对象</a></li>
+<li><a href="GDB_002fMI-Data-Manipulation.html"><small class="sc">GDB/MI</small> 数据操作</a></li>
+<li><a href="GDB_002fMI-Tracepoint-Commands.html"><small class="sc">GDB/MI</small> 跟踪点命令</a></li>
+<li><a href="GDB_002fMI-Symbol-Query.html"><small class="sc">GDB/MI</small> 符号查询命令</a></li>
+<li><a href="GDB_002fMI-File-Commands.html"><small class="sc">GDB/MI</small> 文件命令</a></li>
+<li><a href="GDB_002fMI-Target-Manipulation.html"><small class="sc">GDB/MI</small> 目标操作命令</a></li>
+<li><a href="GDB_002fMI-File-Transfer-Commands.html"><small class="sc">GDB/MI</small> 文件传输命令</a></li>
+<li><a href="GDB_002fMI-Ada-Exceptions-Commands.html">Ada异常 <small class="sc">GDB/MI</small> 命令</a></li>
+<li><a href="GDB_002fMI-Support-Commands.html"><small class="sc">GDB/MI</small> 支持命令</a></li>
+<li><a href="GDB_002fMI-Miscellaneous-Commands.html">杂项 <small class="sc">GDB/MI</small> 命令</a></li>
+</ul>
+<div class="unnumberedsec-level-extent" id="Function-and-Purpose">
+<h3 class="unnumberedsec"><span>功能和用途<a class="copiable-link" href="#Function-and-Purpose"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-gdb_002fmi_002c-its-purpose"></a>
+<p><small class="sc">GDB/MI</small> 是一个基于行的面向机器的文本接口，用于
+<small class="sc">GDB</small> 并通过指定使用
+<samp class="option">--interpreter</samp> 命令行选项来激活（请参阅 <a class="pxref" href="Mode-Options.html">选择模式</a>）。它专门用于支持开发将调试器作为更大系统的一个小组件的系统。
+</p>
+<p>本章是对 <small class="sc">GDB/MI</small> 接口的规范说明。它以参考手册的形式编写。
+</p>
+<p>请注意， <small class="sc">GDB/MI</small> 仍在建设中，因此下面描述的一些功能不完整，可能会发生变化（请参阅 <a class="pxref" href="GDB_002fMI-Development-and-Front-Ends.html"><small class="sc">GDB/MI</small> 开发和前端</a>）。  
+</p>
+</div>
+<div class="unnumberedsec-level-extent" id="Notation-and-Terminology">
+<h3 class="unnumberedsec"><span>符号和术语<a class="copiable-link" href="#Notation-and-Terminology"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-notational-conventions_002c-for-gdb_002fmi"></a>
+<p>本章使用以下符号：
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">|</code> 分隔两个选项。
+
+</li><li><code class="code">[ <var class="var">something</var> ]</code> 表示 <var class="var">某事物</var> 是可选的：它可以有也可以没有。
+
+</li><li><code class="code">( <var class="var">group</var> )*</code> 表示 <var class="var">组</var> 括号内的内容可以重复零次或多次。
+
+</li><li><code class="code">( <var class="var">group</var> )+</code> 表示 <var class="var">组</var> 括号内的内容可以重复一次或多次。
+
+</li><li><code class="code">( <var class="var">group</var> )</code> 表示 <var class="var">组</var> 括号内的内容恰好出现一次。
+
+</li><li><code class="code">&#34;<var class="var">string</var>&#34;</code> 表示一个字面 <var class="var">字符串</var>。
+</li></ul>
+
+
+
+</div>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Annotations.html"><small class="sc">GDB</small> 注释</a>, 上一项： <a href="Emacs.html">使用 <small class="sc">GDB</small> 在 <small class="sc">GNU</small> Emacs</a>, 上级： <a href="index.html">使用 <small class="sc">GDB</small></a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

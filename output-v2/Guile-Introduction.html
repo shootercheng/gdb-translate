@@ -1,0 +1,65 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>Guile 介绍（使用 GDB 进行调试）</title>
+
+<meta name="description" content="Guile Introduction (Debugging with GDB)"/>
+<meta name="keywords" content="Guile Introduction (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Guile.html" rel="up" title="Guile"/>
+<link href="Guile-Commands.html" rel="next" title="Guile Commands"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Guile-Introduction">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Guile-Commands.html" rel="next">Guile 命令</a>, 上一项： <a accesskey="u" href="Guile.html" rel="up">扩展 <small class="sc">GDB</small> 使用 Guile</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="Guile-Introduction-1"><span>23.4.1 Guile 介绍<a class="copiable-link" href="#Guile-Introduction-1"> ¶</a></span></h4>
+
+<p>Guile 是 Scheme 编程语言的一种实现，并且是 GNU 项目的官方扩展语言。
+</p>
+<p>对 Guile 的支持在 <small class="sc">GDB</small> 中与对 Python 的支持在 <small class="sc">GDB</small>
+中相当接近，因此那里的概念应该可以沿用。不过，在合理的情况下，有些事情的处理方式会有所不同。
+</p>
+<p><small class="sc">GDB</small> 需要 Guile 版本 3.0、2.2 或 2.0。
+</p>
+<a class="index-entry-id" id="index-guile-scripts-directory"></a>
+<p>使用的 Guile 脚本 <small class="sc">GDB</small> 应该安装在
+<samp class="file"><var class="var">数据目录</var>/guile</samp>, 其中 <var class="var">数据目录</var> 是在 <small class="sc">GDB</small> 启动时确定的数据目录（请参阅 <a class="pxref" href="Data-Files.html">GDB 数据文件</a>)。这个目录，称为 <em class="dfn">Guile 目录</em>，会自动添加到 Guile 搜索路径中，以便 Guile 解释器能够找到安装在该位置的所有脚本。
+</p>
+</div>
+
+
+
+
+
+</body></html>

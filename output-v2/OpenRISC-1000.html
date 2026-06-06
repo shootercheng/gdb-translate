@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>OpenRISC 1000（使用 GDB 进行调试）</title>
+
+<meta name="description" content="OpenRISC 1000 (Debugging with GDB)"/>
+<meta name="keywords" content="OpenRISC 1000 (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Embedded-Processors.html" rel="up" title="Embedded Processors"/>
+<link href="PowerPC-Embedded.html" rel="next" title="PowerPC Embedded"/>
+<link href="MIPS-Embedded.html" rel="prev" title="MIPS Embedded"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="OpenRISC-1000">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="PowerPC-Embedded.html" rel="next">嵌入式 PowerPC</a>, 上一项： <a accesskey="p" href="MIPS-Embedded.html" rel="prev"><abbr class="acronym">MIPS</abbr> 嵌入式</a>, 上级： <a accesskey="u" href="Embedded-Processors.html" rel="up">嵌入式处理器</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="OpenRISC-1000-1"><span>21.3.7 OpenRISC 1000<a class="copiable-link" href="#OpenRISC-1000-1"> ¶</a></span></h4>
+<a class="index-entry-id" id="index-OpenRISC-1000"></a>
+
+<p>OpenRISC 1000 提供了一种免费的 RISC 指令集架构。它主要作为软核提供，可以在赛灵思（Xilinx）、阿尔特拉（Altera）和其他现场可编程门阵列（FPGA）上运行。
+</p>
+<p><small class="sc">GDB</small> 对于 OpenRISC，在连接到目标时支持以下命令：
+</p>
+<dl class="table">
+<dt><a id="index-target-sim"></a><span><code class="code">target sim</code><a class="copiable-link" href="#index-target-sim"> ¶</a></span></dt>
+<dd>
+<p>运行内置的 CPU 模拟器，该模拟器可以运行非常基本的程序，但不支持大多数硬件功能，如内存管理单元（MMU）。对于更复杂的用例，建议用户运行外部目标，并使用‘<samp class="samp">目标远程连接</samp>’进行连接。
+</p>
+<p>示例： <code class="code">target sim</code>
+</p>
+</dd>
+<dt><code class="code">set debug or1k</code></dt>
+<dd><p>切换是否显示来自 OpenRISC 目标支持子系统的特定于 OpenRISC 的调试消息。
+</p>
+</dd>
+<dt><code class="code">show debug or1k</code></dt>
+<dd><p>显示是否启用了特定于 OpenRISC 的调试消息。
+</p></dd>
+</dl>
+
+</div>
+
+
+
+
+
+</body></html>

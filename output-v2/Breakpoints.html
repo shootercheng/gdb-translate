@@ -1,0 +1,106 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>断点（使用GDB进行调试）</title>
+
+<meta name="description" content="Breakpoints (Debugging with GDB)"/>
+<meta name="keywords" content="Breakpoints (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Stopping.html" rel="up" title="Stopping"/>
+<link href="Continuing-and-Stepping.html" rel="next" title="Continuing and Stepping"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Breakpoints">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Continuing-and-Stepping.html" rel="next">继续和单步执行</a>, 上一项： <a accesskey="u" href="Stopping.html" rel="up">停止和继续</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Breakpoints_002c-Watchpoints_002c-and-Catchpoints"><span>5.1 断点、观察点和捕获点<a class="copiable-link" href="#Breakpoints_002c-Watchpoints_002c-and-Catchpoints"> ¶</a></span></h3>
+
+<a class="index-entry-id" id="index-breakpoints"></a>
+<p>一个 <em class="dfn">断点</em> 会使你的程序在达到程序中的某个特定点时停止。对于每个断点，你可以添加条件来更精细地控制程序是否停止。你可以使用 <code class="code">break</code> 命令及其变体来设置断点（请参阅 <a class="pxref" href="Set-Breaks.html">设置断点</a>），通过行号、函数名或程序中的精确地址来指定程序应该停止的位置。
+</p>
+<p>在某些系统上，你可以在可执行文件运行之前在共享库中设置断点。
+</p>
+<a class="index-entry-id" id="index-watchpoints"></a>
+<a class="index-entry-id" id="index-data-breakpoints"></a>
+<a class="index-entry-id" id="index-memory-tracing"></a>
+<a class="index-entry-id" id="index-breakpoint-on-memory-address"></a>
+<a class="index-entry-id" id="index-breakpoint-on-variable-modification"></a>
+<p>一个 <em class="dfn">观察点</em> 是一种特殊的断点，当表达式的值发生变化时会使你的程序停止。该表达式可以是一个变量的值，也可以涉及一个或多个变量通过运算符组合的值，例如 ‘<samp class="samp">a + b</samp>’。这有时被称为
+<em class="dfn">数据断点</em>。你必须使用不同的命令来设置观察点（请参阅 <a class="pxref" href="Set-Watchpoints.html">设置观察点</a>），但除此之外，你可以像管理其他断点一样管理观察点：你可以使用相同的命令启用、禁用和删除断点和观察点。
+</p>
+<p>你可以安排在程序 <small class="sc">GDB</small> 在断点处停止时自动显示程序中的值。请参阅 <a class="xref" href="Auto-Display.html">自动显示</a>。
+</p>
+<a class="index-entry-id" id="index-catchpoints"></a>
+<a class="index-entry-id" id="index-breakpoint-on-events"></a>
+<p>一个 <em class="dfn">捕获点</em> 是另一种特殊的断点，当发生某种特定类型的事件时会使你的程序停止，例如抛出C<code class="t">++</code>
+异常或加载库。与观察点一样，你使用不同的命令来设置捕获点（请参阅 <a class="pxref" href="Set-Catchpoints.html">设置捕获点</a>），但除此之外，你可以像管理其他断点一样管理捕获点。（要在程序接收到信号时停止，请使用
+<code class="code">handle</code> 命令；请参阅 <a class="ref" href="Signals.html">信号</a>。）
+</p>
+<a class="index-entry-id" id="index-breakpoint-numbers"></a>
+<a class="index-entry-id" id="index-numbers-for-breakpoints"></a>
+<p><small class="sc">GDB</small> 在你创建每个断点、观察点或捕获点时会为其分配一个编号；这些编号是从1开始的连续整数。在许多用于控制断点各种特性的命令中，你使用断点编号来指定要更改的断点。每个断点可以是 <em class="dfn">启用的</em> 或
+<em class="dfn">禁用的</em>；如果禁用，在你再次启用它之前，它对程序没有任何影响。
+</p>
+<a class="index-entry-id" id="index-breakpoint-ranges"></a>
+<a class="index-entry-id" id="index-breakpoint-lists"></a>
+<a class="index-entry-id" id="index-ranges-of-breakpoints"></a>
+<a class="index-entry-id" id="index-lists-of-breakpoints"></a>
+<p>一些 <small class="sc">GDB</small> 命令接受一个以空格分隔的断点列表作为操作对象。列表元素可以是单个断点编号，例如 ‘<samp class="samp">5</samp>’，也可以是这样的编号范围，例如 ‘<samp class="samp">5 - 7</samp>’。当将一个断点列表提供给一个命令时，该列表中的所有断点都会被操作。
+</p>
+
+<ul class="mini-toc">
+<li><a accesskey="1" href="Set-Breaks.html">设置断点</a></li>
+<li><a accesskey="2" href="Set-Watchpoints.html">设置观察点</a></li>
+<li><a accesskey="3" href="Set-Catchpoints.html">设置捕获点</a></li>
+<li><a accesskey="4" href="Delete-Breaks.html">删除断点</a></li>
+<li><a accesskey="5" href="Disabling.html">禁用断点</a></li>
+<li><a accesskey="6" href="Conditions.html">断点条件</a></li>
+<li><a accesskey="7" href="Break-Commands.html">断点命令列表</a></li>
+<li><a accesskey="8" href="Dynamic-Printf.html">动态printf</a></li>
+<li><a accesskey="9" href="Save-Breakpoints.html">如何将断点保存到文件</a></li>
+<li><a href="Static-Probe-Points.html">静态探测点</a></li>
+<li><a href="Error-in-Breakpoints.html">“无法插入断点”</a></li>
+<li><a href="Breakpoint_002drelated-Warnings.html">“断点地址已调整...”</a></li>
+</ul>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Continuing-and-Stepping.html">继续和单步执行</a>, 上一项： <a href="Stopping.html">停止和继续</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

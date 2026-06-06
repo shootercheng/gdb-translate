@@ -1,0 +1,95 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>信号处理（使用GDB调试）</title>
+
+<meta name="description" content="Signaling (Debugging with GDB)"/>
+<meta name="keywords" content="Signaling (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Altering.html" rel="up" title="Altering"/>
+<link href="Returning.html" rel="next" title="Returning"/>
+<link href="Jumping.html" rel="prev" title="Jumping"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Signaling">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Returning.html" rel="next">从函数返回</a> <a accesskey="p" href="Jumping.html" rel="prev">在不同地址继续执行</a>, 上一项： <a accesskey="u" href="Altering.html" rel="up">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h3 class="section" id="Giving-your-Program-a-Signal"><span>17.3 向你的程序发送信号<a class="copiable-link" href="#Giving-your-Program-a-Signal"> ¶</a></span></h3>
+<a class="index-entry-id" id="index-deliver-a-signal-to-a-program"></a>
+
+<dl class="table">
+<dt><a id="index-signal"></a><span><code class="code">signal <var class="var">signal</var></code><a class="copiable-link" href="#index-signal"> ¶</a></span></dt>
+<dd><p>在程序停止处恢复执行，但立即向其发送信号 <var class="var">信号</var>。该 <var class="var">信号</var> 可以是信号的名称或编号。例如，在许多系统上 <code class="code">signal 2</code> 和 <code class="code">signal
+SIGINT</code> 都是发送中断信号的方式。
+</p>
+<p>或者，如果 <var class="var">信号</var> 为零，则不发送信号继续执行。当你的程序因信号而停止，并且通常在使用
+<code class="code">continue</code> 命令恢复时会接收到该信号时，这很有用；‘<samp class="samp">signal 0</samp>’会使其在不接收信号的情况下恢复执行。
+</p>
+<p><em class="emph">注意：</em> 在恢复多线程程序时， <var class="var">信号</var> 会发送到当前选定的线程，而不是最后报告停止的线程。这包括线程因信号而停止的情况。因此，如果你想在抑制使线程停止的信号的情况下继续执行，你应该在发出‘<samp class="samp">signal 0</samp>’命令之前选择该线程。如果你在选择了另一个线程的情况下发出‘<samp class="samp">signal 0</samp>’命令，
+<small class="sc">GDB</small> 会检测到这种情况并要求确认。
+</p>
+<p>调用 <code class="code">signal</code> 命令与从shell调用
+<code class="code">kill</code> 实用程序不同。使用 <code class="code">kill</code>
+会导致 <small class="sc">GDB</small> 根据信号处理表决定如何处理信号（请参阅 <a class="pxref" href="Signals.html">信号</a>）。而 <code class="code">signal</code> 命令会将信号直接传递给你的程序。
+</p>
+<p><code class="code">signal</code> 在执行命令后第二次按下 <kbd class="key">回车键</kbd> 时不会重复执行。
+</p>
+</dd>
+<dt><a id="index-queue_002dsignal"></a><span><code class="code">queue-signal <var class="var">signal</var></code><a class="copiable-link" href="#index-queue_002dsignal"> ¶</a></span></dt>
+<dd><p>队列 <var class="var">信号</var> 在线程恢复执行时立即发送给当前线程。该 <var class="var">信号</var> 可以是信号的名称或编号。例如，在许多系统上 <code class="code">signal 2</code> 和
+<code class="code">signal SIGINT</code> 都是发送中断信号的方式。信号的处理必须设置为将信号传递给程序，否则 <small class="sc">GDB</small> 会报告错误。你可以使用 <small class="sc">GDB</small> 中的
+<code class="code">handle</code> 命令控制信号的处理（请参阅 <a class="pxref" href="Signals.html">信号</a>）。
+</p>
+<p>或者，如果 <var class="var">信号</var> 为零，则当前线程的任何已排队信号将被丢弃，并且在恢复执行时不会发送信号。当你的程序因信号而停止，并且通常在使用
+<code class="code">continue</code> 命令恢复时会接收到该信号时，这很有用。
+</p>
+<p>此命令与 <code class="code">signal</code> 命令的不同之处在于，信号只是被排队，执行不会恢复。并且 <code class="code">queue-signal</code> 不能用于传递处理状态已设置为 <code class="code">nopass</code>
+的信号（请参阅 <a class="pxref" href="Signals.html">信号</a>）。
+</p></dd>
+</dl>
+
+<p>请参阅 <a class="xref" href="Signals.html#stepping-into-signal-handlers">单步进入信号处理程序</a>, 了解当线程有信号排队时单步命令的行为信息。
+</p>
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Returning.html">从函数返回</a>, 上一项： <a href="Jumping.html">在不同地址继续执行</a>, 上一项： <a href="Altering.html">改变执行流程</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>

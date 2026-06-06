@@ -1,0 +1,86 @@
+<!DOCTYPE html><html><!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ --><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- Copyright © 1988-2025 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom." -->
+<title>存根内容（使用 GDB 调试）</title>
+
+<meta name="description" content="Stub Contents (Debugging with GDB)"/>
+<meta name="keywords" content="Stub Contents (Debugging with GDB)"/>
+<meta name="resource-type" content="document"/>
+<meta name="distribution" content="global"/>
+<meta name="Generator" content="makeinfo"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link href="index.html" rel="start" title="Top"/>
+<link href="Concept-Index.html" rel="index" title="Concept Index"/>
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents"/>
+<link href="Remote-Stub.html" rel="up" title="Remote Stub"/>
+<link href="Bootstrapping.html" rel="next" title="Bootstrapping"/>
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Stub-Contents">
+<div class="nav-panel">
+<p>
+下一项： <a accesskey="n" href="Bootstrapping.html" rel="next">你必须为存根做的事情</a>, 上一项： <a accesskey="u" href="Remote-Stub.html" rel="up">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+<hr/>
+<h4 class="subsection" id="What-the-Stub-Can-Do-for-You"><span>20.5.1 存根能为你做什么<a class="copiable-link" href="#What-the-Stub-Can-Do-for-You"> ¶</a></span></h4>
+
+<a class="index-entry-id" id="index-remote-serial-stub"></a>
+<p>你所使用架构的调试存根提供以下三个子程序：
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-set_005fdebug_005ftraps"></a>
+<a id="index-remote-serial-stub_002c-initialization"></a><span><code class="code">set_debug_traps</code><a class="copiable-link" href="#index-remote-serial-stub_002c-initialization"> ¶</a></span></dt>
+<dd><p>这个子程序用于安排 <code class="code">handle_exception</code> 在你的程序停止时运行。你必须在程序的启动代码中显式调用这个子程序。
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-handle_005fexception"></a>
+<a id="index-remote-serial-stub_002c-main-routine"></a><span><code class="code">handle_exception</code><a class="copiable-link" href="#index-remote-serial-stub_002c-main-routine"> ¶</a></span></dt>
+<dd><p>这是核心子程序，但你的程序从不显式调用它 —— 设置代码会安排 <code class="code">handle_exception</code> 在触发陷阱时运行。
+</p>
+<p><code class="code">handle_exception</code> 在你的程序执行期间停止时（例如，遇到断点）接管控制权，并与 <small class="sc">GDB</small> 主机上的程序进行通信。这里实现了通信协议； <code class="code">handle_exception</code> 充当 <small class="sc">GDB</small>
+目标机器上的代表。它首先发送关于你程序状态的摘要信息，然后继续执行，检索并传输 <small class="sc">GDB</small> 所需的任何信息，直到你执行一个 <small class="sc">GDB</small> 命令使你的程序恢复执行；此时，
+<code class="code">handle_exception</code> 将控制权返回给目标机器上你自己的代码。
+</p>
+</dd>
+<dt><a id="index-breakpoint-subroutine_002c-remote"></a><span><code class="code">breakpoint</code><a class="copiable-link" href="#index-breakpoint-subroutine_002c-remote"> ¶</a></span></dt>
+<dd><p>使用这个辅助子程序使你的程序包含一个断点。根据具体情况，这可能是 <small class="sc">GDB</small> 获得控制权的唯一方法。例如，如果你的目标机器有某种中断按钮，你就不需要调用这个子程序；按下中断按钮会将控制权转移给
+<code class="code">handle_exception</code> —— 实际上是转移给 <small class="sc">GDB</small>。在某些机器上，仅仅在串行端口接收字符也可能触发陷阱；同样，在那种情况下，你不需要从你自己的程序中调用 <code class="code">breakpoint</code>  —— 只需从主机<samp class="samp">会话中运行 ‘</samp>target remote
+<small class="sc">GDB</small> ’ 就能获得控制权。
+</p>
+<p>如果上述情况都不成立，或者你只是想确保你的程序在预定的点停止以开始调试会话，就调用 <code class="code">breakpoint</code> 。
+</p></dd>
+</dl>
+
+</div>
+<hr/>
+<div class="nav-panel">
+<p>
+下一项： <a href="Bootstrapping.html">你必须为存根做的事情</a>, 上一项： <a href="Remote-Stub.html">实现远程存根</a>   [<a href="index.html#SEC_Contents" rel="contents" title="Table of contents">目录</a>][<a href="Concept-Index.html" rel="index" title="Index">索引</a>]</p>
+</div>
+
+
+
+
+
+</body></html>
